@@ -1,0 +1,346 @@
+<ng-container *ngIf="permRICPListAllow === 1">
+
+    <body class="BodyCointaner">
+
+        <!-- Mobile Search Section (visible only on mobile) -->
+        <div class="mobile-search-section">
+            <div class="mobile-search-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">{{ "search filter" | translate }}</h5>
+                <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#mobileSearchPanel">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+            
+            <div class="collapse" id="mobileSearchPanel">
+                <div class="mobile-search-body">
+                    <!-- Entity Type -->
+                    <div class="form-group">
+                        <label for="entityTypeMobile">{{"labels.entitytype" | translate}}</label>
+                        <select class="dropdown form-control form-select" [(ngModel)]="entityType">
+                            <option *ngFor="let item of enType" [value]="item.param_cd">
+                                {{ item.nm_en }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Entity No -->
+                    <div class="form-group">
+                        <label for="entityNoMobile">{{"labels.entityNo." | translate}}</label>
+                        <input type="text" class="form-control" id="entityNoMobile" [(ngModel)]="entityNo" />
+                    </div>
+
+                    <!-- Compound No -->
+                    <div class="form-group">
+                        <label for="cpNoMobile">{{"labels.compoundno" | translate}}</label>
+                        <input type="text" class="form-control" id="cpNoMobile" [(ngModel)]="cpNo" [ngModelOptions]="{standalone: true, updateOn: 'blur'}" (ngModelChange)="cpNo = $event.toLowerCase()" />
+                    </div>
+
+                    <!-- Issuance Date -->
+                    <div class="form-group">
+                        <label for="issuanceDateMobile">{{"labels.issuancedate" | translate}}</label>
+                        <input type="text" placeholder="{{ 'datepicker' | translate }}" class="form-control"
+                            [bsConfig]="{  dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,containerClass:'theme-default',adaptivePosition: true}"
+                            bsDatepicker [(ngModel)]="issuanceDate" name="dateMobile1" readonly onkeydown="return false">
+                    </div>
+
+                    <!-- Expiry Date -->
+                    <div class="form-group">
+                        <label for="expiryDateMobile">{{"labels.expirydate" | translate}}</label>
+                        <input type="text" placeholder="{{ 'datepicker' | translate }}" class="form-control"
+                            [bsConfig]="{  dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,containerClass:'theme-default',adaptivePosition: true}"
+                            bsDatepicker [(ngModel)]="expiryDate" name="dateMobile2" readonly onkeydown="return false">
+                    </div>
+
+                    <!-- Compound Amount -->
+                    <div class="form-group">
+                        <label for="cpAmountMobile">{{"labels.compoundamount" | translate}}</label>
+                        <input type="text" class="form-control" id="cpAmountMobile" [(ngModel)]="cpAmount" />
+                    </div>
+
+                    <!-- Accrual Amount -->
+                    <div class="form-group">
+                        <label for="accrualAmountMobile">{{"labels.accrualamount" | translate}}</label>
+                        <input type="text" class="form-control" id="accrualAmountMobile" [(ngModel)]="accrualAmount" />
+                    </div>
+
+                    <!-- Tier Level -->
+                    <div class="form-group">
+                        <label for="cpTierMobile">{{"labels.tierlevel" | translate}}</label>
+                        <select class="dropdown form-control form-select" [(ngModel)]="cpTier">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select>
+                    </div>
+
+                    <!-- Tier Amount -->
+                    <div class="form-group">
+                        <label for="cpTierAmountMobile">{{"labels.tieramount" | translate}}</label>
+                        <input type="text" class="form-control" id="cpTierAmountMobile" [(ngModel)]="cpTierAmount" />
+                    </div>
+
+                    <!-- RICP Status -->
+                    <div class="form-group">
+                        <label for="ricpStatusMobile">{{"labels.ricpstatus" | translate}}</label>
+                        <select class="dropdown form-control form-select" [(ngModel)]="ricpStatus">
+                            <option *ngFor="let item of ricpstatus" [value]="item.param_cd">
+                                {{ item.nm_en }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="button-group-mobile">
+                        <button class="btn btnApply w-100 mb-2" (click)="apply()" data-bs-toggle="collapse"
+                            data-bs-target="#mobileSearchPanel">{{"buttons.apply" | translate}}</button>
+                        <button class="btn btnReset w-100" (click)="reset()">{{"buttons.reset" | translate}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- mainContainer start-->
+        <div [class.right-section-collapsed]="rightSectionCollapsed" class="PAContainer73">
+            <!-- left section -->
+            <div class="left-section73">
+                <div>
+                    <!-- alert box -->
+                    <div *ngIf="showResultAlert" [@fadeInOut]>
+                        <div class="alert alert-warning PA-alert-box" role="alert">
+                            {{"searchcriteriadoesnotmatch" | translate}}
+                        </div>
+                    </div>
+
+                    <!-- <div *ngIf="showDeactiveAlert" [@fadeInOut]>
+                  <div class="alert alert-warning PA-alert-box" role="alert">
+                    The record cannot be deactivated because it is in use by another module.
+                  </div>
+                </div> -->
+                    <!--alert box -->
+                    <!-- <div class="LeftSectionPosition">
+                        {{"labels.Home / Setup & Maintenance / Receivable Income Compound Listing" | translate}}
+                    </div> -->
+
+
+                    <h2>{{"labels.receivableincomecompoundlisting" | translate}}</h2>
+
+
+
+                </div>
+                <div class="MATableContainer TablePosition-relative" *ngIf="isDisplay">
+                    <div class="MALoadingContainer">
+                        <!-- Loading spinner overlay -->
+                        <div *ngIf="isLoading"
+                            class="TableLoading-overlay d-flex align-items-center justify-content-center">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only"></span>
+                            </div>
+                        </div>
+
+                        <!-- Your table structure -->
+                        <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+                            <thead>
+                                <tr class="MATableHeader">
+                                    <th>No.</th>
+                                    <th>{{"labels.entitytype" | translate}}</th>
+                                    <th>{{"labels.entityNo." | translate}}</th>
+                                    <th>{{"labels.compoundno" | translate}}</th>
+                                    <th>{{"labels.issuancedate" | translate}}</th>
+                                    <th>{{"labels.expirydate" | translate}}</th>
+                                    <th>{{"labels.compoundamount" | translate}} (RM)</th>
+                                    <th>{{"labels.accrualamount" | translate}} (RM)</th>
+                                    <th>{{"labels.tierlevel" | translate}}</th>
+                                    <th>{{"labels.tieramount" | translate}} (RM)</th>
+                                    <th>{{"labels.ricpstatus" | translate}}</th>
+                                    <th>{{"buttons.view" | translate}}</th>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="model.length > 0; else noResults">
+                                <tbody *ngIf="isDisplay">
+                                    <tr *ngFor="let item of model;let i = index;">
+                                        <td>{{ (page - 1) * itemsPerPage + i + 1 }}</td>
+                                        <td>{{ item.entity_type }}</td>
+                                        <td>{{ item.entity_no }}</td>
+                                        <td>{{ item.cp_no }}</td>
+                                        <td>{{ item.dt_issuance | date : "dd MMM yyyy" }}</td>
+
+                                        <td>{{ item.dt_expiry | date : "dd MMM yyyy" }}</td>
+                                        <td>{{ item.cp_amt| number:'.2-2' }}</td>
+                                        <td>{{item.accr_amt| number:'.2-2'}}</td>
+                                        <td>{{item.cp_tier}}</td>
+                                        <td>{{item.cp_tier_amt | number:'.2-2'}}</td>
+                                        <td>{{item.status}}</td>
+                                        <td><button [disabled]="permRICPDetailsAllow === 0" type="button"
+                                                class="btn btnView" (click)="viewSelected(item)">{{"buttons.view" |
+                                                translate}}</button></td>
+                                    </tr>
+                                </tbody>
+                            </ng-container>
+                            <ng-template #noResults>
+                                <tr style="height: 100px;">
+                                    <td colspan="20" class="text-center">{{"searchcriteriadoesnotmatch"| translate}}
+                                    </td>
+                                </tr>
+                            </ng-template>
+
+                        </table>
+                    </div>
+
+                    <div class="MAPagination" *ngIf="isDisplay">
+                        <div class="fgSpacing">
+                            <div *ngIf="page * itemsPerPage < totalRecords">
+                                {{"showing" | translate}} {{ page * itemsPerPage }} {{"from" | translate}} {{
+                                totalRecords }}
+                                {{"results"
+                                | translate}}
+                            </div>
+                            <div *ngIf="!(page * itemsPerPage < totalRecords)">
+                                {{"showing" | translate}} {{ totalRecords }} {{"from" | translate}} {{ totalRecords }}
+                                {{"results" |
+                                translate}}
+                            </div>
+                        </div>
+                        <div class="pagination-row">
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle PaginControl" type="button"
+                                    id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">
+                                    {{ selectedValue }}
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton">
+                                    <button class="dropdown-item" *ngFor="let singleItem of dropdownOptions"
+                                        (click)="LoadData(singleItem)">
+                                        {{ singleItem }}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <ngb-pagination [(page)]="page" [pageSize]="itemsPerPage" [collectionSize]="totalRecords"
+                                (pageChange)="loadData()"></ngb-pagination>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- right section -->
+            <div class="middle-section73">
+                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#rightSection"
+                    [attr.aria-expanded]="!rightSectionCollapsed" (click)="toggleRightSection()">
+                    <ng-container *ngIf="rightSectionCollapsed; else arrowIcon">
+                        <i class="bi bi-search"></i>
+                    </ng-container>
+                    <ng-template #arrowIcon>
+                        <i class="bi" [class.bi-chevron-double-right]="!rightSectionCollapsed"
+                            [class.bi-chevron-double-left]="rightSectionCollapsed"></i>
+                    </ng-template>
+                </button>
+            </div>
+
+            <div class="right-section73 collapse" [class.show]="!rightSectionCollapsed ">
+                <div class="SingleContainer">
+                    <!-- Header -->
+                    <div class="SingleContainerHeader">
+                        <h2 class="text-center">{{ "search filter" | translate }}</h2>
+                    </div>
+
+                    <!-- Entity Type-->
+                    <div class="form-group">
+                        <label for="entityType">{{"labels.entitytype" | translate}}</label>
+                        <select class="dropdown" name="entityType" class="form-control form-select"
+                            [(ngModel)]="entityType" [required]="!isReadOnly">
+                            <option *ngFor="let item of enType" [value]="item.param_cd">
+                                {{ item.nm_en }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Entity No -->
+                    <div class="form-group">
+                        <label for="entityNo">{{"labels.entityNo." | translate}}</label>
+                        <input type="text" class="form-control" id="entityNo" [(ngModel)]="entityNo" />
+                    </div>
+
+                    <!-- Compound No -->
+                    <div class="form-group">
+                        <label for="cpNo">{{"labels.compoundno" | translate}}</label>
+                        <input type="text" class="form-control" id="cpNo" [(ngModel)]="cpNo" [ngModelOptions]="{standalone: true, updateOn: 'blur'}" (ngModelChange)="cpNo = $event.toLowerCase()" />
+                    </div>
+
+
+                    <!-- Issuance Date -->
+                    <div class="form-group">
+                        <label for="issuanceDate">{{"labels.issuancedate" | translate}}</label>
+                        <input type="text" placeholder="{{ 'datepicker' | translate }}" class="form-control"
+                            [bsConfig]="{  dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,containerClass:'theme-default',adaptivePosition: true}"
+                            bsDatepicker [(ngModel)]="issuanceDate" name="date" readonly onkeydown="return false">
+                    </div>
+
+                    <!-- Expiry Date -->
+                    <div class="form-group">
+                        <label for="expiryDate">{{"labels.expirydate" | translate}}</label>
+                        <input type="text" placeholder="{{ 'datepicker' | translate }}" class="form-control"
+                            [bsConfig]="{  dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,containerClass:'theme-default',adaptivePosition: true}"
+                            bsDatepicker [(ngModel)]="expiryDate" name="date" readonly onkeydown="return false">
+                    </div>
+
+
+                    <!-- Compound Amount -->
+                    <div class="form-group">
+                        <label for="cpAmount">{{"labels.compoundamount" | translate}}</label>
+                        <input type="text" class="form-control" id="cpAmount" [(ngModel)]="cpAmount" />
+                    </div>
+
+                    <!-- Accrual Amount -->
+                    <div class="form-group">
+                        <label for="accrualAmount">{{"labels.accrualamount" | translate}}</label>
+                        <input type="text" class="form-control" id="accrualAmount" [(ngModel)]="accrualAmount" />
+                    </div>
+
+                    <!-- Tier Level (dropdown)-->
+                    <div class="form-group">
+                        <label for="cpTier">{{"labels.tierlevel" | translate}}</label>
+                        <select class="dropdown" name="cpTier" class="form-control form-select" [(ngModel)]="cpTier"
+                            [required]="!isReadOnly">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select>
+                    </div>
+
+                    <!-- Tier Amount -->
+                    <div class="form-group">
+                        <label for="cpTierAmount">{{"labels.tieramount" | translate}}</label>
+                        <input type="text" class="form-control" id="cpTierAmount" [(ngModel)]="cpTierAmount" />
+                    </div>
+
+                    <!-- RICP Status-->
+                    <div class="form-group">
+                        <label for="ricpStatus">{{"labels.ricpstatus" | translate}}</label>
+                        <select class="dropdown" name="ricpStatus" class="form-control form-select"
+                            [(ngModel)]="ricpStatus" [required]="!isReadOnly">
+                            <option *ngFor="let item of ricpstatus" [value]="item.param_cd">
+                                {{ item.nm_en }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="button-group">
+                        <button class="btn btnApply" (click)="apply()">{{"buttons.apply" |translate}}</button>
+                        <button class="btn btnReset" (click)="reset()">{{"buttons.reset" |translate}}</button>
+                    </div>
+
+                    <br /><br />
+                </div>
+            </div>
+        </div>
+
+        <!-- mainContainer end-->
+
+        <!-- <div class="PAContainer73">
+      <div class="left-section73">
+        <div class="MainContainerFooter"></div>
+      </div>
+      <div class="right-section73"></div>
+    </div> -->
+    </body>
+</ng-container>

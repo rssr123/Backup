@@ -1,0 +1,61 @@
+.tab-container {
+  display: flex; /* Arrange tabs in a row */
+  justify-content: flex-start; /* Align to the left */
+  flex-wrap: wrap; /* Allow wrapping for responsiveness */
+  gap: 10px; /* Space between tabs */
+  background-color: #f9f9f9; /* Light background color */
+  padding: 10px; /* Padding around the container */
+  border: 1px solid #ddd; /* Border around the tabs */
+  border-radius: 5px; /* Rounded corners */
+}
+
+.tab-block {
+  flex: 1 1 auto; /* Flexible size for responsiveness */
+  padding: 10px 15px;
+  background-color: #ffc107; /* Block color (yellow) */
+  text-align: center;
+  font-weight: bold;
+  color: #333; /* Default text color */
+  cursor: pointer;
+  border: 1px solid #ddd; /* Border around each block */
+  border-radius: 3px; /* Rounded corners */
+  transition: background-color 0.3s ease, color 0.3s ease;
+
+  &:hover {
+    background-color: #ff9800; /* Slightly darker on hover */
+    color: #fff; /* Text color on hover */
+  }
+
+  &.active {
+    background-color: #007bff; /* Active tab color */
+    color: #fff; /* Text color for active tab */
+    border-color: #0056b3; /* Highlight border */
+  }
+}
+
+  .container {
+    padding: 0 10px; /* Add horizontal padding */
+    margin: 0 auto; /* Center align the container */
+    max-width: 600px; /* Limit container width */
+  }  
+
+  .notificationTask {
+    /* circle shape, size and position */
+    //margin-top: 0.5em;
+    //margin-right: 2.0em;
+    //position: absolute;
+    //right: -0.0em;
+    // top: -0.0em;
+    min-width: 1.6em; /* or width, explained below. */
+    // height: 0.5em;
+    border-radius: 0.8em; /* or 50%, explained below. */
+    border: 0.05em solid white;
+    background-color: red;
+
+    /* number size and position */
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8em;
+    color: white;
+  }

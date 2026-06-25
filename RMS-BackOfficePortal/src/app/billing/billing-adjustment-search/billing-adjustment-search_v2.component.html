@@ -1,0 +1,174 @@
+<body class="BodyContainer">
+  
+  <!-- Mobile Search Section (visible only on mobile) -->
+  <div class="mobile-search-section">
+      <div class="mobile-search-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">{{ "search filter" | translate }}</h5>
+          <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#mobileSearchPanel">
+              <i class="bi bi-search"></i>
+          </button>
+      </div>
+      
+      <div class="collapse" id="mobileSearchPanel">
+          <div class="mobile-search-body">
+              <!-- Billing No -->
+              <div class="form-group">
+                  <label for="billingnoMobile">{{"labels.billingno" | translate}}</label>
+                  <input type="text" class="form-control" id="billingnoMobile" [placeholder]="'labels.enterbillingno' | translate" [(ngModel)]="billingNo" />
+              </div>
+
+              <!-- Order Ref No -->
+              <div class="form-group">
+                  <label for="orderrenoMobile">{{"labels.orderrefno" | translate}}</label>
+                  <input type="text" class="form-control" id="orderrenoMobile" [placeholder]="'labels.enterorderrefno' | translate" [(ngModel)]="orderrefNo" />
+              </div>
+
+              <!-- Entity Type -->
+              <div class="form-group">
+                  <label for="entitytypeMobile">{{"labels.entitytype" | translate}}</label>
+                  <ng-select [disabled]="entity_types.length < 1" class="form-control" name="entitytype" [(ngModel)]="entTy" id="entitytypeMobile" dropdownPosition="bottom" [clearable]="false" [searchable]="false" [placeholder]="'labels.entitytype' | translate">
+                      <ng-option *ngFor="let item of entity_types;" [value]="item.param_cd">{{item.nm_en}}</ng-option>
+                  </ng-select>
+              </div>
+
+              <!-- Entity Number -->
+              <div class="form-group">
+                  <label for="entityNumberMobile">{{"labels.entitynumber" | translate}}</label>
+                  <input type="text" class="form-control" id="entityNumberMobile" [placeholder]="'labels.enterentitynumber' | translate" [(ngModel)]="entNo" />
+              </div>
+
+              <!-- Buttons -->
+              <div class="button-group-mobile">
+                  <button type="button" class="btn btnApply w-100 mb-2" (click)="loadData()" data-bs-toggle="collapse" data-bs-target="#mobileSearchPanel">{{"buttons.search" | translate}}</button>
+                  <button type="button" class="btn btnReset w-100" (click)="clearFields()">{{"buttons.clear" | translate}}</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <div class="PAContainer73">
+    <div class="one-third">
+      <div class="SingleContainer">
+          <!-- Header -->
+          <div class="SingleContainerHeader">
+              <h2 class="text-center">{{ "labels.searchfilter" | translate }}</h2>
+          </div>
+          <div class="form-group">
+            <label for="billingno">{{"labels.billingno" | translate}}</label>
+            <input type="text" id="orderReferenceNo" class="form-control"
+              [placeholder]="'labels.enterbillingno' | translate" [(ngModel)]="billingNo" />
+          </div>
+          <div class="form-group">
+            <label for="orderreno">{{"labels.orderrefno" | translate}}</label>
+            <input type="text" id="orderreno" class="form-control" [placeholder]="'labels.enterorderrefno' | translate"
+              [(ngModel)]="orderrefNo" />
+          </div>
+          <div class="form-group">
+            <label for="entitytype">{{"labels.entitytype" | translate}}</label>
+            <ng-select [disabled]="entity_types.length < 1" class="form-control" name="entitytype" [(ngModel)]="entTy" id="entitytype" dropdownPosition="bottom" [clearable]="false" [searchable]="false" [placeholder]="'labels.entitytype' | translate">
+            <ng-option *ngFor="let item of entity_types;" [value]="item.param_cd">{{item.nm_en}}</ng-option>
+            </ng-select>   
+          </div>
+          <div class="form-group">
+            <label for="entityNumber">{{"labels.entitynumber" | translate}}</label>
+            <input type="text" id="entityNumber" class="form-control" [placeholder]="'labels.enterentitynumber' | translate"
+              [(ngModel)]="entNo" />
+          </div>
+          <div class="form-buttons mt-3">
+            <button type="button" class="btn btn-secondary" (click)="clearFields()">{{"buttons.clear" | translate}}</button>
+            <button type="button" class="btn btn-primary ml-2" (click)="loadData()">{{"buttons.search" |translate}}</button>
+          </div>
+      </div>
+    </div>
+
+    <div class="two-thirds">
+      <ul class="breadcrumbOTC">
+        <li>
+          <a [routerLink]="'/home'">{{"menu.home" | translate}}</a>
+          <span class="breadcrumb-separator"> / </span>
+        </li>
+        <li>
+          <a [routerLink]="'/billing-adjustment-search'">{{"menu.billingadjustmentsearch" | translate}}</a>
+        </li>
+      </ul>
+
+      <h1 style="padding-bottom: 1.5%;">{{"menu.billingadjustmentsearch" | translate}}</h1>
+      <div class="MATableContainer">
+        <div class="MALoadingContainer">
+          <!-- Loading spinner overlay -->
+          <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+            <div class="spinner-border" role="status">
+              <span class="sr-only"></span>
+            </div>
+          </div>
+          <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+            <thead>
+              <tr class="MATableHeader">
+                <th>No</th>
+                <th>{{"labels.customerid" | translate}}</th>
+                <th>{{"labels.billingno" | translate}}</th>
+                <th>{{"labels.billingtype" | translate}}</th>
+                <th style="width:8%;">{{"labels.billingstatus" | translate}}</th>
+                <th>{{"labels.amountrm" | translate}}</th>
+                <th>{{"labels.modifiedby" | translate}}</th>
+                <th>{{"labels.modifiedon" | translate}}</th>
+                <th>{{"labels.action" | translate}}</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="model.length > 0; else noResults">
+              <!-- Loop through the model to display rows -->
+              <tr *ngFor="let item of model; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ item.cust_id }}</td>
+                <td>{{ item.billing_no }}</td>
+                <td>{{ getParamDescBM(item.billing_method) }}</td>
+                <td>{{ getParamDescWF(item.bil_wf_status) }}</td>
+                <td>{{ item.amount | number: '1.2-2' }}</td>
+                <td>{{ item.modified_by}}</td>
+                <td>{{ item.dt_modified  | date : "dd MMM yyyy HH:mm:ss"}}</td>
+                <td>
+                  <button (click)="navigateScreen(item)" class="btn btnAdd"> {{"buttons.view" |
+                    translate}}</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <ng-template #noResults>
+            <tr style="height: 100px;">
+              <td colspan="20" class="text-center">{{ "searchcriteriadoesnotmatch" | translate }}</td>
+            </tr>
+          </ng-template>
+
+        </div>
+      </div>
+      <div class="MAPagination" *ngIf="isDisplay">
+        <div class="fgSpacing">
+          <div *ngIf="page * itemsPerPage < totalRecords">
+            {{"showing" | translate}} {{ page * itemsPerPage }} {{"from" | translate }} {{ totalRecords }}
+            {{"results" | translate }}
+          </div>
+          <div *ngIf="!(page * itemsPerPage < totalRecords)">
+            {{"showing" | translate }} {{ totalRecords }} {{"from" | translate }} {{ totalRecords }}
+            {{"results" | translate }}
+          </div>
+        </div>
+        <div class="pagination-row">
+          <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle PaginControl" type="button" id="dropdownMenuButton"
+              data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {{ selectedValue }}
+            </button>
+            <div class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton">
+              <button class="dropdown-item" *ngFor="let singleItem of dropdownOptions" (click)="LoadData(singleItem)">
+                {{ singleItem }}
+              </button>
+            </div>
+          </div>
+
+          <ngb-pagination [(page)]="page" [pageSize]="itemsPerPage" [collectionSize]="totalRecords"
+            (pageChange)="loadData()"></ngb-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>

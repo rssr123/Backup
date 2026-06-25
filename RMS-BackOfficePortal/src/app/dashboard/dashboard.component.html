@@ -1,0 +1,144 @@
+<div class="dashboard-container">
+    <!-- Background Image -->
+    <div class="background-image">
+        <div class="charts-grid" @slideIn>
+        
+            <!-- First Column: Logo and Text (always visible) -->
+            <div id="middle-container" class="chart-section logo-section">
+                <div class="logo"><img src="assets/logo/logo-ssm-homepage.png" alt="Logo"></div>
+                <label id="revenue">REVENUE MANAGEMENT SYSTEM</label>
+                <label id="backoffice">BACK OFFICE</label>
+                <label id="top">To be a top tier <span class="blueHighlight">Corporate Registry</span> and <span
+                    class="blueHighlight">Regulatory Authority.</span></label>
+            </div>
+            
+            <!-- Revenue Chart -->
+            <div class="chart-section bar-chart">
+                <h3>Total Revenue by Year/ Month/ Day</h3>
+                
+                <!-- Loading State -->
+                <div *ngIf="!chartsLoaded.revenue" class="chart-loading">
+                    <div class="loading-skeleton chart-skeleton"></div>
+                    <div class="loading-text">Loading revenue data...</div>
+                </div>
+                
+                <!-- Actual Chart -->
+                <div *ngIf="chartsLoaded.revenue" class="chart-content fade-in">
+                    <div class="dropdown-section">
+                        <label for="reportType">Select Report Type:</label>
+                        <select [(ngModel)]="selectedReportTypeRevenue" (change)="onReportTypeRevenueChange()" id="reportType">
+                            <option value="year">Year</option>
+                            <option value="month">Month</option>
+                            <option value="day">Day</option>
+                        </select>
+        
+                        <!-- Year Selection, visible for month/day view -->
+                        <div *ngIf="selectedReportTypeRevenue !== 'year'">
+                            <label for="year">Select Year:</label>
+                            <select [(ngModel)]="selectedYearRevenue" (change)="onYearRevenueChange()" id="year">
+                                <option *ngFor="let year of availableYears" [value]="year">{{ year }}</option>
+                            </select>
+                        </div>
+        
+                        <!-- Month Selection, visible for day view -->
+                        <div *ngIf="selectedReportTypeRevenue === 'day'">
+                            <label for="month">Select Month:</label>
+                            <select [(ngModel)]="selectedMonthRevenue" (change)="onMonthRevenueChange()" id="month">
+                                <option *ngFor="let month of availableMonths" [value]="month">{{ month }}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <canvas baseChart [data]="barChartDataRevenue" [type]="'bar'" [options]="barChartOptionsRevenue"></canvas>
+                </div>
+            </div>
+    
+            <!-- Revenue by Source System Chart -->
+            <div class="chart-section pie-chart">
+                <h3>Total Revenue by Source System</h3>
+                
+                <!-- Loading State -->
+                <div *ngIf="!chartsLoaded.revenueBySS" class="chart-loading">
+                    <div class="loading-skeleton pie-skeleton"></div>
+                    <div class="loading-text">Loading source system data...</div>
+                </div>
+                
+                <!-- Actual Chart -->
+                <div *ngIf="chartsLoaded.revenueBySS" class="chart-content fade-in">
+                    <canvas baseChart [data]="pieChartData" [type]="'pie'" [options]="pieChartOptions"></canvas>
+                </div>
+            </div>
+    
+            <!-- Revenue by Payment Method Chart -->
+            <div class="chart-section pie-chart">
+                <h3>Total Revenue by Payment Method</h3>
+                
+                <!-- Loading State -->
+                <div *ngIf="!chartsLoaded.revenueByPayment" class="chart-loading">
+                    <div class="loading-skeleton pie-skeleton"></div>
+                    <div class="loading-text">Loading payment data...</div>
+                </div>
+                
+                <!-- Actual Chart -->
+                <div *ngIf="chartsLoaded.revenueByPayment" class="chart-content fade-in">
+                    <canvas baseChart [datasets]="pieChartDatasets" [type]="'pie'" [options]="pieChartOptions" [labels]="pieChartLabels"></canvas>
+                </div>
+            </div>
+    
+            <!-- Refund Status Chart -->
+            <div class="chart-section pie-chart">
+                <h3>No. of Refund Application by Status</h3>
+                
+                <!-- Loading State -->
+                <div *ngIf="!chartsLoaded.refundStatus" class="chart-loading">
+                    <div class="loading-skeleton pie-skeleton"></div>
+                    <div class="loading-text">Loading refund data...</div>
+                </div>
+                
+                <!-- Actual Chart -->
+                <div *ngIf="chartsLoaded.refundStatus" class="chart-content fade-in">
+                    <canvas baseChart [datasets]="pieChartDatasets2" [type]="'pie'" [options]="pieChartOptions" [labels]="pieChartLabels2"></canvas>
+                </div>
+            </div>
+    
+            <!-- Receipt Count Chart -->
+            <div class="chart-section bar-chart">
+                <h3>Total Receipts Generated by Year/ Month/ Day</h3>
+                
+                <!-- Loading State -->
+                <div *ngIf="!chartsLoaded.receipts" class="chart-loading">
+                    <div class="loading-skeleton chart-skeleton"></div>
+                    <div class="loading-text">Loading receipt data...</div>
+                </div>
+                
+                <!-- Actual Chart -->
+                <div *ngIf="chartsLoaded.receipts" class="chart-content fade-in">
+                    <div class="dropdown-section">
+                        <label for="reportType">Select Report Type:</label>
+                        <select [(ngModel)]="selectedReportType" (change)="onReportTypeChange()" id="reportType">
+                            <option value="year">Year</option>
+                            <option value="month">Month</option>
+                            <option value="day">Day</option>
+                        </select>
+        
+                        <!-- Year Selection, visible for month/day view -->
+                        <div *ngIf="selectedReportType !== 'year'">
+                            <label for="year">Select Year:</label>
+                            <select [(ngModel)]="selectedYear" (change)="onYearChange()" id="year">
+                                <option *ngFor="let year of availableYears" [value]="year">{{ year }}</option>
+                            </select>
+                        </div>
+        
+                        <!-- Month Selection, visible for day view -->
+                        <div *ngIf="selectedReportType === 'day'">
+                            <label for="month">Select Month:</label>
+                            <select [(ngModel)]="selectedMonth" (change)="onMonthChange()" id="month">
+                                <option *ngFor="let month of availableMonths" [value]="month">{{ month }}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <canvas baseChart [data]="barChartData" [type]="'bar'" [options]="barChartOptions"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

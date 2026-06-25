@@ -1,0 +1,358 @@
+<body class="BodyCointaner">
+  
+  <!-- Mobile Search Section (visible only on mobile) -->
+  <div class="mobile-search-section">
+    <div class="mobile-search-header d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">{{ "search filter" | translate }}</h5>
+      <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#mobileSearchPanel">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+    
+    <div class="collapse" id="mobileSearchPanel">
+      <div class="mobile-search-body">
+        <!-- Transaction Date Range -->
+        <div class="form-group">
+          <label>{{"labels.transactiondate"|translate}}</label>
+          <input type="text" [placeholder]="'labels.daterangepicker'| translate" class="form-control"
+            [bsConfig]="{ rangeInputFormat : 'DD MMM YYYY', dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,rangeSeparator:' to ',containerClass:'theme-default',adaptivePosition: true}"
+            bsDaterangepicker [(ngModel)]="selected2" name="daterangeMobile1" readonly onkeydown="return false" />
+        </div>
+
+        <!-- Source System -->
+        <div class="form-group">
+          <label for="sourceSystemCodeMobile">{{"labels.sourcesystem"|translate}}</label>
+          <ng-select class="form-control" name="sourceSystemCodeMobile" [(ngModel)]="selectedSourceSystemCodes"
+            id="sourceSystemCodeMobile" [multiple]="true" dropdownPosition="bottom">
+            <ng-option *ngFor="let item of sourceSystemCodeOptions" [value]="item.ss_cd">{{item.ss_cd}}</ng-option>
+          </ng-select>
+        </div>
+
+        <!-- Order Reference No -->
+        <div class="form-group">
+          <label for="orderNoMobile">{{"labels.orderreferenceno"|translate}}</label>
+          <input type="text" class="form-control" id="orderNoMobile" [(ngModel)]="orn_no" />
+        </div>
+
+        <!-- Transaction Amount -->
+        <div class="form-group">
+          <label for="totalAmtMobile">{{"labels.transactionamount(RM)"|translate}}</label>
+          <input type="number" class="form-control" id="totalAmtMobile" [(ngModel)]="total_amt" pattern="[0-9]*(\.[0-9]+)?" />
+        </div>
+
+        <!-- Payment Status -->
+        <div class="form-group">
+          <label for="orderStatusMobile">{{"labels.paymentstatus"|translate}}</label>
+          <select class="form-control" [(ngModel)]="selectedState">
+            <option *ngFor="let state of states" [value]="state.param_cd">
+              {{ state.nm_en }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Receipt No -->
+        <div class="form-group">
+          <label for="rcptNoMobile">{{"labels.rcptno"|translate}}</label>
+          <input type="text" class="form-control" id="rcptNoMobile" [(ngModel)]="rcpt_no" />
+        </div>
+
+        <!-- Receipt Date Range -->
+        <div class="form-group">
+          <label>{{"labels.rcptdate"|translate}}</label>
+          <input type="text" [placeholder]="'labels.daterangepicker'| translate" class="form-control"
+            [bsConfig]="{ rangeInputFormat : 'DD MMM YYYY', dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,rangeSeparator:' to ',containerClass:'theme-default',adaptivePosition: true}"
+            bsDaterangepicker [(ngModel)]="selected" name="daterangeMobile2" readonly onkeydown="return false" />
+        </div>
+
+        <!-- RMS Type -->
+        <div class="form-group">
+          <label for="rmsTypeMobile">{{ "labels.rmstype" | translate }}</label>
+          <select class="form-control" [(ngModel)]="selectedRMSType">
+            <option value="online">Online</option>
+            <option value="over-the-counter">Over-The-Counter</option>
+          </select>
+        </div>
+
+        <!-- Buttons -->
+        <div class="button-group-mobile">
+          <button class="btn btnApply w-100 mb-2" (click)="apply()" data-bs-toggle="collapse" data-bs-target="#mobileSearchPanel">
+            {{"buttons.apply" | translate}}
+          </button>
+          <button class="btn btnReset w-100" (click)="reset()">
+            {{"buttons.reset" | translate}}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- mainContainer start-->
+  <div [class.right-section-collapsed]="rightSectionCollapsed" class="PAContainer73">
+    <!-- left section -->
+    <div class="left-section73">
+      <div>
+        <!-- <div class="LeftSectionPosition">{{"labels.Home / Setup & Maintenance / MTT Listing"| translate}}</div> -->
+
+        <!-- alert box -->
+        <div *ngIf="showInsertAlert" [@fadeInOut]>
+          <div class="alert alert-success PA-alert-box" role="alert">
+            {{"added successfully"| translate}}
+          </div>
+        </div>
+
+        <div *ngIf="showUpdateAlert" [@fadeInOut]>
+          <div class="alert alert-info PA-alert-box" role="alert">
+            {{"updated successfully"| translate}}
+          </div>
+        </div>
+
+        <!--           <div *ngIf="showResultAlert" [@fadeInOut]>
+            <div class="alert alert-warning PA-alert-box" role="alert">
+              {{"showResultAlert"| translate}}
+            </div> 
+          </div> -->
+
+        <div *ngIf="showDeactiveAlert" [@fadeInOut]>
+          <div class="alert alert-warning PA-alert-box" role="alert">
+            {{"recorddeactivate"| translate}}
+          </div>
+        </div>
+
+        <div *ngIf="showActivateAlert" [@fadeInOut]>
+          <div class="alert alert-warning PA-alert-box" role="alert">
+            {{"recordactivatefms"| translate}}
+          </div>
+        </div>
+
+        <div *ngIf="showGenericAlert" [@fadeInOut]>
+          <div class="alert alert-warning PA-alert-box" role="alert">
+            {{"generalalert" | translate}}
+          </div>
+        </div>
+        <!--alert box -->
+
+        <h2>{{ "labels.mastertransactiontable" | translate }}<span style="font-size: 60%; font-weight: normal;">{{"labels.(displaying data for today and yesterday only)"| translate}}</span></h2>
+
+
+        <div class="LeftSectionPosition">
+          <!-- <button type="button" class="btn btnAdd">
+              <i class="bi bi-plus-square"></i>
+            </button> -->
+          <!-- (click)="addSelected()" insert beside class btn -->
+        </div>
+      </div>
+      <div class="MATableContainer TablePosition-relative">
+        <div class="MALoadingContainer">
+          <!-- Loading spinner overlay -->
+          <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+            <div class="spinner-border" role="status">
+              <span class="sr-only"></span>
+            </div>
+          </div>
+
+
+          <!-- Your table structure -->
+          <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+            <thead>
+              <tr class="MATableHeader">
+                <!-- <tr class="MATableHeader">
+                    <th>No.</th>
+                    <th>{{"labels.sourcesystemcode"|translate}}</th>
+                    <th>{{"labels.orderreferenceno"|translate}}</th>
+                    <th>{{"labels.orderreferencedate"|translate}}</th>
+                    <th>{{"labels.totalamount"|translate}}</th>
+                    <th>{{"labels.orderreferencestatus"|translate}}</th>
+                    <th>{{"labels.rcptno"|translate}}</th>
+                    <th>{{"labels.rcptdate"|translate}}</th>
+                    <th class = "custom-align-center">{{"buttons.view"| translate}}</th>
+                  </tr> -->
+
+                <th>No.</th>
+                <th>{{"labels.sourcesystem"|translate}}</th>
+                <th>{{"labels.rmstype"|translate}}</th>
+                <th>{{"labels.orderreferenceno"|translate}}</th>
+                <th>{{"labels.transactiondate"|translate}}</th>
+                <th>{{"labels.transactionamount(RM)"|translate}}</th>
+                <th>{{"labels.paymentstatus"|translate}}</th>
+                <th>{{"labels.rcptno"|translate}}</th>
+                <th>{{"labels.rcptdate"|translate}}</th>
+                <th class="custom-align-center">{{"buttons.view"| translate}}</th>
+              </tr>
+            </thead>
+
+            <ng-container *ngIf="model.length>0; else noResults">
+              <tbody *ngIf="isDisplay">
+
+                <tr *ngFor="let item of model; let i = index">
+                  <td>{{(page - 1) * itemsPerPage + i + 1}}</td>
+                  <td>{{ item.ss_cd ? item.ss_cd : '-'}}</td>
+                  <td>{{ item.rms_type ? item.rms_type : '-'}}</td>
+                  <td>{{ item.orn_no ? item.orn_no : '-'}}</td>
+                  <td>{{ item.orn_dt | date: "dd MMM yyyy HH:mm:ss" }}</td>
+                  <td>{{ item.total_amt | number:'1.2-2' }}</td>
+                  <td>{{ item.order_status ? item.order_status : '-'}}</td>
+                  <td>{{ item.rcpt_no ? item.rcpt_no : '-'}}</td>
+                  <td>{{ (item.rcpt_dt | date: 'dd MMM yyyy HH:mm:ss') ? (item.rcpt_dt | date: 'dd MMM yyyy HH:mm:ss') : '-' }}</td>
+                  <td class="text-center">
+                    <button type="button" [disabled]="permMTTDetailsAllow === 0" class="btn btnView"
+                      (click)="viewSelected(item)">
+                      {{"buttons.view"| translate}}
+                    </button>
+                  </td>
+                  <!-- <td>
+                    <button
+                      type="button"
+                      class="btn btnDelete"
+                      (click)="deleteSelected(item)"
+                    >
+                      <i class="bi bi-trash-fill"></i> Delete
+                    </button>
+                  </td> -->
+                </tr>
+              </tbody>
+            </ng-container>
+            <ng-template #noResults>
+              <tr style="height: 100px;">
+                <td colspan="20" class="text-center">{{"searchcriteriadoesnotmatch"| translate}}</td>
+              </tr>
+            </ng-template>
+          </table>
+          <br>
+        </div>
+
+        <div class="MAPagination" *ngIf="isDisplay">
+          <div class="fgSpacing">
+            <div *ngIf="page * itemsPerPage < totalRecords">
+              {{"showing" | translate}} {{ page * itemsPerPage }} {{"from" | translate}} {{ totalRecords }} {{"results"
+              | translate}}
+            </div>
+            <div *ngIf="!(page * itemsPerPage < totalRecords)">
+              {{"showing" | translate}} {{ totalRecords }} {{"from" | translate}} {{ totalRecords }} {{"results" |
+              translate}}
+            </div>
+          </div>
+          <div class="pagination-row">
+            <div class="dropdown">
+              <button class="btn btn-secondary dropdown-toggle PaginControl" type="button" id="dropdownMenuButton"
+                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{ selectedValue }}
+              </button>
+              <div class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton">
+                <button class="dropdown-item" *ngFor="let singleItem of dropdownOptions" (click)="LoadData(singleItem)">
+                  {{ singleItem }}
+                </button>
+              </div>
+            </div>
+
+            <ngb-pagination [(page)]="page" [pageSize]="itemsPerPage" [collectionSize]="totalRecords"
+              (pageChange)="loadData()"></ngb-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="middle-section73">
+
+      <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#rightSection"
+        [attr.aria-expanded]="!rightSectionCollapsed" (click)="toggleRightSection()">
+        <ng-container *ngIf="rightSectionCollapsed; else arrowIcon">
+          <i class="bi bi-search"></i>
+        </ng-container>
+        <ng-template #arrowIcon>
+          <i class="bi" [class.bi-chevron-double-right]="!rightSectionCollapsed"
+            [class.bi-chevron-double-left]="rightSectionCollapsed"></i>
+        </ng-template>
+      </button>
+    </div>
+
+    <div class="right-section73 collapse" [class.show]="!rightSectionCollapsed">
+      <div class="SingleContainer">
+        <!-- Header -->
+        <div class="SingleContainerHeader">
+          <h2 class="text-center">{{ "search filter" | translate }}</h2>
+        </div>
+
+        <div class="form-group">
+          <label>{{"labels.transactiondate"|translate}}</label> <span *ngIf="!isTransactionDateValid()" class='RedAsterisk'> *</span>
+          <input type="text" [placeholder]="'labels.daterangepicker'| translate" class="form-control"
+            [bsConfig]="{ rangeInputFormat : 'DD MMM YYYY', dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,rangeSeparator:' to ',containerClass:'theme-default',adaptivePosition: true, maxDateRange: 6}"
+            bsDaterangepicker [(ngModel)]="selected2" name="daterange" readonly onkeydown="return false" />
+
+              <div *ngIf="!isTransactionDateValid()" class="text-danger mt-1">
+                {{"labels.Transaction date is a mandatory field for this search criteria." | translate}}
+              </div>
+        </div>
+
+        <div class="form-group">
+          <label for="sourceSystemCode">{{"labels.sourcesystem"|translate}}</label>
+          <ng-select class="form-control" name="sourceSystemCode" [(ngModel)]="selectedSourceSystemCodes"
+            id="sourceSystemCode" dropdownPosition="bottom" [multiple]="true">
+            <ng-option *ngFor="let item of sourceSystemCodeOptions" [value]="item.ss_cd">{{item.ss_cd}}</ng-option>
+          </ng-select>
+        </div>
+
+        <div class="form-group">
+          <label for="orderNo">{{"labels.orderreferenceno"|translate}}</label>
+          <input type="text" class="form-control" id="orderNo" [(ngModel)]="orn_no" />
+        </div>
+
+
+
+
+        <div class="form-group">
+          <label for="totalAmt">{{"labels.transactionamount(RM)"|translate}}</label>
+          <input type="number" class="form-control" id="totalAmt" [(ngModel)]="total_amt" pattern="[0-9]*(\.[0-9]+)?"
+            title="Please enter a valid number" (input)="validateInput($event)" />
+          <div *ngIf="invalidInput" class="error-message">Please enter a valid number.</div>
+        </div>
+
+        <div class="form-group">
+          <label for="orderStatus">{{"labels.paymentstatus"|translate}}</label>
+          <select class="form-control" [(ngModel)]="selectedState">
+            <option *ngFor="let state of statusOptions" [value]="state.param_cd">
+              {{ state.nm_en}}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="rcptNo">{{"labels.rcptno"|translate}}</label>
+          <input type="text" class="form-control" id="rcptNo" [(ngModel)]="rcpt_no" />
+        </div>
+
+        <div class="form-group">
+          <label>{{"labels.rcptdate"|translate}}</label>
+          <input type="text" [placeholder]="'labels.daterangepicker'| translate" class="form-control"
+            [bsConfig]="{ rangeInputFormat : 'DD MMM YYYY', dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,rangeSeparator:' to ',containerClass:'theme-default',adaptivePosition: true, maxDateRange: 6}"
+            bsDaterangepicker [(ngModel)]="selected" name="daterange" readonly onkeydown="return false" />
+        </div>
+
+        <div class="form-group">
+          <label for="rmsType">{{ "labels.rmstype" | translate }}</label>
+          <select class="form-control" [(ngModel)]="selectedRMSType">
+            <!-- <option [ngValue]="null">{{ 'labels.select' | translate }}</option> -->
+            <option value="online">Online</option>
+            <option value="otc">OTC</option>
+          </select>
+        </div>
+
+        <!-- Buttons -->
+        <div class="button-group">
+          <button class="btn btnApply" [disabled]="!isTransactionDateValid()" (click)="apply()">{{"buttons.apply"| translate}}</button>
+          <button class="btn btnReset" (click)="reset()">{{"buttons.reset"| translate}}</button>
+        </div>
+
+        <br><br>
+      </div>
+    </div>
+  </div>
+  <!-- mainContainer end-->
+
+  <!-- <div class="PAContainer73" [class.right-section-collapsed]="rightSectionCollapsed">
+      <div class="left-section73">
+        <div class="MainContainerFooter"></div>
+      </div>
+      <div class="right-section73 collapse" [class.show]="!rightSectionCollapsed"></div>
+    </div> -->
+
+</body>

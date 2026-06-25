@@ -1,0 +1,605 @@
+<body class="BodyCointaner">
+    <div class="PAContainer73">
+        <div class="left-section73">
+            <ul class="breadcrumbOTC">
+                <li>
+                    <a [routerLink]="'/home'">{{"menu.home" | translate}}</a>
+                    <span class="breadcrumb-separator"> / </span>
+                </li>
+                <li>
+                    <a [routerLink]="'/refund-tht'">{{"labels.refund" | translate}}</a>
+                </li>
+            </ul>
+            <div class="order-info">
+                <h3>Refund Charge Back</h3>
+            </div>
+            <div *ngIf="showInsertAlert">
+                <div [ngClass]="alertClass" role="alert">
+                    {{ alertMessage | translate }}
+                </div>
+            </div>
+            <div class="MarginSeparator"></div>
+            <div class="order-info">
+                <h4>{{"labels.orderinformation" | translate}}</h4>
+                <div class="order-details">
+                    <div class="left-section">
+                        <!-- Loading spinner overlay -->
+                        <div *ngIf="isLoading"
+                            class="TableLoading-overlay d-flex align-items-center justify-content-center">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only"></span>
+                            </div>
+                        </div>
+                        <button *ngIf="orderstatus === 'Paid'" class="request-btn" (click)="handleRequestRefund()">
+                            {{ "labels.requestrefund" | translate }}
+                        </button>
+                        <h4 class="bold">{{"labels.STATUS" | translate}}:</h4>
+                    </div>
+                    <div>
+                        <h4 [ngClass]="{'text-green': orderstatus === 'Paid', 'text-red': orderstatus === 'Failed'}">
+                            {{orderstatus}}
+                        </h4>
+                    </div>
+                </div>
+            </div>
+            <table class="table-container">
+                <tr *ngFor="let order of orderInfo">
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{ "labels.sourcesystem" | translate }}</label>
+                            <input class="form-control" type="text" [value]="order.ss_cd || 'N/A'" disabled />
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{ "labels.orderrefno" | translate }}</label>
+                            <input class="form-control" type="text" [value]="order.orn_no || 'N/A'" disabled />
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{ "labels.transactionid" | translate }}</label>
+                            <input class="form-control" type="text" [value]="order.txn_id || 'N/A'" disabled />
+                        </div>
+                    </td>
+                </tr>
+                <tr *ngFor="let order of orderInfo">
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{ "labels.entityname" | translate }}</label>
+                            <input class="form-control" type="text" [value]="order.ent_nm || 'N/A'" disabled />
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{ "labels.entitytype" | translate }}</label>
+                            <input class="form-control" type="text" [value]="order.ent_type || 'N/A'" disabled />
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{ "labels.entityno" | translate }}</label>
+                            <input class="form-control" type="text" [value]="order.ent_no || 'N/A'" disabled />
+                        </div>
+                    </td>
+                </tr>
+                <tr *ngFor="let order of orderInfo">
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{ "labels.customername" | translate }}</label>
+                            <input class="form-control" type="text" [value]="order.cust_nm || 'N/A'" disabled />
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{ "labels.customerphoneno" | translate }}</label>
+                            <input class="form-control" type="text" [value]="order.cust_phone || 'N/A'" disabled />
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{ "labels.customeremail" | translate }}</label>
+                            <input class="form-control" type="text" [value]="order.cust_email || 'N/A'" disabled />
+                        </div>
+                    </td>
+                </tr>
+                <tr *ngFor="let order of orderInfo">
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{ "labels.addressline1" | translate }}</label>
+                            <input class="form-control" type="text" [value]="order.cust_addr_1 || 'N/A'" disabled />
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{ "labels.addressline2" | translate }}</label>
+                            <input class="form-control" type="text" [value]="order.cust_addr_2 || 'N/A'" disabled />
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{ "labels.addressline3" | translate }}</label>
+                            <input class="form-control" type="text" [value]="order.cust_addr_3 || 'N/A'" disabled />
+                        </div>
+                    </td>
+                </tr>
+                <tr *ngFor="let order of orderInfo">
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{ "labels.postcode" | translate }}</label>
+                            <input class="form-control" type="text" [value]="order.cust_postcode || 'N/A'" disabled />
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{ "labels.city" | translate }}</label>
+                            <input class="form-control" type="text" [value]="order.cust_city || 'N/A'" disabled />
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{ "labels.state" | translate }}</label>
+                            <input class="form-control" type="text" [value]="order.cust_state || 'N/A'" disabled />
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+
+        </div>
+    </div>
+    <div class="MarginSeparator"></div>
+    <div>
+        <h4 style="margin-left: 3%;">{{"labels.paymentitems" | translate}}</h4>
+    </div>
+    <div class="MALoadingContainer">
+        <!-- <div class="TableLoading-overlay d-flex align-items-center justify-content-center">
+             <div class="spinner-border" role="status">
+                <span class="sr-only"></span>
+            </div>
+        </div> -->
+        <div class="tableWrapper">
+            <table class="MATable" *ngIf="!isLoading">
+                <thead>
+                    <tr class="MATableHeader">
+                        <th class="thWidth">No.</th>
+                        <th class="long-column">{{"labels.itemdescription" | translate}}</th>
+                        <th class="short-column">{{"labels.quantity" | translate}}</th>
+                        <th>{{"labels.amountrm" | translate}}</th>
+                        <th class="short-column">{{"labels.tax%" | translate}}</th>
+                        <th class="short-column">{{"labels.taxrm" | translate}}</th>
+                        <th class="short-column">{{"labels.incentivecode" | translate}}</th>
+                        <th>{{"labels.discountincentiverm" | translate}}</th>
+                        <th>{{"labels.grossamountrm" | translate}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of paymentItems; let i = index">
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ item.item_desc }}</td>
+                        <td>{{ item.qty }}</td>
+                        <td>{{ item.unit_fee | number: '1.2-2' }}</td>
+                        <td>{{ item.tax_pct }}</td>
+                        <td>{{ item.tax_amt | number: '1.2-2' }}</td>
+                        <td>{{ item.grant_cd }}</td>
+                        <td>{{ item.disc_amt | number: '1.2-2' }}</td>
+                        <td>{{ item.gross_amt | number: '1.2-2' }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="8" style="text-align: right; font-weight: bold;">
+                            {{"labels.totalgrossamountrm" | translate}}
+                        </td>
+                        <td style="font-weight: bold;">{{ this.totalGrossAmount | number: '1.2-2' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+        <hr class="full-width-line" />
+    </div>
+    <div class="MarginSeparator"></div>
+    <div>
+        <h4 style="margin-left: 3%;">{{"labels.paymentinformation" | translate}}</h4>
+    </div>
+    <div class="paymentinfo">
+        <div class="paymentinfodetails">
+            <label class="bold">{{"labels.payeremail" | translate}}</label>
+            <div class="marginTopCash">
+                <input class="form-control" type="text" [value]="otcPayerEmail || onlinePayerEmail" placeholder=""
+                    disabled />
+            </div>
+
+        </div>
+        <div class="paymentinfodetails" *ngIf="otcpaymentinfosection">
+            <label class="bold">{{"labels.selectpaymentmode" | translate}}</label>
+            <div class="marginTop">
+                <input type="radio" class="custom-radio" disabled [checked]="false" />
+                <span class="marginLeft">{{"labels.online" | translate}}</span>
+                <div class="payment-mode"></div>
+
+                <div class="marginTop">
+                    <input type="radio" class="custom-radio" disabled name="paymentMethod"
+                        [checked]="otcPymtMode==='EV'" />
+                    <span class="marginLeft">{{"labels.Europay, MasterCard, and Visa Terminal" | translate}}</span>
+                </div>
+
+                <div class="payment-mode"></div>
+                <div class="marginTop">
+                    <input type="radio" class="custom-radio" name="paymentMethod" disabled
+                        [checked]="otcPymtMode==='CA' ||otcPymtMode==='CE'|| otcPymtMode==='MO'|| otcPymtMode==='BD'|| otcPymtMode==='MX'" />
+                    <span class="marginLeft">{{"labels.physicalcollection" | translate}}</span>
+                </div>
+
+                <div class="marginTopCash" *ngIf="cashPayments.length > 0">
+                    <span class="small-dot"></span>
+                    <span class="marginLeft">{{"labels.cashamountrm" | translate}}</span>
+                    <input class="form-control" style="margin-left: 45px;" type="text"
+                        [(ngModel)]="otcPaymentDetailsCashAmt" disabled />
+                </div>
+
+                <div class="marginTop" *ngIf="otcEMVModel.length > 0">
+                    <span class="small-dot"></span>
+                    <span class="marginLeft">EMV Transaction Information</span>
+                    <div class="table-container">
+                        <table class="MATable" *ngIf="!isLoading">
+                            <thead>
+                                <tr class="MATableHeader">
+                                    <th class="thWidth">No.</th>
+                                    <th>Transaction Trace </th>
+                                    <th>Batch Number</th>
+                                    <th class="thFileName">Host Number</th>
+                                    <th>Terminal ID</th>
+                                    <th>Transaction Amount (RM)</th>
+
+                                </tr>
+                            </thead>
+                            <tbody *ngIf="otcEMVModel.length > 0">
+                                <tr *ngFor="let item of otcEMVModel; let i = index">
+                                    <td>{{ (page - 1) * itemsPerPage + i + 1 }}</td>
+                                    <td>{{ item.trans_trace }}</td>
+                                    <td>{{ item.batch_no }}</td>
+                                    <td>{{ item.host_no }}</td>
+                                    <td>{{ item.t_id }}</td>
+                                    <td>{{ item.amt | number: '1.2-2' }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="MarginSeparator"></div>
+
+                <div class="marginTop" *ngIf="chequePayments.length > 0">
+                    <span class="small-dot"></span>
+                    <span class="marginLeft">{{"labels.chequeinformation" | translate}}</span>
+                    <div class="table-container">
+                        <table class="MATable" *ngIf="!isLoading">
+                            <thead>
+                                <tr class="MATableHeader">
+                                    <th class="thWidth">No.</th>
+                                    <th>{{"labels.chequeid" | translate}}</th>
+                                    <th>{{"labels.bankname" | translate}}</th>
+                                    <th>{{"labels.payername" | translate}}</th>
+                                    <th>{{"labels.chequeno" | translate}}</th>
+                                    <th>{{"labels.chequedate" | translate}}</th>
+                                    <th>{{"labels.bankaccno" | translate}}</th>
+                                    <th>{{"labels.amountrm" | translate}}</th>
+                                    <th>{{"labels.chequestatus" | translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody *ngIf="chequePayments.length >= 0">
+                                <tr *ngFor="let item of chequePayments; let i = index">
+                                    <td>{{ (page - 1) * itemsPerPage + i + 1 }}</td>
+                                    <td>{{ item.che_id }}
+                                    <td>
+                                        {{ item.che_bank_nm }}
+                                    </td>
+                                    <td>
+                                        {{ item.che_payer_nm }}
+                                    </td>
+                                    <td>
+                                        {{ item.che_no }}
+                                    </td>
+                                    <td>
+                                        {{ item.cheDate | date: 'dd MMM yyyy' }}
+                                    </td>
+                                    <td>
+                                        {{ item.che_ba_acct_no }}
+
+                                    </td>
+                                    <td>
+                                        {{ item.che_amt | number: '1.2-2' }}
+                                    </td>
+
+                                    <td>
+                                        {{ item.che_status}}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td colspan="8" style="text-align: right; font-weight: bold;">
+                                        {{"labels.totalamountrm" | translate}}</td>
+                                    <td style="font-weight: bold;">{{ totalChequeAmount | number: '1.2-2' }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="MarginSeparator"></div>
+
+                <div class="marginTop" *ngIf="bankDraftPayments.length > 0">
+                    <span class="small-dot"></span>
+                    <span class="marginLeft">Bank Draft Infomration</span>
+                    <div class="table-container">
+                        <table class="MATable" *ngIf="!isLoading">
+                            <thead>
+                                <tr class="MATableHeader">
+                                    <th class="thWidth">No.</th>
+                                    <th>Bank Name</th>
+                                    <th>Bank Draft No.</th>
+                                    <th>Bank Draft Date</th>
+                                    <th>Amount (RM)</th>
+                                    <!-- <th>Action</th> -->
+                                </tr>
+                            </thead>
+                            <tbody *ngIf="bankDraftPayments.length >= 0">
+                                <tr *ngFor="let item of bankDraftPayments; let i = index">
+                                    <td>{{ (page - 1) * itemsPerPage + i + 1 }}</td>
+                                    <td>
+                                        {{ item.bd_bank_nm }}
+                                        <!-- <select id="bankNm" class="form-control" [(ngModel)]="item.bd_bank_nm" disabled>
+                                            <option value="" disabled selected>Select Bank</option>
+                                            <option *ngFor="let bank of bankmodel" [value]="bank.nm_en" disabled>
+                                                {{ bank.nm_en }}
+                                            </option>
+                                        </select> -->
+                                    </td>
+                                    <td>
+                                        {{ item.bd_no }}
+                                        <!-- <input type="text" [(ngModel)]="item.bd_no" disabled
+                                            placeholder="Enter Bank Draft No" /> -->
+                                    </td>
+                                    <td>
+                                        <!-- <input type="date"  [(ngModel)]="item.bd_date" name="daterange" readonly> -->
+                                        {{ item.bd_date | date: 'dd MMM yyyy' }}
+                                    </td>
+                                    <td>
+                                        {{ item.bd_amt | number: '1.2-2' }}
+                                        <!-- <input type="text" [(ngModel)]="item.bd_amt" disabled
+                                            placeholder="Enter Bank Draft Amount" /> -->
+                                    </td>
+
+                                    <!-- <td>
+                                    <button *ngIf="item.isNew" class="btn btnAdd" (click)="saveBDRow(i)">Save</button>
+                                    <button *ngIf="!item.isNew && !item.isEditable" class="btn btnEdit" (click)="editBDRow(i)">Edit</button>
+                                    <button *ngIf="!item.isNew && item.isEditable" class="btn btnAdd" (click)="saveBDRow(i)">Update</button>
+                                    <button *ngIf="item.isNew" class="btn btn-danger" (click)="removeBDNewRow(i)" style="margin-left: 10px;">Remove</button>
+                                    <button *ngIf="!item.isEditable" class="btn btn-danger" (click)="deleteBDRow(i)" style="margin-left: 10px;">Delete</button>
+                                  </td> -->
+                                </tr>
+
+                                <tr>
+                                    <td colspan="4" style="text-align: right; font-weight: bold;">{{"labels.totalamountrm" | translate}}
+                                    </td>
+                                    <td style="font-weight: bold;">{{ totalBDAmount | number: '1.2-2' }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="marginTop" *ngIf="moneyOrderPayments.length > 0">
+                    <span class="small-dot"></span>
+                    <span class="marginLeft">Money Order Information</span>
+                    <div class="table-container">
+                        <table class="MATable" *ngIf="!isLoading">
+                            <thead>
+                                <tr class="MATableHeader">
+                                    <th class="thWidth">No.</th>
+                                    <th>Remit No.</th>
+                                    <th>Money Order Date</th>
+                                    <th>Payer Name</th>
+                                    <th>ID No.</th>
+                                    <th>Contact No.</th>
+                                    <th>Amount (RM)</th>
+                                    <!-- <th>Action</th> -->
+                                </tr>
+                            </thead>
+                            <tbody *ngIf="moneyOrderPayments.length >= 0">
+                                <tr *ngFor="let item of moneyOrderPayments; let i = index">
+                                    <td>{{ (page - 1) * itemsPerPage + i + 1 }}</td>
+                                    <td>
+                                        <!-- <input type="text" [(ngModel)]="item.mo_rm_no" disabled
+                                            placeholder="Enter Remit No" /> -->
+                                        {{ item.mo_rm_no }}
+                                    </td>
+                                    <td>
+                                        <!-- <input type="date" [(ngModel)]="item.mo_date" name="daterange" readonly> -->
+                                        {{ item.mo_date | date: 'dd MMM yyyy' }}
+
+                                    </td>
+                                    <td>
+                                        {{ item.mo_payer_nm }}
+                                        <!-- <input type="text" [(ngModel)]="item.mo_payer_nm" disabled
+                                            placeholder="Enter Payer Name" /> -->
+                                    </td>
+                                    <td>
+                                        {{ item.mo_id_no }}
+                                        <!-- <input type="text" [(ngModel)]="item.mo_id_no" disabled
+                                            placeholder="Enter ID No" /> -->
+                                    </td>
+                                    <td>
+                                        {{ item.mo_contact_no }}
+                                        <!-- <input type="text" [(ngModel)]="item.mo_contact_no" disabled
+                                            placeholder="Enter Contact No" /> -->
+                                    </td>
+                                    <td>
+                                        {{ item.mo_amt | number: '1.2-2' }}
+                                        <!-- <input type="text" [(ngModel)]="item.mo_amt" placeholder="Enter Amount"
+                                            disabled /> -->
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td colspan="6" style="text-align: right; font-weight: bold;">{{"labels.totalamountrm" | translate}}
+                                    </td>
+                                    <td style="font-weight: bold;">{{ totalMOAmount | number: '1.2-2' }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="MarginSeparator"></div>
+            </div>
+        </div>
+
+        <div class="paymentinfodetails" *ngIf="onlinepaymentinfosection">
+            <label class="bold">{{"labels.paymentmethod" | translate}}</label>
+            <div class="marginTop">
+                <input type="radio" class="custom-radio" [checked]="true" disabled />
+                <span class="marginLeft">{{"labels.online" | translate}}</span>
+                <div class="payment-mode"></div>
+                <div class="marginTop">
+                    <input type="radio" class="custom-radio" [checked]="false" disabled />
+                    <span class="marginLeft">{{"labels.Europay, MasterCard, and Visa Terminal" | translate}}</span>
+                </div>
+
+                <div class="payment-mode"></div>
+                <div class="marginTop">
+                    <input type="radio" class="custom-radio" name="paymentMethod" [checked]="false" disabled />
+                    <span class="marginLeft">{{"labels.physicalcollection" | translate}}</span>
+                </div>
+                <div class="table-container">
+                    <table class="MATable" *ngIf="!isLoading">
+                        <thead>
+                            <tr class="MATableHeader">
+                                <th class="thWidth">No.</th>
+                                <th>{{"labels.transactionid" | translate}}</th>
+                                <th>{{"labels.paymentstatus" | translate}}</th>
+                                <th>{{"labels.paymentdate" | translate}}</th>
+                                <th>{{"labels.amountrm" | translate}}</th>
+                            </tr>
+                        </thead>
+                        <tbody *ngIf="onlinePaymentInfos.length >= 0">
+                            <tr *ngFor="let item of onlinePaymentInfos; let i = index">
+                                <td>{{ (page - 1) * itemsPerPage + i + 1 }}</td>
+                                <td>
+                                    {{ item.pg_payment_id }}
+                                <td>
+                                    {{ item.pg_payment_status }}
+                                </td>
+                                <td>
+                                    {{ item.pg_payment_date| date: 'dd MMM yyyy' }}
+                                </td>
+                                <td>
+                                    {{ item.pg_payment_amt | number: '1.2-2'}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" style="text-align: right; font-weight: bold;">
+                                    {{"labels.totalamountrm" | translate}}</td>
+                                <td style="font-weight: bold;">{{ totalPGAmounts | number: '1.2-2' }}</td>
+                            </tr>
+                        </tbody>
+                    </table> <br>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="MarginSeparator"></div>
+
+    <div>
+        <h4 style="margin-left: 3%;">Receipt Information</h4>
+    </div>
+    <div class="tableWrapper">
+        <table class="MATable">
+            <thead>
+                <tr class="MATableHeader">
+                    <th class="thWidth">No.</th>
+                    <th>Receipt No.</th>
+                    <th>File Name</th>
+                    <th>Generated Date</th>
+                    <th>{{"Receipt Status" | translate}}</th>
+                    <th>{{"Reprint Count" | translate}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of (otcpaymentinfosection ? otcRcptModel : pgRCPTModel) ; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ item.rcptNo }}</td>
+                    <td>
+                        <a href="javascript:void(0)"
+                        (click)="rms_type === 'Online' ? dlRcpt(item.rcptNo) : downloadFile(item.rcptNo, item.ver_id!, item.ssdocref_id!)">
+                        {{ item.file_nm }}
+                     </a>
+                    </td>
+                    <td>{{ item.rcpt_dt | date: 'dd MMM yyyy'}}</td>
+                    <td>{{ item.rcpt_status }}</td>
+                    <td>{{ item.rcpt_reprint}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="MarginSeparator"></div>
+    <div>
+        <h4 style="margin-left: 3%;">{{"labels.refundinformation" | translate}}</h4>
+    </div>
+    <div class="tableWrapper">
+        <table class="MATable">
+            <thead>
+                <tr class="MATableHeader">
+                    <th class="no-column">No.</th>
+                    <th>{{"labels.refundslipno" | translate}}</th>
+                    <th>{{"labels.requestedby" | translate}}</th>
+                    <th>{{"labels.dtprocess" | translate}}</th>
+                    <th>{{"labels.attemptcount" | translate}}</th>
+                    <th>{{"labels.refundstatus" | translate}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of refundInfoModel; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ item.refund_slip_no || '-' }}</td>
+                    <td>{{ item.requested_by }}</td>
+                    <td>{{ item.dt_process != null ? (item.dt_process | date: 'dd MMM yyyy HH:mm:ss') :
+                        '-' }}</td>
+                    <td>{{ item.appeal_cnt === -1 ? '-' : item.appeal_cnt }}</td>
+                    <td>{{ item.rtt_status}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="MarginSeparator"></div>
+
+    <div>
+        <h4 style="margin-left: 3%;">{{"labels.historicaltable" | translate}}</h4>
+    </div>
+    <div class="tableWrapper">
+        <table class="MATable">
+            <thead>
+                <tr class="MATableHeader">
+                    <th class="thWidth">No.</th>
+                    <th>{{"labels.action" | translate}}</th>
+                    <th>{{"labels.actiontimestamp" | translate}}</th>
+                    <th>{{"labels.performedby" | translate}}</th>
+                    <th>{{"labels.remarks" | translate}}</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of refundHistModel; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ item.action }}</td>
+                    <td>{{ item.dt_action != null ? (item.dt_action | date: 'dd MMM yyyy HH:mm:ss') : '-' }}</td>
+                    <td>{{ item.modified_by_nm }}</td>
+                    <td>{{ item.msg}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="MarginSeparator"></div>
+
+
+</body>

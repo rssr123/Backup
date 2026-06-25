@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.6.final using JasperReports Library version 6.20.6  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Refund_Aging_Report" pageWidth="1220" pageHeight="1800" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="1180" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" uuid="6bae3062-6667-4283-ac63-960999806567">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="informix"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="datestart" class="java.lang.String"/>
+	<parameter name="dateend" class="java.lang.String"/>
+	<parameter name="refundstatus" class="java.lang.String"/>
+	<parameter name="refundtype" class="java.lang.String"/>
+	<parameter name="refundno" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[CALL sp_getrefundaging($P{datestart}, $P{dateend}, $P{refundstatus}, $P{refundtype}, $P{refundno})]]>
+	</queryString>
+	<field name="rtt_app_no" class="java.lang.String"/>
+	<field name="dt_process" class="java.sql.Timestamp"/>
+	<field name="ss_cd" class="java.lang.String"/>
+	<field name="refund_slip_no" class="java.lang.String"/>
+	<field name="aging_days" class="java.lang.String"/>
+	<field name="dt_requested" class="java.sql.Timestamp"/>
+	<field name="refund_ty" class="java.lang.String"/>
+	<field name="rtt_status" class="java.lang.String"/>
+	<columnHeader>
+		<band height="130" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="0" width="330" height="20" uuid="a52c406b-09ee-4cff-aef7-7dab919be8de"/>
+				<textElement verticalAlignment="Middle">
+					<font size="15" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[REFUND AGING REPORT]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="30" width="330" height="20" uuid="b160567c-8486-4c58-9642-392d8133ce89"/>
+				<textElement markup="styled">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Date Range: " + DATEFORMAT(DATE(Integer.parseInt($P{datestart}.substring(0,4)), Integer.parseInt($P{datestart}.substring(5,7)), Integer.parseInt($P{datestart}.substring(8,10))), "dd MMM yyyy") + " to " + DATEFORMAT(DATE(Integer.parseInt($P{dateend}.substring(0,4)), Integer.parseInt($P{dateend}.substring(5,7)), Integer.parseInt($P{dateend}.substring(8,10))), "dd MMM yyyy")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="330" y="30" width="250" height="20" uuid="71948bb9-f07c-4aef-9b0f-4279a7641bc5"/>
+				<textElement markup="styled">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Refund Status: " + 
+    ($P{refundstatus} == null ? "All" : 
+        ($P{refundstatus}.equals("PFA") ? "Pending Finance Admin" :
+        ($P{refundstatus}.equals("PBYM") ? "Pending BYM" :
+        ($P{refundstatus}.equals("RS") ? "Refund Submitted" :
+        ($P{refundstatus}.equals("RR") ? "Refund Rejected" :
+        ($P{refundstatus}.equals("BE") ? "Bank Error" :
+        ($P{refundstatus}.equals("RE") ? "Refund Expired" :
+        ($P{refundstatus}.equals("AE") ? "Attempts Exceeded" :
+        ($P{refundstatus}.equals("RG") ? "Refund Slip Generated" :
+        ($P{refundstatus}.equals("PPG") ? "Pending PG" :
+        ($P{refundstatus}.equals("PSME") ? "Pending SME" : 
+        "Unknown Status")))))))))))]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="580" y="30" width="250" height="20" uuid="f33d44f5-7855-44d6-9bba-c490cc37e36f"/>
+				<textFieldExpression><![CDATA["Refund Type: " + 
+    ($P{refundtype} == null ? "All" : 
+        ($P{refundtype}.equals("RS01") ? "Refund Slip 01" :
+        ($P{refundtype}.equals("RS02") ? "Refund Slip 02" :
+        ($P{refundtype}.equals("DA") ? "Direct Appeal" :
+        ($P{refundtype}.equals("CB") ? "Chargeback" :
+        "Unknown Refund Type")))))]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="60" width="380" height="20" uuid="f33d44f5-7855-44d6-9bba-c490cc37e36f"/>
+				<textFieldExpression><![CDATA["Refund No.: " + ($P{refundno} != null ? $P{refundno} : "All")]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="FixRelativeToBottom" mode="Opaque" x="0" y="100" width="80" height="30" backcolor="#AFAFAF" uuid="990fc9a5-6f6f-4be0-9152-145eb197a19c">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ac5a8d81-b255-41d2-85cb-1212a7dbb040"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#8A8A8A"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="FixRelativeToBottom" mode="Opaque" x="220" y="100" width="140" height="30" backcolor="#AFAFAF" uuid="3140424c-424f-4b20-bf16-47b352846430">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ac5a8d81-b255-41d2-85cb-1212a7dbb040"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#8A8A8A"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[Transaction Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="FixRelativeToBottom" mode="Opaque" x="80" y="100" width="140" height="30" backcolor="#AFAFAF" uuid="a4063f11-c307-4de8-a304-a635afe80796">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ac5a8d81-b255-41d2-85cb-1212a7dbb040"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#8A8A8A"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[Refund No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="FixRelativeToBottom" mode="Opaque" x="360" y="100" width="180" height="30" backcolor="#AFAFAF" uuid="9ef982c6-2599-47ec-bd5b-16bdfbdfe057">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ac5a8d81-b255-41d2-85cb-1212a7dbb040"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#8A8A8A"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[Refund Slip No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="FixRelativeToBottom" mode="Opaque" x="640" y="100" width="80" height="30" backcolor="#AFAFAF" uuid="b6ba8f7a-c796-4e68-b5ee-5266e59fe62f">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ac5a8d81-b255-41d2-85cb-1212a7dbb040"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#8A8A8A"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[Aging Days]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="FixRelativeToBottom" mode="Opaque" x="540" y="100" width="100" height="30" backcolor="#AFAFAF" uuid="b6ba8f7a-c796-4e68-b5ee-5266e59fe62f">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ac5a8d81-b255-41d2-85cb-1212a7dbb040"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#8A8A8A"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[Source System]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="FixRelativeToBottom" mode="Opaque" x="720" y="100" width="140" height="30" backcolor="#AFAFAF" uuid="9ef982c6-2599-47ec-bd5b-16bdfbdfe057">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ac5a8d81-b255-41d2-85cb-1212a7dbb040"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#8A8A8A"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[Refund Requested Date]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement isPrintRepeatedValues="false" x="330" y="0" width="380" height="15" isRemoveLineWhenBlank="true" uuid="b6d7e133-503c-41a9-94ef-dc2ff030bea1">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<printWhenExpression><![CDATA[$V{PAGE_NUMBER} == 1]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Bottom">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Generated Date : " + new SimpleDateFormat("dd MMM yyyy hh:mm:ss").format(new Date())]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Master">
+				<reportElement key="PDFOnly" x="1080" y="0" width="100" height="20" uuid="d2813bb5-2ac6-481d-85f3-1a93d9412a8d">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page " + $V{MASTER_CURRENT_PAGE} + " of " + $V{MASTER_TOTAL_PAGES}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="FixRelativeToBottom" mode="Opaque" x="860" y="100" width="180" height="30" backcolor="#AFAFAF" uuid="61fcca6f-b796-4d73-aba3-fc7abbf6f1f9">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ac5a8d81-b255-41d2-85cb-1212a7dbb040"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#8A8A8A"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[Refund Status]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="FixRelativeToBottom" mode="Opaque" x="1040" y="100" width="140" height="30" backcolor="#AFAFAF" uuid="9263ae6b-fc79-46d1-9c2a-6f054cad6ca2">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ac5a8d81-b255-41d2-85cb-1212a7dbb040"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#8A8A8A"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[Refund Type]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="30" splitType="Immediate">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField isBlankWhenNull="true">
+				<reportElement x="640" y="0" width="80" height="30" uuid="2ef43f34-b7e1-42fa-9c49-db56283bb80f">
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="false"/>
+					<paragraph leftIndent="5" rightIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{aging_days}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="540" y="0" width="100" height="30" uuid="95eb77cd-8c6b-488d-a44f-89af783240b5">
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="false"/>
+					<paragraph leftIndent="5" rightIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ss_cd}.toUpperCase()
+]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="720" y="0" width="140" height="30" uuid="1db023c3-2be8-4fb3-9b99-2588a5260856">
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="false"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[DATEFORMAT($F{dt_requested}, "dd MMM yyyy")]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="360" y="0" width="180" height="30" uuid="50395c3d-fdb9-45fd-a835-02174d61b5d4">
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="false"/>
+					<paragraph leftIndent="5" rightIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{refund_slip_no}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="220" y="0" width="140" height="30" uuid="7a88d350-e4b3-4a8c-8181-1156144544ef">
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="false"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[DATEFORMAT($F{dt_process}, "dd MMM yyyy")]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="80" y="0" width="140" height="30" uuid="48217a0e-15fd-4be8-b2f1-0298e53539e4">
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="none">
+					<font isBold="false"/>
+					<paragraph leftIndent="5" rightIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{rtt_app_no}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="80" height="30" uuid="d86b49be-a071-4c24-b198-26c7abf8ae0c">
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="false"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="860" y="0" width="180" height="30" uuid="75b870da-5cc0-4f69-a771-bccc7f9ea83f">
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="false"/>
+					<paragraph leftIndent="5" rightIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{rtt_status} == null ? "" : 
+    ($F{rtt_status}.equals("PFA") ? "Pending Finance Admin" :
+    ($F{rtt_status}.equals("PBYM") ? "Pending BYM" :
+    ($F{rtt_status}.equals("RS") ? "Refund Submitted" :
+    ($F{rtt_status}.equals("RR") ? "Refund Rejected" :
+    ($F{rtt_status}.equals("BE") ? "Bank Error" :
+    ($F{rtt_status}.equals("RE") ? "Refund Expired" :
+    ($F{rtt_status}.equals("AE") ? "Attempts Exceeded" :
+    ($F{rtt_status}.equals("RG") ? "Refund Slip Generated" :
+    ($F{rtt_status}.equals("PPG") ? "Pending PG" :
+    ($F{rtt_status}.equals("R") ? "Refunded" :
+    ($F{rtt_status}.equals("PSME") ? "Pending SME" :
+	($F{rtt_status}.equals("PRG") ? "Pending Refund Slip Generated" :
+	($F{rtt_status}.equals("T1") ? "Pending FSM/FHOD" :
+	($F{rtt_status}.equals("T2") ? "Pending DCEO" :
+	($F{rtt_status}.equals("T3") ? "Pending CEO" :
+	($F{rtt_status}.equals("REG") ? "Refund Email Slip Generated" :
+	($F{rtt_status}.equals("RBIS") ? "Refund Bank Info Submitted" :
+	($F{rtt_status}.equals("PRS") ? "Pending Refund Submitted" :
+	($F{rtt_status}.equals("PERS") ? "Pending Email Refund Submitted" :
+    "Unknown Status")))))))))))))))))))]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="1040" y="0" width="140" height="30" uuid="d69a93de-f4f1-4049-9a8c-a9194388e15d">
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#8A8A8A"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="false"/>
+					<paragraph leftIndent="5" rightIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{refund_ty} == null ? "" : 
+    ($F{refund_ty}.equals("RS01") ? "Refund Slip 01" :
+    ($F{refund_ty}.equals("RS02") ? "Refund Slip 02" :
+    ($F{refund_ty}.equals("DA") ? "Direct Appeal" :
+    ($F{refund_ty}.equals("CB") ? "Chargeback" :
+	($F{refund_ty}.equals("RF") ? "Refund Form" :
+    "Unknown Type")))))]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="30">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</band>
+	</columnFooter>
+	<noData>
+		<band height="20" splitType="Prevent">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</band>
+	</noData>
+</jasperReport>

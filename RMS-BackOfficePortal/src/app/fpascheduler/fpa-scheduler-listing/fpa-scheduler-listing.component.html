@@ -1,0 +1,194 @@
+<ng-container *ngIf="permListAllow === 1">
+
+  <body class="BodyCointaner">
+    <!-- mainContainer start-->
+    <div [class.right-section-collapsed]="rightSectionCollapsed" class="PAContainer73">
+
+      <!-- <duplicate section -->
+      <div class="right-section73-mobile collapse" [class.show]="!rightSectionCollapsed && permListAllow">
+        <div class="SingleContainer">
+          <!-- Header -->
+          <div class="SingleContainerHeader">
+            <h2 class="text-center">{{ "search filter" | translate }}</h2>
+          </div>
+
+          <!-- RMB ADD [(ngModel)]="smtg" in input  -->
+          <!-- FPA Scheduler Name-->
+          <div class="form-group">
+            <label for="schedulerName">{{"labels.fpaschedulername" | translate}}</label>
+            <input type="text" class="form-control" id="schedulerName" [(ngModel)]="jobName" />
+          </div>
+
+          <!-- Buttons -->
+          <div class="button-group">
+            <button class="btn btnApply" (click)="apply()">{{"buttons.apply" |translate}}</button>
+            <button class="btn btnReset" (click)="reset()">{{"buttons.reset" |translate}}</button>
+          </div>
+
+          <br /><br />
+        </div>
+      </div>
+
+      <!-- left section -->
+      <div class="left-section73">
+        <div>
+          <!-- alert box -->
+          <div *ngIf="showUpdateAlert" [@fadeInOut]>
+            <div class="alert alert-info PA-alert-box" role="alert">
+              {{"updated successfully" | translate}}
+            </div>
+          </div>
+
+          <div *ngIf="showResultAlert" [@fadeInOut]>
+            <div class="alert alert-warning PA-alert-box" role="alert">
+              {{"showResultAlert" | translate}}
+            </div>
+          </div>
+
+          <div *ngIf="showDeactiveAlert" [@fadeInOut]>
+            <div class="alert alert-warning PA-alert-box" role="alert">
+              {{"The record cannot be deactivated because it is in use by another module." | translate }}
+            </div>
+          </div>
+
+          <div *ngIf="showGenericAlert" [@fadeInOut]>
+            <div class="alert alert-warning PA-alert-box" role="alert">
+              Sorry for the trouble. Please try again later or contact support if the issue continues.
+            </div>
+          </div>
+          <!--alert box -->
+
+          <!-- <div class="LeftSectionPosition">
+            {{"labels.Home / Setup & Maintenance / Financial Post Accounting Scheduler" | translate}}
+          </div> -->
+
+          <h2>{{"labels.fpascheduler"| translate}}</h2>
+        </div>
+
+        <div class="MATableContainer TablePosition-relative" *ngIf="isDisplay">
+          <div class="MALoadingContainer">
+            <!-- Loading spinner overlay -->
+            <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+              <div class="spinner-border" role="status">
+                <span class="sr-only"></span>
+              </div>
+            </div>
+
+            <!-- Your table structure -->
+
+            <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+              <thead>
+                <tr class="MATableHeader">
+                  <th>{{"labels.fpaschedulerno" | translate}}</th>
+                  <th>{{"labels.fpaschedulername" | translate}}</th>
+                  <th>{{"labels.lastattemptdatetime" | translate}}</th>
+                  <th>{{"labels.lastattemptstatus" | translate}}</th>
+                  <th>{{"labels.nextattemptdatetime" | translate}}</th>
+                  <th>{{"retry" | translate}}</th>
+                </tr>
+              </thead>
+              <!-- display data -->
+              <ng-container *ngIf="model.length > 0; else noResults">
+                <tbody>
+                  <tr *ngFor="let item of model">
+                    <td>{{ item.row_number }}</td>
+                    <td>{{ item.job_name }}</td>
+                    <td>{{ item.last_attempt_date | date: 'dd MMM yyyy HH:mm:ss' }}</td>
+                    <td>{{ item.resp_status }}</td>
+                    <td>{{ item.next_attempt_time | date: 'dd MMM yyyy HH:mm:ss' }}</td>
+                    <td>
+                      <button type="button" class="btn btnEdit" 
+                            (click)="retrySelected(item.job_name)"
+                            [disabled]="permRetryAllow||item.resp_status !== 'N/A'"
+                            [ngClass]="{ 'disabled-button': item.resp_status !== 'N/A' }">
+                      {{"retry" | translate}}
+                    </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </ng-container>
+              <ng-template #noResults>
+                <tr style="height: 100px;">
+                  <td colspan="20" class="text-center">{{"searchcriteriadoesnotmatch"| translate}}</td>
+                </tr>
+              </ng-template>
+            </table>
+          </div>
+
+          <div class="MAPagination" *ngIf="isDisplay">
+            <div class="fgSpacing">
+              <div *ngIf="page * itemsPerPage < totalRecords">
+                {{"showing" | translate}} {{ page * itemsPerPage }} {{"from" | translate}} {{ totalRecords }}
+                {{"results"
+                | translate}}
+              </div>
+              <div *ngIf="!(page * itemsPerPage < totalRecords)">
+                {{"showing" | translate}} {{ totalRecords }} {{"from" | translate}} {{ totalRecords }} {{"results" |
+                translate}}
+              </div>
+            </div>
+            <div class="pagination-row">
+              <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle PaginControl" type="button" id="dropdownMenuButton"
+                  data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {{ selectedValue }}
+                </button>
+                <div class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton">
+                  <button class="dropdown-item" *ngFor="let singleItem of dropdownOptions"
+                    (click)="LoadData(singleItem)">
+                    {{ singleItem }}
+                  </button>
+                </div>
+              </div>
+
+              <ngb-pagination [(page)]="page" [pageSize]="itemsPerPage"
+                [collectionSize]="totalRecords"></ngb-pagination>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- right section -->
+      <div class="middle-section73">
+        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#rightSection"
+          [attr.aria-expanded]="!rightSectionCollapsed" (click)="toggleRightSection()">
+          <ng-container *ngIf="rightSectionCollapsed; else arrowIcon">
+            <i class="bi bi-search"></i>
+          </ng-container>
+          <ng-template #arrowIcon>
+            <i class="bi" [class.bi-chevron-double-right]="!rightSectionCollapsed"
+              [class.bi-chevron-double-left]="rightSectionCollapsed"></i>
+          </ng-template>
+        </button>
+      </div>
+
+
+
+
+      <div class="right-section73 collapse" [class.show]="!rightSectionCollapsed && permListAllow">
+        <div class="SingleContainer">
+          <!-- Header -->
+          <div class="SingleContainerHeader">
+            <h2 class="text-center">{{ "search filter" | translate }}</h2>
+          </div>
+
+          <!-- FPA Scheduler Name-->
+          <div class="form-group">
+            <label for="schedulerName">{{"labels.fpaschedulername" | translate}}</label>
+            <input type="text" class="form-control" id="schedulerName" [(ngModel)]="jobName" />
+          </div>
+
+          <!-- Buttons -->
+          <div class="button-group">
+            <button class="btn btnApply" (click)="apply()">{{"buttons.apply" |translate}}</button>
+            <button class="btn btnReset" (click)="reset()">{{"buttons.reset" |translate}}</button>
+          </div>
+
+          <br /><br />
+        </div>
+      </div>
+    </div>
+    <!-- mainContainer end-->
+
+  </body>
+</ng-container>

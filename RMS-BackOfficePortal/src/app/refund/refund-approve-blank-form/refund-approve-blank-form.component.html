@@ -1,0 +1,872 @@
+<body class="BodyCointaner">
+    <div class="leftPadding">
+        <div>
+            <h2 style="margin-left: 3%;">{{"labels.refundapprovalblankform" | translate}}</h2>
+
+        </div>
+        <div *ngIf="showInsertAlert">
+            <div [ngClass]="alertClass" role="alert" style="margin-left: 3%;">
+                {{ alertMessage | translate }}
+            </div>
+        </div>
+    </div>
+    <div class="MALoadingContainer">
+        <!-- Loading spinner overlay -->
+        <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+            <div class="spinner-border" role="status">
+                <span class="sr-only"></span>
+            </div>
+        </div>
+        <form (ngSubmit)="handleFormSubmit(formRef)" #formRef="ngForm">
+            <div class="main-container">
+                <div class="leftSection">
+                    <form [formGroup]="RefundInfoForm">
+                        <div>
+                            <h4>{{"labels.customerinformation" | translate}}</h4>
+                        </div>
+                        <!-- Customer Information Section -->
+                        <div class="form-container">
+                            <div class="tableWrapper">
+                                <table class="IdentityFormTable">
+                                    <!-- Customer Name -->
+                                    <tr>
+                                        <td><label for="customerName">{{"labels.customername" | translate}}</label><span
+                                                class="RedAsterisk">*</span></td>
+                                        <td colspan="2">
+                                            <input type="text" id="customerName" class="form-control"
+                                                formControlName="customerName" maxLength="255"
+                                                placeholder="{{'labels.entertransactionid' | translate}}">
+                                            <div
+                                                *ngIf="RefundInfoForm.get('customerName')?.touched && RefundInfoForm.get('customerName')?.invalid">
+                                                <span class="error-text"
+                                                    *ngIf="RefundInfoForm.get('customerName')?.errors?.['required']">
+                                                    {{"labels.customernameisrequired" | translate}}
+                                                </span>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Customer Email -->
+                                    <tr>
+                                        <td><label for="customerEmail">{{"labels.customeremail" | translate}}
+                                                <span class="RedAsterisk">*</span>
+                                            </label>
+                                        </td>
+                                        <td colspan="2">
+                                            <input type="email" id="customerEmail" class="form-control"
+                                                formControlName="customerEmail" maxLength="255"
+                                                placeholder="{{'labels.enteremail' | translate}}">
+                                            <div
+                                                *ngIf="RefundInfoForm.get('customerEmail')?.touched && RefundInfoForm.get('customerEmail')?.invalid">
+                                                <span class="error-text"
+                                                    *ngIf="RefundInfoForm.get('customerEmail')?.errors?.['required']">
+                                                    {{"labels.customeremailisrequired" | translate}}
+                                                </span>
+                                                <span class="error-text"
+                                                    *ngIf="RefundInfoForm.get('customerEmail')?.errors?.['email']">
+                                                    {{"labels.validemailaddress" | translate}}
+                                                </span>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Customer Phone Number -->
+                                    <tr>
+                                        <td><label for="customerPhoneNumber"> {{"labels.customerphonenumber" |
+                                                translate}}
+                                                <span class="RedAsterisk">*</span></label></td>
+                                        <td colspan="2">
+                                            <input type="tel" id="customerPhoneNumber" class="form-control"
+                                                formControlName="customerPhoneNumber"
+                                                placeholder="{{ 'labels.enterphone' | translate }}" inputmode="numeric"
+                                                (input)="filterToDigits($event)" maxlength="15" />
+                                            <div
+                                                *ngIf="RefundInfoForm.get('customerPhoneNumber')?.touched && RefundInfoForm.get('customerPhoneNumber')?.invalid">
+
+                                                <!-- Required error -->
+                                                <span class="error-text"
+                                                    *ngIf="RefundInfoForm.get('customerPhoneNumber')?.errors?.['required']">
+                                                    {{"labels.customerphoneisrequired" | translate}}
+                                                </span>
+
+                                                <!-- Minimum length error -->
+                                                <span class="error-text"
+                                                    *ngIf="RefundInfoForm.get('customerPhoneNumber')?.errors?.['minlength']">
+                                                    {{"labels.phonevalidation" | translate}}
+                                                </span>
+
+                                                <!-- Maximum length error -->
+                                                <span class="error-text"
+                                                    *ngIf="RefundInfoForm.get('customerPhoneNumber')?.errors?.['maxlength']">
+                                                    {{"labels.phonevalidation" | translate}}
+                                                </span>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Customer Address 1 -->
+                                    <tr>
+                                        <td><label for="customerAddress1">{{"labels.customeraddressline1" |
+                                                translate}}
+                                                <span class="RedAsterisk">*</span></label></td>
+                                        <td colspan="2">
+                                            <input type="text" id="customerAddress1" class="form-control uppercase"
+                                                formControlName="customerAddress1" maxLength="100"
+                                                placeholder="{{'labels.enteraddressline1' | translate}}">
+                                            <div
+                                                *ngIf="RefundInfoForm.get('customerAddress1')?.touched && RefundInfoForm.get('customerAddress1')?.invalid">
+                                                <span class="error-text"
+                                                    *ngIf="RefundInfoForm.get('customerAddress1')?.errors?.['required']">
+                                                    {{"labels.customeraddress1isrequired" | translate}}
+                                                </span>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Customer Address 2 (Optional) -->
+                                    <tr>
+                                        <td><label for="customerAddress2">{{"labels.customeraddressline2" |
+                                                translate}}</label></td>
+                                        <td colspan="2">
+                                            <input type="text" id="customerAddress2" class="form-control uppercase" maxLength="100"
+                                                formControlName="customerAddress2" [attr.placeholder]="RefundInfoForm.get('customerAddress2')?.disabled
+                                                             ? null: ('labels.enteraddressline2' | translate)">
+                                            <!-- Optional: No error message if not required -->
+                                        </td>
+                                    </tr>
+
+                                    <!-- Customer Address 3 (Optional) -->
+                                    <tr>
+                                        <td><label for="customerAddress3">{{"labels.customeraddressline3" |
+                                                translate}}</label></td>
+                                        <td colspan="2">
+                                            <input type="text" id="customerAddress3" class="form-control uppercase"
+                                                formControlName="customerAddress3" [attr.placeholder]="RefundInfoForm.get('customerAddress3')?.disabled
+                                                             ? null: ('labels.enteraddressline3' | translate)">
+                                        </td>
+                                    </tr>
+                                    <!-- Postcode -->
+                                    <tr>
+                                        <td>
+                                            <label for="postcode">
+                                                {{"labels.postcode" | translate}} <span class="RedAsterisk">*</span>
+                                            </label>
+                                        </td>
+                                        <td colspan="2">
+                                            <ng-select name="postcode" id="postcode" formControlName="postcode"
+                                                class="form-control" dropdownPosition="bottom"
+                                                [placeholder]="disableForm ? '' : ('labels.selectpostcode' | translate)"
+                                                [addTag]="checkTag" style="width: 50%;">
+                                                <ng-option *ngFor="let item of postCodes" [value]="item.postcode">
+                                                    {{ item.postcode }}
+                                                </ng-option>
+                                            </ng-select>
+                                            <div
+                                                *ngIf="RefundInfoForm.get('postcode')?.touched && RefundInfoForm.get('postcode')?.invalid">
+                                                <span class="error-text"
+                                                    *ngIf="RefundInfoForm.get('postcode')?.errors?.['required']">
+                                                    {{"labels.postcodeisrequired" | translate}}
+                                                </span>
+                                                <span class="error-text"
+                                                    *ngIf="RefundInfoForm.get('postcode')?.errors?.['pattern']">
+                                                    {{"labels.postcodemustbe5digits" | translate}}
+                                                </span>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- City -->
+                                    <tr>
+                                        <td>
+                                            <label for="city">
+                                                {{"labels.city" | translate}} <span class="RedAsterisk">*</span>
+                                            </label>
+                                        </td>
+                                        <td colspan="2">
+                                            <ng-select name="city" formControlName="city" dropdownPosition="bottom"
+                                                class="form-control"
+                                                [placeholder]="disableForm ? '' : ('labels.selectcity' | translate)"
+                                                style="width: 50%;" [addTag]="upperCity">
+                                                <ng-option *ngFor="let cityItem of uniqueCities" [value]="cityItem">
+                                                    {{ cityItem }}
+                                                </ng-option>
+                                            </ng-select>
+                                            <div *ngIf="RefundInfoForm.get('city')?.touched && RefundInfoForm.get('city')?.invalid"
+                                                class="error-text">
+                                                {{ "labels.cityisrequired" | translate }}
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- State -->
+                                    <tr>
+                                        <td>
+                                            <label for="state">
+                                                {{"labels.state" | translate}} <span class="RedAsterisk">*</span>
+                                            </label>
+                                        </td>
+                                        <td colspan="2">
+                                            <ng-select name="state" formControlName="state" dropdownPosition="bottom"
+                                                class="form-control"
+                                                [placeholder]="disableForm ? '' : ('labels.selectstate' | translate)"
+                                                style="width: 50%;">
+                                                <ng-option *ngFor="let stateItem of uniqueStates" [value]="stateItem">
+                                                    {{ stateItem }}
+                                                </ng-option>
+                                            </ng-select>
+                                            <div *ngIf="RefundInfoForm.get('state')?.touched && RefundInfoForm.get('state')?.invalid"
+                                                class="error-text">
+                                                {{ "labels.stateisrequired" | translate }}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="MarginSeparator"></div>
+                        <!-- Receipt Information Section -->
+                        <div>
+                            <h4>{{"labels.ReceiptInformation" | translate}}</h4>
+                        </div>
+                        <div class="form-container">
+                            <div class="tableWrapper">
+                                <table class="IdentityFormTable">
+                                    <!-- Receipt No. -->
+                                    <tr>
+                                        <td><label for="receiptNo">{{"labels.receiptno" | translate}}</label>
+                                            <span class="RedAsterisk">*</span>
+                                        </td>
+                                        <td colspan="2">
+                                            <input type="text" id="receiptNo" class="form-control"
+                                                formControlName="receiptNo" maxLength="30"
+                                                placeholder="{{'labels.enterreceiptno' | translate}}">
+                                            <div
+                                                *ngIf="RefundInfoForm.get('receiptNo')?.touched && RefundInfoForm.get('receiptNo')?.invalid">
+                                                <span class="error-text"
+                                                    *ngIf="RefundInfoForm.get('receiptNo')?.errors?.['required']">
+                                                    {{"labels.receiptnoisrequired" | translate}}
+                                                </span>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Receipt Amount -->
+                                    <tr>
+                                        <td><label for="receiptAmount">{{"labels.receiptamount" | translate}}
+                                                <span class="RedAsterisk">*</span>
+                                            </label>
+                                        </td>
+                                        <td colspan="2">
+                                            <input type="text" id="receiptAmount" class="form-control"
+                                                formControlName="receiptAmount"
+                                                placeholder="{{'labels.enterreceiptamount' | translate}}">
+                                            <div
+                                                *ngIf="RefundInfoForm.get('receiptAmount')?.touched && RefundInfoForm.get('receiptAmount')?.invalid">
+                                                <span class="error-text"
+                                                    *ngIf="RefundInfoForm.get('receiptAmount')?.errors?.['required']">
+                                                    {{"labels.receiptamountisrequired" | translate}}
+                                                </span>
+                                                <span class="error-text"
+                                                    *ngIf="RefundInfoForm.get('receiptAmount')?.errors?.['pattern']">
+                                                    {{"labels.validamount" | translate}}
+                                                </span>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Order Reference No. -->
+                                    <tr>
+                                        <td><label for="orderReferenceNo">{{"labels.referenceno" | translate}}
+                                                <span class="RedAsterisk">*</span>
+                                            </label>
+                                        </td>
+                                        <td colspan="2">
+                                            <input type="text" id="orderReferenceNo" class="form-control" readonly
+                                                formControlName="orderReferenceNo"
+                                                placeholder="{{'labels.enterreferenceno' | translate}}">
+                                            <div
+                                                *ngIf="RefundInfoForm.get('orderReferenceNo')?.touched && RefundInfoForm.get('orderReferenceNo')?.invalid">
+                                                <span class="error-text"
+                                                    *ngIf="RefundInfoForm.get('orderReferenceNo')?.errors?.['required']">
+                                                    {{"labels.referencenoisrequired" | translate}}
+                                                </span>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Transaction ID -->
+                                    <tr>
+                                        <td><label for="transactionId">{{"labels.transactionid" | translate}} </label>
+                                        </td>
+                                        <td colspan="2">
+                                            <input type="text" id="transactionId" class="form-control" maxLength="255"
+                                                formControlName="transactionId" [attr.placeholder]="RefundInfoForm.get('transactionId')?.disabled
+                                                             ? null: ('labels.entertransactionid' | translate)">
+                                        </td>
+                                    </tr>
+
+                                    <!-- Entity Name -->
+                                    <tr>
+                                        <td><label for="entityName">{{"labels.entityname" | translate}}
+                                                <span class="RedAsterisk">*</span>
+                                            </label></td>
+                                        <td colspan="2">
+                                            <input type="text" id="entityName" class="form-control"
+                                                formControlName="entityName"
+                                                placeholder="{{'labels.enterentityname' | translate}}">
+                                            <div
+                                                *ngIf="RefundInfoForm.get('entityName')?.touched && RefundInfoForm.get('entityName')?.invalid">
+                                                <span class="error-text"
+                                                    *ngIf="RefundInfoForm.get('entityName')?.errors?.['required']">
+                                                    {{"labels.entitynameisrequired" | translate}}
+                                                </span>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Entity Type -->
+                                    <tr>
+                                        <td><label for="entityType">{{"labels.entitytype" | translate}}
+                                                <span class="RedAsterisk">*</span>
+                                            </label></td>
+                                        <td colspan="2">
+                                            <div class="select-container state-dropdown" style="width: 50%;">
+                                                <select id="entityType" class="form-control"
+                                                    formControlName="entityType">
+                                                    <option value="">{{'labels.selectentitytypehere' | translate}}
+                                                    </option>
+                                                    <option value="Company">Company</option>
+                                                    <option value="Individual">Individual</option>
+                                                    <option value="PTL">PTL</option>
+                                                </select>
+                                            </div>
+
+                                            <div
+                                                *ngIf="RefundInfoForm.get('entityType')?.touched && RefundInfoForm.get('entityType')?.invalid">
+                                                <span class="error-text"
+                                                    *ngIf="RefundInfoForm.get('entityType')?.errors?.['required']">
+                                                    {{"labels.entitytypeisrequired" | translate}}
+                                                </span>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Entity No. -->
+                                    <tr>
+                                        <td><label for="entityNo">{{"labels.entityno" | translate}}
+                                                <span class="RedAsterisk">*</span>
+                                            </label></td>
+                                        <td colspan="2">
+                                            <input type="text" id="entityNo" class="form-control"
+                                                formControlName="entityNo" maxlength="30"
+                                                placeholder="{{'labels.enterentityno' | translate}}">
+                                            <div
+                                                *ngIf="RefundInfoForm.get('entityNo')?.touched && RefundInfoForm.get('entityNo')?.invalid">
+                                                <span class="error-text"
+                                                    *ngIf="RefundInfoForm.get('entityNo')?.errors?.['required']">
+                                                    {{"labels.entitynoisrequired" | translate}}
+                                                </span>
+                                                <span class="error-text"
+                                                    *ngIf="RefundInfoForm.get('entityNo')?.errors?.['minlength']">
+                                                    {{"labels.entitynomustbeatleastcharacters" | translate}}
+                                                </span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="MarginSeparator"></div>
+                        <!-- Payment Items Section -->
+                        <div>
+                            <h4>{{"labels.paymentitems" | translate}}</h4>
+                        </div>
+                        <div class="form-container">
+                            <div class="tableWrapper">
+                                <table class="MATable">
+                                    <thead>
+                                        <tr class="MATableHeader">
+                                            <th class="no-column">No.</th>
+                                            <th class="long-column">{{"labels.itemdescription" | translate}}</th>
+                                            <th class="short-column">{{"labels.qty" | translate}}</th>
+                                            <th>{{"labels.unitfee(RM)" | translate}}</th>
+                                            <th>{{"labels.taxrm" | translate}}</th>
+                                            <th>{{"labels.incentivecode" | translate}}</th>
+                                            <th>{{"labels.discountincentiverm" | translate}}</th>
+                                            <th>{{"labels.grossamountrm" | translate}}</th>
+                                            <th>{{"labels.netamountrm" | translate}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody formArrayName="paymentItems">
+                                        <tr *ngFor="let item of paymentItems.controls; let i = index"
+                                            [formGroupName]="i">
+                                            <td>{{ i + 1 }}</td>
+                                            <td><input type="text" formControlName="itemDescription" maxLength="150"
+                                                    [readonly]="disableForm"></td>
+                                            <td><input type="number" formControlName="quantity" min="1"
+                                                    [readonly]="disableForm"></td>
+                                            <td><input type="number" formControlName="amount" min="0.01"
+                                                    pattern="^[0-9]+(\.[0-9]{1,2})?$" [readonly]="disableForm">
+                                            </td>
+                                            <td><input type="number" formControlName="tax" min="0"
+                                                    pattern="^[0-9]+(\.[0-9]{1,2})?$" [readonly]="disableForm">
+                                            </td>
+                                            <td><input type="text" formControlName="incentiveCode"
+                                                    [readonly]="disableForm"></td>
+                                            <td><input type="number" formControlName="discount" min="0"
+                                                    pattern="^[0-9]+(\.[0-9]{1,2})?$" (input)="clampDiscount(i)"
+                                                    [readonly]="disableForm"></td>
+                                            <td><input type="number" formControlName="grossAmount" [readOnly]="true">
+                                            </td>
+                                            <td><input type="number" formControlName="netAmount" [readOnly]="true"></td>
+                                        </tr>
+
+                                        <!-- <tr>
+                                            <td colspan="8">
+                                                <hr style="border: 2px solid black; margin: 0;">
+                                            </td>
+                                        </tr> -->
+                                        <!-- TOTAL row -->
+                                        <tr>
+
+                                            <td colspan="8" style="text-align: right; font-weight: bold;">
+                                                {{"labels.TOTAL" | translate}}</td>
+                                            <td style="font-weight: bold;">{{ totalGrossAmount | number: '1.2-2' }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <!-- array-level error message -->
+                                <div *ngIf="paymentItemsArray.invalid">
+                                    <span class="error-text"> {{"labels.paymenttablevalidation" | translate}} </span>
+                                    <span class="error-text"> {{"labels.amountformat" | translate}} </span>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="MarginSeparator"></div>
+                        <!-- Payee Bank Information Section -->
+                        <div>
+                            <h4> {{"labels.payeebankinformation" | translate}}</h4>
+                        </div>
+                        <div class="form-container">
+                            <div class="tableWrapper">
+                                <table class="MATable">
+                                    <thead>
+                                        <tr class="MATableHeader">
+                                            <th class="no-column">No.</th>
+                                            <th>{{"labels.bankname" | translate}}</th>
+                                            <th>{{"labels.bankaccno" | translate}}</th>
+                                            <th>{{"labels.accountholdername" | translate}}</th>
+                                            <th>{{"labels.identitytype" | translate}} </th>
+                                            <th>{{"labels.identitynumber" | translate}} </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>
+                                                <div class="select-container">
+                                                    <select id="bankName" class="form-control"
+                                                        formControlName="bankName">
+                                                        <option value="" disabled selected>{{"labels.selectbanknamehere"
+                                                            | translate}}
+                                                        </option>
+                                                        <option *ngFor="let bank of bankmodel" [value]="bank.nm_en">
+                                                            {{ bank.nm_en }}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <div
+                                                    *ngIf="RefundInfoForm.get('bankName')?.touched && RefundInfoForm.get('bankName')?.invalid">
+                                                    <span class="error-text">{{"labels.bankaccountnameisrequired" |
+                                                        translate}}</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" formControlName="accountNo"
+                                                    placeholder="e.g., 123456789">
+                                                <div
+                                                    *ngIf="RefundInfoForm.get('accountNo')?.touched && RefundInfoForm.get('accountNo')?.invalid">
+                                                    <span class="error-text"
+                                                        *ngIf="RefundInfoForm.get('accountNo')?.errors?.['required']">
+                                                        {{"labels.bankaccountnoisrequired" | translate}}
+                                                    </span>
+                                                    <span class="error-text"
+                                                        *ngIf="RefundInfoForm.get('accountNo')?.errors?.['pattern']">
+                                                        {{"labels.validinputaccountno" | translate}}
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control"
+                                                    formControlName="accountHolderName" placeholder="e.g., John Doe">
+                                                <div
+                                                    *ngIf="RefundInfoForm.get('accountHolderName')?.touched && RefundInfoForm.get('accountHolderName')?.invalid">
+                                                    <span class="error-text">{{"labels.bankaccountholderisrequired" |
+                                                        translate}}</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="select-container">
+                                                    <select id="identityType" class="form-control"
+                                                        formControlName="identityType">
+                                                        <option value="" disabled selected>{{"labels.selectidentitytype"
+                                                            |
+                                                            translate}}
+                                                        </option>
+                                                        <option value="Business Registration Number">Business
+                                                            Registration Number</option>
+                                                        <option value="Passport / Police / Military ID">Passport /
+                                                            Police / Military ID</option>
+                                                        <option value="Old IC No.">Old NRIC</option>
+                                                        <option value="New IC No.">New NRIC</option>
+                                                    </select>
+                                                </div>
+                                                <div
+                                                    *ngIf="RefundInfoForm.get('identityType')?.touched && RefundInfoForm.get('identityType')?.invalid">
+                                                    <span class="error-text">{{"labels.identitytypeisrequired" |
+                                                        translate}}</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" formControlName="identityNumber"
+                                                    placeholder="{{'labels.enteridentitynumber' | translate}}">
+                                                <div
+                                                    *ngIf="RefundInfoForm.get('identityNumber')?.touched && RefundInfoForm.get('identityNumber')?.invalid">
+                                                    <span class="error-text">{{"labels.identitynumberisrequired" |
+                                                        translate}}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="MarginSeparator"></div>
+                        <!-- Receipt & Supporting Document(s) Section -->
+                        <div>
+                            <h4>{{"labels.receipt&supportdoc" | translate}}</h4>
+                        </div>
+
+                        <div class="form-container">
+                            <div class="tableWrapper">
+                                <table class="MATable">
+                                    <thead>
+                                        <tr class="MATableHeader">
+                                            <th class="no-column">No.</th>
+                                            <th style="border-right: none;">{{"labels.fileupload" | translate}}</th>
+                                            <th style="border-left: none; border-right: none;" class="size-column"></th>
+                                            <th class="action-column" *ngIf="uploadedFilesFormArray.length > 0">
+                                                {{"buttons.action"| translate}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Display files fetched from the database -->
+                                        <tr *ngFor="let file of fileList; let i = index">
+                                            <td>{{ i + 1 }}</td>
+                                            <td style="border-right: none;">
+                                                <!-- call your existing viewDocument() → but rename it downloadDocument to also save to disk -->
+                                                <a href="#" (click)="downloadDocument(file); false"
+                                                    style="color: blue; text-decoration: underline;">
+                                                    {{ getDownloadFileName(file) }}
+                                                </a>
+                                            </td>
+                                            <!-- NEW: size cell -->
+                                            <td class="size-column" style="border-left: none; border-right: none;">
+                                                {{ formatBytes(file.fileSize ?? 0) }}
+                                                / {{ formatBytes(MAX_SINGLE_FILE_SIZE) }}
+                                            </td>
+                                            <td *ngIf="uploadedFilesFormArray.length > 0"></td>
+                                        </tr>
+
+                                        <!-- Wrap the FormArray rows in a container with formArrayName -->
+                                        <ng-container formArrayName="uploadedFiles">
+                                            <!-- Display user-uploaded files (from the FormArray) -->
+                                            <tr *ngFor="let fileGroup of uploadedFilesFormArray.controls; let i = index"
+                                                [formGroupName]="i">
+                                                <td>{{ i + 1 + fileList.length }}</td>
+                                                <td style="border-right: none;">
+                                                    <div style="display: flex; align-items: center;">
+                                                        <input type="text" class="form-control"
+                                                            formControlName="fileName" placeholder="No file chosen"
+                                                            readonly style="margin-right: 10px; width: 70%;">
+                                                        <button class="btnPrimary" (click)="fileInput.click()"
+                                                            style="margin-right: 10px;">
+                                                            Select File
+                                                        </button>
+                                                        <input type="file" #fileInput (click)="resetFileInput($event)"
+                                                            (change)="onFileSelect($event, i)" style="display: none;"
+                                                            [attr.accept]="SUPPORTED_EXTS">
+                                                    </div>
+                                                </td>
+
+                                                <td class="size-column" style="border-left: none; border-right: none;">
+                                                    {{ formatBytes(uploadedFiles[i]?.fileSize ?? 0) }}
+                                                    / {{ formatBytes(MAX_SINGLE_FILE_SIZE) }}
+                                                </td>
+                                                <td class="text-center">
+                                                    <button type="button" class="btnDanger"
+                                                        (click)="removeFile(i)">{{"buttons.delete"| translate}}</button>
+                                                </td>
+                                            </tr>
+                                        </ng-container>
+
+                                        <!-- Add File Button for user uploads -->
+
+                                        <tr *ngIf="disableForm == false">
+                                            <td></td>
+                                            <td style="border-right: none;">
+                                                <button type="button" class="btnPrimary" (click)="addFileRow()"
+                                                    [disabled]="disableForm">{{"buttons.addfile"| translate}}</button>
+                                            </td>
+                                            <td class="size-column small text-muted"
+                                                style="border-left: none; border-right: none;">
+                                                Remaining: {{ formatBytes(remainingSpace) }}
+                                            </td>
+                                            <td *ngIf="uploadedFilesFormArray.length > 0"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <!-- array-level error message -->
+                                <div *ngIf="uploadedFilesArray.invalid && uploadedFilesArray.length > 0">
+                                    <span class="error-text">{{"labels.fileselectionrequired" |
+                                        translate}}</span>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="MarginSeparator"></div>
+                        <!-- Other Information Section -->
+                        <div>
+                            <h4>{{"labels.otherinformation" | translate}}</h4>
+                        </div>
+                        <div class="form-container">
+                            <table class="MATable">
+                                <thead>
+                                    <tr class="MATableHeader">
+                                        <th>{{"labels.remarks" | translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tr>
+                                    <textarea class="form-control" formControlName="remarks" rows="5" maxLength="500"
+                                        placeholder="{{'labels.enterrefundreason' | translate}}">
+                                    </textarea>
+                                </tr>
+                            </table>
+                        </div>
+                        <div *ngIf="isLoading"
+                            class="TableLoading-overlay d-flex align-items-center justify-content-center">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only"></span>
+                            </div>
+                        </div>
+                        <!-- Submit Button -->
+                        <!-- <div class="button-end-container">
+                            <button type="button" class="btn btn-secondary me-2" (click)="onCancel()">
+                                {{"buttons.cancel" | translate}}
+                            </button>
+                            <button type="button" class="btn btn-success" (click)="onSubmit()">
+                                Submit
+                            </button>
+                        </div> -->
+                    </form>
+
+                    <div>
+                        <h2>{{"labels.historicaltable" | translate}}</h2>
+                    </div>
+                    <div class="tableWrapper">
+                        <table class="MATable">
+                            <thead>
+                                <tr class="MATableHeader">
+                                    <th class="no-column">No.</th>
+                                    <th>{{"labels.action" | translate}}</th>
+                                    <th>{{"labels.actiontimestamp" | translate}}</th>
+                                    <th>{{"labels.status" | translate}}</th>
+                                    <th>{{"labels.performedby" | translate}}</th>
+                                    <th>{{"labels.assignedto" | translate}}</th>
+                                    <th>{{"labels.remarks" | translate}}</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of refundHistModel; let i = index">
+                                    <td>{{ i + 1 }}</td>
+                                    <td>{{ item.action }}</td>
+                                    <td>{{ item.dt_action != null ? (item.dt_action | date: 'dd MMM yyyy HH:mm:ss') :
+                                        'N/A' }}</td>
+                                    <td>{{ item.rtt_status }}</td>
+                                    <td>{{ item.modified_by_nm }}</td>
+                                    <td>{{ item.assign_to}}</td>
+                                    <td>{{ item.msg}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="MarginSeparator"></div>
+
+                </div>
+
+                <div class="rightSection">
+                    <div class="rightSectionContainer">
+                        <table class="taskActionTable">
+                            <!-- <ng-container *ngIf="(!inputDetails && totalRecords>0) || inputDetails; else noResultsTaskAction"> -->
+                            <ng-container>
+                                <form>
+
+                                </form>
+                                <tr>
+                                    <td><br>
+                                        <h5>{{"labels.approveraction" | translate}}</h5>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h6>{{"labels.actiontype" | translate}}: {{"labels.approval" | translate}}</h6>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;padding-left: 20px;"><label>{{"labels.decision" |
+                                            translate}}<span class="RedAsterisk">*</span> </label></td>
+
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="select-container">
+                                            <select class="form-control" name="decision_group"
+                                                [(ngModel)]="decision_status" id="decision_nm"
+                                                (change)="onSelectionChange($event)">
+                                                <option value="null" disabled selected>{{"labels.selecthere" |
+                                                    translate}}</option>
+                                                <option *ngFor="let item of decisiongroup" [value]="item.status">
+                                                    {{item.nm}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="smesection">
+                                    <td style="text-align: left;padding-left: 20px;"><label>{{"labels.selectsmegroup" |
+                                            translate}} <span class="RedAsterisk">*</span> </label></td>
+
+                                </tr>
+                                <tr *ngIf="smesection">
+                                    <td>
+                                        <div class="select-container">
+                                            <select class="form-control" name="sme_nm" [(ngModel)]="sme_nm" id="sme_nm"
+                                                (change)="onSelectionChange($event)" required>
+                                                <option value="null" disabled selected>{{"labels.selectusergroup" |
+                                                    translate}}</option>
+                                                <option *ngFor="let item of smeUserModel" [value]="item.roleNmEn">
+                                                    {{item.roleNmEn}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="refundcdsection">
+                                    <td style="text-align: left;padding-left: 20px;">
+                                        <label>{{"labels.refundcode" | translate}}<span class="RedAsterisk">*</span>
+                                        </label>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="refundcdsection">
+                                    <td>
+                                        <div class="select-container">
+                                            <select class="form-control" name="refund_cd" [(ngModel)]="refund_cd"
+                                                id="refund_cd" (change)="onSelectionChange_refundcd($event)"
+                                                [required]="refundcdsection">
+                                                <option value="null" disabled selected>{{"labels.selecthere" |
+                                                    translate}}</option>
+                                                <option *ngFor="let item of refundCdModel" [value]="item.acc_cd">{{
+                                                    item.acc_desc }}</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+
+
+
+                                <tr *ngIf="refundcdsection">
+                                    <td style="text-align: left;padding-left: 20px;">{{"labels.reasonforrefund" |
+                                        translate}}<span class="RedAsterisk">*</span> </td>
+                                </tr>
+                                <tr *ngIf="refundcdsection">
+                                    <td>
+                                        <div class="select-container">
+                                            <select class="form-control" name="refund_reason"
+                                                [(ngModel)]="refund_reason"
+                                                (change)="onSelectionChange_refundreason($event)" required>
+                                                <option value="" disabled selected>{{"labels.selectrefundcode" |
+                                                    translate}}</option>
+                                                <option value="Double Payment">
+                                                    {{ 'labels.Double Payment' | translate }}
+                                                </option>
+                                                <option value="System Disruption">
+                                                    {{ 'labels.System Disruption' | translate }}
+                                                </option>
+                                                <option value="Error in Registration / Application">
+                                                    {{ 'labels.Error in Registration / Application' | translate }}
+                                                </option>
+                                                <option value="Establishment / Registration Rejected / Withdrawn">
+                                                    {{ 'labels.Establishment / Registration Rejected / Withdrawn' |
+                                                    translate}}
+                                                </option>
+                                                <option value="Training Program Cancelled / Participant Did Not Attend">
+                                                    {{ 'labels.Training Program Cancelled / Participant Did Not Attend'
+                                                    | translate }}
+                                                </option>
+                                                <option value="Winding Up / Strike Off">
+                                                    {{ 'labels.Winding Up / Strike Off' | translate }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;padding-left: 20px;">
+                                        {{"labels.enterremarkLimit500characters" | translate}}</td>
+                                </tr>
+                                <tr *ngIf="!noremarksection">
+                                    <td>
+                                        <textarea rows="10" cols="30" class="form-control" name="remark_msg"
+                                            [(ngModel)]="remarks_msg" maxlength="500"
+                                            [placeholder]="'labels.enteryourremarkshere' | translate"
+                                            [required]="appeal_cnt !== null"></textarea>
+                                    </td>
+                                </tr>
+
+                                <div class="button-group">
+                                    <button type="submit" class="btn btnSubmit" [disabled]="isFormChanged">
+                                        {{ "buttons.submit" | translate }}
+                                    </button>
+
+                                    <button type="button" class="btn btnUpdate" *ngIf="!disableForm"
+                                        [disabled]="!isFormChanged" (click)="updateChanges()">
+                                        {{"buttons.update" | translate}}</button>
+                                    <button type="button" class="btn btnBack" (click)="cancel()">
+                                        {{ "buttons.cancel" | translate }}
+                                    </button>
+                                    <!-- <button type="button" class="btn btnReturnTask" *ngIf="returnTaskbutton" (click)="returnTask()" >
+                                        {{ "buttons.returntask" | translate }}
+                                    </button> -->
+
+                                </div>
+                            </ng-container>
+                            <ng-template #noResultsTaskAction>
+                                <tr style="height: 100px;">
+                                    <td colspan="20" class="text-center">{{"nodatafound"| translate}}</td>
+                                </tr>
+                            </ng-template>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</body>

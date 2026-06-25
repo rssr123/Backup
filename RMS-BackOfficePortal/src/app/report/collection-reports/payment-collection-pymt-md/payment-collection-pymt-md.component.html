@@ -1,0 +1,158 @@
+<ng-container *ngIf="permViewPaymentModeAllow === 1">
+<body class="BodyCointaner">
+
+    <div *ngIf="showNoDataAlert" style="margin-left: 2%;">
+        <div class="alert alert-danger PA-alert-box bold" role="alert">
+            {{ "nodatafound" | translate }}
+        </div>
+	</div>
+	<div *ngIf="showResultAlert" [@fadeInOut]>
+		<div class="alert alert-warning PA-alert-box" role="alert">{{"pymtcollalert" | translate}}
+		</div>
+	</div>
+	
+	<!-- mainContainer start-->
+	<div class="PAContainer73" >
+		<div class="left-section73">
+
+			<!-- <div class="LeftSectionPosition"> {{"labels.Home / Report / Payment Collection" | translate}} </div> -->
+			<h2>{{"menu.paymentcollection" | translate}} - {{"paymentmode" | translate}}</h2>
+			<div>
+				<br>
+				<div class="filterContainer">
+					<!-- Header -->
+					<div class="SingleContainerHeader">
+						<h2 class="text-center">{{ "search filter" | translate }}</h2>
+					</div>
+
+					<div class="form-group">
+						<!-- <label>{{"groupby" | translate}}</label>
+						<ng-select class="form-control" name="groupTypes" [(ngModel)]="groupType" id="groupTypes" dropdownPosition="bottom" (change)="changeFilters(groupType)">
+							<ng-option value="pymt_col_pymt_md" >{{"paymentmode" | translate}}</ng-option>
+							<ng-option value="pymt_col_s_s" >{{"sourcesystem" | translate}}</ng-option>
+							<ng-option value="pymt_col_fee_dt_id" >{{"feedetailid" | translate}}</ng-option>
+						</ng-select> -->
+
+						<!--
+						[disabled]="permViewPaymentModeAllow === 0"
+						[disabled]="permViewSourceSystemAllow === 0"
+						[disabled]="permViewFeeDetailIDAllow === 0"
+
+						<select id="groupType" class="ng-select-container">
+							<option value=null selected disabled></option>
+							<option value="pymt_col_pymt_md" [disabled]="permViewPaymentModeAllow === 0">{{"paymentmode" | translate}}</option>
+							<option value="pymt_col_s_s" [disabled]="permViewSourceSystemAllow === 0">{{"sourcesystem" | translate}}</option>
+							<option value="pymt_col_fee_dt_id" [disabled]="permViewFeeDetailIDAllow === 0">{{"feedetailid" | translate}}</option>
+						</select> -->
+					</div>
+
+					<div class="form-group" id="start_month_container">
+						<label for="start_month">{{"monthfrom" | translate}}</label>
+						<ng-select class="form-control" name="start_month" [(ngModel)]="start_month" id="start_month" dropdownPosition="bottom">
+							<ng-option [value]="1" [disabled]="end_month ? 1 >= end_month : false">{{"months.january" | translate}}</ng-option>
+							<ng-option [value]="2" [disabled]="end_month ? 2 >= end_month : false">{{"months.february" | translate}}</ng-option>
+							<ng-option [value]="3" [disabled]="end_month ? 3 >= end_month : false">{{"months.march" | translate}}</ng-option>
+							<ng-option [value]="4" [disabled]="end_month ? 4 >= end_month : false">{{"months.april" | translate}}</ng-option>
+							<ng-option [value]="5" [disabled]="end_month ? 5 >= end_month : false">{{"months.may" | translate}}</ng-option>
+							<ng-option [value]="6" [disabled]="end_month ? 6 >= end_month : false">{{"months.june" | translate}}</ng-option>
+							<ng-option [value]="7" [disabled]="end_month ? 7 >= end_month : false">{{"months.july" | translate}}</ng-option>
+							<ng-option [value]="8" [disabled]="end_month ? 8 >= end_month : false">{{"months.august" | translate}}</ng-option>
+							<ng-option [value]="9" [disabled]="end_month ? 9 >= end_month : false">{{"months.september" | translate}}</ng-option>
+							<ng-option [value]="10" [disabled]="end_month ? 10 >= end_month : false">{{"months.october" | translate}}</ng-option>
+							<ng-option [value]="11" [disabled]="end_month ? 11 >= end_month : false">{{"months.november" | translate}}</ng-option>
+							<ng-option [value]="12" [disabled]="end_month ? 12 >= end_month : false">{{"months.december" | translate}}</ng-option>
+						</ng-select>
+					</div>
+					
+					<div class="form-group" id="end_month_container">
+						<label for="end_month">{{"monthto" | translate}}</label>
+						<ng-select class="form-control" name="end_month" [(ngModel)]="end_month" id="end_month" dropdownPosition="bottom"
+							(change)="start_month = ((start_month || 0) > (end_month || 0)) ? end_month : start_month">
+							<ng-option [value]="1">{{"months.january" | translate}}</ng-option>
+							<ng-option [value]="2">{{"months.february" | translate}}</ng-option>
+							<ng-option [value]="3">{{"months.march" | translate}}</ng-option>
+							<ng-option [value]="4">{{"months.april" | translate}}</ng-option>
+							<ng-option [value]="5">{{"months.may" | translate}}</ng-option>
+							<ng-option [value]="6">{{"months.june" | translate}}</ng-option>
+							<ng-option [value]="7">{{"months.july" | translate}}</ng-option>
+							<ng-option [value]="8">{{"months.august" | translate}}</ng-option>
+							<ng-option [value]="9">{{"months.september" | translate}}</ng-option>
+							<ng-option [value]="10">{{"months.october" | translate}}</ng-option>
+							<ng-option [value]="11">{{"months.november" | translate}}</ng-option>
+							<ng-option [value]="12">{{"months.december" | translate}}</ng-option>
+						</ng-select>
+					</div>
+
+					<div class="form-group" id="search_year_container">
+						<label for="search_year">{{"year" | translate}}</label>
+						<input
+							type="text"
+							class="form-control"
+							inputmode="numeric"
+							maxlength="4"
+							minlength="4"
+							onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+							id="search_year"					
+							[(ngModel)]="search_year">
+					</div>
+
+					<div class="form-group" id="fee_detail_date_range_container" hidden>
+						<label>{{"feedetailiddaterange" | translate}}</label>
+						<input type="text" [placeholder]="'labels.daterangepicker'| translate" class="form-control"
+							[bsConfig]="{ rangeInputFormat : 'DD MMM YYYY', dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,rangeSeparator:' to ',containerClass:'theme-default',adaptivePosition: true}"
+							bsDaterangepicker [(ngModel)]="date_range" name="daterange" readonly onkeydown="return false">
+					</div>
+
+					<div class="form-group" id="pymt_mtd_container" hidden>
+						<label for="pymt_mthd">{{"pymtmthd" | translate}}</label>
+						<ng-select class="form-control" name="pymt_mthd" [(ngModel)]="pymt_Mthd" id="pymt_mthd"	dropdownPosition="bottom" [multiple]="true">
+							<ng-option *ngFor="let item of pymtMthds" [value]="item.value">{{item.label}}</ng-option>
+						</ng-select>
+					</div>
+
+					
+
+					<!-- Buttons -->
+					<!-- <div class="button-group">
+						<button id='btnReset' class="btn btnReset" (click)="resetWithDefaults()">{{"buttons.reset" | translate}}</button>
+
+					<button id="dwnld2" class="btn btnDl" (click)="dlReport('xlsx')" 
+					[disabled]="dlbuttonPerms()">{{"buttons.downloadexcelfile" | translate}}</button>
+					<button id="dwnld3" class="btn btnDl" (click)="dlReport('csv')" 
+					[disabled]="dlbuttonPerms()">{{"buttons.downloadcsvfile" | translate}}</button>
+					<button id="dwnld1" class="btn btnDl" (click)="dlReport('pdf')" 
+					[disabled]="dlbuttonPerms()">{{"buttons.downloadpdffile" | translate}}</button> -->
+
+					<!-- ⤓  (groupType === null) || (groupType === 'pymt_col_pymt_md' && permDownloadCSVPaymentModeAllow === 0) || (groupType === 'pymt_col_s_s' && permDownloadCSVSourceSystemAllow === 0)
+					|| (groupType === 'pymt_col_fee_dt_id' && permDownloadCSVFeeDetailIDAllow === 0) || (start_month === null) || (end_month === null) || (pymt_Mthd === null) || (search_year === null) || (search_year < 999) || (pymt_Mthd.length === 0)-->
+					<!-- </div>  -->
+
+					<!-- test -->
+
+
+					<div class="form-group">
+                        <label>{{"labels.downloadreportas:" | translate}}</label>
+                        <ng-select class="form-control" [(ngModel)]="selectedFileType" name="selectedFileType"
+                            dropdownPosition="bottom">
+                            <ng-option *ngFor="let item of fileTypes" [value]="item.value">{{item.label}}</ng-option>
+                        </ng-select>
+                    </div>
+
+                    <div class="button-group">
+                        <button id='btnReset' class="btn btnReset" (click)="resetWithDefaults()" [disabled]="isLoading">{{"buttons.reset" | translate}}</button>
+                        <button id="btnSubmit" class="btn btnSubmit" (click)="submitDownload()" [disabled]="dlbuttonPerms()">{{"buttons.submit" | translate}}</button>
+                    </div>
+
+					
+
+
+				</div>
+			</div>
+			<br>
+			<!-- <div>
+				<vjs-report-pymt-col-component class="report" id="pymt_col"></vjs-report-pymt-col-component>
+			</div> -->
+		</div>
+	</div>
+</body>
+</ng-container>

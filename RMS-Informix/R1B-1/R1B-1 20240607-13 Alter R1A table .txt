@@ -1,0 +1,29 @@
+-- For rms_mtt_pg
+ALTER TABLE rms_mtt_pg
+ADD (in_fms_posting INT DEFAULT 0)
+GO
+-- For rms_di_a
+ALTER TABLE rms_di_a
+ADD (in_fms_posting INT DEFAULT 0);
+GO
+-- For rms_ripl_a
+ALTER TABLE rms_ripl_a
+ADD (in_fms_posting INT DEFAULT 0);
+GO
+-- For rms_ricp_a
+ALTER TABLE rms_ricp_a
+ADD (in_fms_posting INT DEFAULT 0);
+GO
+-- For rms_rc_bank
+ALTER TABLE rms_rc_bank
+ADD (in_fms_posting INT DEFAULT 0);
+GO
+-- For rms_rc_pgmtt
+ALTER TABLE rms_rc_pgmtt
+ADD (in_fms_posting INT DEFAULT 0);
+GO
+-- For rms_rc_pgtxn
+ALTER TABLE rms_rc_pgtxn
+ADD (in_fms_posting INT DEFAULT 0),
+Add (mtt_pg_id INT8)
+GO

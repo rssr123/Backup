@@ -1,0 +1,284 @@
+<ng-container *ngIf="permViewAllow == 1">
+
+    <body class="BodyCointaner">
+
+        <!-- Mobile Search Section (visible only on mobile) -->
+        <div class="mobile-search-section">
+            <div class="mobile-search-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">{{ "search filter" | translate }}</h5>
+                <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#mobileSearchPanel">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+            
+            <div class="collapse" id="mobileSearchPanel">
+                <div class="mobile-search-body">
+                    <!-- Litigation No -->
+                    <div class="form-group">
+                        <label for="LitigationNoMobile">{{"labels.litigationno" | translate}}</label>
+                        <input type="text" class="form-control" id="LitigationNoMobile" [(ngModel)]="iLitigationNo" />
+                    </div>
+
+                    <!-- Litigation Item Ref -->
+                    <div class="form-group">
+                        <label for="LitigationItemRefMobile">{{"labels.litigationitemref" | translate}}</label>
+                        <input type="text" class="form-control" id="LitigationItemRefMobile" [(ngModel)]="iLitigationItemRef" />
+                    </div>
+
+                    <!-- Entity Type -->
+                    <div class="form-group">
+                        <label for="EntityTypeMobile">{{"labels.entitytype" | translate}}</label>
+                        <select class="form-control" id="EntityTypeMobile" [(ngModel)]="iEntityType">
+                            <option *ngFor="let item of entityTypes" [value]="item.param_cd">
+                                {{item.nm_en}}
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Entity No. -->
+                    <div class="form-group">
+                        <label for="EntityNoMobile">{{"labels.entityno" | translate}}</label>
+                        <input type="text" class="form-control" id="EntityNoMobile" [(ngModel)]="iEntityNo" />
+                    </div>
+
+                    <!-- Litigation Amount -->
+                    <div class="form-group">
+                        <label for="LitigationAmountMobile">{{"labels.litigationamount" | translate}}</label>
+                        <input type="number" class="form-control" id="LitigationAmountMobile" [(ngModel)]="iLitigationAmount" />
+                    </div>
+
+                    <!-- Status -->
+                    <div class="form-group">
+                        <label for="StatusMobile">{{"labels.status" | translate}}</label>
+                        <select class="form-control" id="StatusMobile" [(ngModel)]="iStatus">
+                            <option *ngFor="let item of statuses" [value]="item.param_cd">
+                                {{item.nm_en}}
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Date Due -->
+                    <div class="form-group">
+                        <label for="DateDueMobile">{{"labels.duedate" | translate}}</label>
+                        <input type="text" placeholder="{{ 'datepicker' | translate }}" class="form-control"
+                            [bsConfig]="{dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false, containerClass:'theme-default', adaptivePosition: true}"
+                            bsDatepicker [(ngModel)]="iDateDue" name="dateMobile1" readonly>
+                    </div>
+
+                    <!-- Date Created -->
+                    <div class="form-group">
+                        <label for="DateCreatedMobile">{{"labels.datecreated" | translate}}</label>
+                        <input type="text" placeholder="{{ 'datepicker' | translate }}" class="form-control"
+                            [bsConfig]="{dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false, containerClass:'theme-default', adaptivePosition: true}"
+                            bsDatepicker [(ngModel)]="iDateCreated" name="dateMobile2" readonly>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="button-group-mobile">
+                        <button class="btn btnApply w-100 mb-2" (click)="apply()" data-bs-toggle="collapse"
+                            data-bs-target="#mobileSearchPanel">{{"buttons.apply" | translate}}</button>
+                        <button class="btn btnReset w-100" (click)="reset()">{{"buttons.reset" | translate}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div [class.right-section-collapsed]="rightSectionCollapsed" class="PAContainer73">
+            <div class="left-section73">
+                <div>
+
+                    <div *ngIf="showResultAlert" [@fadeInOut]>
+                        <div class="alert alert-warning PA-alert-box" role="alert">
+                            {{"searchcriteriadoesnotmatch" | translate}}
+                        </div>
+                    </div>
+
+                    <h2>{{"labels.receivableincomelitigationlisting" | translate}}</h2>
+
+                </div>
+                <div class="MATableContainer TablePosition-relative" *ngIf="isDisplay">
+                    <div class="MALoadingContainer">
+
+                        <div *ngIf="isLoading"
+                            class="TableLoading-overlay d-flex align-items-center justify-content-center">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only"></span>
+                            </div>
+                        </div>
+
+                        <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+                            <thead>
+                                <tr class="MATableHeader">
+                                    <th>No.</th>
+                                    <th>{{"labels.litigationno" | translate}}</th>
+                                    <th>{{"labels.litigationitemref" | translate}}</th>
+                                    <th>{{"labels.entitytype" | translate}}</th>
+                                    <th>{{"labels.entityno" | translate}}</th>
+                                    <th>{{"labels.litigationamount" | translate}} (RM)</th>
+                                    <th>{{"labels.status" | translate}}</th>
+                                    <th>{{"labels.duedate" | translate}}</th>
+                                    <th>{{"labels.datecreated" | translate}}</th>
+                                    <!-- <th>{{"buttons.view" | translate}}</th> -->
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="model.length > 0; else noResults">
+                                <tbody *ngIf="isDisplay">
+                                    <tr *ngFor="let item of model;let i = index;">
+                                        <td>{{ (page - 1) * itemsPerPage + i + 1 }}</td>
+                                        <td>{{ item.lit_no }}</td>
+                                        <td>{{ item.lit_item_ref }}</td>
+                                        <td>{{ item.entity_type }}</td>
+                                        <td>{{ item.entity_no }}</td>
+                                        <td>{{ item.lit_amount | number: '1.2-2' }}</td>
+                                        <td>{{ item.status }}</td>
+                                        <td>{{ item.dt_due | date : "dd MMM yyyy" }}</td>
+                                        <td>{{ item.dt_created | date : "dd MMM yyyy" }}</td>
+                                        <!-- <td><button type="button"
+                                                class="btn btnView" (click)="navigateToIndividual(item)">
+                                                {{"buttons.view" | translate}}
+                                            </button>
+                                        </td> -->
+                                    </tr>
+                                </tbody>
+                            </ng-container>
+                            <ng-template #noResults>
+                                <tr style="height: 100px;">
+                                    <td colspan="20" class="text-center">{{"searchcriteriadoesnotmatch"| translate}}
+                                    </td>
+                                </tr>
+                            </ng-template>
+
+                        </table>
+                    </div>
+
+
+                    <div class="MAPagination" *ngIf="isDisplay">
+                        <div class="fgSpacing">
+                            <div *ngIf="page * itemsPerPage < totalRecords">
+                                {{"showing" | translate}} {{ page * itemsPerPage }} {{"from" | translate}} {{
+                                totalRecords }}
+                                {{"results"
+                                | translate}}
+                            </div>
+                            <div *ngIf="!(page * itemsPerPage < totalRecords)">
+                                {{"showing" | translate}} {{ totalRecords }} {{"from" | translate}} {{ totalRecords }}
+                                {{"results" |
+                                translate}}
+                            </div>
+                        </div>
+                        <div class="pagination-row">
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle PaginControl" type="button"
+                                    id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">
+                                    {{ selectedValue }}
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton">
+                                    <button class="dropdown-item" *ngFor="let singleItem of dropdownOptions"
+                                        (click)="LoadData(singleItem)">
+                                        {{ singleItem }}
+                                    </button>
+                                </div>
+                            </div>
+                            <ngb-pagination [(page)]="page" [pageSize]="itemsPerPage" [collectionSize]="totalRecords"
+                                (pageChange)="loadData()"></ngb-pagination>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="middle-section73">
+                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#rightSection"
+                    [attr.aria-expanded]="!rightSectionCollapsed" (click)="toggleRightSection()">
+                    <ng-container *ngIf="rightSectionCollapsed; else arrowIcon">
+                        <i class="bi bi-search"></i>
+                    </ng-container>
+                    <ng-template #arrowIcon>
+                        <i class="bi" [class.bi-chevron-double-right]="!rightSectionCollapsed"
+                            [class.bi-chevron-double-left]="rightSectionCollapsed"></i>
+                    </ng-template>
+                </button>
+            </div>
+
+            
+            <div class="right-section73 collapse" [class.show]="!rightSectionCollapsed ">
+                <div class="SingleContainer">
+                    <!-- Header -->
+                    <div class="SingleContainerHeader">
+                        <h2 class="text-center">{{ "search filter" | translate }}</h2>
+                    </div>
+
+                    <!-- Litigation No -->
+                    <div class="form-group">
+                        <label for="LitigationNo">{{"labels.litigationno" | translate}}</label>
+                        <input type="text" class="form-control" id="LitigationNo" [(ngModel)]="iLitigationNo" />
+                    </div>
+
+                    <!-- Litigation Item Ref -->
+                    <div class="form-group">
+                        <label for="LitigationItemRef">{{"labels.litigationitemref" | translate}}</label>
+                        <input type="text" class="form-control" id="LitigationItemRef" [(ngModel)]="iLitigationItemRef" />
+                    </div>
+
+                    <!-- Entity Type -->
+                    <div class="form-group">
+                        <label for="EntityType">{{"labels.entitytype" | translate}}</label>
+                         <select class="form-control" id="EntityType" [(ngModel)]="iEntityType">
+                            <option *ngFor="let item of entityTypes" [value]="item.param_cd">
+                                {{item.nm_en}}
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Entity No. -->
+                    <div class="form-group">
+                        <label for="EntityNo">{{"labels.entityno" | translate}}</label>
+                        <input type="text" class="form-control" id="EntityNo" [(ngModel)]="iEntityNo" />
+                    </div>
+
+                    <!-- Litigation Amount -->
+                    <div class="form-group">
+                        <label for="LitigationAmount">{{"labels.litigationamount" | translate}}</label>
+                        <input type="number" class="form-control" id="LitigationAmount" [(ngModel)]="iLitigationAmount" />
+                    </div>
+
+                    <!-- Status -->
+                    <div class="form-group">
+                        <label for="Status">{{"labels.status" | translate}}</label>
+                         <select class="form-control" id="Status" [(ngModel)]="iStatus">
+                            <option *ngFor="let item of statuses" [value]="item.param_cd">
+                                {{item.nm_en}}
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Date Due -->
+                    <div class="form-group">
+                        <label for="DateDue">{{"labels.duedate" | translate}}</label>
+                        <input type="text" placeholder="{{ 'datepicker' | translate }}" class="form-control"
+                            [bsConfig]="{dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false, containerClass:'theme-default', adaptivePosition: true}"
+                            bsDatepicker [(ngModel)]="iDateDue" name="date" readonly>
+                    </div>
+
+                    <!-- Date Created -->
+                    <div class="form-group">
+                        <label for="DateCreated">{{"labels.datecreated" | translate}}</label>
+                        <input type="text" placeholder="{{ 'datepicker' | translate }}" class="form-control"
+                            [bsConfig]="{dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false, containerClass:'theme-default', adaptivePosition: true}"
+                            bsDatepicker [(ngModel)]="iDateCreated" name="date" readonly>
+                    </div>
+
+
+                    <!-- Buttons -->
+                    <div class="button-group">
+                        <button class="btn btnApply" (click)="apply()">{{"buttons.apply" |translate}}</button>
+                        <button class="btn btnReset" (click)="reset()">{{"buttons.reset" |translate}}</button>
+                    </div>
+
+                    <br /><br />
+                </div>
+            </div>
+        </div>
+    </body>
+</ng-container>

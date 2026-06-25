@@ -1,0 +1,235 @@
+@import '../../app.component.scss';
+
+.PAContainer {
+        margin-left: 30px;
+  
+      .left-section73 {
+        flex: 0 0 97%;
+        // Since you want the left section to animate, you might want to add a transition
+        transition: flex 0.5s ease;
+      }
+}
+
+.parent-div {
+    display: flex;
+    justify-content: space-evenly;
+    margin: 20px;
+ 
+    .left-div, .right-div {
+        width: 49%;
+        padding: 20px;
+ 
+        h1 {
+            margin-bottom: 15px;
+        }
+ 
+        table {
+            width: 100%;
+            border-collapse: collapse;
+ 
+            tr {
+                &:nth-child(even) {
+                    background-color: #f8f9fc;
+                }
+                &:nth-child(odd) {
+                    background-color: white;
+                }
+            }
+ 
+            td {
+                padding: 8px;
+                border: 1px solid #ddd;
+
+                &:nth-child(1) {
+                    width: 70%; /* Width for ':' cells */
+                }
+                &:nth-child(2) {
+                    width: 5%; /* Width for ':' cells */
+                }
+                &:nth-child(3) {
+                    width: 10%; /* Width for ':' cells */
+                }
+            }
+        }
+    }
+ 
+    .left-div {
+        background-color: #d6d6ec;
+    }
+ 
+    .right-div {
+        background-color: #f1ed9d;
+    }
+}
+ 
+ 
+ 
+.third-parent {
+    background-color: white; /* White background for the div */
+    padding: 20px;
+    margin: 30px;
+ 
+    h3 {
+        margin-bottom: 15px;
+    }
+ 
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white; /* White background for the table */
+        //border: 1px solid black;
+ 
+        tr {
+            background-color: white; /* White background for each row */
+ 
+            td {
+                border: none;
+                padding: 8px;
+                background-color: white; /* White background for each cell */
+
+                &:nth-child(1) {
+                    width: 15%; /* Width for ':' cells */
+                }
+ 
+                &:nth-child(2), &:nth-child(6) {
+                    width: 2%; /* Width for ':' cells */
+                }
+ 
+                &:nth-child(4) {
+                    width: 20%; /* Width for the empty cell */
+                }
+
+                &:nth-child(5) {
+                    width: 15%; /* Width for the empty cell */
+                }
+ 
+                &:nth-child(7) {
+                    width: 100%; 
+                    // input[type="text"] {
+                    //     width: 100%; /* Full width of the cell */
+                    // }
+                }
+            }
+        }
+    }
+}
+
+
+.second-parent {
+    display: flex;
+    justify-content: space-evenly;
+    margin: 20px;
+    font-size:small;
+ 
+    .left-div, .right-div {
+        width: 49%;
+        padding: 20px;
+ 
+        h1 {
+            margin-bottom: 15px;
+        }
+ 
+        table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+
+            th{
+                background-color:#FFC107 !important;
+                color:black;
+                padding: 8px;
+                
+                }
+ 
+            tr {
+                &:nth-child(even) {
+                    background-color: #f8f9fc;
+                }
+                &:nth-child(odd) {
+                    background-color: white;
+                }
+            }
+ 
+            td {
+                padding: 8px;
+                border: 1px solid #ddd;
+            }
+
+            
+        }
+    }
+ 
+    .left-div {
+        background-color: #d6d6ec;
+        th, td {
+            &:nth-child(2), &:nth-child(5), &:nth-child(8) {
+                width: 60px; // Adjust this value as needed
+            }
+        }
+
+        th, td {
+            &:nth-child(4) {
+                width: 60px; // Adjust this value as needed
+            }
+        }
+
+
+        th, td {
+            &:nth-child(7) {
+                width: 25%; // Adjust this value as needed
+            }
+        }
+    }
+ 
+    .right-div {
+        background-color: #f1ed9d;
+        th, td {
+            &:nth-child(2), &:nth-child(6){
+                width: 60px; // Adjust this value as needed
+            }
+        }
+
+        th, td {
+            &:nth-child(4) {
+                width: 15%; // Adjust this value as needed
+            }
+        }
+
+
+        th, td {
+            &:nth-child(5) {
+                width: 30%; // Adjust this value as needed
+            }
+        }
+    }
+}
+
+
+.errorColumn{
+    color:red;
+}
+
+.errorColumn a {
+    color:red;
+}
+
+.alignRightCol{
+    text-align: end;
+}
+
+.alignCenterCol{
+    text-align: center;
+}
+
+textarea {
+    width: 100%;
+    height: 60px;
+}
+
+.btn{
+    margin-left: 20px;
+}
+
+.content{
+    font-weight: bold;
+}

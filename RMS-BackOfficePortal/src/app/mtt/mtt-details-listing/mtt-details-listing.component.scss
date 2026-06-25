@@ -1,0 +1,326 @@
+@import '../../app.component.scss';
+
+$backgroundColor: #f2f2f2;
+$MainBackGroundColor: #eaeaea;
+$MarginSeparator: 30px;
+$leftPadding: 3%;
+$rightPadding: 3%;
+$MarginFromFooter: 110px;
+$MAButtonMinWidth: 100px; //original is 30%
+$MarginSeparator2: 10px;
+
+.right-section73 {
+  background-color: white;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.button-group {
+  margin-top: 20px;
+}
+
+.rightPadding {
+  margin-right: 3%;
+}
+
+
+.btnApply {
+  float: left;
+}
+
+.btnReset {
+  float: right;
+}
+
+
+.MAPagination {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.fgSpacing {
+  margin-bottom: 5px;
+}
+
+.btnView {
+  background-color: #2185D0;
+  color: white;
+  //min-width: $MAButtonMinWidth;
+}
+
+.leftSide {
+  margin: 0;
+  margin-left: $leftPadding;
+  margin-right: $rightPadding;
+
+  table.leftSectionContainer {
+    width: 100%;
+    border-collapse: collapse;
+
+    th,
+    td {
+      border: 1px solid #dfdfdf;
+      padding: 10px;
+      text-align: left;
+      max-width: 200px;
+      word-wrap: break-word;
+      word-break: break-all;
+
+      input,
+      select {
+        width: 100%;
+        height: 30px; // Ensuring consistent height
+        padding: 8px; // Some padding for text
+        box-sizing: border-box; // Makes sure the width includes padding and borders
+        border-radius: 8px;
+        border: 1px solid #dfdfdf;
+      }
+
+      mat-form-field {
+        width: 100%;
+        display: block; // Ensures it takes up full width
+
+        .mat-form-field-wrapper {
+          padding-bottom: 0; // Removes extra spacing at the bottom
+        }
+
+        // Angular Material select dropdown specifics
+        .mat-select-value {
+          line-height: 30px; // Aligns with the height of the input
+        }
+      }
+
+      input,
+      select,
+      mat-form-field {
+        width: 100%;
+        border-radius: 8px;
+        border: 1px solid #644ded; // Curve the borders with a 5px radius
+      }
+
+      mat-form-field {
+        width: 100%;
+
+        .mat-form-field-wrapper {
+          padding-bottom: 0;
+        }
+
+        .mat-form-field-infix {
+          border: 1px solid #ccc;
+          border-radius: 4px;
+
+          input.mat-input-element {
+            padding: 10px;
+            height: auto;
+          }
+        }
+
+        & input.mat-input-element {
+          border-radius: 5px;
+          border: 1px solid #dfdfdf; // Apply curve to the inner input of mat-form-field
+        }
+      }
+    }
+
+
+
+    .header {
+      color: black;
+      background-color: #FFC107 !important;
+
+    }
+
+    tr:nth-child(odd) {
+      background-color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f0f0f0;
+    }
+  }
+}
+
+.bcenterTable {
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
+  width: 90%;
+  height: 100%; // Optional, to center vertically within the container
+}
+
+
+.marginTopAndBottom {
+  // margin-top:40px;
+  // margin-bottom:40px;
+  border: 10px solid $MainBackGroundColor;
+}
+
+.centeredH2 {
+  margin-bottom: 0px;
+  margin-left: 23%;
+  // padding-top:$PaddingTopAndBottom;
+  // padding-bottom:$PaddingTopAndBottom;
+}
+
+.button-row {
+  display: flex; // Use flexbox to align the buttons horizontally
+  gap: 15px; // Add a 10px gap between the buttons
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.leftPadding {
+  margin-left: 3%;
+}
+
+.left-section73 {
+  margin-left: 3%;
+}
+
+.parameterWidth {
+  width: 45%;
+}
+
+.languageWidth {
+  width: 15%;
+}
+
+//checkbox start
+:host ::ng-deep .mat-mdc-checkbox.mat-mdc-checkbox-checked .mdc-checkbox__background,
+.mdc-checkbox__ripple {
+  background-color: #21ba45 !important;
+  // border-color: white !important;
+
+  .mdc-checkbox__checkmark {
+    color: white !important;
+  }
+}
+
+:host ::ng-deep .mdc-form-field .mdc-label {
+  padding-left: 0;
+}
+
+// 
+
+//checkbox end
+
+.PA-alert-box {
+  margin-top: 30px;
+  width: 100%;
+}
+
+.paymentinfo{
+  // margin-right: 3%;
+  background-color: white;
+ 
+  .paymentinfodetails{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 3%;
+    margin-right: 3%;
+
+    label{
+      display: block;
+      width: 350px;
+      word-wrap: break-word; /* Allows long words to break and wrap */
+      word-break: break-word; /* Breaks words if necessary */
+      overflow-wrap: break-word; /* Ensures compatibility */
+      white-space: normal; /* Allows text to wrap */
+    }
+    .form-control{
+      border: 1px solid blue; /* Sets the border color to blue */
+    }
+   
+  }
+}
+ 
+.small-dot {
+  display: inline-block;
+  width: 7px; /* Size of the dot */
+  height: 7px; /* Size of the dot */
+  background-color: black; /* Fill color */
+  border-radius: 50%; /* Makes it a perfect circle */
+  margin-left: 2%;
+}
+ 
+.tableWrapperPaymentInfo {
+  margin-top: 20px;
+  margin-left: 3%;
+  margin-right: 3%;
+}
+ 
+.MarginSeparator {
+  margin-top: $MarginSeparator;
+}
+
+// .MarginSeparator2 {
+//   margin-top: $MarginSeparator2;
+// }
+ 
+.bold {
+  font-weight: bold;
+}
+ 
+.custom-radio{
+  accent-color: black; /* Change the radio button color to black */
+}
+ 
+.payment-mode{
+ 
+  .form-control {
+    display: inline-block; /* Ensures proper alignment */
+    border: 1px solid blue; /* Sets the border color to blue */
+  }
+}
+ 
+.marginTop{
+  margin-top: 10px;
+}
+
+.marginTopCash{
+  margin-top: 10px;
+
+  input{
+    width: 350px;
+  }
+}
+
+.marginPayerEmail{
+
+  input{
+    width: 350px;
+  }
+}
+ 
+.marginLeft{
+  margin-left: 10px;
+}
+
+///
+.order-details {
+    display: flex;
+    align-items: center;
+    /* Align elements in the center vertically */
+    gap: 5px;
+    /* Optional: Adjust spacing between elements */
+}
+
+.left-section {
+    display: flex;
+    align-items: center;
+    /* Align button and label vertically */
+    gap: 20px;
+    /* Space between the button and Status label */
+}
+
+.order-info {
+    display: flex;
+    justify-content: space-between;
+    /* Ensure h2 is on the far left, and the rest on the far right */
+    align-items: center;
+    /* Align items vertically on the same line */
+}
+

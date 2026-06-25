@@ -1,0 +1,471 @@
+<ng-container *ngIf="permListAllow === 1">
+
+    <body class="BodyCointaner">
+        <div class="PAContainer73">
+            <!-- <div class="left-section73">
+            <div *ngIf="error" class="error-box">
+                <i class="bi bi-x-circle-fill error-icon"></i>
+                <div>
+                    <strong>{{"labels.receiptcancellationnotallowed" | translate}}</strong>
+                    <ul>
+                        <ul>
+                            <li *ngFor="let errorMsg of errorMessages">{{ errorMsg }}</li>
+                        </ul>
+                    </ul>
+                </div>
+            </div>
+        </div> -->
+        </div>
+        <div class="order-info">
+            <h2>{{"labels.billingdetails" | translate}}</h2>
+            <!-- <div class="order-details">
+            <div class="left-section">
+                <label class="bold">{{"labels.STATUS" | translate}}:</label>
+            </div>
+            <label class="bold" style="color: #21ba45;">
+                {{getBillingStatusName(status)}}
+            </label>
+        </div> -->
+        </div>
+
+        <!--whole page loading start-->
+
+
+
+        <div class="MALoadingContainerFormTable">
+            <div *ngIf="isLoadingBillingDetails"
+                class="TableLoading-overlay d-flex align-items-center justify-content-center">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only"></span>
+                </div>
+            </div>
+            <div class="tableWrapper">
+                <table>
+                    <tr>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.customerid" | translate}}</label>
+                                <label class="form-control">{{custID}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.customername" | translate}}</label>
+                                <label class="form-control">{{custName}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.customeremail" | translate}}</label>
+                                <label class="form-control">{{custEmail}}</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.customerphonenumber" | translate}}</label>
+                                <label class="form-control">{{custPhoneNo}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.address1" | translate}}</label>
+                                <label class="form-control">{{add1}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.address2" | translate}}</label>
+                                <label class="form-control">{{add2}}</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.address3" | translate}}</label>
+                                <label class="form-control">{{add3}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.postcode" | translate}}</label>
+                                <label class="form-control">{{postcode}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.city" | translate}}</label>
+                                <label class="form-control">{{city}}</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.state" | translate}}</label>
+                                <label class="form-control">{{getStateName(state)}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.entityname" | translate}}</label>
+                                <label class="form-control">{{(entityName)}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.entitytype" | translate}}</label>
+                                <label class="form-control">{{getEntityTypeName(entityType)}}</label>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!--different start here between one time and loa/agmt-->
+                    <!--one time-->
+                    <ng-container *ngIf="billingMethod === 'O'">
+                        <tr>
+                            <td>
+                                <div class="displayColumn">
+                                    <label class="tableLabel">{{"labels.entitynumber" | translate}}</label>
+                                    <label class="form-control">{{entityNo}}</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="displayColumn">
+                                    <label class="tableLabel">{{"labels.sourcesystem" | translate}}</label>
+                                    <label class="form-control">{{getSourceSystemName(ss)}}</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="displayColumn">
+                                    <label class="tableLabel">{{"labels.billingno." | translate}}</label>
+                                    <label class="form-control">{{bilNo}}</label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="displayColumn">
+                                    <label class="tableLabel">{{"labels.billingmethod" | translate}}</label>
+                                    <label class="form-control">{{billingMethod === 'O' ? 'One-Time' : billingMethod
+                                        === 'L' ? 'Register with LOA' : billingMethod === 'A' ? 'Register with LOA'
+                                        : ''}}</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="displayColumn">
+                                    <label class="tableLabel">{{"labels.billingdescription" | translate}}</label>
+                                    <label class="form-control">{{bilDesc}}</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="displayColumn">
+                                    <label class="tableLabel">{{"labels.requestername" | translate}}</label>
+                                    <label class="form-control">{{reqName}}</label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="displayColumn">
+                                    <label class="tableLabel">{{"labels.requesteremail" | translate}}</label>
+                                    <label class="form-control">{{reqEmail}}</label>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-container>
+                    <!--loa/agmt-->
+                    <ng-container *ngIf="billingMethod === 'L' || billingMethod === 'A'">
+                        <tr>
+                            <td>
+                                <div class="displayColumn">
+                                    <label class="tableLabel">{{"labels.sourcesystem" | translate}}</label>
+                                    <label class="form-control">{{getSourceSystemName(ss)}}</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="displayColumn">
+                                    <label class="tableLabel">{{"labels.billingno." | translate}}</label>
+                                    <label class="form-control">{{bilNo}}</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="displayColumn">
+                                    <label class="tableLabel">{{"labels.entitynumber" | translate}}</label>
+                                    <label class="form-control">{{entityNo}}</label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="displayColumn">
+                                    <label class="tableLabel">{{"labels.billingmethod" | translate}}</label>
+                                    <label class="form-control">{{billingMethod === 'L' ? 'Register with LOA' :
+                                        billingMethod === 'A' ? 'Register with LOA' : ''}}</label>
+                                </div>
+                            </td>
+                            <td *ngIf="billingMethod === 'L'">
+                                <div class="displayColumn">
+                                    <label class="tableLabel">{{"labels.loareferenceno." | translate}}</label>
+                                    <label class="form-control">{{loaRefNo}}</label>
+                                </div>
+                            </td>
+                            <td *ngIf="billingMethod === 'A'">
+                                <div class="displayColumn">
+                                    <label class="tableLabel">{{"labels.agreementreferenceno." | translate}}</label>
+                                    <label class="form-control">{{agmtRefNo}}</label>
+                                </div>
+                            </td>
+                            <td *ngIf="billingMethod === 'L'">
+                                <div class="displayColumn">
+                                    <label class="tableLabel">{{"labels.loastart/endrange" | translate}}</label>
+                                    <label class="form-control">{{loaStartDate | date: 'dd MMM yyyy'}} - {{loaEndDate |
+                                        date: 'dd MMM yyyy'}}</label>
+                                </div>
+                            </td>
+                            <td *ngIf="billingMethod === 'A'">
+                                <div class="displayColumn">
+                                    <label class="tableLabel">{{"labels.agreementstart/endrange" | translate}}</label>
+                                    <label class="form-control">{{agmtStartDate | date: 'dd MMM yyyy'}} - {{agmtEndDate
+                                        | date: 'dd MMM yyyy'}}</label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="displayColumn">
+                                    <label class="tableLabel">{{"labels.billingdescription" | translate}}</label>
+                                    <label class="form-control">{{bilDesc}}</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="displayColumn">
+                                    <label class="tableLabel">{{"labels.billingcount" | translate}}</label>
+                                    <label class="form-control">{{bilCount}}</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="displayColumn">
+                                    <label class="tableLabel">{{"labels.billingfrequency" | translate}}</label>
+                                    <label class="form-control">{{getBillingFrequencyTypeName(bilFrequency)}}</label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="displayColumn">
+                                    <label class="tableLabel">{{"labels.dayofthebillingissued" | translate}}</label>
+                                    <label class="form-control">{{dayOfBilIssued}}</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="displayColumn">
+                                    <label class="tableLabel">{{"labels.requestername" | translate}}</label>
+                                    <label class="form-control">{{reqName}}</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="displayColumn">
+                                    <label class="tableLabel">{{"labels.requesteremail" | translate}}</label>
+                                    <label class="form-control">{{reqEmail}}</label>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </table>
+            </div>
+        </div>
+        <div>
+            <h2 style="margin-left: 3%;">{{"labels.listofbillingitem(s)" | translate}}</h2>
+        </div>
+        <div class="MALoadingContainer">
+            <div *ngIf="isLoadingBillingListOfItems"
+                class="TableLoading-overlay d-flex align-items-center justify-content-center">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only"></span>
+                </div>
+            </div>
+            <div class="tableWrapper">
+                <table class="MATable">
+                    <thead>
+                        <tr class="MATableHeader">
+                            <th class="thWidth">No.</th>
+                            <th>{{"labels.billingitem" | translate}}</th>
+                            <th class="thAction">{{"labels.unitprice" | translate}} (RM)</th>
+                            <th class="thAction">{{"labels.quantity" | translate}}</th>
+                            <th class="thAction">{{"labels.tax(RM)" | translate}}</th>
+                            <th class="thAction">{{"labels.total" | translate}} (RM)</th>
+                        </tr>
+                    </thead>
+                    <ng-container *ngIf="totalRecordsListOfIssuance>0; else noResultsItem">
+                        <tbody>
+                            <tr *ngFor="let item of bilingListOfItems; let i = index">
+                                <td>{{ (listOfItemPage - 1) * itemsPerPageListOfItem + i + 1 }}</td>
+                                <td>{{ item.fee_detail_id}} - {{item.fee_detail_nm_e}}</td>
+                                <td>{{ item.unit_fee | number:'1.2-2'}}</td>
+                                <td>{{ item.qty}}</td>
+                                <td>{{ item.tax_amt | number:'1.2-2'}}</td>
+                                <td>{{ item.final_amt | number:'1.2-2'}}</td>
+                            </tr>
+                            <tr class="totalRow" style="background-color: white;">
+                                <td></td>
+                                <td style="margin-left:3%;font-weight:bold;text-align:right;">TOTAL</td>
+                                <td style="font-weight: bold;">{{ getTotalUnitFeesListOfItems() | number:'1.2-2' }}</td>
+                                <td style="font-weight: bold;">{{ getTotalQuantityListOfItems()}}</td>
+                                <td style="font-weight: bold;">{{ getTotalTaxAmountListOfItems() | number:'1.2-2' }}
+                                </td>
+                                <td style="font-weight: bold;">{{ getTotalGrossAmountListOfItems() | number:'1.2-2' }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </ng-container>
+                    <ng-template #noResultsItem>
+                        <tr style="height: 100px;">
+                            <td colspan="6" class="text-center">{{"searchcriteriadoesnotmatch"| translate}}</td>
+                        </tr>
+                    </ng-template>
+                </table>
+            </div>
+        </div>
+        <div>
+            <h2 style="margin-left: 3%;">{{"labels.billingdetails" | translate}}</h2>
+        </div>
+        <div class="MALoadingContainer">
+            <div *ngIf="isLoadingBillingListOfIssuance"
+                class="TableLoading-overlay d-flex align-items-center justify-content-center">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only"></span>
+                </div>
+            </div>
+            <div class="tableWrapper">
+                <table class="MATable">
+                    <thead>
+                        <tr class="MATableHeader">
+                            <th class="thWidth">No.</th>
+                            <th>{{"labels.billingdate" | translate}}</th>
+                            <th class="thFileName">{{"labels.billingno." | translate}}</th>
+                            <!-- <th>Remarks</th> -->
+                            <th>{{"labels.billingstatus" | translate}}</th>
+                        </tr>
+                    </thead>
+                    <ng-container *ngIf="totalRecordsListOfIssuance>0; else noResultsIssuance">
+                        <tbody>
+                            <tr *ngFor="let item of billingListOfIssuance; let i = index">
+                                <td>{{ (listOfBillingIssuancePage - 1) * itemsPerPageListOfBillingIssuance + i + 1 }}
+                                </td>
+                                <td>{{ formatOrdinalDate(item.bil_child_date) }}</td>
+                                <td>
+                                    <!-- Conditionally render hyperlink or plain text -->
+                                    <a *ngIf="item.bil_status === 'P'" class="hyperlink">{{ item.bil_no }}</a>
+                                    <span *ngIf="item.bil_status !== 'P'">{{ item.bil_no }}</span>
+                                </td>
+                                <!-- <td>{{ isValidDate(item.bil_child_date) }}</td> -->
+                                <td>{{ getBillingStatusName(item.bil_status) }}</td>
+                            </tr>
+                        </tbody>
+                    </ng-container>
+                    <ng-template #noResultsIssuance>
+                        <tr style="height: 100px;">
+                            <td colspan="4" class="text-center">{{"searchcriteriadoesnotmatch"| translate}}</td>
+                        </tr>
+                    </ng-template>
+                </table>
+            </div>
+        </div>
+
+        <div>
+            <h2 style="margin-left: 3%;">{{"labels.listofdocuments(s)" | translate}}</h2>
+        </div>
+        <div class="MALoadingContainer">
+            <div *ngIf="isLoadingBillingListOfDoc"
+                class="TableLoading-overlay d-flex align-items-center justify-content-center">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only"></span>
+                </div>
+            </div>
+            <div class="tableWrapper">
+                <table class="MATable">
+                    <thead>
+                        <tr class="MATableHeader">
+                            <th class="thWidth">No.</th>
+                            <th class="docWidth">{{"labels.documents" | translate}}</th>
+                            <th>{{"labels.uploadedby" | translate}}</th>
+                            <th>{{"labels.uploadedon" | translate}}</th>
+                            <th>{{"labels.filesize" | translate}}</th>
+                        </tr>
+                    </thead>
+                    <ng-container *ngIf="totalRecordsListOfDoc>0; else noResultsDoc">
+                        <tbody>
+                            <tr *ngFor="let item of billingListOfDoc; let i = index">
+                                <td>{{ (listOfBillingDocPage - 1) * itemsPerPageListOfBillingDoc + i + 1 }}</td>
+                                <td> <a class="hyperlink" (click)="downloadFile(item.file_nm, item.bil_id)">
+                                        {{ item.file_nm }}
+                                    </a></td>
+                                <td>{{ item.created_by }}</td>
+                                <td>{{ item.dt_created }}</td>
+                                <td> {{ item.file_size < 1000 ? item.file_size + ' Bytes' : (item.file_size < 1000000 ?
+                                        (item.file_size / 1000).toFixed(2) + ' KB' : (item.file_size /
+                                        1000000).toFixed(2) + ' MB' ) }}</td>
+                            </tr>
+                        </tbody>
+                    </ng-container>
+                    <ng-template #noResultsDoc>
+                        <tr style="height: 100px;">
+                            <td colspan="5" class="text-center">{{"searchcriteriadoesnotmatch"| translate}}</td>
+                        </tr>
+                    </ng-template>
+                </table>
+            </div>
+        </div>
+
+        <div>
+            <h2 style="margin-left: 3%;">{{"labels.historicaltable" | translate}}</h2>
+        </div>
+        <div class="MALoadingContainer">
+            <div *ngIf="isLoadingHistory" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only"></span>
+                </div>
+            </div>
+            <div class="tableWrapper">
+                <table class="MATable">
+                    <thead>
+                        <tr class="MATableHeader">
+                            <th class="thWidth">No.</th>
+                            <th>{{"labels.action" | translate}}</th>
+                            <th class="thFileName">{{"labels.actiontimestamp" | translate}}</th>
+                            <th class="thInitiadtedBy">{{"labels.performedby" | translate}}</th>
+                            <th class="thAction">{{"labels.assignedto" | translate}}</th>
+                            <th>{{"labels.remarks" | translate}}</th>
+                        </tr>
+                    </thead>
+                    <ng-container *ngIf="totalHistoryRecords>0; else noResultsHistory">
+                        <tbody>
+                            <tr *ngFor="let item of billingHistory; let i = index">
+                                <td>{{ (pageHistory - 1) * itemsPerPageHistory + i + 1 }}</td>
+                                <td>{{ item.action }}</td>
+                                <td>{{item.dt_modified}}</td>
+                                <td>{{item.modified_by}}</td>
+                                <td>{{ item.pickup_by}}</td>
+                                <td>{{item.msg}}</td>
+                            </tr>
+                        </tbody>
+                    </ng-container>
+                    <ng-template #noResultsHistory>
+                        <tr style="height: 100px;">
+                            <td colspan="6" class="text-center">{{"searchcriteriadoesnotmatch"| translate}}</td>
+                        </tr>
+                    </ng-template>
+                </table>
+            </div>
+        </div>
+        <div style="display: flex; justify-content: flex-end; margin-top: 20px;margin-right: 3%;">
+            <button class="btn btnCancel" type="button" (click)="back()">
+                {{"buttons.cancel" | translate}}
+            </button>
+        </div>
+        <div class="MarginSeparator"></div>
+    </body>
+</ng-container>

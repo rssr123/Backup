@@ -1,0 +1,138 @@
+<body class="BodyCointaner" *ngIf="permViewAllow == 1">
+	
+<!-- Mobile Search Section -->
+<div class="mobile-search-section">
+	<div class="mobile-search-header d-flex justify-content-between align-items-center">
+		<h5 class="mb-0">{{"menu.countercollectionreport" | translate}}</h5>
+		<button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#mobileSearchCollapse" aria-expanded="false" aria-controls="mobileSearchCollapse">
+			<i class="bi bi-search"></i>
+		</button>
+	</div>
+
+	<div class="collapse" id="mobileSearchCollapse">
+		<div class="mobile-search-body">
+			<div *ngIf="showResultAlert" [@fadeInOut]>
+				<div class="alert alert-warning PA-alert-box" role="alert">{{"reportgenerated." | translate}}</div>
+			</div>
+
+			<div class="form-group">
+				<label for="daterangeMobile">{{"labels.daterange" | translate}} <span class='RedAsterisk'>*</span></label>
+				<input type="text" id="daterangeMobile" placeholder="" class="form-control"
+				  [bsConfig]="{ rangeInputFormat : 'DD MMM YYYY', dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,rangeSeparator:' to ',containerClass:'theme-default',adaptivePosition: true, maxDateRange: 30}"
+				  bsDaterangepicker [(ngModel)]="dateRange" name="daterangeMobile" readonly onkeydown="return false">
+				<div *ngIf="dateCheck()" class="error-text">
+					{{"labels.invaliddaterange31" | translate}}
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="branchcodeMobile">{{"labels.branchcode" | translate}}</label>
+				<ng-select class="form-control" id="branchcodeMobile" [(ngModel)]="branchCode" name="branchcodeMobile" dropdownPosition="bottom" [clearable]=true>
+				  <ng-option *ngFor="let item of branches" [value]="item.bcm_code">
+					{{item.bcm_code}}
+				  </ng-option>
+				</ng-select>
+			</div>
+
+			<div class="form-group">
+				<label for="paymentmodeMobile">{{"labels.paymentmode" | translate}}</label>
+				<ng-select class="form-control" id="paymentmodeMobile" [(ngModel)]="paymentMode" name="paymentmodeMobile" dropdownPosition="bottom" [clearable]=true>
+					<ng-option *ngFor="let item of payments" [value]="item.param_cd">
+						{{item.nm_en}}
+					</ng-option>
+				</ng-select>
+			</div>
+
+			<div class="form-group">
+				<label>{{"labels.downloadreportas:" | translate}}</label>
+				<ng-select class="form-control" [(ngModel)]="selectedFileType" name="selectedFileTypeMobile"
+					dropdownPosition="bottom" #selectedFileTypeMobileRef="ngModel" required [clearable]=false>
+					<ng-option *ngFor="let item of fileType"
+						[value]="item.value">{{item.label}}</ng-option>
+				</ng-select>
+				<div *ngIf="selectedFileTypeMobileRef.errors && selectedFileTypeMobileRef.errors['required'] && selectedFileTypeMobileRef.touched"
+					class="error-text">
+					{{"File type is required" | translate}}
+				</div>
+			</div>
+
+			<div class="button-group-mobile">
+				<button class="btn btnReset w-100 mb-2" type="button" (click)="resetWithDefaults()">{{"buttons.reset" | translate}}</button>
+				<button id="submitMobile" class="btn btnAdd w-100" (click)="dlReport()" [disabled]="dlbuttonPerms()" data-bs-toggle="collapse" data-bs-target="#mobileSearchCollapse">{{"buttons.generate" | translate}}</button>
+			</div>
+		</div>
+	</div>
+</div>	<div class="PAContainer73">
+		<div class="left-section73">
+
+            <div *ngIf="showResultAlert" [@fadeInOut]>
+                <div class="alert alert-warning PA-alert-box" role="alert">{{"reportgenerated." | translate}}
+                </div>
+            </div>
+
+			<h2>{{"menu.countercollectionreport" | translate}}</h2>
+				<table>
+
+					<!--<div class="displayColumn" style="height: 30px; margin-left: 20px;margin-top: 20px;">
+                        <label>{{"labels.reportpre-filters" | translate}}</label>
+					</div>-->
+
+					<tr>
+						<td>
+							<div class="displayColumn form-group" id="daterange-container">
+								<label for="daterange">{{"labels.daterange" | translate}} <span class='RedAsterisk'>*</span></label>
+								<input type="text" id="daterange" placeholder="" class="form-control"
+								  [bsConfig]="{ rangeInputFormat : 'DD MMM YYYY', dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,rangeSeparator:' to ',containerClass:'theme-default',adaptivePosition: true, maxDateRange: 30}"
+								  bsDaterangepicker [(ngModel)]="dateRange" name="daterange" readonly onkeydown="return false">
+								<div *ngIf="dateCheck()" class="error-text">
+									{{"labels.invaliddaterange31" | translate}}
+								</div>
+							</div>
+						</td>
+						<td>
+							<div class="displayColumn form-group" id="branchcode-container">
+								<label for="branchcode">{{"labels.branchcode" | translate}}</label>
+								<ng-select class="form-control" id="branchcode" [(ngModel)]="branchCode" dropdownPosition="bottom" [clearable]=true>
+								  <ng-option *ngFor="let item of branches" [value]="item.bcm_code">
+									{{item.bcm_code}}
+								  </ng-option>
+								</ng-select>
+							</div>
+						</td>
+						<td>
+							<div class="displayColumn form-group" id="paymentmode-container">
+								<label for="paymentmode">{{"labels.paymentmode" | translate}}</label>
+								<ng-select class="form-control" id="paymentmode" [(ngModel)]="paymentMode" dropdownPosition="bottom" [clearable]=true>
+									<ng-option *ngFor="let item of payments" [value]="item.param_cd">
+										{{item.nm_en}}
+									</ng-option>
+								</ng-select>
+							</div>
+						</td>
+					</tr>
+
+					<tr>
+						<td></td>
+						<td colspan="2">
+							<!-- <label class="note">{{"labels.iftherearereportspendingtobegeneratedthegeneratebuttonwillbedisabled" | translate}}</label> -->
+							<div class="displayRow">
+								<label>{{"labels.downloadreportas:" | translate}}</label>
+								<ng-select class="form-control" [(ngModel)]="selectedFileType" name="selectedFileType"
+									dropdownPosition="bottom" #selectedFileTypeRef="ngModel" required [clearable]=false>
+									<ng-option *ngFor="let item of fileType"
+										[value]="item.value">{{item.label}}</ng-option>
+								</ng-select>
+								<div *ngIf="selectedFileTypeRef.errors && selectedFileTypeRef.errors['required'] && selectedFileTypeRef.touched"
+									class="error-text">
+									{{"File type is required" | translate}}
+								</div>
+								<button class="btn btnReset" type="button" (click)="resetWithDefaults()">{{"buttons.reset" | translate}}</button>
+								<button id= "submit" class="btn btnAdd" (click)="dlReport()" [disabled]="dlbuttonPerms()">{{"buttons.generate" | translate}}</button>
+							</div>
+						</td>
+					</tr>
+
+				</table>
+		</div>
+	</div>
+</body>

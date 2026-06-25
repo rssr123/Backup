@@ -1,0 +1,243 @@
+<body class="BodyCointaner">
+    <div *ngIf="showDeleteAlert" [@fadeInOut]>
+        <div class="alert alert-success PA-alert-box" role="alert">
+            {{ deleteMessage }}
+        </div>
+    </div>
+
+    <div *ngIf="showDeleteErrorAlert" [@fadeInOut]>
+        <div class="alert alert-danger" role="alert">
+            {{ "Failed to delete file. Please try again." }}
+        </div>
+    </div>
+
+    <div *ngIf="showUploadErrorAlert" [@fadeInOut]>
+        <div class="alert alert-danger" role="alert">
+            {{ uploadErrorMessage }}
+        </div>
+    </div>
+
+    <div *ngIf="showUploadSuccessAlert" [@fadeInOut]>
+        <div class="alert alert-success PA-alert-box" role="alert">
+            {{ uploadSuccessMessage}}
+        </div>
+    </div>
+
+    <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+        <div class="spinner-border" role="status">
+          <span class="sr-only"></span>
+        </div>
+      </div>
+
+    <!-- First Container -->
+    <div class="PAContainer74">
+        <div *ngIf="isReadOnly" class="alert alert-danger" style="margin-top: 1%;">
+            <i class="bi bi-x-circle-fill error-icon"></i>
+            <strong>{{ 'labels.This Task has been completed and closed.' | translate }}</strong>
+            <p class="indented-text">{{ 'labels.thispageiscurrentlyviewonly' | translate }}</p>
+        </div>
+
+        <h3 *ngIf = "!isReadOnly">{{"Upload Bank Statement" | translate}}</h3>
+        <div class="MarginSeparator"></div>
+        <div class="tableWrapper" *ngIf = "!isReadOnly">
+            <div class="container">
+                <table class="MATable">
+                    <thead>
+                        <tr class="MATableHeader">
+                            <th>No.</th>
+                            <th>{{ 'labels.fileupload' | translate }}</th>
+                            <!-- <th>{{"All Bank Statement Transactions" | translate}}</th>
+                            <th>{{"PG Settlement File Related Transactions" | translate}}</th>
+                            <th>{{"Total PG Disbursed Amount" | translate }}</th> -->
+                            <th>{{ 'labels.action' | translate }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let fileUpload of fileUploads; let i = index">
+                            <td>{{ i + 1 }}</td>
+                            <td>
+                                <input type="file" class="custom-file-input" style="height: 50px;"
+                                    (change)="onFileUpload($event, fileUpload)" accept=".TXT"
+                                    *ngIf="!fileUpload.uploaded">
+                                <!-- <span *ngIf="fileUpload.uploaded">{{ fileUpload.fileName }}</span> -->
+                                <span *ngIf="fileUpload.uploaded">
+                                    <a href="javascript:void(0);"
+                                        (click)="fileUpload.ag_doc_id !== undefined ? downloadFile(fileUpload.fileName, fileUpload.ag_doc_id) : null">
+                                        {{ fileUpload.fileName }}
+                                    </a>
+                                </span>
+                            </td>
+                            <!-- <td>{{ fileUpload.uploaded ? fileUpload.bank_stmt_trans : fileUpload.transactions.length }}
+                            </td>
+                            <td>{{ fileUpload.uploaded ? fileUpload.pg_settlement_trans :
+                                getPGSettlementCount(fileUpload) }}</td>
+                            <td>{{ fileUpload.uploaded ? (fileUpload.total_pg_amt | number:'1.2-2') :
+                                getTotalPGDisbursedAmounts(fileUpload) | number:'1.2-2' }}</td> -->
+                            <td>
+
+                                <button *ngIf="fileUpload.uploaded" class="btn btnDelete"
+                                    (click)="deleteFile(fileUpload)">
+                                    {{"buttons.delete" | translate}}
+                                </button>
+
+                                <button *ngIf="!fileUpload.uploaded" class="btn btnApply" (click)="uploadFile(fileUpload)" style = "margin-right:10px;">
+                                    {{"buttons.upload" | translate}}
+                                </button>
+
+                                <button *ngIf="!fileUpload.uploaded" class="btn btnAdd"
+                                    (click)="removeFileRow(fileUpload.id)">
+                                    {{"buttons.remove" | translate}}
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr class="summaryRow">
+                            <td colspan="2">{{"labels.total" | translate}}</td>
+                            <!-- <td>{{ totalBankStmtTransactions }}</td>
+                            <td>{{ totalPGSettlementTransactions }}</td>
+                            <td>{{ totalPGDisbursedAmount | number:'1.2-2' }}</td> -->
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <!-- <button class="btn btnSubmit" (click)="submitFiles()">Submit Files</button> -->
+                <div class="MarginSeparator"></div>
+                <button class="btn btnAdd" (click)="addFileRow()">{{"buttons.addfile" | translate}}</button>
+            </div>
+        </div>
+
+        <div class="MarginSeparator"></div>
+        <h3>{{"labels.Account Receivables Invoice VS Bank Statement" | translate}}</h3>
+        <div class="parent-div"> <!-- Parent Div -->
+            <div class="left-div"> <!-- Left Div -->
+                <h3>{{"PG SETTLEMENT SUMMARY" | translate}}</h3>
+                <table class="custom-table">
+                    <tr>
+                        <td>{{"labels.sourcesystem" | translate}}</td>
+                        <td>{{modelData.ss_cd}}</td>
+                        <!-- <td><a *ngIf="file_nm !== null" (click)="permDLPGBankAllow === 0 ? null : downloadFile(file_nm)"
+                                [class.disabled]="permDLPGBankAllow === 0">{{file_nm}}</a></td> -->
+                    </tr>
+                    <tr>
+                        <td>{{"PG Settlement No." | translate}}</td>
+                        <td>{{modelData.stmt_no}}</td>
+                        <!-- <td><a *ngIf="file_nm !== null" (click)="permDLPGBankAllow === 0 ? null : downloadFile(file_nm)"
+                                [class.disabled]="permDLPGBankAllow === 0">{{file_nm}}</a></td> -->
+                    </tr>
+                    <tr>
+                        <td>{{"Total Number of Transaction" | translate}}</td>
+                        <td>{{modelData.total_trx_no}}</td>
+                        <!-- <td><a (click)="permViewPGTransAllow === 0 ? null : pgTxn()"
+                                [class.disabled]="permViewPGTransAllow === 0">{{total_no_pg_txn}}</a></td> -->
+                    </tr>
+                    <tr>
+                        <td>{{"Total Transaction Amount (Total Gross Amount)" | translate}}</td>
+                        <td>{{modelData.ari_total_amt | number: '1.2-2'}}</td>
+                    </tr>
+                    <tr>
+                        <td>{{"Total Merchant Discount Rate (MDR)" | translate}}</td>
+                        <td>{{modelData.mdr_total_amt | number: '1.2-2'}}</td>
+                    </tr>
+                    <tr>
+                        <td>{{"Total Paid by GHL (Total Net Amount)" | translate}}</td>
+                        <td>{{modelData.total_net_amt | number: '1.2-2'}}</td>
+                    </tr>
+                </table>
+            </div> <!-- End Left Div -->
+            <div class="right-div"> <!-- Right Div -->
+                <h3>{{"BANK STATEMENT SUMMARY" | translate}}</h3>
+                <table class="custom-table">
+                    <tr>
+                        <td>{{"Number of Bank Statement(s)" | translate}}</td>
+                        <!-- <td><a (click)="noBkTxn()">{{total_no_bk_txn}}</a></td> -->
+                        <td>
+                            <!-- <a *ngIf="oldDocuments" (click)="noBkTxn()">{{ total_no_bk_txn }}</a> -->
+                            <a (click)="noBkTxn()">{{ total_no_bk_txn }}</a>
+                            <!-- <span *ngIf="!oldDocuments">{{ total_no_bk_txn }}</span> -->
+                          </td>
+                    </tr>
+                    <tr>
+                        <td>{{"All Bank Statement Transactions" | translate}}</td>
+                        <!-- <td><a (click)="permBankTransListAllow === 0 ? null : bankTxn()"
+                                [class.disabled]="permBankTransListAllow === 0">{{totalBankStmtTransactions}}</a></td> -->
+
+                        <!-- <td><a (click)="bankTxn()">{{totalBankStmtTransactions}}</a></td> -->
+                        <td>
+                            <!-- <a *ngIf="oldDocuments" (click)="bankTxn()">{{ totalBankStmtTransactions }}</a> -->
+                            <a (click)="bankTxn()">{{ totalBankStmtTransactions }}</a>
+                            <!-- <span *ngIf="!oldDocuments">{{ totalBankStmtTransactions }}</span> -->
+                          </td>
+                    </tr>
+                    <tr>
+                        <td>{{"PG Settlement File Related Transactions" | translate}}</td>
+                        <!-- <td><a (click)="pgFileTxn()">{{totalPGSettlementTransactions}}</a></td> -->
+                        <td>
+                            <!-- <a *ngIf="oldDocuments" (click)="pgFileTxn()">{{ totalPGSettlementTransactions }}</a> -->
+                            <a (click)="pgFileTxn()">{{ totalPGSettlementTransactions }}</a>
+                            <!-- <span *ngIf="!oldDocuments">{{ totalPGSettlementTransactions }}</span> -->
+                          </td>
+                    </tr>
+                    <tr>
+                        <td>{{"Total PG Disbursed Amount" | translate }}</td>
+                        <td [style.color]="colorResult ? '#21ba45' : '#d01919'">{{totalPGDisbursedAmount| number:'1.2-2'}}</td>
+                    </tr>
+                </table>
+            </div> <!-- End Right Div -->
+        </div> <!-- End Parent Div -->
+    </div> <!-- End First Container -->
+
+    <!-- Second Container -->
+    <div class="PAContainer74">
+        <div class="content">
+            <h3>{{"Reconciliation Task" | translate}}</h3>
+            <table>
+                <tr>
+                    <td>{{"Task ID" | translate}}</td>
+                    <td>:</td>
+                    <td>{{modelData.task_id}}</td>
+                    <td>{{"Remarks" | translate}}</td>
+                    <td>:</td>
+                    <td rowspan="2"><textarea [disabled]= "isReadOnly" [(ngModel)]="remarks"></textarea></td>
+                </tr>
+                <tr>
+                    <td>{{"PG Settlement Status" | translate}}</td>
+                    <td>:</td>
+                    <td colspan="3">{{modelData.settle_status}}</td>
+
+                </tr>
+                <tr>
+                    <td>{{"PG Settlement No." | translate}}</td>
+                    <td>:</td>
+                    <td>{{modelData.stmt_no}}</td>
+                    <td>{{"Task Status" | translate}}</td>
+                    <td>:</td>
+                    <td style="display: flex;">
+                        <div style="margin-right: 20px;" *ngFor="let choice of choices">
+                            <input type="radio" id="taskStatus" name="taskStatus" [value]="choice"
+                            [disabled]= "isReadOnly" [(ngModel)]="task_status" />
+                            <label class="toggle-button" for="taskStatus">{{ choice }}</label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{"Settlement Date" | translate}}</td>
+                    <td>:</td>
+                    <td>{{modelData.dt_settlement | date : "dd/MM/yyyy"}}</td>
+                    <td colspan="3" class="button-container">
+                        <!-- <button class="btn btnApply" *ngIf="task_status !== 'Cancel' && task_status !== 'Close'"
+                            (click)="submitFiles()" type="submit">{{"Apply" |
+                            translate}} </button> -->
+                        <!-- <button class="btn btnApply" [disabled]= "isReadOnly && task_status!=null" (click)="submitFiles()" type="submit">{{"buttons.apply" |translate}}</button> -->
+                        <button class="btn btnApply" [disabled]= "isReadOnly && task_status!=null" (click)="updateAgSale()" type="submit">{{"buttons.apply" |translate}}</button>
+                        <!-- <button class="btn btnApply" *ngIf="task_status == 'Close'" disabled type="submit"
+                            [disabled]="permOpenCloseCancelAllow === 0">{{"Apply" | translate}}</button> -->
+                        <!-- <button class="btn btnApply" *ngIf="task_status == 'Cancel'" disabled type="submit" [disabled]="permOpenCloseCancelAllow === 0">{{"Apply" | translate}}</button> -->
+                        <button class="btn btnCancel" (click)="cancel()" type="button">{{"buttons.back" | translate}}</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <!-- End Second Container -->
+</body>

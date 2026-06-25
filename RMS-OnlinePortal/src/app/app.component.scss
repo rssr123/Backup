@@ -1,0 +1,397 @@
+$MATROddBGColor: #f2f2f2;
+$MAMainLeftPadding: 3%;
+$MAMainBGColor: #eaeaea;
+$MAButtonMinWidth: 100px; //original is 30%
+$MAMainPaddingTopAndBottom: 20px;
+
+$MobileView-Max: 1200px;
+$MobileView-Min: 1201px;
+$ToggleButtonWidth: 50px;
+
+//Button Section Start
+// .btn {
+//   min-width: 130px;
+//   height: 38px;
+// } 
+
+
+//Button Section Start
+.btnSubmit {
+  background-color: #21BA45;
+  color: white;
+  min-width: $MAButtonMinWidth;
+}
+
+.btnUpdate {
+  background-color: #21BA45;
+  color: white;
+  min-width: $MAButtonMinWidth;
+}
+
+.btnApply {
+  background-color: #21BA45;
+  color: white;
+  min-width: $MAButtonMinWidth;
+}
+
+.btnAdd {
+  background-color: #2185D0;
+  color: white;
+  min-width: $MAButtonMinWidth;
+}
+
+.btnEdit {
+  background-color: #2185D0;
+  color: white;
+  min-width: $MAButtonMinWidth;
+}
+
+.btnSearch {
+  background-color: #2185D0;
+  color: white;
+  min-width: $MAButtonMinWidth;
+}
+
+.btnDelete {
+  background-color: #D01919;
+  color: white;
+  min-width: $MAButtonMinWidth;
+}
+
+.btnCancel {
+  background-color: #767676;
+  min-width: $MAButtonMinWidth;
+  color: white;
+}
+
+.btnClose {
+  background-color: #767676;
+  min-width: $MAButtonMinWidth;
+  color: white;
+}
+
+.btnReset {
+  background-color: #FFFF00;
+  min-width: $MAButtonMinWidth;
+  color: white;
+}
+
+//Button Section End
+
+
+//MA Header Section Start
+.BodyCointaner {
+  background-color: $MAMainBGColor;
+}
+
+
+.LeftSectionPosition {
+  margin-left: $MAMainLeftPadding;
+  padding-top: $MAMainPaddingTopAndBottom;
+  padding-bottom: $MAMainPaddingTopAndBottom;
+}
+
+h2 {
+  margin-bottom: 0px;
+  margin-left: $MAMainLeftPadding;
+  padding-top: $MAMainPaddingTopAndBottom;
+  padding-bottom: $MAMainPaddingTopAndBottom;
+}
+
+.allFormClass {
+  background-color: $MAMainBGColor;
+}
+
+//MA Header Section End
+
+
+
+//Table Start
+.MATableContainer {
+  margin-left: $MAMainLeftPadding;
+  margin-right: $MAMainLeftPadding;
+}
+
+.MATable {
+  width: 100%;
+  border-collapse: collapse;
+  padding: 5%;
+  border: solid 1px #dfdfdf;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  th,
+  td {
+    border: 1px solid #dfdfdf;
+    padding: 10px;
+    text-align: left;
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      height: 35px; // Ensuring consistent height
+      //padding: 8px;  // Some padding for text
+      box-sizing: border-box; // Makes sure the width includes padding and borders
+      border-radius: 8px;
+      border: 1px solid #644ded;
+    }
+
+    textarea {
+      height: auto;
+      /* Allow the textarea to grow naturally */
+      min-height: 35px;
+      /* Ensure it aligns with input/select height */
+      padding: 8px;
+      /* Add padding for better text readability */
+      line-height: 1.5;
+      /* Improves spacing for multi-line text */
+    }
+  }
+
+  .MATableHeader {
+    color: rgb(255, 255, 255);
+    background-color: #2E3192 !important;
+
+  }
+
+  tr:nth-child(odd) {
+    background-color: white;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f0f0f0;
+  }
+
+
+
+  // 1) hide the left border of the Size column
+  th.size-column,
+  td.size-column {
+
+    width: 150px;
+    /* whatever you need */
+    text-align: left;
+    /* right-align the text */
+    vertical-align: bottom;
+    /* bottom-align within the row */
+    padding-bottom: 0.5em;
+    font-size: 12px;
+  }
+}
+
+//Table End
+
+//Pagination Start
+.MAPagination {
+  float: right;
+  margin-top: 3%;
+}
+
+//Pagination End
+
+
+//Container Start
+.PAContainer73 {
+  display: flex;
+  justify-content: space-between;
+  margin-left: 3%;
+
+  .left-section73 {
+    flex: 0 0 97%;
+    transition: flex 0.5s ease; // Animation when the size changes
+    overflow: hidden;
+    z-index: 1;
+    // position: relative;
+  }
+
+  .right-section73 {
+    flex: 0 0 20%;
+
+
+  }
+
+  //mobile view
+  @media (max-width: 768px) {
+    flex-direction: column;
+
+
+    .left-section73,
+    .right-section73 {
+      flex: 1 0 100%;
+    }
+
+  }
+
+  //mobile view
+}
+
+//Container End
+
+
+//Footer Start
+.MainContainerFooter {
+  border: 40px solid $MAMainBGColor;
+}
+
+//Footer End
+
+
+//right section Start
+.SingleContainer {
+  width: 100%;
+  margin: auto;
+  padding: 20px;
+  // box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.SingleContainerHeader {
+  margin-bottom: 20px;
+}
+
+//right section End
+
+
+//table loading Start
+.TAblePosition-relative {
+  position: relative;
+}
+
+.TableLoading-overlay {
+  position: absolute;
+  /* Ensures the overlay covers the whole page */
+  //top: 0;
+  //left: 0;
+  width: 100%;
+  /* Full width of the viewport */
+  height: 100%;
+  /* Full height of the viewport */
+  background: rgba(255, 255, 255, 0.8);
+  /* Semi-transparent white background */
+  z-index: 1050;
+  /* Ensure it appears above other elements */
+}
+
+.TableDimmed {
+  opacity: 0.5;
+  /* Adjust as needed */
+  pointer-events: none;
+  /* Disable interaction while loading */
+}
+
+.MALoadingContainer {
+  position: relative;
+  /* Makes sure the spinner is positioned in reference to the table */
+  overflow: hidden;
+  /* Keeps the spinner inside the table area */
+}
+
+
+
+.MATable.TableDimmed {
+  filter: blur(2px);
+  /* Optional: blur effect on the table to emphasize it's "disabled" */
+}
+
+//table loading End
+
+
+
+//popup Error Box Start
+.error-box {
+  display: flex;
+  align-items: start;
+  /* Aligned at the top */
+  background-color: #ffdddd;
+  /* Light red */
+  border: 1px solid red;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+}
+
+.error-icon {
+  margin-right: 10px;
+
+}
+
+.error-content {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  /* Aligned at the top */
+}
+
+.error-text {
+  color: red;
+}
+
+//popup Error Box End
+
+.BodyCointaner {
+  margin: 0;
+  background-color: $MAMainBGColor;
+  min-height: 100vh;
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.RedAsterisk {
+  color: red;
+}
+
+.datepicker.dropdown-menu {
+  background-color: #FFF;
+}
+
+
+//pagination row start
+.pagination-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pagination-dropdown {
+  margin-right: 10px;
+}
+
+
+.pagination-control {
+  margin-left: auto;
+}
+
+.PaginControl {
+  margin-bottom: 16px;
+  margin-right: 20px;
+}
+
+//alert box Start
+.PA-alert-box {
+  z-index: 1000;
+  margin-top: 30px;
+  //width:97%;
+  position: fixed;
+}
+
+
+//pagination row start
+.pagination-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pagination-dropdown {
+  margin-right: 10px;
+}
+
+
+.pagination-control {
+  margin-left: auto;
+}
+
+.PaginControl {
+  margin-bottom: 16px;
+  margin-right: 20px;
+}

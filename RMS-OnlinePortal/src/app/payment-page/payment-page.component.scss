@@ -1,0 +1,137 @@
+// @import "font-awesome/css/font-awesome.min.css";
+@import '../app.component.scss';
+
+body{
+    //padding-left: 30%;
+    //padding-right: 30%;
+}
+
+i {
+    color: red;
+    position: relative;
+}
+
+.leftside{
+  width: 10%;
+}
+
+.center{
+  width: 80%;
+}
+
+.rightside{
+  width: 10%;
+}
+
+ /* Style the table */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow to the table */
+    border: 1px solid #ccc;
+  }
+  
+  /* Style the table header */
+  .table th {
+    background-color: #2E3192;
+    border: 1px solid #ccc;
+    color: white;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  /* Style the table rows */
+  .table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  /* Style alternating table rows */
+  .table tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+
+  .center-align {
+    text-align: center !important;
+  }
+  
+  .right-align {
+    text-align: right !important;
+  }
+
+  .totalrow{
+    font-weight: bold;
+  }
+
+// /* Style the "Payment Details" section */
+.paymentDetails {
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Add a shadow effect */
+    padding: 20px;
+    border-radius: 5px;
+    margin: 10px 0;
+  }
+  
+//   .paymentDetails h4 {
+//     font-size: 1.5em;
+//     color: #333;
+//     margin-bottom: 15px;
+//   }
+  
+//   /* Style the form container within "Payment Details" */
+  .paymentDetails .form-group {
+    display: flex;
+    flex-direction: row;
+    //justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+//   /* Style form labels within "Payment Details" */
+  .paymentDetails .form-group label {
+    //font-weight: bold;
+    width: 25%;
+    margin-right: 10px;
+  }
+  
+//   /* Style form input fields within "Payment Details" */
+  .paymentDetails .form-group input[type="text"], .paymentDetails .form-group select  {
+    width: 80%;
+    //padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    //margin-bottom: 10px;
+  }
+
+//   /* Add this CSS for the button container */
+  .button-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+//   /* Style for the buttons */
+  .button-container button {
+    padding: 10px 20px; /* Adjust padding as needed */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px; /* Add some spacing between buttons */
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+  button:disabled {
+    background-color: #D01919; /* Red background color for disabled button */
+  }
+
+  .error-validation  {
+    color: red;
+    //text-align: right;
+    margin-top: -20px;
+  }
+
+// /* Style for the input field when validation fails */
+// .invalid-input {
+//   border-color: red !important; /* Red border color when validation fails */
+// }
+  

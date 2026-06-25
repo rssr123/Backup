@@ -1,0 +1,231 @@
+<!-- Loading spinner -->
+<div *ngIf="isLoading" class="loading-icon">
+  <div class="spinner"></div>
+</div>
+
+<!-- Download buttons -->
+<div style="text-align: center; margin-bottom: 30px;">
+  <h1>If Bank In Slip is not downloaded automatically in 5 Seconds, please press the button to download manually.</h1>
+  <button class="btn btnApply spaced-button" type="button" (click)="generatePDF()">
+    {{"buttons.downloadbankinslip" | translate}}
+  </button>
+  <button *ngIf="!vflag" class="btn btnApply spaced-button" type="button" (click)="redirectToMasterBal()">
+    {{"buttons.continue" | translate}}
+  </button>
+</div>
+
+<!-- Main content for PDF generation -->
+<div id="pdfWrapper" class="zoom-wrapper">
+<div id="contentToConvert" class="contentToConvert" style="display: none;">
+  
+  <!-- Header Information Section -->
+  <div class="three-columns">
+    <div class="column"></div>
+    <div class="column">
+      <table class="top-info-table">
+        <tbody>
+          <tr>
+            <th class="first-column">Branch Code</th>
+            <th class="second-column">:</th>
+            <td class="third-column">{{ branch_code || 'N/A'}}</td>
+          </tr>
+          <tr>
+            <th class="first-column">Balancing Date Period</th>
+            <th class="second-column">:</th>
+            <td class="third-column">{{ balDate || 'N/A' | date:'dd MMM yyyy'}}</td>
+          </tr>
+          <tr>
+            <th class="first-column">Completed By</th>
+            <th class="second-column">:</th>
+            <td class="third-column">{{modelBISInfo[0] && modelBISInfo[0].completed_by || 'N/A'}}</td>
+          </tr>
+          <tr>
+            <th class="first-column">Completed Date</th>
+            <th class="second-column">:</th>
+            <td class="third-column">{{modelBISInfo[0] && modelBISInfo[0].dt_completed || 'N/A' | date:'dd MMM yyyy'}}</td>
+          </tr>
+          <tr>
+            <th class="first-column">Total Amount (RM)</th>
+            <th class="second-column">:</th>
+            <td class="third-column">{{modelBISInfo[0] && modelBISInfo[0].total || 0 | number:'.2-2'}}</td>
+          </tr>
+          <tr>
+            <th class="first-column">Cash Amount (RM)</th>
+            <th class="second-column">:</th>
+            <td class="third-column">{{modelBISInfo[0] && modelBISInfo[0].gtotal_cash || 0 | number:'.2-2'}}</td>
+          </tr>
+          <tr>
+            <th class="first-column">No. of Cheque(s)</th>
+            <th class="second-column">:</th>
+            <td class="third-column">{{modelBISInfo[0] && modelBISInfo[0].no_che || 0}}</td>
+          </tr>
+          <tr>
+            <th class="first-column">Cheque Amount (RM)</th>
+            <th class="second-column">:</th>
+            <td class="third-column">{{modelBISInfo[0] && modelBISInfo[0].gtotal_che || 0 | number:'.2-2'}}</td>
+          </tr>
+          <tr>
+            <th class="first-column">No. of Bank Draft(s)</th>
+            <th class="second-column">:</th>
+            <td class="third-column">{{modelBISInfo[0] && modelBISInfo[0].no_bd || 0}}</td>
+          </tr>
+          <tr>
+            <th class="first-column">Bank Draft Amount (RM)</th>
+            <th class="second-column">:</th>
+            <td class="third-column">{{modelBISInfo[0] && modelBISInfo[0].gtotal_bd || 0 | number:'.2-2'}}</td>
+          </tr>
+          <tr>
+            <th class="first-column">No. of Money Order(s)</th>
+            <th class="second-column">:</th>
+            <td class="third-column">{{modelBISInfo[0] && modelBISInfo[0].no_mo || 0}}</td>
+          </tr>
+          <tr>
+            <th class="first-column">Money Order Amount (RM)</th>
+            <th class="second-column">:</th>
+            <td class="third-column">{{modelBISInfo[0] && modelBISInfo[0].gtotal_mo || 0 | number:'.2-2'}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Detailed Information Section -->
+  <div class="three-columns">
+    <div class="column"></div>
+    <div class="column">
+      
+      <!-- Cash Denomination Table -->
+      <h6 class="cbody">CASH DENOMINATION</h6>
+      <table class="tableChild">
+        <thead class="tableChildHeader">
+          <tr>
+            <th>Denomination</th>
+            <th>Quantity</th>
+            <th>Total Amount (RM)</th>
+          </tr>
+        </thead>
+        <tbody class="tableChildBody">
+          <tr *ngFor="let cash of modelBISCash">
+            <td>{{cash.denomination}}</td>
+            <td>{{cash.quantity}}</td>
+            <td>{{cash.amount | number:'.2-2'}}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th class="tableFoot1" colspan="2">TOTAL (RM)</th>
+            <th class="tableFoot2">{{modelBISCash[0] && modelBISCash[0].total_cash || 0 | number : '.2-2'}}</th>
+          </tr>
+        </tfoot>
+      </table>
+
+      <!-- Cheque Information Table -->
+      <h6 class="cbody">CHEQUE INFORMATION</h6>
+      <table class="tableChild">
+        <thead class="tableChildHeader">
+          <tr>
+            <th>No.</th>
+            <th>Collection Slip No.</th>
+            <th>Order Reference No.</th>
+            <th>Bank Name</th>
+            <th>Bank Account No.</th>
+            <th>Cheque No.</th>
+            <th>Payer Name</th>
+            <th>Cheque Date</th>
+            <th>Amount (RM)</th>
+          </tr>
+        </thead>
+        <tbody class="tableChildBody">
+          <tr *ngFor="let che of filterByCheque; let i = index">
+            <td>{{(page - 1) * itemsPerPage + i + 1 }}</td>
+            <td>{{che.col_slip_no}}</td>
+            <td>{{che.orn_no}}</td>
+            <td>{{che.che_bank_nm}}</td>
+            <td>{{che.che_ba_acct_no}}</td>
+            <td>{{che.che_no}}</td>
+            <td>{{che.che_payer_nm}}</td>
+            <td>{{che.che_date | date: 'dd MMM yyyy'}}</td>
+            <td>{{che.che_amt | number:'.2-2'}}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th class="tableFoot1" colspan="8">TOTAL (RM)</th>
+            <th class="tableFoot2">{{totalChequeAmount || 0 | number:'.2-2'}}</th>
+          </tr>
+        </tfoot>
+      </table>
+
+      <!-- Bank Draft Information Table -->
+      <h6 class="cbody">BANK DRAFT INFORMATION</h6>
+      <table class="tableChild">
+        <thead class="tableChildHeader">
+          <tr>
+            <th>No.</th>
+            <th>Collection Slip No.</th>
+            <th>Order Reference No.</th>
+            <th>Bank Name</th>
+            <th>Bank Draft No.</th>
+            <th>Bank Draft Date</th>
+            <th>Amount (RM)</th>
+          </tr>
+        </thead>
+        <tbody class="tableChildBody">
+          <tr *ngFor="let bd of filterByBD; let i = index">
+            <td>{{(page - 1) * itemsPerPage + i + 1 }}</td>
+            <td>{{bd.col_slip_no}}</td>
+            <td>{{bd.orn_no}}</td>
+            <td>{{bd.bd_bank_nm}}</td>
+            <td>{{bd.bd_no}}</td>
+            <td>{{bd.bd_date | date: 'dd MMM yyyy'}}</td>
+            <td>{{bd.bd_amt | number:'.2-2'}}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th class="tableFoot1" colspan="6">TOTAL (RM)</th>
+            <th class="tableFoot2">{{totalBDAmount || 0 | number: '.2-2'}}</th>
+          </tr>
+        </tfoot>
+      </table>
+
+      <!-- Money Order Information Table -->
+      <h6 class="cbody">MONEY ORDER INFORMATION</h6>
+      <table class="tableChild">
+        <thead class="tableChildHeader">
+          <tr>
+            <th>No.</th>
+            <th>Collection Slip No.</th>
+            <th>Order Reference No.</th>
+            <th>Remit No.</th>
+            <th>Money Order Date</th>
+            <th>Payer Name</th>
+            <th>ID No.</th>
+            <th>Contact No.</th>
+            <th>Amount (RM)</th>
+          </tr>
+        </thead>
+        <tbody class="tableChildBody">
+          <tr *ngFor="let mo of filterByMO; let i = index">
+            <td>{{(page - 1) * itemsPerPage + i + 1 }}</td>
+            <td>{{mo.col_slip_no}}</td>
+            <td>{{mo.orn_no}}</td>
+            <td>{{mo.mo_rm_no}}</td>
+            <td>{{mo.mo_date | date: 'dd MMM yyyy'}}</td>
+            <td>{{mo.mo_payer_nm}}</td>
+            <td>{{mo.mo_id_no}}</td>
+            <td>{{mo.mo_contact_no}}</td>
+            <td>{{mo.mo_amt | number:'.2-2'}}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th class="tableFoot1" colspan="8">TOTAL (RM)</th>
+            <th class="tableFoot2">{{totalMOAmount || 0 | number:'.2-2'}}</th>
+          </tr>
+        </tfoot>
+      </table>      
+    </div>
+  </div>
+</div>
+</div>

@@ -1,0 +1,584 @@
+<div *ngIf="isLoading" class="loading-icon">
+    <div class="spinner"></div>
+</div>
+<body class="BodyCointaner">
+    <div class="PAContainer74">
+        <!-- Counter Information -->
+        <!-- <ul class="breadcrumbOTC">
+            <li>
+                <a [routerLink]="'/home'">{{"menu.home" | translate}}</a>
+                <span class="breadcrumb-separator"> / </span>
+                <a [routerLink]="'/master-balancing-listing'">{{"labels.masterbalancinglisting" | translate}}</a>
+                <span class="breadcrumb-separator"> / </span>
+                <a [routerLink]="'/master-balancing-detail'">{{"labels.masterbalancingdetail" | translate}}</a>
+            </li>
+        </ul> -->
+        <div>
+            <h3 style="margin-left:3%; margin-bottom: -2%;">{{"labels.sectionA" | translate}}</h3>
+        </div>
+        <div class="row">
+            <div class="left-field">
+                <h3>{{"counterssummary" | translate}}</h3>
+            </div>
+            <div class="right-field">
+                <button *ngIf="modelBalInfo[0] && modelBalInfo[0].status == 'Completed'" class="btn btnApply" type="button" (click)="generatePDFfromAnotherPage()">{{"buttons.downloadbankinslip" | translate}}</button>
+                <button *ngIf="modelBalInfo[0] && modelBalInfo[0].status == 'Completed'" class="btn btnApply" type="button" (click)="this.exportToPDF()">{{"buttons.downloadreport" | translate}}</button>
+                <h3>{{"masterbalancingstatus" | translate}}<span [ngStyle]="{'color': modelBalInfo[0] && modelBalInfo[0].status === 'Completed' ? '#21BA45' : '#EDD622'}">{{modelBalInfo[0] && modelBalInfo[0].status || 'N/A'}}</span></h3> 
+            </div>
+        </div>
+        <div class="section">
+            <table class="tableCounterInfo">
+                <tr>
+                    <td><label class="labelBold">{{"labels.branchcode" | translate}}</label></td>
+                    <td>
+                        <input type="text" class="form-control" value="{{modelBalInfo[0] && modelBalInfo[0].branch_cd || 'N/A'}}" disabled />
+                    </td>
+                    <td></td><!--Empty cell-->
+                    <td><label class="labelBold">{{"labels.balancingdateperiod" | translate}}</label></td>
+                    <td>
+                        <input type="text" class="form-control" value="{{this.balDate | date:'dd MMM yyyy'}}" disabled />
+                    </td>
+                    <td></td> <!-- Empty cell-->
+                    <td><label class="labelBold">{{"labels.noofcounters" | translate}}</label></td>
+                    <td>
+                        <input type="text" class="form-control" value="{{modelBalInfo[0] && modelBalInfo[0].no_of_counters || 'N/A'}}" disabled />
+                    </td>
+                </tr>
+                <tr>
+                    <td><label class="labelBold">{{"labels.nooftransactions" | translate}}</label></td>
+                    <td>
+                        <input type="text" class="form-control" value="{{modelBalInfo[0] && modelBalInfo[0].no_of_txn || 0}}" disabled />
+                    </td>
+                    <td></td><!--Empty cell-->
+                    <td><label class="labelBold">{{"labels.otctotalamountrm" | translate}}</label></td>
+                    <td>
+                        <input type="text" class="form-control" value="{{modelBalInfo[0] && modelBalInfo[0].total || 0 | number:'.2-2'}}" disabled />
+                    </td>
+                    <td></td> <!-- Empty cell-->
+                    <td><label class="labelBold">{{"labels.totalemv" | translate}}</label></td>
+                    <td>
+                        <input type="text" class="form-control" value="{{modelBalInfo[0] && modelBalInfo[0].total_emv || 0 | number:'.2-2'}}" disabled />
+                    </td>
+                </tr>
+                <tr>
+                    <td><label class="labelBold">{{"totalphysical" | translate}}</label></td>
+                    <td>
+                        <input type="text" class="form-control" value="{{modelBalInfo[0] && modelBalInfo[0].total_phy || 0 | number:'.2-2'}}" disabled />
+                    </td>
+                    <td></td><!--Empty cell-->
+                    <td><label class="labelBold">{{"totalcash" | translate}}</label></td>
+                    <td>
+                        <input type="text" class="form-control" value="{{modelBalInfo[0] && modelBalInfo[0].total_cash || 0 | number:'.2-2'}}" disabled />
+                    </td>
+                    <td></td> <!-- Empty cell-->
+                    <td><label class="labelBold">{{"totalcheque" | translate}}</label></td>
+                    <td>
+                        <input type="text" class="form-control" value="{{modelBalInfo[0] && modelBalInfo[0].total_che || 0 | number:'.2-2'}}" disabled />
+                    </td>
+                </tr>
+                <tr>
+                    <td><label class="labelBold">{{"totalbankdraft" | translate}}</label></td>
+                    <td>
+                        <input type="text" class="form-control" value="{{modelBalInfo[0] && modelBalInfo[0].total_bd || 0 | number:'.2-2'}}" disabled />
+                    </td>
+                    <td></td><!--Empty cell-->
+                    <td><label class="labelBold">{{"totalmoneyorder" | translate}}</label></td>
+                    <td>
+                        <input type="text" class="form-control" value="{{modelBalInfo[0] && modelBalInfo[0].total_mo || 0 | number:'.2-2'}}" disabled />
+                    </td>
+                    <td></td> <!-- Empty cell-->
+                    <td><label class="labelBold">{{"labels.noreceiptscancelled" | translate}}</label></td>
+                    <td>
+                        <input type="text" class="form-control" value="{{modelBalInfo[0] && modelBalInfo[0].no_of_rcpt_can || 0}}" disabled />
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- RMS Collection Summary -->
+        <div class="row">
+            <div class="left-field">
+                <h3>{{"labels.receiptcancellationtable" | translate}}</h3>
+            </div>
+        </div>
+        <div class="section">
+            <table class="MATable">
+                <thead>
+                    <tr class="MATableHeader">
+                        <th>No.</th>
+                        <th>{{"labels.collectionslipno" | translate}}</th>
+                        <th>{{"labels.orderreferenceno" | translate}}</th>
+                        <th>{{"labels.rcptno" | translate}}</th>
+                        <th>{{"labels.otctotalamountrm" | translate}}</th>
+                        <th>{{"labels.paymentmode" | translate}}</th>
+                        <th>{{"labels.requestedby" | translate}}</th>
+                        <th>{{"labels.approvedby" | translate}}</th>
+                        <th>{{"labels.receiptcancellationreason" | translate}}</th>
+                        <th>{{"labels.action" | translate}}</th>
+                    </tr>
+                </thead>
+                <tbody *ngIf="isEmptyResultRC">
+                    <tr>
+                        <td colspan="10">
+                            <div>
+                                <div>
+                                    <div class="alert alert-warning" role="alert">
+                                        {{"showResultAlert" | translate}}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+                <tbody *ngIf="isEmptyResultRC === false">
+                    <tr *ngFor="let rc of modelBalRC; let i = index">
+                        <td>{{(page - 1) * itemsPerPage + i + 1 }}</td>
+                        <td>{{rc.coll_slip_no}}</td>
+                        <td>{{rc.orn_no}}</td>
+                        <td>{{rc.rcpt_no}}</td>
+                        <td>{{rc.totalAmount | number:'.2-2'}}</td>
+                        <td>{{rc.otc_pymt_mode}}</td>
+                        <td>{{rc.requested_by}}</td>
+                        <td>{{rc.approved_by}}</td>
+                        <td>{{rc.remark}}</td>
+                        <td><button class="btn btnView" (click)="viewRC(rc)">{{"buttons.view" | translate}}</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="margin-top:5%">
+            <hr> 
+        </div>
+
+        <!-- EMV Collection Summary -->
+        <div class="row">
+            <div class="left-field">
+                <h3>{{"labels.sectionB" | translate}}</h3>
+                <h3>{{"emvcollectionsummary" | translate}}</h3>
+            </div>
+        </div>
+        <div class="section">
+            <div class="cardSection">
+                <h4>{{"emvtransactions" | translate}}</h4>
+                <table class="MATable">
+                    <thead>
+                        <tr class="MATableHeader">
+                            <th>No.</th>
+                            <th>{{"labels.collectionslipno" | translate}}</th>
+                            <th>{{"labels.orderreferenceno" | translate}}</th>
+                            <th>{{"labels.transactiontrace" | translate}}</th>
+                            <th>{{"labels.batchnumber" | translate}}</th>
+                            <th>{{"labels.hostnumber" | translate}}</th>
+                            <th>{{"labels.terminalid" | translate}}</th>
+                            <th>{{"labels.otctotalamountrm" | translate}}</th>
+                            <th>{{"labels.action" | translate}}</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="isEmptyResultEMV">
+                        <tr>
+                            <td colspan="10">
+                                <div>
+                                    <div>
+                                        <div class="alert alert-warning" role="alert">
+                                            {{"showResultAlert" | translate}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="isEmptyResultEMV === false">
+                        <tr *ngFor="let emv of modelBalEMV; let i = index">
+                            <td>{{(page - 1) * itemsPerPage + i + 1 }}</td>
+                            <td>{{emv.col_slip_no}}</td>
+                            <td>{{emv.orn_no}}</td>
+                            <td>{{emv.trans_trace}}</td>
+                            <td>{{emv.batch_no}}</td>
+                            <td>{{emv.host_no}}</td>
+                            <td>{{emv.t_id}}</td>
+                            <td>{{emv.amount | number:'.2-2'}}</td>
+                            <td><button class="btn btnView" (click)="fetchCollectionInfo(emv)">{{"buttons.view" | translate}}</button></td>
+                        </tr>
+                    </tbody>
+
+                </table>
+                <br>
+                <div class="MAPaginationOTC" *ngIf="isEmptyResultEMV === false">
+                    <div class="fgSpacing">
+                        <div *ngIf="page * itemsPerPage < totalRecordsEMV">
+                            {{"showing" | translate}} {{ page * itemsPerPage }} {{"from" | translate}} {{ totalRecordsEMV }}
+                            {{"results"
+                            | translate}}
+                        </div>
+                        <div *ngIf="!(page * itemsPerPage < totalRecordsEMV)">
+                            {{"showing" | translate}} {{ totalRecordsEMV }} {{"from" | translate}} {{ totalRecordsEMV }} {{"results" |translate}}
+                        </div>
+                    </div>
+                    <div class="pagination-row">
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle PaginControl" type="button"
+                                id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false">
+                                {{ selectedValue }}
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton">
+                                <button class="dropdown-item" *ngFor="let singleItem of dropdownOptions"
+                                (click)="LoadEMVData(singleItem)">
+                                    {{ singleItem }}
+                                </button>
+                            </div>
+                        </div>
+    
+                        <ngb-pagination [(page)]="page" [pageSize]="itemsPerPage" [collectionSize]="totalRecordsEMV"
+                            (pageChange)="loadBalEMV()"></ngb-pagination>
+                    </div>
+                </div>
+
+                <!--EMV Settlement Information-->
+                <br>
+                <br>
+                <h4>{{"labels.emvsettlementinformation" | translate}}</h4>
+                <table class="MATable">
+                    <thead>
+                        <tr class="MATableHeader">
+                            <th>No.</th>
+                            <th>{{"labels.fileupload" | translate}}</th>
+                            <th>{{"labels.terminalid" | translate}}</th>
+                            <th>{{"labels.settlementdatetime" | translate}}</th>
+                            <th>{{"labels.batchnumber" | translate}}</th>
+                            <th>{{"labels.batchcount" | translate}}</th>
+                            <th>{{"labels.batchamountrm" | translate}}</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="this.isEmptyResultEMVS">
+                        <tr>
+                            <td colspan="7">
+                                <div>
+                                    <div>
+                                        <div class="alert alert-warning" role="alert">
+                                            {{"showResultAlert" | translate}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="this.isEmptyResultEMVS === false">
+                        <tr *ngFor="let emvs of modelBalSettlementEMV; let i = index">
+                            <td>{{i + 1}}</td>
+                            <td><a (click)="downloadFile(emvs)" style="color: blue; text-decoration: underline;">{{emvs.fileNm}}</a></td>
+                            <td>{{emvs.terminalId}}</td>
+                            <td>{{emvs.dtSettlement}}</td>
+                            <td>{{emvs.batchNo}}</td>
+                            <td>{{emvs.batchCount}}</td>
+                            <td>{{emvs.batchAmt | number:'.2-2'}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!--EMV Transactions Total VS EMV Settlement Total-->
+                <br>
+                <br>
+                <h4>{{"emvtransactionstotalvsemvsettlementtotal" | translate}}</h4>
+                <table class="MATable">
+                    <thead>
+                        <tr class="MATableHeader">
+                            <th>{{"labels.terminalid" | translate}}</th>
+                            <th>{{"labels.emvtransactionstotal" | translate}}</th>
+                            <th>{{"labels.emvsettlementtotalrm" | translate}}</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="this.isEmptyResult">
+                        <tr>
+                            <td colspan="10">
+                                <div>
+                                    <div>
+                                        <div class="alert alert-warning" role="alert">
+                                            {{"showResultAlert" | translate}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="this.isEmptyResult === false">
+                        <tr *ngFor="let emv of filterByEMV">
+                            <td>{{emv.col_slip_no}}</td>
+                            <td>{{emv.total_cash_amt | number:'.2-2'}}</td>
+                            <td>{{emv.totalFromEMV || 0 | number: '.2-2'}}</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="2" style="text-align: right;">{{ "labels.total" | translate }}</th>
+                            <th>{{this.totalEMVSAmount || 0 | number: '.2-2'}}</th>
+                        </tr>
+                    </tfoot>
+                </table>                
+            </div>
+        </div>
+
+        <div style="margin-top:5%">
+            <hr> 
+        </div>
+
+        <!-- Counter Physical Collection -->
+        <div class="row">
+            <div class="left-field">
+                <h3>{{"labels.sectionC" | translate}}</h3>
+                <h3>{{"physicalcollectionsummary" | translate}}</h3>
+            </div>
+        </div>
+        <div class="section">
+            <div class="cardSection">
+                <h4>{{"cashdenominationentrytable" | translate}}</h4>
+                <table class="MATable">
+                    <thead>
+                      <tr class="MATableHeader">
+                        <th>{{"labels.denomination" | translate}}</th>
+                        <th>{{"labels.quantity" | translate}}</th>
+                        <th>{{"labels.totalamountrm" | translate}}</th>
+                        <th>{{"labels.rmsestimatedamount" | translate}}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                          <tr *ngFor="let money of moneys">
+                            <td>{{ money.name }}</td>
+                            <td *ngIf="this.flag === true" [(ngModel)]="money.quantity" >{{ money.quantity}}</td>
+                            <td *ngIf="this.flag === false">
+                                <input 
+                                min="0"
+                                type="number"
+                                [(ngModel)]="money.quantity" 
+                                (ngModelChange)="calculateTotal()"
+                                (keydown)="preventInvalidInput($event)"
+                                >
+                              </td>
+                            <td>{{ money.quantity * money.price | number:'.2-2' }}</td>
+                            <td>
+                                {{ ((moneyMap.get(money.param_cd)?.quantity || 0) * money.price) | number:'.2-2' }}
+                            </td>
+                          </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr class="labelBold">
+                        <th colspan="2" style="text-align: right;">{{"labels.total" | translate}}</th>
+                        <th>{{ grandCashTotal || 0  | number:'.2-2' }}</th>
+                        <td>{{modelBalCash[0] && modelBalCash[0].total || 0 | number:'.2-2'}}</td>
+                      </tr>
+                    </tfoot>
+                </table>
+                  
+                <br>
+                <br>
+
+                <h4>{{"chequeinformationentrytable" | translate}}</h4>
+                <table class="MATable">
+                    <thead>
+                        <tr class="MATableHeader">
+                            <th>No.</th>
+                            <th>{{"labels.collectionslipno" | translate}}</th>
+                            <th>{{"labels.orderreferenceno" | translate}}</th>
+                            <th>{{"labels.bankname" | translate}}</th>
+                            <th>{{"labels.bankaccno" | translate}}</th>
+                            <th>{{"labels.chequeno" | translate}}</th>
+                            <th>{{"labels.payername" | translate}}</th>
+                            <th>{{"labels.chequedate" | translate}}</th>
+                            <th>{{"labels.amountrm" | translate}}</th>
+                            <th>{{"labels.changemode" | translate}}</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="isEmptyResultChe">
+                        <tr>
+                            <td colspan="10">
+                                <div>
+                                    <div>
+                                        <div class="alert alert-warning" role="alert">
+                                            {{"showResultAlert" | translate}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="isEmptyResultChe === false">
+                        <tr *ngFor="let che of filterByCheque; let i = index">
+                            <td>{{(page - 1) * itemsPerPage + i + 1 }}</td>
+                            <td>{{che.col_slip_no}}</td>
+                            <td>{{che.orn_no}}</td>
+                            <td>{{che.che_bank_nm}}</td>
+                            <td>{{che.che_ba_acct_no}}</td>
+                            <td>{{che.che_no}}</td>
+                            <td>{{che.che_payer_nm}}</td>
+                            <td>{{che.che_date | date: 'dd MMM yyyy'}}</td>
+                            <td>{{che.che_amt | number:'.2-2'}}</td>
+                            <button [disabled]="modelBalInfo[0] && modelBalInfo[0].status === 'Completed'" class="btn btnApply" type="button" (click)="changePaymentMode(che)">{{"buttons.change" | translate}}</button>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr class="labelBold">
+                            <td colspan="8" style="text-align: right;">{{"labels.total" | translate}}</td>
+                            <td colspan="3">{{totalChequeAmount || 0  | number:'.2-2'}}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+
+                <br>
+                <br>
+
+                <h4>{{"bankdraftinformationentrytable" | translate}}</h4>
+                <table class="MATable">
+                    <thead>
+                        <tr class="MATableHeader">
+                            <th>No.</th>
+                            <th>{{"labels.collectionslipno" | translate}}</th>
+                            <th>{{"labels.orderreferenceno" | translate}}</th>
+                            <th>{{"labels.bankname" | translate}}</th>
+                            <th>{{"labels.bankdraftno" | translate}}</th>
+                            <th>{{"labels.bankdraftdate" | translate}}</th>
+                            <th>{{"labels.amountrm" | translate}}</th>
+                            <th>{{"labels.changemode" | translate}}</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="isEmptyResultBD">
+                        <tr>
+                            <td colspan="8">
+                                <div>
+                                    <div>
+                                        <div class="alert alert-warning" role="alert">
+                                            {{"showResultAlert" | translate}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="isEmptyResultBD === false">
+                        <tr *ngFor="let bd of filterByBD; let i = index">
+                            <td>{{(page - 1) * itemsPerPage + i + 1 }}</td>
+                            <td>{{bd.col_slip_no}}</td>
+                            <td>{{bd.orn_no}}</td>
+                            <td>{{bd.bd_bank_nm}}</td>
+                            <td>{{bd.bd_no}}</td>
+                            <td>{{bd.bd_date | date: 'dd MMM yyyy'}}</td>
+                            <td>{{bd.bd_amt | number:'.2-2'}}</td>
+                            <button [disabled]="modelBalInfo[0] && modelBalInfo[0].status === 'Completed'" class="btn btnApply" type="button" (click)="changePaymentMode(bd)">{{"buttons.change" | translate}}</button>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr class="labelBold">
+                            <td colspan="6" style="text-align: right;">{{"labels.total" | translate}}</td>
+                            <td colspan="2">{{totalBDAmount || 0  | number:'.2-2'}}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+
+                <br>
+                <br>
+
+                <h4>{{"moneyorderentrytable" | translate}}</h4>
+                <table class="MATable">
+                    <thead>
+                        <tr class="MATableHeader">
+                            <th>No.</th>
+                            <th>{{"labels.collectionslipno" | translate}}</th>
+                            <th>{{"labels.orderreferenceno" | translate}}</th>
+                            <th>{{"labels.remitno" | translate}}</th>
+                            <th>{{"labels.moneyorderdate" | translate}}</th>
+                            <th>{{"labels.payername" | translate}}</th>
+                            <th>{{"labels.IDno" | translate}}</th>
+                            <th>{{"labels.contactno" | translate}}</th>
+                            <th>{{"labels.amountrm" | translate}}</th>
+                            <th>{{"labels.changemode" | translate}}</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="isEmptyResultMO">
+                        <tr>
+                            <td colspan="10">
+                                <div>
+                                    <div>
+                                        <div class="alert alert-warning" role="alert">
+                                            {{"showResultAlert" | translate}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="isEmptyResultMO === false">
+                        <tr *ngFor="let mo of filterByMO; let i = index">
+                            <td>{{(page - 1) * itemsPerPage + i + 1 }}</td>
+                            <td>{{mo.col_slip_no}}</td>
+                            <td>{{mo.orn_no}}</td>
+                            <td>{{mo.mo_rm_no}}</td>
+                            <td>{{mo.mo_date | date: 'dd MMM yyyy'}}</td>
+                            <td>{{mo.mo_payer_nm}}</td>
+                            <td>{{mo.mo_id_no}}</td>
+                            <td>{{mo.mo_contact_no}}</td>
+                            <td>{{mo.mo_amt | number:'.2-2'}}</td>
+                            <button [disabled]="modelBalInfo[0] && modelBalInfo[0].status === 'Completed'" class="btn btnApply" type="button" (click)="changePaymentMode(mo)">{{"buttons.change" | translate}}</button>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr class="labelBold">
+                            <td colspan="8" style="text-align: right;">{{"labels.total" | translate}}</td>
+                            <td colspan="2">{{totalMOAmount || 0 | number: '.2-2'}}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+
+                <div style="margin-top:5%">
+                    <hr> 
+                </div>
+
+                <h4>{{"rmstotalvscountertotal" | translate}}</h4>
+                <table class="MATable">
+                    <thead>
+                        <tr class="MATableHeader">
+                            <th></th>
+                            <th>{{"labels.emvamountrm" | translate}}</th>
+                            <th>{{"labels.cashamountrm" | translate}}</th>
+                            <th>{{"labels.chequeamountrm" | translate}}</th>
+                            <th>{{"labels.bankdraftrm" | translate}}</th>
+                            <th>{{"labels.moneyorderamountrm" | translate}}</th>
+                            <th>{{"labels.totalcollectedamount" | translate}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th class="MATableHeader">{{"rmscollection" | translate}}</th>
+                            <td>{{modelBalInfo[0].total_emv | number: '.2-2' }}</td>
+                            <td>{{modelBalInfo[0] && modelBalInfo[0].total_cash || 0 | number : '.2-2'}}</td>
+                            <td>{{modelBalInfo[0] && modelBalInfo[0].total_che || 0   | number : '.2-2'}}</td>
+                            <td>{{modelBalInfo[0] && modelBalInfo[0].total_bd || 0   | number: '.2-2'}}</td>
+                            <td>{{modelBalInfo[0] && modelBalInfo[0].total_mo || 0   | number: '.2-2'}}</td>
+                            <td>{{modelBalInfo[0] && modelBalInfo[0].total || 0  | number: '.2-2'}}</td>
+                        </tr>
+                        <tr>
+                            <th class="MATableHeader">{{"labels.countercollectionreport" | translate}}</th>
+                            <td>{{this.totalEMVSAmount || 0 | number: '.2-2'}}</td>
+                            <td>{{grandCashTotal | number : '.2-2'}}</td>
+                            <td>{{totalChequeAmount | number : '.2-2'}}</td>
+                            <td>{{totalBDAmount | number: '.2-2'}}</td>
+                            <td>{{totalMOAmount | number: '.2-2'}}</td>
+                            <td>{{grandTotal | number: '.2-2'}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <br>
+                <br>
+                <div *ngIf="modelBalInfo[0] && modelBalInfo[0].status === 'Completed'" class="button-container">         
+                    <button class="btn btnApply" type="button" disabled>{{"buttons.submit" | translate}}</button>
+                    <button class="btn btnCancel" type="button" (click)="back()">{{"buttons.back" | translate}}</button>
+                </div>
+                <div *ngIf="modelBalInfo[0] && modelBalInfo[0].status != 'Completed'" class="button-container">         
+                    <button class="btn btnApply" type="button" [disabled]="!isDataMatching()" (click)="submit()">{{"buttons.submit" | translate}}</button>
+                    <button class="btn btnCancel" type="button" (click)="cancel()">{{"buttons.cancel" | translate}}</button>
+                </div>
+                <p class="note">{{"labels.thesubmitbuttonwillbedisabledifthetotalamountincomparisondoesnotmatch" | translate}}</p>
+            </div>
+        </div>
+    </div>
+</body>

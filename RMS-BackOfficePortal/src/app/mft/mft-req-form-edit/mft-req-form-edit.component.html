@@ -1,0 +1,548 @@
+<ng-container *ngIf="permListAllow === 1">
+
+   <body class="BodyCointaner">
+      <div class="leftPadding">
+         <div *ngIf="error" class="error-box">
+            <i class="bi bi-x-circle-fill error-icon"></i>
+            <div>
+               <strong>{{"validationerror"| translate}}</strong>
+               <ul>
+                  <ul>
+                     <li *ngFor="let errorMsg of errorMessages">{{ errorMsg }}</li>
+                  </ul>
+               </ul>
+            </div>
+         </div>
+
+         <div *ngIf="errorTaskNotUpdate" class="error-box">
+            <i class="bi bi-x-circle-fill error-icon"></i>
+            <div>
+               <strong>{{"tasknotfound"| translate}}</strong>
+               <ul>
+                  <ul>
+                     <li *ngFor="let errorMsgTaskNotUpdate of errorMessagesTaskNotUpdate">
+                        {{"labels.thetaskstatushasbeenupdated.pleaserefreshthepagetoreflectthelatestchanges" |
+                        translate}}</li>
+                  </ul>
+               </ul>
+            </div>
+         </div>
+
+         <!-- file upload error message -->
+         <div *ngIf="errorFile" class="error-box">
+            <i class="bi bi-x-circle-fill error-icon"></i>
+            <div>
+               <strong>{{"uploaderror"| translate}}</strong>
+               <ul>
+                  <ul>
+                     <li *ngFor="let errorFileMsg of errorFileMessages">{{"labels.theselectedfile" | translate}} {{
+                        errorFileMsg }}
+                        {{"labels.isinaninvalidfileformatortemplate" | translate}}
+                     </li>
+                  </ul>
+               </ul>
+            </div>
+         </div>
+
+         <div *ngIf="errorFileSizeLimit" class="error-box">
+            <i class="bi bi-x-circle-fill error-icon"></i>
+            <div>
+               <strong>{{"filelimit"| translate}}</strong>
+               <ul>
+                  <ul>
+                     <li *ngFor="let errorFileSizeLimitMsg of errorFileSizeLimitMessages">
+                        {{"labels.filesizelimitmessage" | translate}}
+                     </li>
+                  </ul>
+               </ul>
+            </div>
+         </div>
+
+         <div *ngIf="errorFileDuplicate" class="error-box">
+            <i class="bi bi-x-circle-fill error-icon"></i>
+            <div>
+               <strong>{{"duplicate"| translate}}</strong>
+               <ul>
+                  <ul>
+                     <li *ngFor="let errorDuplicateMsg of errorFileDuplicateMessages">
+                        {{errorDuplicateMsg}} {{"labels.alreadyselected.pleasechooseadifferentfile" | translate}}
+                     </li>
+                  </ul>
+               </ul>
+            </div>
+         </div>
+
+         <!-- <div class="LeftSectionPosition">{{"labels.Home / Request / Request Edit MFT" | translate}}</div> -->
+         <h2 id="requestAddMFt">{{"labels.requesteditmft-requesterform" | translate}}</h2>
+      </div>
+      <div class="MALoadingContainer">
+         <!-- Loading spinner overlay -->
+         <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+            <div class="spinner-border" role="status">
+               <span class="sr-only"></span>
+            </div>
+         </div>
+         <form class="allFormClass" class="form-group" #formRef="ngForm" (ngSubmit)="handleFormSubmit(formRef)"
+            (keydown.enter)="$event.preventDefault()">
+            <div class="formContainer">
+               <div class="leftSection">
+                  <table class="MatFormTable">
+                     <ng-container *ngIf="(!inputDetails && totalRecords>0) || inputDetails; else noResults">
+                        <tbody *ngIf="(!inputDetails && totalRecords>0) || inputDetails">
+                           <tr>
+                              <td>{{"labels.sourcesystemcode" | translate}}</td>
+                              <td><ng-select name="sourceSystemCode" [(ngModel)]="rSelectedSourceSystemCodes"
+                                    #sourceSystemCodeRef="ngModel" [multiple]="true" dropdownPosition="bottom"
+                                    (change)="onSourceSystemChange()" maxlength="100">
+                                    <ng-option *ngFor="let item of rSourceSystemCodes"
+                                       [value]="item.ss_cd">{{item.ss_cd}}</ng-option>
+                                 </ng-select>
+                              </td>
+                           </tr>
+                           <!-- <tr>
+                         <td>{{"labels.feedetailname" | translate}} <span style="color: red;">*</span></td>
+                         <td><ng-select class="tempRFeeDetNm" name="tempRFeeDetNm" [(ngModel)]="tempFeeDetailPK" required  #rFeeDetNmRef="ngModel" dropdownPosition="bottom" maxlength="100">
+                            <ng-option *ngFor="let item of mfts" [value]="item.fee_detail_pk">{{item.fee_detail_id}} : {{item.fee_detail_nm_e}}</ng-option>
+                            </ng-select> 
+                            <div *ngIf="rFeeDetNmRef.errors && rFeeDetNmRef.errors['required'] && rFeeDetNmRef.touched" class="error-text">
+                              {{"labels.feedetailnameisrequired" | translate}}
+                            </div>     
+                         </td> 
+                      </tr>           -->
+                           <tr>
+                              <td>{{"labels.feedetailname" | translate}} <span style="color: red;">*</span></td>
+                              <td>
+                                 <ng-select class="tempRFeeDetNm" name="tempRFeeDetNm" [(ngModel)]="tempFeeDetailPK"
+                                    required #rFeeDetNmRef="ngModel" dropdownPosition="bottom" [virtualScroll]="true"
+                                    [items]="mfts" bindLabel="fee_detail_id" bindValue="fee_detail_pk"
+                                    [typeahead]="searchTermSubject" (scrollToEnd)="loadMoreItems()" [loading]="loading">
+
+                                    <ng-template ng-label-tmp let-item="item">
+                                       {{ item.fee_detail_id }} : {{ item.fee_detail_nm_e }}
+                                    </ng-template>
+
+                                    <ng-template ng-option-tmp let-item="item">
+                                       {{ item.fee_detail_id }} : {{ item.fee_detail_nm_e }}
+                                    </ng-template>
+                                 </ng-select>
+
+                                 <div *ngIf="rFeeDetNmRef.errors?.['required'] && rFeeDetNmRef.touched"
+                                    class="error-text">
+                                    {{"labels.feedetailnameisrequired" | translate}}
+                                 </div>
+                              </td>
+                           </tr>
+
+                           <tr>
+                              <td>{{"labels.unitfee(RM)" | translate}}</td>
+                              <td>
+                                 <input type="text" class="form-control" id="rFeeAmt" name="rFeeAmt"
+                                    [(ngModel)]="rFeeAmt" #rFeeAmtRef="ngModel" maxlength="15"
+                                    pattern="^\d+(\.\d{1,2})?$" (blur)="formatInput(rFeeAmtRef)"
+                                    (input)="validateInput(rFeeAmtRef)"
+                                    [ngClass]="{'is-invalid': rFeeAmtRef.invalid && (rFeeAmtRef.dirty || rFeeAmtRef.touched)}">
+                                 <div *ngIf="rFeeAmtRef.errors?.['pattern'] && rFeeAmtRef.touched" class="error-text">
+                                    {{"labels.enterapositivedecimalnumber" | translate}}
+                                 </div>
+                                 <div *ngIf="rFeeAmtRef.errors?.['negative'] && rFeeAmtRef.touched" class="error-text">
+                                    {{"labels.negativenumbersarenotallowed" | translate}}
+                                 </div>
+                              </td>
+                           </tr>
+
+                           <tr>
+                              <td>{{"labels.promotionstartdate" | translate}}</td>
+                              <td>
+                                 <input type="text" class="form-control" bsDatepicker autocomplete="off"
+                                    [(ngModel)]="rPromoStartDt" name="rPromoStartDt"
+                                    [ngModelOptions]="{ standalone: true }" (keydown)="clearStartDate($event)"
+                                    [minDate]="minPromoStartDate" (ngModelChange)="onStartDateChange($event)"
+                                    [bsConfig]="{ dateInputFormat: 'DD MMM YYYY', showWeekNumbers:false }">
+                                 <div *ngIf="isPromoStartDateNotSelected()" class="error-text">
+                                    {{"labels.pleaseselectpromotionstartdate" | translate}}
+                                 </div>
+                                 <div *ngIf="isPromoStartDateInvalid()" class="error-text">
+                                    {{"labels.promotionstartdateshouldbegreaterthantoday" | translate}}
+                                 </div>
+                              </td>
+                           </tr>
+                           <tr>
+                              <td>{{"labels.promotionenddate" | translate}}</td>
+                              <td>
+                                 <input type="text" class="form-control" bsDatepicker autocomplete="off"
+                                    [(ngModel)]="rPromoEndDt" name="rPromoEndDt" [ngModelOptions]="{ standalone: true }"
+                                    (keydown)="clearEndDate($event)" [minDate]="minPromoEndDate"
+                                    [bsConfig]="{ dateInputFormat: 'DD MMM YYYY', showWeekNumbers:false }">
+                                 <div *ngIf="isPromoEndDateNotSelected()" class="error-text">
+                                    {{"labels.pleaseselectpromotionenddate" | translate}}
+                                 </div>
+                                 <div *ngIf="isPromoEndDateInvalid()" class="error-text">
+                                    {{"labels.promotionenddateshouldbegreaterthantoday" | translate}}
+                                 </div>
+                                 <div *ngIf="isPromoEndDateLessThanPromoEndDate()" class="error-text">
+                                    {{"labels.promotionenddateshouldbegreaterthanpromotionstartdate" | translate}}
+                                 </div>
+                              </td>
+                           </tr>
+                           <tr>
+                              <td>{{"labels.promotionfee(RM)" | translate}}</td>
+                              <td>
+                                 <input type="text" class="form-control" id="rPromoFee" name="rPromoFee"
+                                    [(ngModel)]="rPromoFee" #rPromoFeeRef="ngModel" maxlength="15"
+                                    pattern="^\d+(\.\d{1,2})?$" (blur)="formatInputRPromoFee(rPromoFeeRef)"
+                                    (input)="validateInput(rPromoFeeRef)"
+                                    [ngClass]="{'is-invalid': rPromoFeeRef.invalid && (rPromoFeeRef.dirty || rPromoFeeRef.touched)}">
+                                 <div *ngIf="rPromoFeeRef.errors?.['pattern'] && rPromoFeeRef.touched"
+                                    class="error-text">
+                                    {{"labels.enterapositivedecimalnumber" | translate}}
+                                 </div>
+                                 <div *ngIf="rPromoFeeRef.errors?.['negative'] && rPromoFeeRef.touched"
+                                    class="error-text">
+                                    {{"labels.negativenumbersarenotallowed" | translate}}
+                                 </div>
+                              </td>
+                           </tr>
+                           <tr>
+                              <td>{{"labels.latelodgementrequired?" | translate}}<br><i
+                                    class="bi bi-info-square-fill info-icon" [ngbTooltip]="tooltipContent"></i></td>
+                              <td>
+                                 <!-- <mat-checkbox class="rLlRequiredCheckBox"  [checked]="rLlRequired === 1" (change)="isCheck($event.checked)" maxlength="10"></mat-checkbox>-->
+                                 <ng-select class="rLlRequired" name="rLlRequired" [(ngModel)]="rLlRequired"
+                                    dropdownPosition="bottom">
+                                    <ng-option *ngFor="let item of rLlRequiredOptions"
+                                       [value]="item.value">{{item.label}}</ng-option>
+                                 </ng-select>
+                              </td>
+                              <ng-template #tooltipContent>
+                                 <div>
+                                    <strong>{{"labels.latelodgementcharges" | translate}}</strong>
+                                    <br />
+                                    {{"labels.pleasetickthischeckboxiflatelodgementchargesareapplicable" | translate}}
+                                 </div>
+                              </ng-template>
+                           </tr>
+                           <tr>
+                              <td>{{"labels.Public" | translate}} <span style="color: red;">*</span></td>
+                              <td>
+                                 <ng-select name="isPublic" [(ngModel)]="isPublic" required #isPublicRef="ngModel"
+                                    dropdownPosition="bottom">
+                                    <ng-option *ngFor="let item of initialNumber"
+                                       [value]="item.value">{{item.label}}</ng-option>
+                                 </ng-select>
+                                 <div
+                                    *ngIf="isPublicRef.errors && isPublicRef.errors['required']  && isPublicRef.touched"
+                                    class="error-text">
+                                    {{"labels.is Public is required" | translate}}
+                                 </div>
+                              </td>
+                           </tr>
+                           <tr>
+                              <td class="addNotes">{{"labels.additionalnotes(Limit 500 characters)" | translate}}</td>
+                              <td>
+                                 <textarea rows="10" cols="30" class="form-control" name="rAddNotes"
+                                    [(ngModel)]="rAddNotes" maxlength="500"
+                                    [placeholder]="'Enter your remarks here...'"></textarea>
+                              </td>
+                           </tr>
+                        </tbody>
+                     </ng-container>
+                     <ng-template #noResults>
+                        <tr style="height: 100px;">
+                           <td colspan="20" class="text-center">{{"norecordsfound"| translate}}</td>
+                        </tr>
+                     </ng-template>
+                  </table>
+               </div>
+               <div class="rightSection">
+                  <div class="rightSectionContainer">
+                     <table class="taskActionTable">
+                        <ng-container
+                           *ngIf="(!inputDetails && totalRecords>0) || inputDetails; else noResultsTaskAction">
+                           <tr>
+                              <td>
+                                 <h5>{{"labels.tasksaction" | translate}}</h5>
+                              </td>
+                           </tr>
+                           <!-- <tr>
+                         <td>
+                            <h6>{{"labels.actiontype" | translate}}: {{actionType}}</h6>
+                         </td>
+                      </tr> -->
+                           <div class="divider form-group">
+                              <tr>
+                                 <td *ngIf="inputDetails"><label>{{"labels.supportingdocument(s)" | translate}} <span
+                                          style="color: red;">*</span></label></td>
+                                 <td *ngIf="!inputDetails"><label>{{"labels.supportingdocument(s)" | translate}}</label>
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <td>
+                                    <div class="file-container">
+                                       <ng-container *ngFor="let file of selectedFiles; let last = last">
+                                          {{ file.name }}{{ !last ? ', ' : '' }}
+                                       </ng-container>
+                                    </div>
+                                    <div *ngIf="isDisplayFileRequired && inputDetails" class="error-text">
+                                       {{"labels.fileisrequired" | translate}}
+                                    </div>
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <td>
+                                    <div class="fileSize">{{"labels.filelimit" | translate}}: {{selectedFilesSize /
+                                       1000000 | number:'1.2-2'}}/5MB</div>
+                                    <div>
+                                       <label for="fileInput" class="btn btnSelectFile">{{"buttons.selectfile"|
+                                          translate}}</label>
+                                       <input type="file" id="fileInput" name="selectedFiles" style="display: none;"
+                                          required (change)="onFileSelected($event)"
+                                          accept=".png, .jpeg, .jpg, .pdf, .doc, .docx" multiple>
+                                       <button type="button" class="btn btnCancel"
+                                          (click)="clearFiles()">{{"buttons.clearfiles"| translate}}</button>
+                                    </div>
+                                 </td>
+                              </tr>
+                           </div>
+                           <div class="divider form-group">
+                              <tr>
+                                 <td><label>{{"labels.neweffectivedate" | translate}} <span
+                                          style="color: red;">*</span></label></td>
+                              </tr>
+                              <tr>
+                                 <td>
+                                    <input type="text" class="form-control inputHeight" bsDatepicker
+                                       [(ngModel)]="effectiveDate" name="effectiveDate" required autocomplete="off"
+                                       #effectiveDateRef="ngModel" [minDate]="minEffDate" onkeydown="return false"
+                                       [bsConfig]="{ dateInputFormat: 'DD MMM YYYY', showWeekNumbers:false }">
+                                    <div
+                                       *ngIf="effectiveDateRef.errors && effectiveDateRef.errors['required']  && effectiveDateRef.touched"
+                                       class="error-text">
+                                       {{"labels.neweffectivedateisrequired" | translate}}
+                                    </div>
+                                    <div *ngIf="isEffectiveDateInvalid()" class="error-text">
+                                       {{"labels.neweffectivedateshouldbegreaterthantoday" | translate}}
+                                    </div>
+                                 </td>
+                              </tr>
+                           </div>
+                           <div class="divider form-group">
+                              <tr>
+                                 <td><label>{{"labels.remarks(Limit 500 characters)" | translate}} <span
+                                          style="color: red;">*</span></label></td>
+                              </tr>
+                              <tr>
+                                 <td>
+                                    <textarea rows="18" cols="40" class="form-control" name="textRemarks"
+                                       [(ngModel)]="textRemarks" required #textRemarksRef="ngModel"
+                                       maxlength="500"></textarea>
+                                    <div
+                                       *ngIf="textRemarksRef.errors && textRemarksRef.errors['required']  && textRemarksRef.touched"
+                                       class="error-text">
+                                       {{"labels.remarksisrequired" | translate}}
+                                    </div>
+                                 </td>
+                              </tr>
+                           </div>
+                           <div *ngIf="inputDetails" class="divider form-group">
+                              <tr>
+                                 <td><label>{{"labels.selectapprover(Requester HOD)" | translate}} <span
+                                          style="color: red;">*</span></label></td>
+                              </tr>
+                              <tr>
+                                 <td>
+                                    <ng-select name="ssm4uuserrefno" [(ngModel)]="ssm4uuserrefno" required
+                                       #ssm4uuserrefnoRef="ngModel" dropdownPosition="bottom">
+                                       <ng-option *ngFor="let item of users"
+                                          [value]="item.ssm4uuserrefno">{{item.nm}}</ng-option>
+                                    </ng-select>
+                                    <!--<select  name="ssm4uuserrefno" class="form-control form-select inputHeight" [(ngModel)]="ssm4uuserrefno" required #ssm4uuserrefnoRef="ngModel">
+                                  <option *ngFor="let item of users" [value]="item.ssm4uuserrefno">{{item.nm}}</option>
+                                  </select>-->
+                                    <div
+                                       *ngIf="ssm4uuserrefnoRef.errors && ssm4uuserrefnoRef.errors['required']  && ssm4uuserrefnoRef.touched"
+                                       class="error-text">
+                                       {{"labels.approverisrequired" | translate}}
+                                    </div>
+                                 </td>
+                              </tr>
+                           </div>
+                           <tr>
+                              <td>
+                                 <div class="button-group">
+                                    <button type="submit" class="btn btnSubmit">{{"buttons.submit" |
+                                       translate}}</button>
+                                    <button type="button" class="btn btnCancel" (click)="cancel()">{{"buttons.back" |
+                                       translate}}</button>
+                                 </div>
+                              </td>
+                           </tr>
+                        </ng-container>
+                        <ng-template #noResultsTaskAction>
+                           <tr style="height: 100px;">
+                              <td colspan="20" class="text-center">{{"norecordsfound"| translate}}</td>
+                           </tr>
+                        </ng-template>
+                     </table>
+                  </div>
+               </div>
+            </div>
+         </form>
+      </div>
+      <div *ngIf="inputDetails" class="MainContainerFooter"></div>
+      <div *ngIf="!inputDetails" class="marginTopAndBottom"></div>
+      <!--Supporting Document Table-->
+      <div class="MALoadingContainer" *ngIf="!inputDetails">
+         <!-- Loading spinner overlay -->
+         <div *ngIf="isLoadingSupDoc" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+            <div class="spinner-border" role="status">
+               <span class="sr-only"></span>
+            </div>
+         </div>
+         <h2 *ngIf="!inputDetails">{{"labels.supportingdocument(s)" | translate}}</h2>
+         <div class="tableWrapper" *ngIf="!inputDetails">
+            <table class="MATable" [ngClass]="{'TableDimmed': isLoadingSupDoc}">
+               <thead>
+                  <tr>
+                     <th>No.</th>
+                     <th style="width: 700px;">{{"labels.supportingdocument(s)" | translate}}</th>
+                     <th>{{"labels.uploadedby" | translate}}</th>
+                     <th>{{"labels.uploadedon" | translate}}</th>
+                     <th>{{"labels.filesize" | translate}}</th>
+                  </tr>
+               </thead>
+               <ng-container *ngIf="totalRecordsSupDoc>0; else noResultsSupDoc">
+                  <tbody *ngIf="isDisplaySupDoc">
+                     <tr *ngFor="let item of mftwfSupDocs; let i = index">
+                        <td>{{ (pageSupDoc - 1) * itemsPerPageSupDoc + i + 1 }}</td>
+                        <td>
+                           <a style="cursor: pointer" (click)="downloadFile(item.file_nm, item.wfdoc_id)">{{
+                              item.file_nm }}</a>
+                        </td>
+                        <td>{{item.modified_by}}</td>
+                        <td>{{item.dt_modified}}</td>
+                        <td>
+                           {{ item.file_size_kb < 1000 ? item.file_size_kb + ' Bytes' : (item.file_size_kb < 1000000 ?
+                              (item.file_size_kb / 1000).toFixed(2) + ' KB' : (item.file_size_kb / 1000000).toFixed(2)
+                              + ' MB' ) }} </td>
+                     </tr>
+                  </tbody>
+               </ng-container>
+               <ng-template #noResultsSupDoc>
+                  <tr style="height: 100px;">
+                     <td colspan="20" class="text-center">{{"norecordsfound"| translate}}</td>
+                  </tr>
+               </ng-template>
+            </table>
+            <div class="MAPagination" *ngIf="isDisplaySupDoc">
+               <div class="fgSpacing">
+                  <div class="flexContainer">
+                     <div class="resultDisplay">
+                        <div *ngIf="pageSupDoc * itemsPerPageSupDoc < totalRecordsSupDoc">
+                           {{"showing" | translate}} {{ pageSupDoc * itemsPerPageSupDoc }} {{"from" | translate}} {{
+                           totalRecordsSupDoc }} {{"results" | translate}}
+                        </div>
+                        <div *ngIf="!(pageSupDoc * itemsPerPageSupDoc < totalRecordsSupDoc)">
+                           {{"showing" | translate}} {{ totalRecordsSupDoc }} {{"from" | translate}} {{
+                           totalRecordsSupDoc }} {{"results" | translate}}
+                        </div>
+                     </div>
+                  </div>
+                  <div class="pagination-row paginationRight">
+                     <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle PaginControl" type="button"
+                           id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                           {{ selectedValueSupDoc }}
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton">
+                           <button class="dropdown-item" *ngFor="let singleItem of dropdownOptionsSupDoc"
+                              (click)="LoadDataSupDoc(singleItem)">
+                              {{singleItem }}
+                           </button>
+                        </div>
+                     </div>
+                     <div>
+                        <ngb-pagination [(page)]="pageSupDoc" [pageSize]="itemsPerPageSupDoc"
+                           [collectionSize]="totalRecordsSupDoc" (pageChange)="loadDataSupDoc()"></ngb-pagination>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="MALoadingContainer" *ngIf="!inputDetails">
+         <!-- Loading spinner overlay -->
+         <div *ngIf="isLoadingHist" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+            <div class="spinner-border" role="status">
+               <span class="sr-only"></span>
+            </div>
+         </div>
+         <h2 *ngIf="!inputDetails">{{"labels.historyforrequestid" | translate}} {{taskId}}</h2>
+         <div class="tableWrapper" *ngIf="!inputDetails">
+            <table class="MATable" [ngClass]="{'TableDimmed': isLoadingHist}">
+               <thead>
+                  <tr class="MATableHeader">
+                     <th>No.</th>
+                     <th style="width: 300px;">{{"labels.action" | translate}}</th>
+                     <th>{{"labels.actiontimestamp" | translate}}</th>
+                     <th>{{"labels.performedby" | translate}}</th>
+                     <th>{{"labels.assignedto" | translate}}</th>
+                     <th style="width: 300px;">{{"labels.remarks" | translate}}</th>
+                  </tr>
+               </thead>
+               <ng-container *ngIf="totalRecordsHist>0; else noResultsHist">
+                  <tbody *ngIf="isDisplayHist">
+                     <tr *ngFor="let item of mftwfHis; let i = index">
+                        <td>{{ (pageHist - 1) * itemsPerPageHist + i + 1 }}</td>
+                        <td>{{item.status_en}}</td>
+                        <td>{{item.dt_activity}}</td>
+                        <td>{{item.act_by_nm}} </td>
+                        <td>{{item.assign_to_nm || '-'}}</td>
+                        <td class="remarks">{{item.remark}}</td>
+                     </tr>
+                  </tbody>
+               </ng-container>
+               <ng-template #noResultsHist>
+                  <tr style="height: 100px;">
+                     <td colspan="20" class="text-center">{{"norecordsfound"| translate}}</td>
+                  </tr>
+               </ng-template>
+            </table>
+            <div class="MAPagination" *ngIf="isDisplayHist">
+               <div class="fgSpacing">
+                  <div class="flexContainer">
+                     <div class="resultDisplay">
+                        <div *ngIf="pageHist * itemsPerPageHist < totalRecordsHist">
+                           {{"showing" | translate}} {{ pageHist * itemsPerPageHist }} {{"from" | translate}} {{
+                           totalRecordsHist }} {{"results" | translate}}
+                        </div>
+                        <div *ngIf="!(pageHist * itemsPerPageHist < totalRecordsHist)">
+                           {{"showing" | translate}} {{ totalRecordsHist }} {{"from" | translate}} {{ totalRecordsHist
+                           }} {{"results" | translate}}
+                        </div>
+                     </div>
+                  </div>
+                  <div class="pagination-row paginationRight">
+                     <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle PaginControl" type="button"
+                           id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                           {{ selectedValueHist }}
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton">
+                           <button class="dropdown-item" *ngFor="let singleItem of dropdownOptionsHist"
+                              (click)="LoadDataHist(singleItem)">
+                              {{singleItem }}
+                           </button>
+                        </div>
+                     </div>
+                     <div>
+                        <ngb-pagination [(page)]="pageHist" [pageSize]="itemsPerPageHist"
+                           [collectionSize]="totalRecordsHist" (pageChange)="loadDataHist()"></ngb-pagination>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="marginFromFooter"></div>
+   </body>
+</ng-container>

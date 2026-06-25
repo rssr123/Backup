@@ -1,0 +1,111 @@
+@import '../../app.component.scss';
+
+.row {
+    overflow: hidden; /* Clear floats */
+    margin-bottom: 10px;
+    padding-left: 3%;
+    padding-right: 3%;
+    padding-top: 3%;
+}
+.left-field {
+    float: left;
+    width: 50%; /* Adjust as needed */
+}
+.right-field {
+    float: right;
+    width: 50%; /* Adjust as needed */
+    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.section{
+    padding-left: 3%;
+    padding-right: 3%;
+}
+
+.tableCounterInfo{
+    background-color: white;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing:15px
+}
+.labelBold {
+    font-weight: bold;
+}
+
+.btnView {
+    background-color: #2185D0;
+    color: white;
+    //min-width: $MAButtonMinWidth;
+  }
+
+.cardSection{
+    //background-color: white;
+    padding: 2%;
+}
+
+.button-container{
+    text-align: right;
+}
+
+.btnApply {
+    background-color: #21ba45;
+    color: white;
+    min-width: $MAButtonMinWidth;
+    margin:10px;
+}
+ 
+ 
+.btnCancel {
+    background-color: #767676;
+    min-width: $MAButtonMinWidth;
+    color: white;
+    margin:10px;
+}
+
+.fgSpacing{
+    text-align: right;
+}
+
+.pagination-row{
+    float:right;
+}
+
+.breadcrumbOTC li {
+    list-style: none;
+}
+
+// Loading spinner icon
+.loading-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed; /* Keeps it on top even when scrolling */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.7); /* Light overlay effect */
+    z-index: 999999 !important; /* Ensures it stays on top */
+  }
+  
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #ccc;
+    border-top: 4px solid #007bff; /* Primary color */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+

@@ -1,0 +1,1025 @@
+$primary-color: #FFC107;
+$MenuItemHoverColorCode: #f8f9fa;
+$marginLeftRight:3%;
+
+$navbar-expand-breakpoint-Max: 1200px;
+$navbar-expand-breakpoint-Min: 1201px;
+
+// CRITICAL: Force this component to be the highest priority
+:host {
+  z-index: 99999 !important;
+  position: relative !important;
+}
+
+.headerColor{
+  background-color: white;
+}
+
+// ✅ CRITICAL: Fix mega menu gap with header2
+.header-container {
+  background-color: #ffffff !important; // White background for the entire header
+  padding-left: 0px;
+  padding-right: 0px;
+  position: relative;
+  z-index: 99999; // Very high z-index to ensure header is above all background elements
+  
+  // Ensure mega menu appears directly after this container
+  .mega-menu-panel {
+    top: 100%;
+    margin-top: 0;
+    border-top: none;
+  }
+}
+
+#header {
+  color: white;
+  padding: 10px!important;
+  font-size: 14px!important;
+  
+  
+  .container {
+      //  max-width: 2000px; //1200px to 2000px
+       margin: 0 auto;
+       padding: 0 20px!important;
+       display: flex;
+       background-color: #ffffff;
+      
+
+      
+      justify-content: space-between;
+      align-items: center;
+
+      #logo {
+          h1 {
+              display: flex; // Make the anchor tags flex items
+              justify-content: space-between; // Distribute space equally
+
+              a {
+                  display: inline-block;
+                  width: 50%; // each logo takes half the space
+                  
+                  img {
+                      max-height: 50px;
+                      width: auto; // ensure logos adjust based on the container width
+                  }
+              }
+          }
+      }
+
+      @media (max-width: 768px) {
+          // Hide the normal nav on mobile
+          nav.nav {
+              display: none;
+          }
+
+          // Display the burger menu icon (you will need to add the burger menu HTML and associated JS functionality)
+          .burger-menu {
+              display: block;
+          }
+      }
+  }
+}
+
+
+
+//logo
+#logo {
+  a {
+    display: inline-block;
+    margin-right: 15px; // Spacing between logos
+
+    img {
+      max-height: 75px;
+      width: auto;
+    }
+  }
+
+  @media (max-width: 767px) { // For screens smaller than sm breakpoint
+    a img {
+      max-height: 60px; // Adjust this value as needed
+    }
+  }
+
+  @media (min-width: 768px) { // Adjust for the sm breakpoint
+    margin-right: auto; // Pushes the menu to the right on larger screens
+  }
+}
+
+
+
+.nav, .navbar-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: #ffffff;
+  font-family: 'Poppins', sans-serif;
+  position: relative;
+  z-index: 99999; // Very high z-index to ensure navigation is above background elements
+  
+  a {
+      color: #212529;
+      text-decoration: none;
+      margin-right: 10px;
+      cursor: pointer; /* Add mouse pointer for all links */
+  }
+  
+  a:hover {
+      color: #0053ce;
+      border-color: #ffffff !important;
+      cursor: pointer; /* Add mouse pointer on hover */
+  }
+
+  // ... Rest of your SCSS ...
+
+  @media (max-width: 768px) {
+      flex-direction: column;
+      // styles for the mobile nav when expanded
+  }
+}
+
+.notification-container {
+  position: relative;
+  display: inline-block;
+}
+
+/* ✅ Enhanced Desktop Dropdown Stacking and Styling */
+.navbar-nav {
+  .dropdown-menu {
+    background-color: #ffffff; // Pure white background
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    margin-top: 2px;
+    
+    .dropdown-item {
+      padding: 10px 20px;
+      color: #333;
+      font-weight: 400; // Normal weight for dropdown items
+      transition: background-color 0.2s ease;
+      
+      &:hover {
+        background-color: #f8f9fa;
+        color: #333;
+      }
+    }
+  }
+  
+  .nav-link {
+    font-weight: 600; // Bold for main nav items
+    color: #333;
+    
+    &:hover {
+      color: #495057;
+    }
+  }
+}
+
+// Ensure dropdown menus stack properly and don't overlap
+.nav-item.dropdown {
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    
+    &.show {
+      display: block;
+    }
+  }
+}
+
+/* Mobile view: align all menus to the left and stack properly */
+@media (max-width: 991.98px) {
+  .navbar-nav {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    align-items: flex-start !important;
+  }
+  .navbar-nav .nav-item,
+  .navbar-nav .dropdown-menu,
+  .navbar-nav .dropdown-item {
+    text-align: left !important;
+    width: 100%;
+  }
+  .navbar-collapse {
+    text-align: left !important;
+  }
+  .notificationHeader,
+  .notificationMytask,
+  .notificationCreatedtask {
+    position: absolute;
+    top: 0; /* Adjust as needed */
+    right: 0; /* Move to the far right */
+    transform: translate(50%, -50%); /* Optional: fine-tune positioning */
+    z-index: 2; /* Ensure it stays above other elements */
+  }
+
+  .nav-link {
+    position: relative; /* Ensure the badge is positioned relative to the parent */
+  }
+  
+}
+
+// @media (min-width: 769px) {
+//   .burger-menu {
+//     display: none;
+//   }
+
+//   .nav {
+//     display: flex !important;
+//   }
+// }
+
+// .burger-menu {
+//   display: none; // Hidden by default; will be displayed on mobile view.
+//   background: transparent; // No background for the button.
+//   border: none; // Remove default borders.
+//   cursor: pointer; // Pointer cursor for better UX.
+//   padding: 10px; // Some padding around the bars.
+//   outline: none; // Remove default outline.
+
+//   @media (max-width: 768px) {
+//       display: block;
+//       max: width 100px !important;// Display the burger menu on mobile view.
+//   }
+
+//   .bar {
+//       width: 25px; // Width of the bar.
+//       height: 3px; // Height of the bar.
+//       background-color: #000; // Black color for the bar.
+//       margin: 4px 0; // Some margin to separate the bars.
+//       transition: 0.4s; // Smooth transition for animations if you plan to add any.
+//   }
+
+//   // For potential animation or styling when the menu is active. (e.g. 'X' close icon)
+//   &.active {
+//       .bar:nth-child(1) {
+//           // styles for the first bar when active
+//       }
+//       .bar:nth-child(2) {
+//           // styles for the second bar when active
+//       }
+//       .bar:nth-child(3) {
+//           // styles for the third bar when active
+//       }
+//   }
+// }
+
+#header2{
+  background-color: $primary-color;
+  position: relative;
+  z-index: 1; // Lower z-index so dropdown menus appear above it
+  // padding: 3px;
+  .container {
+    max-width: 1200px;
+    // margin: 0 auto;
+    // padding: 0 20px;
+    // display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  // For mobile views
+  @media only screen and (max-width: 768px) {
+    border-top: 3px solid $primary-color; // Adjust border thickness as required
+    padding: 0px;
+
+    .container {
+        height: 0;
+        overflow: hidden;
+
+        * {
+            opacity: 0;
+            font-size: 0;
+        }
+    }
+  }
+}
+
+//nav
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: #ffffff;
+}
+
+.nav a {
+  color: #000000;
+  text-decoration: none;
+  margin-right: 10px;
+  cursor: pointer; /* Add mouse pointer for nav links */
+}
+
+.nav a:hover {
+  color: #333333;
+  cursor: pointer; /* Add mouse pointer on hover */
+}
+
+// .buy-now-btn {
+//   background-color: #FFFFFF;
+//   color: #ffffff;
+//   padding: 10px;
+//   border-radius: 4px;
+// }
+
+// .buy-now-btn:hover {
+//   background-color: #FFFFFF;
+// }
+
+.margin-empty{
+  margin:0px !important;
+}
+
+.navbar span:first-child {
+  float: left;
+}
+
+.navbar span:last-child {
+  float: right;
+}
+
+.btn-white:hover {
+  color: #0053ce !important; 
+  background-color: #ffffff !important; 
+  // border-bottom: 3px solid #0053ce;
+  transition: 0.1s;
+  border: none !important;
+  border-color: #ffffff !important;
+  font-size: 14px;
+  // border-radius: 0px !important;
+
+  // a:hover{
+  //   color: #0053ce !important; 
+  // }
+}
+
+.btn-white.show {
+  color: #0053ce !important; 
+  background-color: #ffffff !important; 
+  border: none !important;
+  border-color: #ffffff !important;
+  font-size: 14px;
+
+  // border-radius: 0px !important;
+}
+
+/* Style for the dropdown menu */
+.custom-dropdown-menu {
+  background-color: grey;
+}
+
+/* Style for the dropdown items */
+.custom-dropdown-item {
+  color: black;
+  cursor: pointer; /* Add mouse pointer for dropdown items */
+}
+
+/* Style for the dropdown items on hover */
+.custom-dropdown-item:hover {
+  background-color: lightgrey;
+  cursor: pointer; /* Add mouse pointer on hover */
+}
+
+// Bootstrap navbar and dropdown menu pointer styles
+.navbar {
+  position: relative;
+  z-index: 99999; // Very high z-index to ensure navbar is above all background elements
+}
+
+.navbar-nav {
+  .nav-link {
+    cursor: pointer !important; /* Add mouse pointer for all nav links */
+  }
+  
+  .nav-link:hover {
+    cursor: pointer !important; /* Add mouse pointer on hover */
+  }
+  
+  .dropdown-toggle {
+    cursor: pointer !important; /* Add mouse pointer for dropdown toggles */
+  }
+  
+  .dropdown-toggle:hover {
+    cursor: pointer !important; /* Add mouse pointer on hover */
+  }
+}
+
+.dropdown-menu {
+  .dropdown-item {
+    cursor: pointer !important; /* Add mouse pointer for dropdown items */
+  }
+  
+  .dropdown-item:hover {
+    cursor: pointer !important; /* Add mouse pointer on hover */
+  }
+  
+  // Ensure dropdown menus are above all other elements
+  position: absolute !important;
+  z-index: 999999 !important;
+}
+
+@media (max-width:$navbar-expand-breakpoint-Max) {
+  .navbar-toggler-icon,
+  .navbar-collapse.collapse {
+    background-color: $primary-color;
+  }
+  
+  // ✅ MOBILE ONLY: Remove background color from navbar-collapse.collapse that creates border appearance
+  .navbar-collapse.collapse {
+    background-color: transparent !important; // Remove yellow background that looks like border
+    border: none !important; // Remove any actual borders
+    border-top: none !important;
+    border-bottom: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    box-shadow: none !important; // Remove any shadow
+    outline: none !important; // Remove any outline
+  }
+}
+
+.dropdown-item {  
+  &:active, &.active {
+    background-color: $MenuItemHoverColorCode !important;
+    border-radius: 0px !important;
+  }
+}
+
+.zeroPaddingRL{
+  padding-left:0px;
+  padding-right:0px;
+}
+
+.marginRL{
+  margin-left:$marginLeftRight;
+  margin-right:$marginLeftRight;
+}
+
+:host ::ng-deep .dropdown-menu {
+  min-width: 100%;
+  border-radius: 0px !important;
+  z-index: 999999 !important; // Extremely high z-index to ensure it's above everything
+  position: absolute !important; // Ensure proper stacking context
+}
+
+// Additional override for all dropdown menus in header
+:host ::ng-deep .navbar .dropdown-menu {
+  z-index: 999999 !important;
+  position: absolute !important;
+}
+
+// Override Bootstrap's default dropdown z-index
+:host ::ng-deep .dropdown-toggle[aria-expanded="true"] + .dropdown-menu {
+  z-index: 999999 !important;
+}
+
+// ✅ Simple burger menu styling
+.navbar-toggler {
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+  
+  &:focus {
+    box-shadow: none;
+  }
+  
+  &:hover {
+    background-color: #f8f9fa;
+  }
+}
+
+// ✅ Simple Mobile Navigation Styles - Pure White with Proper Stacking
+@media (max-width: 991.98px) {
+  // Mobile navbar container - pure white background
+  .navbar-collapse {
+    background-color: #ffffff; // Pure white, no gray
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-top: 5px;
+    padding: 10px 0;
+  }
+
+  // Simple mobile navigation list - stack properly
+  .navbar-nav {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0 10px;
+  }
+
+  // Main menu items - bold and clean
+  .nav-item {
+    width: 100%;
+    
+    > .nav-link {
+      padding: 15px 15px !important;
+      color: #333 !important;
+      border-radius: 6px;
+      transition: background-color 0.2s ease;
+      font-weight: 600; // Bold for main menu items
+      background-color: #ffffff; // Pure white background
+      margin-bottom: 2px;
+      
+      &:hover {
+        background-color: #f8f9fa;
+        color: #333 !important;
+      }
+    }
+  }
+
+  // Dropdown menus - stack below parent, indented
+  .dropdown-menu {
+    position: static !important;
+    transform: none !important;
+    border: none;
+    box-shadow: none;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff; // Pure white background
+    border-radius: 0;
+    
+    // Stack below the parent menu item
+    display: block;
+    width: 100%;
+  }
+
+  // Submenu items - normal weight and indented
+  .dropdown-item {
+    padding: 12px 30px; // Left indent to show hierarchy
+    color: #333;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+    font-weight: 400; // Normal weight for submenu items
+    background-color: #ffffff; // Pure white background
+    border-left: 3px solid transparent; // Visual hierarchy indicator
+    margin-bottom: 1px;
+    
+    &:hover {
+      background-color: #f8f9fa;
+      color: #333;
+      border-left-color: #dee2e6; // Subtle left border on hover
+    }
+  }
+
+  // Keep original notification styles working
+  .notificationHeader,
+  .notificationMytask,
+  .notificationCreatedtask {
+    position: relative;
+    display: inline-flex;
+    margin-left: auto;
+    transform: none;
+  }
+
+  // Simple mega menu for mobile - pure white
+  .mega-menu-panel {
+    position: static !important;
+    width: 100% !important;
+    box-shadow: none !important;
+    border-radius: 6px;
+    background-color: #ffffff; // Pure white, not gray
+    margin-top: 5px;
+    padding: 15px;
+    
+    .row {
+      margin: 0;
+    }
+    
+    .col-md-3 {
+      padding: 8px 0;
+      border-bottom: 1px solid #e9ecef;
+      
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+    
+    h6 {
+      color: #333;
+      font-weight: 600; // Bold for section headers
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    
+    .dropdown-item {
+      padding: 6px 15px; // Indent for mega menu items
+      border-radius: 4px;
+      transition: background-color 0.2s ease;
+      font-weight: 400; // Normal weight for mega menu items
+      background-color: #ffffff; // Pure white
+      
+      &:hover {
+        background-color: #f8f9fa;
+        color: #333;
+      }
+    }
+  }
+}
+
+// ✅ Ensure notifications work properly on mobile
+@media (max-width: 991.98px) {
+  .notificationHeader,
+  .notificationMytask,
+  .notificationCreatedtask {
+    position: relative;
+    display: inline-flex;
+    margin-left: auto;
+    transform: none;
+  }
+}
+
+// ✅ Ensure Notifications are Properly Styled & Aligned
+@media (max-width: 991.98px) {
+  .notificationHeader,
+  .notificationMytask,
+  .notificationCreatedtask {
+    position: relative;
+    display: inline-flex;
+    margin-left: auto;
+    transform: none;
+  }
+}
+
+// ✅ Ensure Notifications are Properly Styled & Aligned
+.notificationHeader,
+.notificationMytask,
+.notificationCreatedtask {
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(60%, -40%);
+  width: 1.4em;
+  height: 1.4em;
+  border-radius: 50%;
+  background-color: red;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.7em;
+  color: white;
+  font-weight: bold;
+  line-height: 1;
+  padding: 0;
+  z-index: 5;
+  box-shadow: 0 0 0 2px white;
+}
+
+// ✅ Ensure Menu Text is the Same Length & Notifications Stay Properly Aligned
+.nav-item {
+  position: relative;
+
+  .nav-link,
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; // Keeps text & notification aligned properly
+    gap: 12px; // Creates a balanced space between text & notification
+    position: relative;
+    white-space: nowrap;
+    padding: 8px 12px;
+    line-height: normal;
+    width: 100%;
+  }
+
+  .dropdown-item {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+  }
+
+  // ✅ Ensure All Menu Text Aligns Properly
+  .menu-text {
+    min-width: 120px; // Adjust this value for better alignment
+    display: inline-block;
+    text-align: left;
+    padding-right: 4px; // Creates a small space before notification
+  }
+
+  .notificationMytask,
+  .notificationCreatedtask,
+  .notificationHeader {
+    position: relative;
+    right: 0;
+    top: 0px;
+  }
+}
+
+// ✅ Desktop View: Position `notificationHeader` Above Dropdown Arrow
+@media (min-width: 768px) {
+  .nav-item.dropdown {
+    position: relative;
+
+    .notificationHeader {
+      position: absolute;
+      top: 0px;
+      // right: 6px;
+      left:calc(100% + -26px);
+      transform: translateY(-50%);
+    }
+  }
+}
+
+// ✅ Mobile View: Ensure `notificationHeader` Aligns Like Other Notifications
+@media (max-width: 767px) {
+  .nav-item {
+    .nav-link {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start; // Prevent `notificationHeader` from floating right
+      gap: 12px; // Keeps spacing natural
+      line-height: normal;
+      width: 100%;
+    }
+
+    .dropdown-item {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      width: 100%;
+      border: none !important; /* Remove border for individual dropdown items */
+      background-color: transparent !important;
+    }
+
+    .menu-text {
+      min-width: 120px; // Keeps menu text consistent in width
+      display: inline-block;
+      text-align: left;
+      padding-right: 4px; // Adds a small space before the notification
+    }
+
+    .notificationMytask,
+    .notificationCreatedtask,
+    .notificationHeader 
+     { 
+      position: absolute;
+    top: 0; /* Align to the top */
+    right: 0; /* Align to the right */
+    transform: translate(50%, -50%); /* Fine-tune positioning */
+    min-width: 1.6em;
+    height: 1.6em;
+    border-radius: 50%;
+    background-color: red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8em;
+    color: white;
+    font-weight: bold;
+    z-index: 2;
+    }
+
+    .dropdown-menu {
+    border: none !important; /* Remove border for the dropdown menu */
+    box-shadow: none !important; /* Remove shadow if present */
+  }
+
+    // ✅ Prevent `notificationHeader` from floating right in mobile
+    .nav-item.dropdown {
+      display: flex;
+      justify-content: flex-start; // Keep menu text and notification inline
+      align-items: center;
+      width: 100%;
+    }
+  }
+}
+
+// .notificationMytask {
+
+//   /* circle shape, size and position */
+//   margin-top: 0.5em;
+//   margin-right: 2.0em;
+//   position: absolute;
+//   right: -0.0em;
+//   // top: -0.0em;
+//   min-width: 1.6em; /* or width, explained below. */
+//   // height: 0.5em;
+//   border-radius: 0.8em; /* or 50%, explained below. */
+//   border: 0.05em solid white;
+//   background-color: red;
+
+//   /* number size and position */
+//   display: inline-flex;
+//   justify-content: center;
+//   align-items: center;
+//   font-size: 0.8em;
+//   color: white;
+
+// }
+
+
+// .notificationHeader {
+
+//   /* circle shape, size and position */
+//   position: absolute;
+//   right: 0.7em;
+//   top: -0.7em;
+//   min-width: 1.6em; /* or width, explained below. */
+//   height: 1.6em;
+//   border-radius: 0.8em; /* or 50%, explained below. */
+//   //border: 0.05em solid white;
+//   background-color: red;
+
+//   /* number size and position */
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   font-size: 0.8em;
+//   color: white;
+// }
+
+// .notificationCreatedtask {
+
+//   /* circle shape, size and position */
+//   margin-top: 0.5em;
+//   margin-right: 2.0em;
+//   position: absolute;
+//   right: -0.0em;
+//   // top: -0.0em;
+//   min-width: 1.6em; /* or width, explained below. */
+//   // height: 0.5em;
+//   border-radius: 0.8em; /* or 50%, explained below. */
+//   border: 0.05em solid white;
+//   background-color: red;
+
+//   /* number size and position */
+//   display: inline-flex;
+//   justify-content: center;
+//   align-items: center;
+//   font-size: 0.8em;
+//   color: white;
+  
+// }
+
+// Mega Menu Styles - Pure CSS positioning to prevent blinking
+.mega-menu-panel {
+  position: absolute; // Changed from fixed to absolute to work with header positioning
+  top: 100%; // Position directly below the header container
+  left: 0;
+  right: 0;
+  width: 100%;
+  background: white;
+  z-index: 99998;
+  padding: 1.5rem 1rem; // Original desktop padding
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.15);
+  border: none;
+  margin: 0;
+  
+  // Mobile-only: ZERO gap modifications
+  @media (max-width: 767px) {
+    padding: 0 1rem 1.5rem 1rem !important; // Zero top padding, keep others
+    border-top: none !important; // Remove border on mobile
+    margin-top: 0 !important; // Force no top margin
+  }
+  
+  h6 {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 0.25rem;
+    color: #495057;
+  }
+
+  a.dropdown-item {
+    display: block;
+    padding: 8px 15px; // Indented submenu items
+    margin-bottom: 4px;
+    color: #333;
+    font-weight: 400; // Normal weight for submenu items
+    text-decoration: none;
+    border-radius: 4px;
+    background-color: #ffffff; // Pure white background
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: #f8f9fa;
+      color: #333;
+      text-decoration: none;
+    }
+  }
+}
+
+.mega-menu-toggle {
+  &.active {
+    color: #0053ce !important;
+    font-weight: 600;
+  }
+}
+
+// Prevent body scroll when mega menu is open
+:host ::ng-deep body.mega-menu-open {
+  overflow: hidden;
+}
+
+// Mobile responsiveness
+@media (max-width: 768px) {
+  .mega-menu-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999999; // Even higher z-index for mobile
+    padding: 1rem;
+    overflow-y: auto;
+    margin-top: 0; // Reset margin-top for mobile
+    
+    // Calculate mobile header height
+    padding-top: calc(120px + 2rem); // Approximate mobile header height + padding
+    
+    .row {
+      flex-direction: column;
+    }
+    
+    .col-md-3 {
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+  }
+}
+
+// Additional styles to ensure mega menu appears above all content
+.header-container {
+  position: relative;
+  z-index: 9999; // Ensure header container has high z-index
+  
+  .navbar {
+    position: relative;
+    z-index: 10000; // Navbar should be above header container
+  }
+}
+
+// ✅ FINAL OVERRIDE - Force all dropdown elements to highest z-index
+:host ::ng-deep .show > .dropdown-menu {
+  z-index: 999999 !important;
+  position: absolute !important;
+  display: block !important;
+}
+
+:host ::ng-deep .nav-item.dropdown .dropdown-menu {
+  z-index: 999999 !important;
+  position: absolute !important;
+}
+
+:host ::ng-deep .dropdown-menu.show {
+  z-index: 999999 !important;
+  position: absolute !important;
+  display: block !important;
+}
+
+// Force all header elements to be on top (except header2)
+.header-container,
+.navbar,
+.nav,
+.navbar-nav {
+  z-index: 99999 !important;
+  position: relative !important;
+}
+
+// Keep header2 behind dropdown menus
+#header2 {
+  z-index: 1 !important;
+  position: relative !important;
+}
+
+// Global override for all dropdown menus in this component
+.dropdown-menu.show {
+  z-index: 999999 !important;
+  position: absolute !important;
+  display: block !important;
+}
+
+// Additional specific overrides for Bootstrap dropdown states
+:host ::ng-deep .navbar-nav .dropdown.show .dropdown-menu {
+  z-index: 999999 !important;
+  position: absolute !important;
+  display: block !important;
+  top: 100% !important;
+  left: 0 !important;
+}
+
+:host ::ng-deep .dropdown-toggle[data-bs-toggle="dropdown"] + .dropdown-menu {
+  z-index: 999999 !important;
+  position: absolute !important;
+}
+
+// Force dropdown items to be visible
+:host ::ng-deep .dropdown-item {
+  z-index: 999999 !important;
+  position: relative !important;
+}
+
+// Override any potential container stacking context issues
+:host {
+  z-index: 99999 !important;
+  position: relative !important;
+}
+
+// Force the entire header component to create its own stacking context
+:host ::ng-deep {
+  z-index: 99999 !important;
+}

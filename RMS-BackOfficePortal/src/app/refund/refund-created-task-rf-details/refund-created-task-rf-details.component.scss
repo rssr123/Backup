@@ -1,0 +1,455 @@
+@import '../../app.component.scss';
+
+$backgroundColor: #f2f2f2;
+$columnLineColor: #e0dcdc;
+$leftPadding: 3%;
+$PaddingTopAndBottom: 20px;
+$MarginFromFooter: 110px;
+$MarginSeparator: 30px; // Example value, set as needed
+
+.MarginSeparator {
+    margin-top: $MarginSeparator;
+}
+
+
+.main-container {
+    display: flex;
+    /* Use Flexbox to align sections horizontally */
+    justify-content: space-between;
+    /* Add space between left and right sections */
+    gap: 20px;
+    /* Add spacing between columns */
+}
+
+// General container styling
+.table-container {
+    padding: 0 20px; // Consistent padding for left and right
+}
+
+table {
+    background-color: #fff;
+    width: 100%;
+    margin-right: 5%;
+    table-layout: fixed; // Uniform column widths
+    border-spacing: 0; // Remove gaps between table cells
+    border-collapse: collapse; // Ensure no double borders
+
+    td {
+        padding: 10px; // Uniform padding
+        vertical-align: middle; // Consistent alignment
+    }
+
+    input[type="checkbox"] {
+        transform: scale(0.8);
+        margin: 0;
+    }
+}
+
+// Table labels and input styling
+.IdentityFormTable {
+    width: 100%;
+    border-collapse: collapse;
+
+    td {
+        padding: 10px;
+        vertical-align: middle;
+    }
+
+    label {
+        font-size: 14px;
+        font-weight: bold;
+        margin-bottom: 5px;
+        margin-left: 20%;
+    }
+
+    input,
+    select {
+        width: 80%;
+        padding: 8px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        margin-right: 20%;
+        height: 40px;
+
+        &::placeholder {
+            color: #aaa;
+        }
+    }
+
+    td[colspan="2"] input,
+    td[colspan="2"] select {
+        width: 100%; // Adjust for padding
+    }
+
+    td:nth-child(2),
+    td:nth-child(4),
+    td:nth-child(6) {
+        width: 33%; // Equal column widths
+    }
+}
+
+.IdentityFormTable td:first-child {
+    width: 10%;
+    /* Adjust the percentage to your preference */
+    white-space: nowrap;
+    /* Prevent text from wrapping */
+    vertical-align: top;
+    /* Align labels at the top */
+}
+
+.error-text {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
+}
+
+// Breadcrumb styling
+.breadcrumbOTC {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 30px 0;
+    display: flex;
+    font-size: 18px;
+
+    li {
+        display: inline;
+    }
+
+    a {
+        color: #0275d8;
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    .breadcrumb-separator {
+        margin: 0 5px;
+    }
+}
+
+// Button styling
+.button-end-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 16px;
+
+        &.btn-primary {
+            background-color: #0275d8;
+            color: #fff;
+            border: none;
+        }
+
+        &.btn-danger {
+            background-color: #d9534f;
+            color: #fff;
+            border: none;
+        }
+    }
+}
+
+// Payment Items Table
+.PaymentItemsTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+
+
+    th {
+        font-weight: bold;
+        text-align: left;
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
+    }
+
+    td {
+        padding: 10px;
+        height: 40px;
+
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+
+        }
+
+        button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #d9534f;
+            color: white;
+            cursor: pointer;
+
+            &:hover {
+                background-color: #c9302c;
+            }
+        }
+    }
+}
+
+// General enhancements
+.full-width-line {
+    border: none;
+    border-top: 1px solid #000;
+    width: 96%;
+    margin: 50px 2% 0;
+}
+
+.marginFromFooter {
+    margin-bottom: $MarginFromFooter;
+}
+
+.marginTop {
+    margin-top: 10px;
+}
+
+.align-right {
+    text-align: right;
+}
+
+
+// Utility classes
+.text-green {
+    color: green;
+}
+
+.text-red {
+    color: red;
+}
+
+
+/* Set standard width for the No. column */
+th.no-column,
+td.no-column {
+    width: 50px;
+    /* Adjust the size as needed */
+    text-align: center;
+    /* Center align the content */
+}
+
+/* Set standard width for the Action column */
+th.action-column,
+td.action-column {
+    width: 120px;
+    /* Adjust the size as needed */
+    text-align: center;
+    /* Center align the content */
+}
+
+th.long-column,
+td.long-column {
+    width: 300px;
+    /* Adjust the size as needed */
+}
+
+th.short-column,
+td.short-column {
+    width: 80px;
+    /* Adjust the size as needed */
+}
+
+// .MATable tr:last-child {
+//     font-weight: bold;
+//     background-color: #f9f9f9;
+//     /* Light background for distinction */
+//     transition: background-color 0.3s ease;
+//     /* Smooth transition for visual updates */
+// }
+
+.MATable th input,
+.MATable th select,
+.MATable td input,
+.MATable td select {
+    height: 40px !important;
+}
+
+
+
+
+.rightSection {
+    display: flex;
+    /* Enable flexbox */
+    justify-content: center;
+    /* Center horizontally */
+    align-items: center;
+    /* Center vertically */
+    min-height: 100;
+    margin-right: 3%;
+    background-color: white;
+    width: 25%;
+    height: 100%;
+    margin-top: 36px;
+    /* Optional: If you want the section to take full height */
+}
+
+.rightSectionContainer {
+    display: flex;
+    /* Enable flexbox for inner alignment */
+    flex-direction: column;
+    /* Arrange elements vertically */
+    justify-content: center;
+    /* Center vertically */
+    align-items: center;
+    /* Center horizontally */
+    width: 100%;
+    height: auto;
+    /* Adjust height to fit content */
+    text-align: center;
+    /* Center-align text */
+}
+
+
+
+.leftSectionContainer {
+    padding: 5%;
+    border: solid 1px #dfdfdf;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+}
+
+
+.leftSection {
+
+    width: 67%;
+    // flex: 1; // This will make both tables take up equal space
+    min-height: 0; // This ensures the tables respect the height of the container
+    margin: 0;
+    margin-left: $MAMainLeftPadding;
+
+}
+
+
+.action-button {
+    width: 80px;
+    /* Ensure uniform width */
+    height: 40px;
+    /* Ensure uniform height */
+    font-size: 16px;
+    /* Adjust font size */
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+
+/* Style wrapper for the dropdown */
+.select-container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+
+/* Style the select element */
+.select-container select {
+    appearance: none;
+    /* Hide default arrow */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px 12px;
+    width: 100%;
+    font-size: 14px;
+    cursor: pointer;
+    padding-right: 30px;
+    /* Leave space for the arrow */
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Add the custom arrow */
+.select-container::after {
+    content: '';
+    position: absolute;
+    right: 10px;
+    /* Position near the edge */
+    top: 50%;
+    /* Center vertically */
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid #333;
+    /* Arrow color */
+    pointer-events: none;
+    /* Non-clickable */
+}
+
+/* On focus */
+.select-container select:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+}
+
+input[readonly] {
+    background-color: #e9ecef;
+    /* muted text color */
+    cursor: not-allowed;
+    /* indicates non-editable status */
+    border: 1px solid #ced4da;
+    /* optional: adjust border style */
+}
+
+
+:host ::ng-deep {
+
+    /* 1) Native <select> */
+    select.form-control:disabled {
+        background-color: #e9ecef;
+        opacity: 1;
+        cursor: not-allowed;
+    }
+
+    /* 2) ng-select host */
+    ng-select.form-control.ng-select-disabled {
+        background-color: #e9ecef !important;
+        cursor: not-allowed;
+    }
+
+    /* 3) ng-select inner box */
+    ng-select.form-control.ng-select-disabled .ng-select-container {
+        background-color: #e9ecef !important;
+        opacity: 1 !important;
+        border: 1px solid #ced4da !important;
+        cursor: not-allowed;
+    }
+}
+
+
+
+.button-end-container {
+    display: flex;
+    justify-content: flex-end;
+    /* Align the button to the right */
+    margin: 0px 3% 20px 0px;
+    /* Add space between the button and the form */
+
+}
+
+.btnCancel {
+    background-color: gray;
+    color: white;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    width: 130px;
+    height: 38px;
+}

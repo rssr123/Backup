@@ -1,0 +1,576 @@
+// @import '../../app.component.scss';
+
+// .left-section {
+//   background-color: white;
+// }
+
+// .right-section73 {
+//   background-color: white;
+//   flex:0 0 60%;
+//   z-index: 3;
+//   position: absolute;
+//   top: 0;
+//   bottom: 0;
+//   right: 0;
+//   left:945px;
+//   overflow: visible;
+//   overflow-y: auto;
+//   transition: flex 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55), width 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55); // Adjust the duration and easing function
+
+// }
+
+// .PAContainer73{
+//   margin-left: 0%;
+// }
+
+// .form-group {
+//   margin-bottom: 15px;
+// }
+
+// .button-group {
+//   margin-top: 20px;
+// }
+
+// .file-upload, .form-group-upload{
+//   margin-left:5%;
+//   display: table;
+//     // label, input{
+//     //   width: 50%;
+//     // }
+// }
+
+
+// .dtSettlement, .bsfLabel{
+//   margin-left: 50px;
+//   margin-right: 20px;
+// }
+
+// .btnClear{
+//   background-color: orange;
+//   color: white;
+//   min-width: 120px;
+//   max-width: 120px;
+//   margin-left: 20px;
+//   float: left;
+// }
+
+// .btnUpload{
+//   background-color: #21BA45;
+//   color: white;
+//   min-width: 120px;
+//   max-width: 120px;
+//   margin-right: 20px;
+//   float: right;
+// }
+
+// .btnReconcile{
+//   background-color: #21BA45;
+//   color: white;
+// }
+
+// .btnApply {
+//   float: left;
+// }
+
+// .btnReset {
+//   float: right;
+// }
+
+// .btnView {
+//   background-color: #2185D0;
+//   color: white;
+//   //min-width: $MAButtonMinWidth;
+// }
+
+
+// .MAPagination {
+//   display: flex;
+//   flex-direction: column;
+//   align-items: flex-end;
+// }
+
+// .fgSpacing {
+//   margin-bottom: 5px;
+// }
+
+
+// //toggle start
+// .custom-switch .form-check-input {
+//   width: $ToggleButtonWidth !important;
+// }
+
+// .custom-switch .form-check {
+//   display: flex;
+//   align-items: center;
+//   /* Aligns items in the center vertically */
+// }
+
+// .custom-switch .form-check-input {
+//   width: 2.5rem;
+//   /* Adjust width to your preference */
+//   height: 1.25rem;
+//   /* Adjust height to your preference */
+//   margin-right: 0.5rem;
+//   /* Space between the toggle and the label */
+//   /* The next two lines are to adjust the position of the circle within the switch */
+//   background-position: left center;
+//   transition: background-position 0.2s;
+
+// }
+
+// .custom-switch .form-check-input:checked {
+//   background-color: #198754;
+//   /* Bootstrap's green color for 'success' */
+//   background-position: right center;
+
+// }
+
+// .custom-switch .form-check-input::before {
+//   /* Adjust the switch's circle size if necessary */
+//   height: 1.25rem;
+//   /* Should match the height of the switch */
+//   width: 1.25rem;
+//   /* Adjust width as needed */
+//   transition: transform 0.2s;
+
+// }
+
+// .custom-switch .form-check-input:checked::before {
+//   transform: translateX(1.25rem);
+//   /* The translation should match the height to keep it centered */
+// }
+
+// .custom-switch .form-check-label {
+//   margin-bottom: 0;
+//   /* Remove bottom margin from label if present */
+//   white-space: nowrap;
+//   /* Prevent the label from wrapping */
+//   margin-top: 5px;
+//   flex: 1;
+//   width: auto;
+// }
+
+
+
+
+// //toggle end
+ 
+// .dtSettlement, .bsfLabel{
+//   margin-left: 50px;
+//   margin-right: 20px;
+// }
+ 
+// // .btnClear{
+// //   background-color: orange;
+// //   color: white;
+// //   min-width: 100px;
+// // }
+ 
+// // .btnUpload{
+// //   background-color: #21BA45;
+// //   color: white;
+// //   min-width: 100px;
+// // }
+ 
+// .btnSpace{
+//   margin-top: 90%;
+// }
+ 
+// .leftSectionBtnSpace{
+//   margin-bottom: 50px;
+// }
+ 
+// .btnReconcile{
+//   background-color: #21BA45;
+//   color: white;
+//   min-width: $MAButtonMinWidth;
+// }
+ 
+ 
+@import '../../app.component.scss';
+
+.PAContainer73 {
+  margin-left: 0%;
+  display : flex;
+  justify-content: initial !important;
+
+  .middle-section73 {
+    top: 0;
+  }
+}
+
+.middle-section{
+  width: 100% !important;
+}
+
+//left section start
+.left-section {
+  background-color: white;
+  max-width: 330px; 
+}
+
+// .left-section-collapsed {
+//   margin-right: -250px; /* Negative value to hide the left side when collapsed */
+// }
+
+.dtSettlement,
+.bsfLabel {
+  margin-left: 20px;
+  margin-right: 20px;
+  width: 250px;
+}
+
+.right-section73 {
+  background-color: white;
+  flex:0 0 60%;
+  z-index: 3;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left:945px;
+  overflow: visible;
+  overflow-y: auto;
+  transition: flex 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55), width 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55); // Adjust the duration and easing function
+
+}
+
+.breadcrumbOTC {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0 0;
+  margin-bottom: 30px;
+  // margin-left: 3%;
+  display: flex;
+  // align-items: center;
+}
+
+.breadcrumbOTC li {
+  display: inline;
+}
+
+.breadcrumbOTC a {
+  color: rgb(2, 117, 216);
+  text-decoration: none;
+  font-size: 18px;
+}
+
+.breadcrumbOTC a:hover {
+  text-decoration: underline;
+}
+
+.breadcrumbOTC-separator {
+  font-size: inherit; /* Inherit the font size from the breadcrumb label */
+}
+
+.btnCancel {
+  float: right;
+  margin-right: 5px;
+}
+
+.btnClear {
+  margin-left: 20px;
+  margin-right: 20px;
+  background-color: orange;
+  color: white;
+  min-width: 130px;
+}
+
+//upload file start
+.fileSize {
+  font-size: 12px;
+  color: grey;
+  margin-bottom: 5px;
+  margin-right: 15px;
+}
+
+#fileInput {
+  border: 1px solid transparent;
+  display: none;
+}
+
+.btnSelectFile{
+  background-color: #2185D0;
+  color: white;
+  margin: 0px 15px 0px 0px;
+}
+
+.btnClearFile {
+  background: red;
+  float: right;
+  border: transparent;
+}
+
+.input-left-side {
+  margin: 0px 15px 0px 0px;
+}
+
+.left-side{
+  max-width: 450px;
+  
+}
+
+.form-control{
+  margin: 0px 15px 0px 0px;
+
+}
+
+input[type="file"]{
+  // margin-right: 20px;
+  width: 100px;
+  border: none;
+  background: #644ded !important;
+  //padding: 10px 20px;
+  border-radius: 6px;
+  color: #fff;
+  height: 37px;
+
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  //cursor: pointer;
+  //transition: background .2s ease-in-out;
+
+}
+
+// input[type="file"] {
+//   opacity: 0;
+//   position: absolute;
+//   top: 0;
+//   left: 0;
+//   width: 100%;
+//   height: 100%;
+//   z-index: 1; /* Ensure the input is clickable */
+// }
+
+/* Style the "Choose File" button */
+.button-container {
+  position: relative; /* Make sure the button container is positioned relatively */
+  display: inline-block; /* Display the button container as inline block */
+}
+
+
+.file-container {
+  border: 1px solid lightgrey;
+  border-radius: 8px;
+  padding: 10px;
+  // display: flex;
+  width: 100%;
+  max-width: 250px;
+  // flex-wrap: wrap;
+  min-height: 40px;
+  margin-right: 15px;
+}
+
+.file-item {
+  margin-bottom: 5px; /* Add space between each file item */
+}
+
+#fileInput {
+  width: 105px;
+}
+
+.file-upload,
+.form-group-upload {
+  display: flex;
+}
+
+.file-name {
+  text-transform: lowercase;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+}
+
+//upload file end
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.button-group {
+  margin-top: 20px;
+}
+
+.error-message-container {
+  margin: auto;
+  // width: fit-content;
+}
+
+.error-message-box {
+  max-width: 330px;
+  padding: 20px;
+  background-color: #f8d7da; /* Bootstrap's error background color */
+  border: 1px solid #f5c6cb; /* Bootstrap's error border color */
+  border-radius: 5px;
+  text-align: left;
+  display: flex;
+  margin: auto; /* Center the box horizontally */
+  justify-content: center; /* Center the content horizontally */
+}
+
+.success-message-container {
+  margin: auto;
+  // width: fit-content;
+}
+
+.success-message-box {
+  max-width: 330px;
+  padding: 20px;
+  background-color: #d1e7dd; /* Bootstrap's error background color */
+  border: 1px solid #a3cfbb; /* Bootstrap's error border color */
+  border-radius: 5px;
+  text-align: left;
+  display: flex;
+  margin: auto; /* Center the box horizontally */
+  justify-content: center; /* Center the content horizontally */
+}
+
+.icon {
+  display: flex;
+  align-items: right;
+  margin-right: 10px; /* Adjust the margin as needed */
+}
+
+.icon span {
+  margin-right: 5px;
+}
+
+.error-content {
+  text-align: left;
+}
+
+.error-content p {
+  margin-top: 0; /* Reset top margin for the paragraph */
+}
+
+.btnUpload {
+  background-color: #21BA45;
+  color: white;
+  min-width: 130px;
+}
+
+.btnSpace {
+  width: 95%;
+  margin-top: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.leftSectionBtnSpace {
+  margin-bottom: 50px;
+}
+//left section end
+
+//middle section start
+
+.btnReconcile {
+  background-color: #21BA45;
+  color: white;
+  min-width: 80px;
+}
+
+.btnView {
+  background-color: #2185D0;
+  color: white;
+  min-width: 90px;
+}
+
+.MAPagination {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.fgSpacing {
+  margin-bottom: 5px;
+}
+
+.MATable{
+  margin-right: 3%;
+}
+
+//midddle section end
+
+//right section start
+.right-section73 {
+  background-color: white;
+}
+
+.btnApply {
+  float: left;
+}
+
+.btnReset {
+  float: right;
+}
+
+//toggle start
+.custom-switch .form-check-input {
+  width: $ToggleButtonWidth !important;
+}
+
+.custom-switch .form-check {
+  display: flex;
+  align-items: center;
+  /* Aligns items in the center vertically */
+}
+
+.custom-switch .form-check-input {
+  width: 2.5rem;
+  /* Adjust width to your preference */
+  height: 1.25rem;
+  /* Adjust height to your preference */
+  margin-right: 0.5rem;
+  /* Space between the toggle and the label */
+  /* The next two lines are to adjust the position of the circle within the switch */
+  background-position: left center;
+  transition: background-position 0.2s;
+
+}
+
+.custom-switch .form-check-input:checked {
+  background-color: #198754;
+  /* Bootstrap's green color for 'success' */
+  background-position: right center;
+
+}
+
+.custom-switch .form-check-input::before {
+  /* Adjust the switch's circle size if necessary */
+  height: 1.25rem;
+  /* Should match the height of the switch */
+  width: 1.25rem;
+  /* Adjust width as needed */
+  transition: transform 0.2s;
+
+}
+
+.custom-switch .form-check-input:checked::before {
+  transform: translateX(1.25rem);
+  /* The translation should match the height to keep it centered */
+}
+
+.custom-switch .form-check-label {
+  margin-bottom: 0;
+  /* Remove bottom mar  gin from label if present */
+  white-space: nowrap;
+  /* Prevent the label from wrapping */
+  margin-top: 5px;
+  flex: 1;
+  width: auto;
+}
+
+//toggle end

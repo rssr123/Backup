@@ -1,0 +1,264 @@
+@import '../../app.component.scss';
+
+
+.right-section73{
+    background-color: white;
+}
+
+.form-group {
+    margin-bottom: 15px;
+  }
+  
+  .button-group {
+    margin-top: 20px;
+  }
+  
+
+  .btnApply{
+    float:left;
+  }
+
+  .btnReset{
+    float:right;
+  }
+
+
+  .MAPagination {
+    display: flex;
+    flex-direction: column; 
+    align-items: flex-end; 
+}
+
+.fgSpacing{
+    margin-bottom:5px;
+}
+
+
+//toggle start
+.custom-switch .form-check-input{
+  width:$ToggleButtonWidth !important;
+}
+.custom-switch .form-check { 
+  display: flex;
+  align-items: center; /* Aligns items in the center vertically */
+}
+
+.custom-switch .form-check-input {
+  width: 2.5rem; /* Adjust width to your preference */
+  height: 1.25rem; /* Adjust height to your preference */
+  margin-right: 0.5rem; /* Space between the toggle and the label */
+  /* The next two lines are to adjust the position of the circle within the switch */
+  background-position: left center;
+  transition: background-position 0.2s;
+ 
+}
+
+.custom-switch .form-check-input:checked {
+  background-color: #198754; /* Bootstrap's green color for 'success' */
+  background-position: right center;
+ 
+}
+
+.custom-switch .form-check-input::before {
+  /* Adjust the switch's circle size if necessary */
+  height: 1.25rem; /* Should match the height of the switch */
+  width: 1.25rem;  /* Adjust width as needed */
+  transition: transform 0.2s;
+
+}
+
+.custom-switch .form-check-input:checked::before {
+  transform: translateX(1.25rem); /* The translation should match the height to keep it centered */
+}
+
+.custom-switch .form-check-label {
+  margin-bottom: 0; /* Remove bottom margin from label if present */
+  white-space: nowrap; /* Prevent the label from wrapping */
+  margin-top: 5px;
+  flex: 1;
+  width:auto;
+}
+
+.button-spacing {
+  margin-left: 10px; /* Adjust the margin as needed */
+}
+
+.btn-disable {
+  background-color: red;
+  color: white;
+}
+
+/* Green color for enabled button */
+.btn-enable {
+  background-color: green;
+  color: white;
+}
+
+.left-section73 {
+  padding-left: 20px; /* Adjust the left padding to move the content to the right */
+}
+
+.MATable {
+  width: 100%;
+  // border-collapse: collapse;
+  padding: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: solid 1px #dfdfdf;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  th,
+  td {
+    border: 1px solid #dfdfdf;
+    padding: 10px;
+    text-align: left;
+
+    input,
+    select {
+      width: 100%;
+      height: 30px; // Ensuring consistent height
+      padding: 8px; // Some padding for text
+      box-sizing: border-box; // Makes sure the width includes padding and borders
+      border-radius: 8px;
+      border: 1px solid #644ded;
+    }
+  }
+
+  .MATableHeader {
+    color: black;
+    background-color: #ffc107 !important;
+    position: sticky; 
+    top: 0;
+    left: 0; /* Add this if your menu pushes the table to the right, or set to menu width if needed */
+    z-index: 900; /* Lower than the menu's z-index so the menu appears above */
+  }
+
+  // tr:nth-child(odd) {
+  //   background-color: white;
+  // }
+
+  // tr:nth-child(even) {
+  //   background-color: #f0f0f0;
+  // }
+}
+//Table End
+
+.parent-permission-row {
+  background-color: #ffffff !important;
+}
+
+.child-row-grey {
+  background-color: #f0f0f0 !important;
+}
+
+.child-row-white {
+  background-color: #ffffff !important;
+}
+
+
+//Pagination Start
+.MAPagination {
+  float: right;
+  margin-top: 3%;
+}
+//Pagination End
+
+//Container Start
+.PAContainer74 {
+  display: flex;
+  justify-content: space-between;
+
+  &.right-section-collapsed {
+    .left-section73 {
+      flex: 0 0 97%;
+      // Since you want the left section to animate, you might want to add a transition
+      transition: flex 0.5s ease;
+    }
+  }
+
+  .left-section73 {
+    flex: 0 0 50%;
+    transition: flex 0.5s ease; // Animation when the size changes
+  }
+
+  .middle-section73 {
+    flex: 0 0 3%;
+  }
+
+  .right-section73 {
+    flex: 0 0 17%;
+    transition: flex 0.5s ease;
+  }
+
+  //mobile view
+  @media (max-width: 768px) {
+    flex-direction: column;
+
+    .left-section73,
+    .right-section73 {
+      flex: 1 0 100%;
+    }
+  }
+  //mobile view
+}
+//Container End
+
+/* Adjust the size of the checkboxes */
+// .MATable input[type="checkbox"] {
+//   width: 18px;
+//   height: 18px;
+// }
+
+// /* Style the checked state of the checkboxes */
+// .MATable input[type="checkbox"]:checked {
+//   background-color: green; /* Change the background color when checked */
+//   border-color: black; /* Change the border color when checked */
+// }
+//toggle end
+
+.TableScrollContainer {
+  max-height: 1000px; /* Set a suitable max-height */
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+.custom-checkbox,
+.custom-checkbox-parent {
+  /* Set a smaller size for the checkbox */
+  transform: scale(0.7); /* Adjust the scale as needed */
+
+  /* Change the color when checked */
+  &:checked {
+    background-color: green !important; /* Add !important to ensure priority */
+    border-color: green !important; /* Add !important to ensure priority */
+  }
+
+  /* Style the tick color when checked */
+  &::before {
+    color: white; /* Change the color of the tick to white */
+  }
+}
+
+.custom-checkbox-parent {
+  /* Set a smaller size for the checkbox */
+  transform: scale(0.9); /* Adjust the scale as needed */
+
+  // background-color: #21ba45 !important;
+
+  .mdc-checkbox__checkmark {
+    color: white !important;
+  }
+
+  /* Change the color when checked */
+  &:checked {
+    background-color: #21ba45 !important; 
+    border-color: #21ba45 !important;
+  }
+}
+
+
+input[type = checkbox]
+{
+  accent-color : green;
+  mix-blend-mode: multiply;
+}

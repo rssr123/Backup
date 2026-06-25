@@ -1,0 +1,43 @@
+<div class="SingleContainer">
+    <!-- Header for Add Item -->
+    <div class="SingleContainerHeader">
+        <h2 class="text-center">Delete Item</h2>
+    </div>
+    <form (ngSubmit)="Delete()">
+        <div class="MALoadingContainer">
+            <!-- Loading spinner overlay -->
+            <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only"></span>
+                </div>
+            </div>
+            <div [ngClass]="{'TableDimmed': isLoading}">
+                <!-- Error Box -->
+                <div *ngIf="error" class="error-box">
+                    <i class="bi bi-x-circle-fill error-icon"></i>
+                    <div>
+                        <strong>{{"labels.validationerror" | translate}}</strong>
+                        <ul>
+                            <ul>
+                                <li *ngFor="let errorMsg of errorMessages">{{ errorMsg }}</li>
+                            </ul>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Tax Code Name (EN) -->
+                <div class="form-group">
+                    <label for="taxCode">{{"labels.areyousureyouwanttodeletethisitem" | translate}}</label>
+
+                </div>
+                <!-- Tax Code Name (BM) -->
+
+                <!-- Buttons -->
+                <div class="button-group">
+
+                    <button class="btn btnDelete" type="submit">{{"delete" | translate}}</button>
+                    <button class="btn btnClose" type="button" (click)="closed()">{{"close" | translate}}</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

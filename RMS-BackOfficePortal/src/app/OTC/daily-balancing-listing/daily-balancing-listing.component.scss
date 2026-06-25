@@ -1,0 +1,156 @@
+@import '../../app.component.scss';
+
+.PAContainer73 {
+    margin-left: 0%;
+    display : flex ;
+    justify-content: normal;
+    flex-direction: row !important;
+  }
+  
+.left-section {
+    background-color: white;
+    max-width: 100%; 
+    width: 35%;
+  }
+
+.left-side{
+    max-width: 450px;
+    text-align: center;
+  }
+
+.middle-section{
+    width: 100%;
+  }
+
+.bsfLabel {
+    margin-left: 20px;
+    margin-right: 10%;
+    width: 250px;
+  }
+
+.subContainer{
+    display: flex;
+    margin-top:15%;
+    margin-right:5%;
+  }
+
+.button-container{
+    //margin:150px;
+    display: flex;
+    justify-content: center;
+    margin-top: 150px;
+  }
+
+.btnApply {
+    background-color: #21ba45;
+    color: white;
+    min-width: $MAButtonMinWidth;
+    margin:20px;
+}
+ 
+.btnCancel {
+    background-color: #767676;
+    min-width: $MAButtonMinWidth;
+    color: white;
+    margin:20px;
+}
+
+.btn-primary{
+  background-color: #2185D0;
+  min-width: $MAButtonMinWidth;
+  color: white;
+  margin:20px;
+}
+
+.btnView {
+  background-color: #2185D0;
+  color: white;
+  min-width: 90px;
+  margin-bottom: 2%;
+}
+
+.topSection{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.success-box{
+  display: flex;
+  align-items: start; /* Aligned at the top */
+  background-color: #a9fdb0; /* Light red */
+  border: 1px solid rgb(0, 93, 19);
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+}
+
+.success-icon{
+  margin-right: 10px;
+}
+
+
+.breadcrumbOTC li {
+  list-style: none;
+  margin-left: -2.2%
+}
+
+// Loading spinner icon
+.loading-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed; /* Keeps it on top even when scrolling */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.7); /* Light overlay effect */
+  z-index: 999999 !important; /* Ensures it stays on top */
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #ccc;
+  border-top: 4px solid #007bff; /* Primary color */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.breadcrumbOTC {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0 0;
+  margin-bottom: 30px;
+  margin-left: 2%;
+  display: flex;
+  // align-items: center;
+}
+
+.breadcrumbOTC li {
+  display: inline;
+}
+
+.breadcrumbOTC a {
+  color: rgb(2, 117, 216);
+  text-decoration: none;
+  font-size: 18px;
+}
+
+.breadcrumbOTC a:hover {
+  text-decoration: underline;
+}
+
+.breadcrumbOTC-separator {
+  font-size: inherit; /* Inherit the font size from the breadcrumb label */
+}

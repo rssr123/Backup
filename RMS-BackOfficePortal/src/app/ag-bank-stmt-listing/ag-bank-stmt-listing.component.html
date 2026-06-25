@@ -1,0 +1,103 @@
+<div class="first-parent SingleContainer">
+    <!-- mainContainer start-->
+    <div class="leftPadding">
+        <h2>{{"Number of Bank Statements" | translate}}</h2>
+    </div>
+    <!-- Loading spinner overlay -->
+    <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+        <div class="spinner-border" role="status">
+            <span class="sr-only"></span>
+        </div>
+    </div>
+
+    <div>
+        <table>
+            <tr class="form-group">
+                <td><label>{{"Filename" | translate}}</label></td>
+                <td>
+                    <input type="text" class="form-control" id="txnType" [(ngModel)]="filenm" />
+                </td>
+                <td></td><!--Empty cell-->
+                <td><label>{{"Uploaded By" | translate}}</label></td>
+                <td>
+                    <input type="text" class="form-control" id="txnType" [(ngModel)]="uploadedby" />
+                </td>
+                <td></td> <!-- Empty cell-->
+                <td><label>{{"Date Uploaded" | translate}}</label></td>
+                <td>
+                    <input type="text" placeholder="{{ 'datepicker' | translate }}" class="form-control"
+                        [bsConfig]="{  dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,containerClass:'theme-default',adaptivePosition: true}"
+                        bsDatepicker [(ngModel)]="dtuploaded" name="date" readonly>
+                </td>
+            </tr>
+        </table>
+        <div class="button-group" style="display: flex;justify-content: end; margin-top: 8px;">
+            <button class="btn btnApply" (click)="apply()">{{"Search" | translate}}</button>
+            <button class="btn btnReset" (click)="reset()">{{"Reset" | translate}}</button>
+        </div>
+        <br>
+    </div>
+
+    <table class="MATable" *ngIf="isEmptyResult">
+        <thead>
+            <tr class="MATableHeader">
+                <th>{{"Filename" | translate}}</th>
+                <th>{{"File Size (kb)" | translate}}</th>
+                <th>{{"Uploaded By" | translate}}</th>
+                <th>{{"Date Uploaded" | translate}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="9" style="text-align: center;">{{"norecordsfound" | translate}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table class="MATable" *ngIf="!isEmptyResult" [ngClass]="{ TableDimmed: isLoading }">
+        <thead>
+            <tr class="MATableHeader">
+                <th>{{"labels.filename" | translate}}</th>
+                <th>{{"labels.filesizekb" | translate}}</th>
+                <th>{{"labels.uploadedby" | translate}}</th>
+                <th>{{"labels.dateuploaded" | translate}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of model">
+                <td><a *ngIf="item.file_nm !== null" (click)="downloadFile(item.file_nm, item.ag_doc_id)" >{{item.file_nm}}</a></td>
+                <!-- <td><a *ngIf="item.file_nm !== null" (click)="permDLBankAllow === 0 ? null : downloadFile(item.ag_doc_id)" [class.disabled] = "permDLBankAllow === 0">{{item.bank_file_nm}}</a></td> -->
+                <td>{{ item.file_size }}</td>
+                <td>{{ item.created_by}}</td>
+                <td>{{ item.dt_created| date : "dd/MM/yyyy"}}</td>
+
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="MAPagination" *ngIf="isDisplay">
+        <div class="fgSpacing">
+            <div>
+                {{
+                page * itemsPerPage < totalRecords ? "Showing " + page * itemsPerPage + " from " + totalRecords
+                    + " results" : "Showing " + totalRecords + " from " + totalRecords + " results" }} </div>
+            </div>
+            <div class="pagination-row">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle PaginControl" type="button" id="dropdownMenuButton"
+                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ selectedValue }}
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton">
+                        <button class="dropdown-item" *ngFor="let singleItem of dropdownOptions"
+                            (click)="LoadData(singleItem)">
+                            {{ singleItem }}
+                        </button>
+                    </div>
+                </div>
+                <ngb-pagination [(page)]="page" [pageSize]="itemsPerPage" [collectionSize]="totalRecords"
+                    (pageChange)="loadData()"></ngb-pagination>
+            </div>
+        </div>
+
+    </div>

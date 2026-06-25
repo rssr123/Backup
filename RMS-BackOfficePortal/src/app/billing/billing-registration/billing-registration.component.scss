@@ -1,0 +1,527 @@
+@import 'src/app/app.component.scss';
+ 
+$leftPadding: 3%;
+$rightPadding: 3%;
+$MarginFromFooter: 110px;
+$MAButtonMinWidth: 100px; //original is 30%
+$MarginSeparator: 30px;
+
+.table-container {
+  // overflow-x: auto; /* Prevent overflow issues */
+  padding-right: 5px; /* Add padding inside the container */
+}
+ 
+table {
+  background-color: white;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.cvtable{
+  padding-left: 15px;
+  padding-right: 25px;
+  position: relative;
+}
+
+.is-invalid{
+  border:2px solid red;
+}
+
+.is-valid{
+  border:2px solid green;
+}
+
+.cvtabletext{
+  top: 5%;
+}
+
+.cvtableoption{
+  right: 6%;
+}
+
+.btnSearchCustId{
+    background-color: #21ba45;
+    color: white;
+    float: right;
+}
+
+.custIdNotExists{
+  color: red;
+  position: relative;
+  right: 5%;
+}
+
+.custIdExists{
+  color: #39d339;
+  position: relative;
+  left: 25%
+}
+
+.trspacing{
+  height : 67px;
+}
+
+.left-section-billing-registration{
+    width: 70%;
+    float: left;
+}
+
+.right-side-billing-registration{
+    width: 30%;
+    background-color: white;
+    padding: 10px;
+    box-sizing: border-box;    
+    top: 65%;
+    right: 1%;
+    //position: absolute;
+    height: fit-content;
+    overflow: hidden;
+    padding-bottom: 3%;
+    float: right;    
+    margin-right: 3%;
+}
+
+.file-container {
+  border: 1px solid #644ded; /* You can customize the border style, color, and size */
+  border-radius: 8px;
+  padding: 10px; /* Adjust the padding to control the distance between the text and the border */
+  display: flex;
+  width: 84%; /* Set the desired width in pixels */
+  flex-wrap: wrap;
+  min-height:40px;
+  position: relative;
+  left: 12%;
+}
+
+.fileSize{
+  font-size: 12px;
+  color: grey;
+  float: right;
+  right: 6%;
+  position: relative;
+}
+
+#content input[disabled] {
+    color: #DCDAD1;
+    padding: 2px;
+    margin: 0 0 0 0;
+    background-image: none;
+}
+
+.form-control:disabled{
+  opacity: 0.5;
+}
+
+.btnSubmit{
+  float: right;
+}
+
+.btnCancel{
+  
+}
+
+.btn:disabled{
+  opacity: 0.4;
+}
+
+.submissionButtons{
+  display: block;
+  width: 82%;
+  left: 13%;
+  position: relative;
+}
+
+//style for dropdown start
+
+:host ::ng-deep {
+ 
+  .ng-select {
+    padding-bottom: 6px;
+ 
+    .ng-select-container {
+      min-height: 0 !important;
+      padding: 0 !important;
+      border-top: none !important;
+ 
+      .ng-value-container {
+        padding: 0;
+        border: 0;
+      }
+    }
+  }
+ 
+  //adjust arrow, clear and cursor position
+  .ng-select-single .ng-select-container {
+ 
+ 
+    .ng-arrow-wrapper {
+      bottom: 3px;
+    }
+ 
+    .ng-clear-wrapper {
+      bottom: 0px;
+    }
+ 
+    .ng-value-container .ng-input {
+      top: 0px
+    }
+ 
+  }
+ 
+}
+ 
+:host ::ng-deep ng-dropdown-panel {
+ 
+  top: auto !important;
+  display: flex;
+  flex-direction: column-reverse;
+  min-width: fit-content;
+   
+}
+ 
+//remove drop down underline
+:host ::ng-deep ng-select .ng-select-container::after {
+  border-bottom: 5px solid transparent !important;
+}
+ 
+//style for dropdown end
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.tableLabel{
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+ 
+ 
+.marginFromFooter {
+  margin-bottom: $MarginFromFooter;
+}
+ 
+.tableWrapper {
+  margin-left: 3%;
+  margin-right: 3%;
+}
+ 
+
+.btnClear {
+  background-color: #84958803;
+  ;
+  min-width: $MAButtonMinWidth;
+  border: solid 1px #dfdfdf;
+}
+ 
+.thWidth {
+  width: 4%;
+ 
+}
+ 
+.thAction {
+  width: 130px;
+ 
+}
+ 
+.thFileSize {
+  width: 130px;
+ 
+}
+ 
+.thInitiadtedBy {
+  width: 200px;
+ 
+}
+ 
+.left-section73 {
+  overflow: visible !important;
+}
+ 
+.PAContainer73 {
+  margin-left: $MAMainLeftPadding;
+  min-height: 0vh;
+}
+ 
+//menu with button start
+.order-info {
+    display: flex;
+    //justify-content: space-between; /* Ensure h2 is on the far left, and the rest on the far right */
+    //align-items: center; /* Align items vertically on the same line */
+  }
+ 
+  .order-details {
+    display: flex;
+    align-items: center; /* Align elements in the center vertically */
+    gap: 5px; /* Optional: Adjust spacing between elements */
+  }
+ 
+  .left-section {
+    display: flex;
+    align-items: center; /* Align button and label vertically */
+    gap: 20px; /* Space between the button and Status label */
+  }
+//  menu with button end
+ 
+.full-width-line {
+  border: none; /* Remove the default border style */
+  border-top: 1px solid #000; /* Add a top border for the line */
+  width: 96%; /* Ensure the line spans the entire width */
+  margin: 0; /* Optional: Adjust the margin as needed */
+  margin-top: 50px;
+  margin-right: 2%;
+  margin-left: 2%;
+}
+ 
+.paymentinfo{
+  margin-left: 3%;
+  margin-right: 3%;
+  background-color: white;
+ 
+  .paymentinfodetails{
+    margin-top: 20px;
+    margin-left: 3%;
+ 
+    label{
+      display: block;
+      width: 350px;
+      word-wrap: break-word; /* Allows long words to break and wrap */
+      word-break: break-word; /* Breaks words if necessary */
+      overflow-wrap: break-word; /* Ensures compatibility */
+      white-space: normal; /* Allows text to wrap */
+    }
+    .form-control{
+      border: 1px solid blue; /* Sets the border color to blue */
+    }
+   
+  }
+}
+ 
+.small-dot {
+  display: inline-block;
+  width: 7px; /* Size of the dot */
+  height: 7px; /* Size of the dot */
+  background-color: black; /* Fill color */
+  border-radius: 50%; /* Makes it a perfect circle */
+  margin-left: 2%;
+}
+ 
+.tableWrapperPaymentInfo {
+  margin-top: 20px;
+  margin-left: 3%;
+  margin-right: 3%;
+}
+ 
+.MarginSeparator {
+  margin-top: $MarginSeparator;
+}
+ 
+.bold {
+  font-weight: bold;
+}
+ 
+.custom-radio{
+  accent-color: black; /* Change the radio button color to black */
+}
+ 
+.payment-mode{
+ 
+  .form-control {
+    display: inline-block; /* Ensures proper alignment */
+    border: 1px solid blue; /* Sets the border color to blue */
+  }
+}
+ 
+.marginTop{
+  margin-top: 10px;
+}
+
+.marginTopCash{
+  margin-top: 10px;
+
+  input{
+    width: 350px;
+  }
+}
+
+.marginPayerEmail{
+
+  input{
+    width: 350px;
+  }
+}
+ 
+.marginLeft{
+  margin-left: 10px;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 17px;
+  width: 17px;
+  left: 4px;
+  bottom: 3px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #008027;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #008027;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+#f_overlay {
+  position: fixed;
+  display: none;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 2;
+  --cursor: pointer;
+}
+
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.loading-spinner {
+  text-align: center;
+  color: white;
+}
+
+.loading-spinner img {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 20px;
+}
+
+.spinner-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  //height: 100vh;
+}
+
+.loader {
+  animation: spin 2s linear infinite;
+  -webkit-animation: spin 2s linear infinite;
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #00538b; /* Blue */
+  border-radius: 50%;
+  width: 400px; /* Increase the size of the spinner */
+  height: 400px; /* Increase the size of the spinner */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+img {
+  position: absolute;
+  width: auto; /* Adjust the image width as needed */
+  height: auto; /* Adjust the image height as needed */
+}
+
+.white-box {
+  background-color: #ffffff; /* White box background */
+  padding: 20px; /* Add padding for spacing */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Box shadow for depth */
+  text-align: center; /* Center align content */
+  max-width: 600px; /* Set max width for the box */
+  width: 100%; /* Ensure it scales responsively */
+}
+
+.check-spinner{
+  height: 19px;
+  width: 19px;
+}
+.btn{
+  min-width: 130px;
+  min-height: 30px;
+}
+
+input.uppercase {
+text-transform: uppercase;
+}
+input::placeholder {
+text-transform: none;
+}
+input.uppercase::placeholder {
+text-transform: uppercase;
+}

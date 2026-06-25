@@ -1,0 +1,561 @@
+@import '../../app.component.scss';
+
+// Keep your original design but make it zoom-responsive
+.contentToConvert {
+  margin-left: -1%;
+  height: 100%;
+  width: 945px;
+  box-sizing: border-box;
+  // Add responsive scaling without blur
+  transform-origin: top left;
+  
+  // Scale based on viewport width to maintain layout
+  @media screen and (max-width: 1400px) {
+    transform: scale(0.9);
+  }
+  
+  @media screen and (max-width: 1200px) {
+    transform: scale(0.8);
+  }
+  
+  @media screen and (max-width: 1000px) {
+    transform: scale(0.7);
+  }
+  
+  @media screen and (max-width: 800px) {
+    transform: scale(0.6);
+  }
+}
+
+.three-columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: -20px;
+  width: 100%;
+  min-width: 945px; // Ensure minimum width
+}
+
+.column:first-child {
+  flex: 0 0 110px;
+  max-width: 110px;
+  min-width: 110px;
+  background-color: darkblue;
+  margin-left: 0;
+  margin-right: 20px;
+}
+
+.column:not(:first-child) {
+  flex: 1;
+  min-width: 815px; // 945 - 110 - 20 = 815px
+}
+
+// Your original table styling - keeping it exactly as you had it
+table {
+  width: 1350px !important;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.first-column {
+  width: 30%;
+}
+
+.second-column {
+  width: 3%;
+}
+
+.third-column {
+  width: auto;
+}
+
+.merged-section {
+  display: flex;
+  width: 100%;
+}
+
+.merged-section .column:first-child {
+  flex: 0 0 5%;
+  background-color: darkblue;
+  height: 100%;
+}
+
+.merged-section .column:last-child {
+  flex: 0 0 95%;
+  padding-left: 20px;
+}
+
+.cbody {
+  width: 945px !important;
+  text-align: center;
+  margin-top: 3%;
+}
+
+.tableChild {
+  width: 945px;
+}
+
+.tableChildHeader th {
+  //border: 0.5px solid;
+  background-color: darkblue;
+  color: white;
+}
+
+.tableChildBody td {
+  border-top: 1px solid black;
+  border-right: 1px solid black;
+}
+
+.tableChildBody td:first-child {
+  border-left: 1px solid black;
+}
+.tableChildBody tr:last-child td {
+  border-bottom: 1px solid black;
+}
+
+.tableFoot1 {
+  text-align: right;
+  border-bottom: 1px solid black;
+  border-left: 1px solid black;
+  border-top: 1px solid black;
+}
+
+.tableFoot2 {
+  text-align: left;
+  border: 1px solid black;
+  width: 945px !important;
+  max-width: 945px;
+}
+
+.top-info-table {
+  font-size: 20px;
+  line-height: 1.4;
+}
+
+.top-info-table th,
+.top-info-table td {
+  padding: 4px 8px;
+}
+
+.spaced-button {
+  margin-right: 100px;
+}
+
+// Loading spinner - keeping your original
+.loading-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.7);
+  z-index: 999999 !important;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #ccc;
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+// Improved print styles while keeping your layout
+@media print {
+  .contentToConvert {
+    transform: none !important; // Remove any scaling for print
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  #contentToConvert {
+    padding: 0;
+    width: 100% !important;
+    display: block !important;
+  }
+
+  .three-columns {
+    display: block;
+    width: 100%;
+    min-width: auto;
+  }
+
+  .column {
+    width: 100% !important;
+    margin-bottom: 20px;
+    min-width: auto !important;
+  }
+  
+  .column:first-child {
+    display: none; // Hide the blue sidebar in print
+  }
+  
+  table {
+    width: 100% !important;
+  }
+  
+  .tableChild {
+    width: 100% !important;
+  }
+  
+  .cbody {
+    width: 100% !important;
+  }
+  
+  .tableFoot2 {
+    width: auto !important;
+  }
+}
+
+// Enhanced zoom handling without blur
+@media screen {
+  // Container for zoom detection
+  .zoom-container {
+    position: relative;
+    overflow-x: auto;
+    overflow-y: visible;
+  }
+  
+  // Force layout consistency for different zoom levels
+  .force-pdf-layout .three-columns {
+    display: flex;
+    flex-wrap: nowrap;
+    width: 945px;
+    min-width: 945px;
+  }
+
+  .force-pdf-layout .column:first-child {
+    width: 110px;
+    min-height: 100px;
+    background-color: darkblue;
+  }
+
+  .force-pdf-layout .column:not(:first-child) {
+    flex: 1;
+    min-width: 815px;
+  }
+}
+
+// Specific viewport adjustments to prevent layout breaking
+@media screen and (min-width: 1920px) {
+  .contentToConvert {
+    transform: scale(1.2);
+  }
+}
+
+@media screen and (min-width: 2560px) {
+  .contentToConvert {
+    transform: scale(1.5);
+  }
+}
+
+// Handle high DPI displays
+@media screen and (-webkit-min-device-pixel-ratio: 2) {
+  .contentToConvert {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+  
+  table, .tableChild {
+    font-smooth: always;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+// Alternative approach: Use CSS zoom property for better text rendering
+.zoom-wrapper {
+  zoom: 1; // Default zoom
+  
+  @media screen and (max-width: 1400px) {
+    zoom: 0.9;
+    border-width: 0.45px;
+  }
+  
+  @media screen and (max-width: 1200px) {
+    zoom: 0.8;
+    border-width: 0.4px;
+  }
+  
+  @media screen and (max-width: 1000px) {
+    zoom: 0.7;
+    border-width: 0.35px;
+  }
+  
+  @media screen and (max-width: 800px) {
+    zoom: 0.6;
+    border-width: 0.3px;
+  }
+
+  @media screen and (max-width: 7648px) {
+    zoom: 0.25;
+    border-width: 0.1px;
+  }
+}
+
+// Prevent text blur on scaling
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+// Zoom-specific classes for JavaScript control
+.zoom-50 {
+  transform: scale(0.5) !important;
+  transform-origin: top left !important;
+}
+
+.zoom-75 {
+  transform: scale(0.75) !important;
+  transform-origin: top left !important;
+}
+
+.zoom-125 {
+  transform: scale(1.25) !important;
+  transform-origin: top left !important;
+}
+
+.zoom-150 {
+  transform: scale(1.5) !important;
+  transform-origin: top left !important;
+}
+
+// Wrapper for the entire content to handle overflow
+.content-wrapper {
+  overflow-x: auto;
+  overflow-y: visible;
+  width: 100%;
+  min-height: 100vh;
+}
+
+// Better zoom handling without CSS transforms (alternative approach)
+.use-css-zoom {
+  .contentToConvert {
+    transform: none !important;
+    zoom: 1;
+    
+    @media screen and (max-width: 1400px) {
+      zoom: 0.9;
+    }
+    
+    @media screen and (max-width: 1200px) {
+      zoom: 0.8;
+    }
+    
+    @media screen and (max-width: 1000px) {
+      zoom: 0.7;
+    }
+    
+    @media screen and (max-width: 800px) {
+      zoom: 0.6;
+    }
+  }
+}
+
+// Additional zoom detection and handling
+.zoom-detector {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+// Responsive font scaling to prevent blur
+@media screen and (max-width: 1400px) {
+  .top-info-table {
+    font-size: 18px;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .top-info-table {
+    font-size: 16px;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .top-info-table {
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .top-info-table {
+    font-size: 12px;
+  }
+}
+
+// Ensure tables don't break
+.tableChild {
+  table-layout: fixed;
+  word-wrap: break-word;
+  
+  th, td {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+}
+
+// Improve print quality
+@media print {
+  @page {
+    size: A4;
+    margin: 10mm;
+  }
+  
+  .contentToConvert {
+    -webkit-print-color-adjust: exact;
+    border-radius: exact;
+  }
+  
+  .tableChildHeader th {
+    -webkit-print-color-adjust: exact;
+    border-radius: exact;
+  }
+  
+  // Prevent page breaks inside tables
+  .tableChild {
+    page-break-inside: avoid;
+  }
+  
+  .tableChild thead {
+    display: table-header-group;
+  }
+  
+  .tableChild tbody {
+    display: table-row-group;
+  }
+  
+  .tableChild tfoot {
+    display: table-footer-group;
+  }
+  
+  .tableChild tr {
+    page-break-inside: avoid;
+  }
+}
+
+// Handle browser zoom detection
+@supports (zoom: 1) {
+  .browser-zoom-support {
+    .contentToConvert {
+      transform: none !important;
+      zoom: var(--zoom-level, 1);
+    }
+  }
+}
+
+// Fallback for browsers without zoom support
+@supports not (zoom: 1) {
+  .browser-zoom-support {
+    .contentToConvert {
+      transform: scale(var(--zoom-level, 1));
+      transform-origin: top left;
+    }
+  }
+}
+
+// Dynamic zoom classes
+.zoom-level-25{
+  --zoom-level: 0.25;
+}
+.zoom-level-50 {
+  --zoom-level: 0.5;
+}
+
+.zoom-level-75 {
+  --zoom-level: 0.75;
+}
+
+.zoom-level-100 {
+  --zoom-level: 1;
+}
+
+.zoom-level-125 {
+  --zoom-level: 1.25;
+}
+
+.zoom-level-150 {
+  --zoom-level: 1.5;
+}
+
+// Ensure content doesn't get cut off
+.content-container {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: visible;
+  
+  .contentToConvert {
+    min-width: 945px;
+  }
+}
+
+// Handle different screen sizes
+@media screen and (max-width: 1600px) {
+  .content-container {
+    padding: 0 20px;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .content-container {
+    padding: 0 10px;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .content-container {
+    padding: 0 5px;
+  }
+}
+
+// Ensure buttons don't interfere with layout
+.spaced-button {
+  margin-right: 100px;
+  
+  @media screen and (max-width: 800px) {
+    margin-right: 20px;
+    margin-bottom: 10px;
+  }
+}
+
+// Additional fixes for edge cases
+.contentToConvert {
+  // Prevent subpixel rendering issues
+  backface-visibility: hidden;
+  perspective: 1000px;
+  
+  // Ensure crisp rendering
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  
+  // Handle potential overflow
+  overflow: visible;
+}
+
+// Fix for webkit rendering issues
+@media screen and (-webkit-min-device-pixel-ratio: 1) {
+  .contentToConvert {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+}

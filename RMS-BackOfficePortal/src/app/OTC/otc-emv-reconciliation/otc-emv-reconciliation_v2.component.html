@@ -1,0 +1,189 @@
+<body class="BodyContainer" *ngIf="permViewAllow == 1">
+    
+    <!-- Mobile Search Section (visible only on mobile) -->
+    <div class="mobile-search-section">
+        <div class="mobile-search-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">{{ "search filter" | translate }}</h5>
+            <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#mobileSearchPanel">
+                <i class="bi bi-search"></i>
+            </button>
+        </div>
+        
+        <div class="collapse" id="mobileSearchPanel">
+            <div class="mobile-search-body">
+                <!-- Balancing Date Period -->
+                <div class="form-group">
+                    <label for="balDatePeriodMobile">{{"labels.balancingdateperiod" | translate}}</label>
+                    <input bsDatepicker
+                        id="balDatePeriodMobile"
+                        name="balDatePeriod"
+                        class="form-control"
+                        placeholder="Input Date"
+                        [(ngModel)]="balancingDate"
+                        [bsConfig]="{ dateInputFormat: 'DD MMM YYYY' }"
+                    />
+                </div>
+
+                <!-- Buttons -->
+                <div class="button-group-mobile">
+                    <button type="button" class="btn btnApply w-100 mb-2" (click)="search()" data-bs-toggle="collapse" data-bs-target="#mobileSearchPanel">{{ "buttons.search" | translate }}</button>
+                    <button type="button" class="btn btnReset w-100" (click)="clearFields()">{{ "buttons.clear" | translate }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="PAContainer73">
+        <div class="one-third">
+
+            <div class="form-group">
+                <label for="balDatePeriod">{{"labels.balancingdateperiod" | translate}}</label>
+                <input bsDatepicker
+                    id="balDatePeriod"
+                    name="balDatePeriod"
+                    class="form-control"
+                    placeholder="Input Date"
+                    [(ngModel)]="balancingDate"
+                    [bsConfig]="{ dateInputFormat: 'DD MMM YYYY' }"
+                    />
+            </div>
+
+            <div class="form-buttons mt-5">
+                <button type="button" class="btn btn-secondary" (click)="clearFields()">{{ "buttons.clear" | translate }}</button>
+                <button type="button" class="btn btn-primary ml-2" (click)="search()">{{ "buttons.search" | translate }}</button>
+            </div>
+        </div>
+
+        <div class="two-thirds">
+            
+            <div class="middle-section">
+                <div class="success-box" *ngIf="rcEmvStatusStatus == 'C'">
+                    <i class="bi-check-circle-fill success-icon"></i>
+                    <div>
+                       <strong>{{"otcemvreconciliationcompleted" | translate}}</strong>
+                       <p>
+                          {{"otcemvreconciliationfortheselectedbalancingdateperiodhasbeencompleted" | translate}}
+                       </p>
+                    </div>
+                 </div>
+                 <div class="error-box" *ngIf="!checkValidLite()">
+                    <i class="bi bi-x-circle-fill error-icon"></i>
+                    <div>
+                       <strong>{{"unabletobeginotcemvreconciliation" | translate}}</strong>
+                       <p>
+                          {{"allactivebranchesdailybalancingstatusmustbecompletedtobeginotcemvreconciliation" | translate}}
+                       </p>
+                    </div>
+                 </div>
+            </div>
+
+            <ul class="breadcrumbOTC">
+                <li>
+                    <a [routerLink]="'/home'">{{ "labels.home" | translate }}</a>
+                    <span class="breadcrumb-separator"> / </span>
+                </li>
+                <li>
+                    <a [routerLink]="'/otc-emv-reconciliation'">{{ "labels.otcemvreconciliation" | translate }}</a>
+                </li>
+            </ul>
+
+            <h1>{{ "labels.otcemvreconciliation" | translate }}</h1>
+            <div class="topSection">
+                <div *ngIf="balancingDate !== null">
+                    <button *ngIf="rcEmvStatusStatus == 'C'" class="btn btnAdd extramarginright" type="button"
+                    [disabled]="!checkValid()" (click)="beginlite()">
+                        {{"labels.viewotcemvreconciliation" | translate}}
+                    </button>
+                    <button *ngIf="rcEmvStatusStatus !== 'C'" class="btn btnApply extramarginright" type="button" 
+                    [disabled]="!checkValid()" (click)="begin()">
+                        {{"labels.beginotcemvreconciliation" | translate}}
+                    </button>
+                </div>
+            </div>
+                <div class="MATableContainer">
+                    <div class="MALoadingContainer">
+                        <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only"></span>
+                            </div>
+                        </div>
+                        <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+                            <thead>
+                                <tr class="MATableHeader">
+                                    <th>{{ "labels.no." | translate }}</th>
+                                    <th>{{ "labels.branchcode" | translate }}</th>
+                                    <th>{{ "labels.dailybalancingstatus" | translate }}</th>
+                                    <th>{{ "labels.noofemvsettlements" | translate }}</th>
+                                    <th>{{ "labels.emvamount" | translate }} (RM)</th>
+                                    <th>{{ "labels.action" | translate }}</th>
+                                </tr>
+                            </thead>
+                                <tbody *ngIf="model.length > 0; else noResults">
+                                    <tr *ngFor="let item of model; let i = index">
+                                        <td>{{ i + 1 }}</td>
+                                        <td>{{ item.branch_cd }}</td>
+                                        <td>{{ item.bal_status }}</td>
+                                        <td>{{ item.emv_settlement_count }}</td>
+                                        <td>{{ item.emv_amt| number: '1.2-2' }}</td>
+                                        <td><button
+                                            (click)="navigateToIndividual(item)"
+                                            class="btn btnAdd"
+                                            [disabled]="item.bal_status !== 'Completed'">
+                                                {{ "buttons.view" | translate }}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                        </table>
+                        <ng-template #noResults>
+                            <tr style="height: 100px;">
+                                <td colspan="20" class="text-center">{{ "searchcriteriadoesnotmatch" | translate }}</td>
+                            </tr>
+                        </ng-template>
+                    </div>
+                </div>
+
+            <div class="MAPagination" *ngIf="isDisplay">
+                <div class="fgSpacing">
+                    <div *ngIf="page * itemsPerPage < totalRecords">
+                        {{"showing" | translate}} {{ page * itemsPerPage }} {{"from" | translate }} {{ totalRecords }}
+                        {{"results" | translate }}
+                    </div>
+                    <div *ngIf="!(page * itemsPerPage < totalRecords)">
+                        {{"showing" | translate }} {{ totalRecords }} {{"from" | translate }} {{ totalRecords }}
+                        {{"results" | translate }}
+                    </div>
+                </div>
+                <div class="pagination-row extramargintop extramarginright">
+                    <div class="dropdown">
+                        <button
+                            class="btn btn-secondary dropdown-toggle PaginControl"
+                            type="button"
+                            id="dropdownMenuButton"
+                            data-bs-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                        >
+                            {{ selectedValue }}
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton">
+                            <button
+                                class="dropdown-item"
+                                *ngFor="let singleItem of dropdownOptions"
+                                (click)="LoadData(singleItem)"
+                            >
+                                {{ singleItem }}
+                            </button>
+                        </div>
+                    </div>
+                    <ngb-pagination
+                        [(page)]="page"
+                        [pageSize]="itemsPerPage"
+                        [collectionSize]="totalRecords"
+                        (pageChange)="loadData()"
+                    ></ngb-pagination>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

@@ -1,0 +1,36 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+    
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "App",
+            "request": "launch",
+            "mainClass": "com.maven.rms.App",
+            "projectName": "com.maven.rms-rms-service"
+        },
+        {
+            "type": "java",
+            "name": "SpringBootSecurityApplication",
+            "request": "launch",
+            "mainClass": "com.maven.rms.SpringBootSecurityApplication",
+            "projectName": "com.maven.rms-rms-service"
+        },
+        {
+            "type": "java",
+            "name": "SpringBootSecurityApplication(1)",
+            "request": "launch",
+            "mainClass": "com.maven.rms.SpringBootSecurityApplication",
+            "projectName": "rms-service"
+        }
+    ]
+}

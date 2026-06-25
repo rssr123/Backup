@@ -1,0 +1,24 @@
+@import '../../../app.component.scss';
+
+.button-group {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    float:right;
+    display: flex;
+  justify-content: space-between;
+  align-items: center;
+  }
+
+.btnSubmit{
+    margin-right:30px;
+    margin-left:30px;
+   
+}
+
+// Add styles for the MatDialog content
+.mat-dialog-content {
+  max-height: 70vh; // Set a maximum height for the dialog content
+  overflow-y: auto; // Enable vertical scrolling
+  padding: 20px; // Optional: Add padding for better spacing
+}
+  

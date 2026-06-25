@@ -1,0 +1,587 @@
+<!-- Load Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@800&display=swap" rel="stylesheet">
+<!-- Header Container -->
+<div class="container-fluid header-container">
+   <nav class="navbar navbar-expand-xl navbar-dark marginRL">
+      <div class="container-fluid d-flex justify-content-between zeroPaddingRL">
+         <!-- LOGO (Left Side) -->
+         <div id="logo" class="d-flex align-items-center">
+            <a id="jata-logo" href="https://www.kpdn.gov.my/ms/" target="_blank" rel="noopener noreferrer">
+               <img alt="Malaysia" src="/rmsbo/assets/logo/logo-jata-malaysia.png"
+                  onerror="this.onerror=null; this.src='/assets/logo/logo-jata-malaysia.png';" />
+            </a>
+            <a id="ssm-logo" href="https://www.ssm.com.my/Pages/Home.aspx" target="_blank" rel="noopener noreferrer">
+               <img alt="SSM" src="assets/logo/logo-ssm-new.png"
+                  onerror="this.onerror=null; this.src='/assets/logo/logo-ssm-new.png';" />
+            </a>
+         </div>
+         <!-- Burger Menu (Mobile) -->
+         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"
+            aria-controls="navMenu" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+         </button>
+         <!-- Main Menu -->
+         <div class="collapse navbar-collapse" id="navMenu">
+            <ul class="navbar-nav ms-auto">
+               <li class="nav-item">
+                  <a class="nav-link" routerLink="/home" (click)="collapseMobileMenu()">{{ 'menu.home' | translate }}</a>
+               </li>
+               <!-- My Tasks Dropdown -->
+               <li class="nav-item dropdown" *ngIf="((username$ | async) !== undefined && (username$ | async) !== null) &&
+                  (permAssignedTaskListAllow === 1 || permCreatedTaskListAllow === 1)">
+                  <div class="notificationHeader" role="status" *ngIf="(totalNotificationCount$ | async) as totalCount">
+                     <ng-container *ngIf="totalCount > 0">
+                        {{ totalCount }}
+                     </ng-container>
+                  </div>
+                  <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                     {{ "menu.mytasks" | translate }}
+                  </a>
+                  <ul class="dropdown-menu">
+                     <ng-container *ngIf="permAssignedTaskListAllow === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/my-task-assigned-tasks" (click)="collapseMobileMenu()">
+                              <span class="menu-text"> {{"labels.assignedtasks" | translate}}</span>
+                              <div class="notificationMytask" role="status"
+                                 *ngIf="(totalNotificationCountForAssignedTasks$ | async) as myTaskCount">
+                                 <ng-container *ngIf="myTaskCount > 0">
+                                    {{ myTaskCount }}
+                                 </ng-container>
+                              </div>
+                           </a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permCreatedTaskListAllow === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/my-task-created-task" (click)="collapseMobileMenu()">
+                              <span class="menu-text"> {{"labels.createdtasks" | translate}}</span>
+                              <div class="notificationCreatedtask" role="status"
+                                 *ngIf="(totalNotificationCountForCreatedTasks$| async) as createdTaskCount">
+                                 <ng-container *ngIf="createdTaskCount > 0">
+                                    {{ createdTaskCount }}
+                                 </ng-container>
+                              </div>
+                           </a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permFATaskListAllow === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/my-task-public-task/fa" (click)="collapseMobileMenu()">{{"labels.financeadmintasks" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permBYMTaskListAllow === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/my-task-public-task/bym" (click)="collapseMobileMenu()">{{"labels.bymtasks" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permPGTaskListAllow === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/my-task-public-task/pg" (click)="collapseMobileMenu()">{{"labels.pgtasks" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permOTCStaffTaskListAllow === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/my-task-public-task/os" (click)="collapseMobileMenu()">{{"labels.otcstafftasks" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permOTCSupervisorTaskListAllow === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/my-task-public-task/osp" (click)="collapseMobileMenu()">{{"labels.otcsupervisortasks"
+                              | translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permOTCBranchManagerTaskListAllow === 1">
+                        <li>
+                           <a class="dropdown-item"
+                              routerLink="/my-task-public-task/obm" (click)="collapseMobileMenu()">{{"labels.otcbranchmanagertasks" | translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permSMETaskListAllow === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/my-task-public-task/sme" (click)="collapseMobileMenu()">{{"labels.smetasks" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permLGLTaskListAllow === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/my-task-public-task/lgl" (click)="collapseMobileMenu()">{{"labels.lgltasks" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <!-- <ng-container *ngIf="permCCListingAllow === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/credit-control-sme-task-list" (click)="collapseMobileMenu()">{{"labels.creditcontrolsmetasklist" | translate}}</a>
+                        </li>
+                     </ng-container> -->
+                  </ul>
+               </li>
+               <!-- OTC Dropdown -->
+               <li class="nav-item dropdown"
+                  *ngIf="((username$ | async) !== undefined && (username$ | async) !== null) && (permOTCCheckInAllow === 1|| permOTCCheckOutAllow === 1 || permOTCCollectionReceiptingAllow === 1 || permOTCReturnedChequeAllow === 1 || permOTCReprintReceiptAllow === 1 || permOTCReceiptCancellationAllow === 1 || permOTCDBalListingAllow === 1 || permOTCMBalListingAllow === 1)">
+                  <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                     {{ "menu.otc" | translate }}
+                  </a>
+                  <ul class="dropdown-menu">
+                     <ng-container *ngIf="permOTCCheckInAllow === 1 && OTCCheckedIn === 0">
+                        <li>
+                           <a class="dropdown-item" routerLink="/otc-checkin" (click)="collapseMobileMenu()">{{"menu.otccheckin" | translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permOTCCheckOutAllow === 1 && OTCCheckedIn === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/otc-checkout" (click)="collapseMobileMenu()">{{"menu.otccheckout" | translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container>
+                        <li>
+                           <a *ngIf="permOTCCollectionReceiptingAllow === 1 && OTCCheckedIn === 1" class="dropdown-item"
+                              routerLink="/otc-collection-receipting" (click)="collapseMobileMenu()">{{"labels.otccollectionandreceipting" |
+                              translate}}</a>
+                        </li>
+                        </ng-container>
+                        <ng-container>
+                        <li>
+                           <a *ngIf="permOTCReturnedChequeAllow === 1" class="dropdown-item"
+                              routerLink="/otc-returned-cheque" (click)="collapseMobileMenu()">{{"labels.otcreturncheque" | translate}}</a>
+                        </li>
+                        </ng-container>
+                     <ng-container *ngIf="permOTCReprintReceiptAllow === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/reprintreceipt" (click)="collapseMobileMenu()">{{"labels.reprintreceipt" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permOTCReceiptCancellationAllow === 1 && OTCCheckedIn === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/rcpt-no-vld" (click)="collapseMobileMenu()">{{"labels.otcreceiptcancellation" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <!--OTC Balancing-->
+                     <ng-container *ngIf="permOTCDBalListingAllow === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/daily-balancing-listing" (click)="collapseMobileMenu()">{{"labels.dailybalancing" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permOTCMBalListingAllow === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/master-balancing-listing" (click)="collapseMobileMenu()">{{"labels.masterbalancing" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                  </ul>
+               </li>
+               <!-- Refund Dropdown -->
+               <li class="nav-item dropdown"
+                  *ngIf="((username$ | async) !== undefined && (username$ | async) !== null) && (permRefundAllow === 1 )">
+                  <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                     {{ 'menu.refund' | translate }}
+                  </a>
+                  <ul class="dropdown-menu">
+                     <ng-container *ngIf="permRefundPaidTransactionTableAllow === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/paid-transaction-table" (click)="collapseMobileMenu()">{{"menu.refundrequestbyfinance" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permRefundChargebackTableAllow  === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/refund-chargeback" (click)="collapseMobileMenu()">{{"menu.paymentgatewaychargeback" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permALListAllow === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/refund-listing" (click)="collapseMobileMenu()">{{"menu.refundtransactiontable" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                  </ul>
+               </li>
+               <!-- Accrual Dropdown -->
+               <li class="nav-item dropdown"
+                  *ngIf="((username$ | async) !== undefined && (username$ | async) !== null) && (permALListAllow === 1)">
+                  <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                     {{ 'menu.accrual' | translate }}
+                  </a>
+                  <ul class="dropdown-menu">
+                     <li><a class="dropdown-item" routerLink="/deferred-income-listing" (click)="collapseMobileMenu()">{{"menu.dilisting" |
+                           translate}}</a></li>
+                     <li><a class="dropdown-item" routerLink="/ri-pl-listing" (click)="collapseMobileMenu()">{{"menu.ripllisting" | translate}}</a>
+                     </li>
+                     <li><a class="dropdown-item" routerLink="/ricp-listing" (click)="collapseMobileMenu()">{{"menu.ricplisting" | translate}}</a></li>
+                     <li> <a class="dropdown-item" routerLink="/rilt-listing" (click)="collapseMobileMenu()">{{"menu.rilitigation" | translate}}</a>
+                     </li>
+                  </ul>
+               </li>
+               <!-- Billing Dropdown -->
+               <li class="nav-item dropdown"
+                  *ngIf="((username$ | async) !== undefined && (username$ | async) !== null) && (permBillingMenu === 1 )">
+                  <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                     {{ 'menu.billing' | translate }}
+                  </a>
+                  <ul class="dropdown-menu">
+                     <ng-container *ngIf="permBillViewListingAndDetailsAllow === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/billing-listing" (click)="collapseMobileMenu()">{{"menu.billist" | translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permBillRegistrationAllow === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/billing-registration" (click)="collapseMobileMenu()">{{"menu.bilreg" | translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permBillCancellationListing === 1">
+                        <li>
+                           <a class="dropdown-item"
+                              routerLink="/billing-cancellation-search" (click)="collapseMobileMenu()">{{"menu.billingcancellation" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permBillCancellationListing === 1">
+                        <li>
+                           <a class="dropdown-item"
+                              routerLink="/billing-cancellation-listing" (click)="collapseMobileMenu()">{{"menu.billingcancellationlisting" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permBillAdjustmentListing === 1">
+                        <li>
+                           <a class="dropdown-item"
+                              routerLink="/billing-adjustment-search" (click)="collapseMobileMenu()">{{"menu.billingadjustmentsearch" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container>
+                        <li>
+                           <a class="dropdown-item" routerLink="/non-billing-listing" (click)="collapseMobileMenu()">{{"menu.nonbillinglisting" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                  </ul>
+               </li>
+               <!-- Recon Dropdown -->
+               <li class="nav-item dropdown"
+                  *ngIf="((username$ | async) !== undefined && (username$ | async) !== null) && (permBankReconFilesListAllow === 1|| permPaymentReconFilesListAllow === 1)">
+                  <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                     {{"menu.reconciliation" | translate}}
+                  </a>
+                  <ul class="dropdown-menu">
+                     <ng-container *ngIf="permPaymentReconFilesListAllow === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/pgrecon-listing">{{"menu.paymentgatewayreconciliation"
+                              |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permBankReconFilesListAllow === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/bank-recon-listing">{{"menu.bankreconciliation" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permNonRmsListingAllow === 1">
+                        <li>
+                           <a class="dropdown-item"
+                              routerLink="/non-rms-receipting-listing">{{"menu.nonrmsreconciliation"
+                              |translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container>
+                        <li>
+                           <a *ngIf="permOTCEMVReconciliationAllow === 1" class="dropdown-item"
+                              routerLink="/otc-emv-reconciliation">{{"labels.otcemvreconciliation" | translate}}</a>
+                        </li>
+                     </ng-container>
+                  </ul>
+               </li>
+               <!-- Report Dropdown -->
+               <li class="nav-item dropdown"
+                  *ngIf="((username$ | async) !== undefined && (username$ | async) !== null) 
+                && (permReportPMListAllow === 1 || permReportSSListAllow === 1 || permReportFDIDListAllow === 1
+                || permReportDailyColListAllow === 1 || permReportMatchTransListAllow ===1 || permReportPGSetDisbListAllow === 1 || permReportUnmatchTransListAllow === 1 || permReportDIAgingAllow === 1 || permReportRIPLAgingAllow === 1 || permReportUmAgingAllow ===1 || permReportRICPAgingAllow === 1
+                || permReportCounterCollectionAllow === 1 || permReportDailyBalancingAllow === 1 || permReportMasterBalancingAllow === 1 || permReportOTCCollectionAllow === 1 || permReportOTCCollectionByFeeDetailIDAllow === 1 || permReportOTCReceiptCancellationAllow === 1 || permReportOTCReturnedChequeAllow === 1 || permReportBankInSlipAllow === 1)">
+                  <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                     {{"menu.report" | translate}}
+                  </a>
+                  <ul class="dropdown-menu">
+                     <ng-container>
+                        <li
+                           *ngIf="permReportDailyColListAllow === 1 || permReportFDIDListAllow === 1 || permReportSSListAllow === 1 || permReportPMListAllow === 1">
+                           <a class="dropdown-item" routerLink="/collection-reports-listing">{{"menu.collectionreport" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container>
+                        <li
+                           *ngIf="permReportMatchTransListAllow === 1 || permReportPGSetDisbListAllow === 1 ||  permReportUmAgingAllow === 1 || permReportUnmatchTransListAllow === 1">
+                           <a class="dropdown-item"
+                              routerLink="/reconciliation-reports-listing">{{"menu.reconciliationreport" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container>
+                        <li
+                           *ngIf="permReportDIAgingAllow === 1 || permReportRICPAgingAllow === 1 || permReportRIPLAgingAllow === 1">
+                           <a class="dropdown-item" routerLink="/accrual-reports-listing">{{"menu.accrualreport" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container>
+                        <li
+                           *ngIf="permReportBankInSlipAllow === 1 || permReportOTCCollectionByFeeDetailIDAllow === 1 || permReportDailyBalancingAllow === 1 || permReportMasterBalancingAllow === 1 || permReportOTCCollectionAllow === 1 || permReportOTCCollectionByFeeDetailIDAllow === 1 || permReportOTCReceiptCancellationAllow === 1 || permReportOTCReturnedChequeAllow === 1">
+                           <a class="dropdown-item" routerLink="/otc-reports-listing">{{"menu.otcreport" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container>
+                        <li
+                           *ngIf="permReportRefundAgingAllow === 1 || permReportRefundSummaryStatusAllow === 1 || permReportRefundStatusDetailedAllow === 1">
+                           <a class="dropdown-item" routerLink="/refund-reports-listing">{{"menu.refundreport" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container>
+                        <li
+                           *ngIf="permReportCatProdServAllow === 1 || permReportDetBilBilTypeAllow === 1 ||permReportDetBilClassIdAllow === 1 || permReportSummaryBilAllow === 1">
+                           <a class="dropdown-item" routerLink="/catalogue-reports-listing">{{"menu.cataloguereport" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                  </ul>
+               </li>
+               <!-- SP -->
+               <li class="nav-item dropdown"
+                  *ngIf="((username$ | async) !== undefined && (username$ | async) !== null && (permSPListAllow === 1 || permSPMListAllow === 1))">
+                  <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                     {{"menu.sp" | translate}}
+                  </a>
+                  <ul class="dropdown-menu">
+                     <ng-container *ngIf="permSPListAllow === 1">
+                        <li>
+                           <a class="dropdown-item"
+                              routerLink="/service-provider-payment-listing">{{"menu.sppaymentlisting" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container  *ngIf="permSPMListAllow === 1">
+                        <li>
+                           <a class="dropdown-item"
+                              routerLink="/service-provider-maintenance-listing">{{"menu.spprofile"|
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <!-- <ng-container *ngIf="permSPMListAllow === 1">
+                        <li>
+                           <a class="dropdown-item"
+                              routerLink="/service-provider-maintenance-listing">{{"labels.spprofile"|
+                              translate}}</a>
+                        </li>
+                     </ng-container> -->
+                  </ul>
+               </li>
+               <!-- Credit Control Dropdown -->
+               <li class="nav-item dropdown"
+                  *ngIf="((username$ | async) !== undefined && (username$ | async) !== null) && (permCCListingAllow === 1 || permCOListingAllow === 1) ">
+                  <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                     {{"menu.creditcontrol" | translate}}
+                  </a>
+                  <ul class="dropdown-menu">
+                     <ng-container *ngIf="permCCListingAllow === 1">
+                        <li>
+                           <a class="dropdown-item"
+                              routerLink="/credit-control-sme-task-list">{{"labels.mastercreditcontrollisting" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permCOListingAllow === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/court-order-listing">{{"menu.courtorderlisting" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                  </ul>
+               </li>
+               <!-- MFT Dropdown -->
+               <li class="nav-item dropdown"
+                  *ngIf="((username$ | async) !== undefined && (username$ | async) !== null) && (permRequestAddMFT === 1 || permRequestEditMFT === 1)">
+                  <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                     {{ 'menu.mft' | translate }}
+                  </a>
+                  <ul class="dropdown-menu">
+                     <ng-container *ngIf="permRequestAddMFT === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/mft-req-form-add">{{"labels.requestaddmft" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permRequestEditMFT === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/mft-req-form-edit">{{"labels.requesteditmft" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="(permRequestAddMFT === 1 || permRequestEditMFT === 1)">
+                        <li>
+                           <a class="dropdown-item" routerLink="/master-fee-table">{{"labels.viewmftinfo" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                  </ul>
+               </li>
+               <!-- Maintenance Dropdown -->
+               <li class="nav-item dropdown"
+                  *ngIf="((username$ | async) !== undefined && (username$ | async) !== null)
+                  && (permMFTListAllow === 1 || permMTLListAllow === 1 || permFGListAllow === 1 || permTCDListAllow === 1 || permFMSListAllow === 1 || permURListAllow === 1
+                  || permRPCListAllow === 1 || permMTTListAllow === 1 || permRACListAllow === 1 || permBCCListAllow === 1|| permBCDListAllow === 1)">
+                  <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                     {{"menu.setup" | translate}}
+                  </a>
+                  <ul class="dropdown-menu">
+                     <ng-container *ngIf="permBCListAllow === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/billing-class-listing">{{"labels.billingclasslisting"|
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permBTListAllow === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/billing-type-listing">{{"labels.billingtypelisting"|
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permBCDListAllow === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/branch-code-listing">{{"labels.branchcodelisting"|
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permBCCListAllow === 1">
+                        <li>
+                           <a class="dropdown-item"
+                              routerLink="/branch-code-counter-listing">{{"labels.branchcodecountermapping"|
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permFGListAllow === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/fee-group-listing">{{"labels.feegrouplisting" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <!-- <ng-container *ngIf="permFPAListAllow === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/fpa-scheduler">{{"labels.fpascheduler" |
+                              translate}}</a>
+                        </li>
+                     </ng-container> -->
+                     <ng-container *ngIf="permFMSListAllow === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/fms-listing">{{"labels.fmscodelisting" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permFMSAccountCodeListAllow === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/fms-account-code">{{"labels.fmsaccountcode" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permMFTListAllow === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/master-fee-table">{{"labels.masterfeetable" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permMTLListAllow === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/master-task-list">{{"labels.mastertasklist" |
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permMTTListAllow === 1">
+                        <li>
+                           <a class="dropdown-item"
+                              routerLink="/master-transaction-table">{{"labels.mastertransactiontable"|
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permRACListAllow === 1">
+                        <li>
+                           <a class="dropdown-item"
+                              routerLink="/refund-account-code-listing">{{"labels.refundaccountcode"|
+                              translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permRPCListAllow === 1">
+                        <li>
+                           <a class="dropdown-item"
+                              routerLink="/role-and-permissions-configurations-details">{{"labels.roleandpermissionsconfigurations"
+                              | translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permURListAllow === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/userrole">{{"labels.useranduserroles" | translate}}</a>
+                        </li>
+                     </ng-container>
+                     <ng-container *ngIf="permTCDListAllow === 1">
+                        <li>
+                           <a class="dropdown-item" routerLink="/tax-code-listing">{{"tax code" | translate}}</a>
+                        </li>
+                     </ng-container>
+                     <!-- <ng-container>
+                        <li>
+                           <a class="dropdown-item" routerLink="/court-order-listing">{{"menu.courtorderlisting" | translate}}</a>
+                        </li>
+                     </ng-container> -->
+                  </ul>
+               </li>
+               <!-- User Dropdown -->
+               <li class="nav-item dropdown" *ngIf="(name$ | async) && (name$ | async) !== '' && (name$ | async) !== 'Unknown User'">
+                  <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                     {{ (name$ | async) | uppercase }}
+                  </a>
+                  <ul class="dropdown-menu">
+                     <li><a class="dropdown-item" routerLink="/logout">{{"menu.backtossm4u" | translate}}</a></li>
+                  </ul>
+               </li>
+               <!-- Login Menu -->
+               <li class="nav-item" *ngIf="!(name$ | async) || (name$ | async) === '' || (name$ | async) === 'Unknown User'">
+                  <a class="nav-link" (click)="Login()">{{ "menu.login" | translate }}</a>
+               </li>
+               <!-- Language Selector -->
+               <li class="nav-item dropdown mobilePadding">
+                  <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                     {{ selectedLanguage | uppercase }}
+                  </button>
+                  <ul class="dropdown-menu">
+                     <li *ngFor="let lang of languages">
+                        <button class="dropdown-item" (click)="useLanguage(lang)">{{ lang | uppercase }}</button>
+                     </li>
+                  </ul>
+               </li>
+            </ul>
+         </div>
+      </div>
+   </nav>
+</div>
+<!-- Header 2 (Retained) -->
+<div id="header2">
+   <div class="container-fluid clearfix noindex zeroPaddingRL">
+      <nav class="navbar marginRL">
+         <h3>
+            <!-- <b>{{ dynamicMessage }}</b> -->
+            <b>{{ 'menu.backoffice' | translate }}</b>
+         </h3>
+         <span><b>{{ this.counterTitle }}{{ formattedDatetime }}</b></span>
+      </nav>
+   </div>
+</div>

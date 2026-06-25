@@ -1,0 +1,165 @@
+<ng-container *ngIf="permListAllow === 1">
+
+    <body class="BodyContainer">
+        <div class="PAContainer73">
+            <div class="one-third">
+                <div class="form-group">
+                    <label for="collectionSlipNo">{{"labels.receiptno." | translate}}</label>
+                    <input type="text" class="form-control" [(ngModel)]="receiptNo" name="receiptNo" maxlength="20"
+                        [placeholder]="'labels.enterreceiptno' | translate">
+                </div>
+                <div class="form-group">
+                    <label for="orderReferenceNo">{{"labels.orderreferenceno." | translate}}</label>
+                    <input type="text" class="form-control" [(ngModel)]="oderRefNo" name="oderRefNo" maxlength="20"
+                        [placeholder]="'labels.enterorderrefno' | translate">
+                </div>
+                <div class="form-group">
+                    <label for="custName">{{"labels.custName." | translate}}</label>
+                    <input type="text" class="form-control" [(ngModel)]="custName" name="custName" maxlength="255"
+                        [placeholder]="'labels.entercustomername' | translate">
+                </div>
+                <div class="button-group">
+                    <button class="btn btnCancel" (click)="clear()">{{"buttons.clear" | translate}}</button>
+                    <button class="btn btnSearch" (click)="loadData()">{{"buttons.search"
+                        | translate}}</button>
+                </div>
+
+            </div>
+            <div class="two-thirds">
+                <ul class="breadcrumbOTC">
+                    <li>
+                        <a [routerLink]="'/home'">{{"labels.home" | translate}}</a>
+                        <span class="breadcrumb-separator"> / </span>
+                    </li>
+                    <li>
+                        <a [routerLink]="'/rcpt-no-vld'">{{"labels.otcreceiptcancellation" | translate}}</a>
+                    </li>
+                </ul>
+
+                <div>
+                    <!-- alert box -->
+                    <div *ngIf="showResultAlert" [@fadeInOut]>
+                        <div class="alert alert-success PA-alert-box" role="alert">
+                            {{alertMessage}}
+                        </div>
+                    </div>
+                </div>
+
+                <h1>{{"labels.receiptcancellation" | translate}}</h1>
+                <!-- <h2 *ngIf="!isEmptyResult">{{"labels.searchresult(s)" | translate}}</h2> -->
+                <div class="MATableContainer TablePosition-relative">
+                    <div class="MALoadingContainer">
+                        <!-- Loading spinner overlay -->
+                        <div *ngIf="isLoading"
+                            class="TableLoading-overlay d-flex align-items-center justify-content-center">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only"></span>
+                            </div>
+                        </div>
+
+                        <!-- No results found -->
+                        <!-- <table class="MATable" *ngIf="isEmptyResult">
+                        <thead>
+                            <tr class="MATableHeader">
+                                <th>No.</th>
+                                <th>Receipt No.</th>
+                                <th>Order Reference No.</th>
+                                <th>Customer Name</th>
+                                <th>Counter ID</th>
+                                <th>Branch Code</th>
+                                <th>Payment Mode</th>
+                                <th>Amount (RM)</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="9" style="text-align: center;">Search criteria does not match any results.</td>
+                            </tr>
+                        </tbody>
+                    </table> -->
+                        <!-- <label *ngIf="isEmptyResult">{{"labels.noresultfound" | translate}}...</label> -->
+
+
+                        <!-- Your table structure -->
+                        <table class="MATable">
+                            <thead>
+                                <tr class="MATableHeader">
+                                    <th>No.</th>
+                                    <th>{{"labels.receiptno." | translate}}</th>
+                                    <th>{{"labels.orderreferenceno." | translate}}</th>
+                                    <th>{{"labels.customername" | translate}}</th>
+                                    <th>{{"labels.counterID" | translate}}</th>
+                                    <th>{{"labels.branchcode" | translate}}</th>
+                                    <th>{{"labels.paymentmode" | translate}}</th>
+                                    <th>{{"labels.amount(RM)" | translate}}</th>
+                                    <th>{{"labels.status" | translate}}</th>
+                                    <th>{{"labels.action" | translate}}</th>
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="totalRecords>0; else noResults">
+                                <tbody>
+                                    <tr *ngFor="let item of model; let i = index">
+                                        <td>{{ (page - 1) * itemsPerPage + i + 1 }}</td>
+                                        <td>{{ item.rcpt_no }}</td>
+                                        <td>{{ item.orn_no }}</td>
+                                        <td>{{ item.cust_nm }}</td>
+                                        <td>{{ item.counter_id }}</td>
+                                        <td>{{ item.branch_cd }}</td>
+                                        <td>{{item.otc_pymt_mode === 'CA' ? 'Cash' :
+                                            item.otc_pymt_mode === 'CE' ? 'Cheque' :
+                                            item.otc_pymt_mode === 'MO' ? 'Money Order' :
+                                            item.otc_pymt_mode === 'BD' ? 'Bank Draft' :
+                                            item.otc_pymt_mode === 'EV' ? 'EMV' :
+                                            item.otc_pymt_mode === 'MX' ? 'Mix' : ''}}</td>
+                                        <td>{{item.total_amt| number:'1.2-2'}}</td>
+                                        <td>{{ item.nm_en }}</td>
+                                        <td><button type="button" class="btn btnView"
+                                                (click)="viewSelected(item)">{{"buttons.view" | translate}} </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </ng-container>
+                            <ng-template #noResults>
+                                <tr style="height: 100px;">
+                                    <td colspan="9" class="text-center">{{"searchcriteriadoesnotmatch"| translate}}
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </table>
+                    </div>
+                    <div class="MAPagination">
+                        <div class="fgSpacing">
+                            <div *ngIf="page * itemsPerPage < totalRecords">
+                                {{"showing" | translate}} {{ page * itemsPerPage }} {{"from" | translate}} {{
+                                totalRecords }} {{"results" | translate}}
+                            </div>
+                            <div *ngIf="!(page * itemsPerPage < totalRecords)">
+                                {{"showing" | translate}} {{ totalRecords }} {{"from" | translate}} {{ totalRecords }}
+                                {{"results" | translate}}
+                            </div>
+                        </div>
+                        <div class="pagination-row">
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle PaginControl" type="button"
+                                    id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">
+                                    {{ selectedValue }}
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton">
+                                    <button class="dropdown-item" *ngFor="let singleItem of dropdownOptions"
+                                        (click)="LoadData(singleItem)">
+                                        {{ singleItem }}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <ngb-pagination [(page)]="page" [pageSize]="itemsPerPage" [collectionSize]="totalRecords"
+                                (pageChange)="loadData()"></ngb-pagination>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</ng-container>

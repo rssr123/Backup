@@ -1,0 +1,71 @@
+.card {
+    background: #fff;
+    padding: 2rem;
+    max-width: 500px;
+    margin: 2rem auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  
+    h2 {
+      font-size: 1.4rem;
+      margin-bottom: 1.5rem;
+      color: #2c3e50;
+    }
+  
+    .form-group {
+      margin-bottom: 1rem;
+  
+      label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.4rem;
+      }
+  
+      input,
+      textarea {
+        width: 100%;
+        padding: 0.6rem;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        box-sizing: border-box;
+  
+        &:focus {
+          border-color: #3498db;
+          outline: none;
+          box-shadow: 0 0 3px rgba(52, 152, 219, 0.4);
+        }
+      }
+  
+      textarea {
+        min-height: 80px;
+        resize: vertical;
+      }
+    }
+  
+    button {
+      background-color: #3498db;
+      color: #fff;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+  
+      &:disabled {
+        background-color: #bdc3c7;
+        cursor: not-allowed;
+      }
+    }
+  
+    .success {
+      color: #27ae60;
+      margin-top: 1rem;
+    }
+  
+    .error {
+      color: #e74c3c;
+      margin-top: 1rem;
+    }
+  }
+  

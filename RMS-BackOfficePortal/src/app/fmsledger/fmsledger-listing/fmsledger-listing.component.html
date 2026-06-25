@@ -1,0 +1,385 @@
+<ng-container *ngIf="permListAllow===1">
+
+  <body class="BodyCointaner">
+    <!-- mainContainer start-->
+    <div [class.right-section-collapsed]="rightSectionCollapsed" class="PAContainer73">
+      <!-- left section -->
+      <div class="left-section73">
+        <div>
+          <!-- alert box -->
+          <div *ngIf="showInsertAlert" [@fadeInOut]>
+            <div class="alert alert-success PA-alert-box" role="alert">
+              Changes saved successfully!
+            </div>
+          </div>
+
+          <div *ngIf="showDuplicateBox2" [@fadeInOut]>
+            <div class="alert alert-danger" role="alert">
+              {{ duplicateMessage }}
+            </div>
+          </div>
+
+          <div *ngIf="showDuplicateBox" [@fadeInOut]>
+            <div class="alert alert-info PA-alert-box" role="alert">
+              {{"updated successfully"| translate}}
+            </div>
+          </div>
+
+          <!-- <div *ngIf="showDeleteAlert" [@fadeInOut]>
+            <div class="alert alert-danger PA-alert-box" role="alert">
+              Deleted successfully!
+            </div>
+          </div> -->
+
+          <div *ngIf="showResultAlert" [@fadeInOut]>
+            <div class="alert alert-warning PA-alert-box" role="alert">
+              {{"showResultAlert"| translate}}
+            </div>
+          </div>
+
+
+          <div *ngIf="showGenericAlert" [@fadeInOut]>
+            <div class="alert alert-warning PA-alert-box" role="alert">
+              Sorry for the trouble. Please try again later or contact support if the issue continues.
+            </div>
+          </div>
+
+          <div *ngIf="showUploadAlert" [@fadeInOut]>
+            <div class="alert alert-warning PA-alert-box" role="alert">
+              {{"labels.uploaddocfail"| translate}}
+            </div>
+          </div>
+
+          <div *ngIf="showValidationAlert" [@fadeInOut]>
+            <div class="alert alert-danger" role="alert">
+              {{validationErrorMessage }}
+            </div>
+          </div>
+
+
+          <div *ngIf="showWrongNameAlert" [@fadeInOut]>
+            <div class="alert alert-warning PA-alert-box" role="alert">
+              {{"labels.uniquename"| translate}}
+            </div>
+          </div>
+
+          <div *ngIf="showFileSizeAlert" [@fadeInOut]>
+            <div class="alert alert-warning PA-alert-box" role="alert">
+              {{"labels.filesizealert"| translate}}
+            </div>
+          </div>
+
+          <!--alert box -->
+          <!-- <div class="LeftSectionPosition">
+            {{"labels.Home / Setup & Maintenance / FMS Code Listing"| translate}}
+          </div> -->
+
+          <!-- <h2>{{"labels.fmscodedetails"| translate}} - {{fmsCd}}</h2> -->
+          <h2><span style="margin-right: 15px;">{{"labels.fmscodedetails"| translate}} - {{fmsCd}}</span></h2>
+
+
+          <div class="ButtonContainer">
+
+            <div class="LeftSectionPosition">
+              <button *ngIf="!showUploadField" type="button" [disabled]="permFileUploadAllow===0" class="btn btnAdd"
+                (click)="toggleFoundVisibility()">
+                {{"buttons.uploadexcel"| translate}}
+              </button>
+
+
+              <div class="row">
+                <div class="col"><label *ngIf="showUploadField" class="btn btnAddFile form-control" style="margin-left: 6px;">
+                    {{"buttons.selectfile"| translate}}
+                    <input type="file" id="fileInput" (change)="handleFileInput($event)" style="display:none;"
+                      accept=".xlsx, .xls" />
+                  </label>
+                </div>
+
+
+                <div class="col">
+                  <div *ngIf="showUploadField" class="SelectedFileContainer form-control">
+                    <span> {{ selectedFileName || '' }}</span>
+                  </div>
+                  <div *ngIf="showUploadField" class="FileLimitText">
+                    {{"labels.filelimit"| translate}}: {{ this.file_size / 1000000 | number:'1.2-2'
+                    }}/5MB
+                  </div>
+                </div>
+              </div>
+
+              <div class="col">
+                <button *ngIf="showUploadField" type="button" [disabled]="permFileUploadAllow===0"
+                  class="btn btnUploadLedgerCode form-control" (click)="addSelected()">
+                  {{"buttons.uploadledgercode"| translate}}
+                </button>
+              </div>
+
+                  <!-- Back Button to Return to Download Section -->
+                  <div class="col">
+                    <button *ngIf="showUploadField" type="button" class="btn btnBack form-control" (click)="goBackToDownload()">
+                      {{"buttons.back" | translate}}
+                    </button>
+                  </div>
+
+
+            </div>
+
+            <div class="LeftSectionPosition">
+              <button *ngIf="!showUploadField" type="button" class="btn btnDownload"
+                (click)="downloadExcelTemplateWithSample()" style="margin-right: 42px;">
+                {{"buttons.downloadexcelwithsample"| translate}}
+              </button>
+              <!-- (click)="addSelected()" 
+            (change)="handleFileInput($event)"-->
+              <button *ngIf="!showUploadField" type="button" class="btn btnDownload" (click)="downloadExcelTemplate()">
+                {{"buttons.downloadexcel"| translate}}
+              </button>
+            </div>
+
+          </div>
+
+          <div *ngIf="!showUploadField">
+            <div>
+              1. {{"download description 1"| translate}}
+            </div>
+            <div class="StepsContainer">
+              2. {{"download description 2"| translate}}
+            </div>
+          </div>
+
+
+        </div>
+
+        <!-- Summary Section -->
+        <div class="MATableContainer TablePosition-relative">
+          <div class="MATableHeading">
+            <h3 style="margin-top: 25px;">{{ "labels.feesmatchinmft(s)summary" | translate }}</h3>
+          </div>
+
+          <table class="MATableSummary" [ngClass]="{ TableDimmed: isLoading }">
+            <thead>
+              <tr class="MATableHeader">
+                <th>{{ "found" | translate }}</th>
+                <th>{{ "notfound" | translate }}</th>
+              </tr>
+            </thead>
+
+            <ng-container *ngIf="summary; else noSummary">
+              <tbody>
+                <tr>
+                  <td class="text-success">{{ summary.found }}</td>
+                  <td class="text-danger">{{ summary.notFound }}</td>
+                </tr>
+              </tbody>
+            </ng-container>
+
+            <ng-template #noSummary>
+              <tr style="height: 100px;">
+                <td colspan="2" class="text-center">{{ "no.summary.data" | translate }}</td>
+              </tr>
+            </ng-template>
+          </table>
+        </div>
+
+        <div class="MarginSeparator"></div>
+
+        <div class="MATableContainer TablePosition-relative">
+          <div class="MALoadingContainer">
+
+            <!-- Loading spinner overlay -->
+            <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+              <div class="spinner-border" role="status">
+                <span class="sr-only"></span>
+              </div>
+            </div>
+
+            <div class="MATableHeading">
+              <h3>{{"labels.feesmatchedinmft"| translate}}</h3>
+            </div>
+
+            <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+              <thead>
+                <tr class="MATableHeader">
+                  <th>No. </th>
+                  <th>{{"labels.feedetailid"| translate}}</th>
+                  <th>{{"labels.feedetailnameen"| translate}}</th>
+                  <th>{{"labels.ledgercode"| translate}}</th>
+                  <th>{{"labels.foundinmft"| translate}}</th>
+                </tr>
+              </thead>
+
+              <ng-container *ngIf="model.length>0; else noResults">
+                <tbody *ngIf="isDisplay">
+                  <tr *ngFor="let item of model; let i=index">
+                    <td>{{ (page - 1) * itemsPerPage + i + 1 }}</td>
+                    <td>{{ item.fms_detail_id }}</td>
+                    <td>{{ item.fms_detail_nm_en }}</td>
+                    <td>{{ item.fms_ledger_cd }}</td>
+                    <td>
+                      <span *ngIf="item.found === 'F'" style="color: green;">{{"Yes"| translate}}</span>
+                      <span *ngIf="item.found === 'NF'" style="color: red;">{{"No"| translate}}</span>
+                      <span *ngIf="item.found === 'DU'" style="color: red;">{{"duplicate"| translate}}</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </ng-container>
+              <ng-template #noResults>
+                <tr style="height: 100px;">
+                  <td colspan="20" class="text-center">{{"searchcriteriadoesnotmatch"| translate}}</td>
+                </tr>
+              </ng-template>
+            </table>
+          </div>
+
+          <div class="MAPagination" *ngIf="isDisplay">
+            <div class="fgSpacing">
+              <div *ngIf="page * itemsPerPage < totalRecords">
+                {{"showing" | translate}} {{ page * itemsPerPage }} {{"from" | translate}} {{ totalRecords }}
+                {{"results" | translate}}
+              </div>
+              <div *ngIf="!(page * itemsPerPage < totalRecords)">
+                {{"showing" | translate}} {{ totalRecords }} {{"from" | translate}} {{ totalRecords }} {{"results" |
+                translate}}
+              </div>
+            </div>
+            <div class="pagination-row">
+              <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle PaginControl" type="button" id="dropdownMenuButton"
+                  data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {{ selectedValue }}
+                </button>
+                <div class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton">
+                  <button class="dropdown-item" *ngFor="let singleItem of dropdownOptions"
+                    (click)="LoadData(singleItem)">
+                    {{ singleItem }}
+                  </button>
+                </div>
+              </div>
+  
+              <ngb-pagination [(page)]="page" [pageSize]="itemsPerPage" [collectionSize]="totalRecords"
+                (pageChange)="loadData()"></ngb-pagination>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="MATableContainer2 TablePosition-relative" *ngIf="isDisplay" style="padding-top: 20px;">
+          <div class="MALoadingContainer">
+
+            <!-- Loading spinner overlay -->
+            <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+              <div class="spinner-border" role="status">
+                <span class="sr-only"></span>
+              </div>
+            </div>
+
+            <div class="MATableHeading">
+              <h3>{{"labels.uploadhistory"| translate}}</h3>
+            </div>
+
+            <!-- Your table structure -->
+            <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+              <thead>
+                <tr class="MATableHeader">
+                  <th>No. </th>
+                  <th>{{"labels.uploadeddocuments"| translate}}</th>
+                  <th>{{"labels.uploadedby"| translate}}</th>
+                  <th>{{"labels.uploadedon"| translate}}</th>
+                  <th>{{"labels.filesize"| translate}}</th>
+                </tr>
+              </thead>
+              <ng-container *ngIf="modelDoc.length > 0; else noResults">
+                <tbody>
+                  <tr *ngFor="let item of modelDoc; let i=index">
+                    <td>{{ (page - 1) * itemsPerPage + i + 1 }}</td>
+                    <td> <a style="cursor: pointer" (click)="downloadFile(item.file_nm)">{{ item.file_nm }}</a> </td>
+                    <td>{{ item.modified_by }}</td>
+                    <td>{{ item.dt_modified }}</td>
+                    <td>{{ item.file_size_kb }}KB</td>
+                  </tr>
+                </tbody>
+              </ng-container>
+              <ng-template #noResults>
+                <tr style="height: 100px;">
+                  <td colspan="20" class="text-center">{{"searchcriteriadoesnotmatch"| translate}}</td>
+                </tr>
+              </ng-template>
+            </table>
+          </div>
+        </div>
+
+
+      </div>
+
+      <!-- right section -->
+
+      <div class="middle-section73">
+
+        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#rightSection"
+          [attr.aria-expanded]="!rightSectionCollapsed" (click)="toggleRightSection()">
+          <ng-container *ngIf="rightSectionCollapsed; else arrowIcon">
+            <i class="bi bi-search"></i>
+          </ng-container>
+          <ng-template #arrowIcon>
+            <i class="bi" [class.bi-chevron-double-right]="!rightSectionCollapsed"
+              [class.bi-chevron-double-left]="rightSectionCollapsed"></i>
+          </ng-template>
+        </button>
+      </div>
+
+
+
+      <div class="right-section73 collapse" [class.show]="!rightSectionCollapsed">
+        <div class="SingleContainer">
+          <!-- Header -->
+          <div class="SingleContainerHeader">
+            <h2 class="text-center">{{ "search filter" | translate }}</h2>
+          </div>
+
+          <!-- Fee Group ID -->
+          <div class="form-group">
+            <label for="feeDetailId">{{"labels.feedetailid"| translate}}</label>
+            <input type="text" class="form-control" id="feeDetailId" [(ngModel)]="fms_detail_id" />
+          </div>
+
+          <!-- Fee Group Name EN -->
+          <div class="form-group">
+            <label for="feeDetailNameEN">{{"labels.feedetailnameen"| translate}}</label>
+            <input type="text" class="form-control" id="feeDetailNameEn" [(ngModel)]="fms_detail_nm_en" />
+          </div>
+
+          <!-- Fee Group Name BM -->
+          <div class="form-group">
+            <label for="ledgerCode">{{"labels.ledgercode"| translate}}</label>
+            <input type="text" class="form-control" id="ledgerCode" [(ngModel)]="fms_ledger_cd" />
+          </div>
+
+          <div class="form-group">
+            <label>{{"found"| translate}}</label>
+            <select class="form-control" [(ngModel)]="selectedState">
+              <option *ngFor="let state of states" [value]="state.param_cd">
+                {{ state.nm_en}}
+              </option>
+            </select>
+          </div>
+
+          <!-- Buttons -->
+          <div class="button-group">
+            <button class="btn btnApply" (click)="apply()">{{"buttons.apply"| translate}}</button>
+            <button class="btn btnReset" (click)="reset()">{{"buttons.reset"| translate}}</button>
+          </div>
+
+          <br /><br />
+        </div>
+      </div>
+    </div>
+    <!-- mainContainer end-->
+
+    <!-- <div class="PAContainer73">
+      <div class="left-section73">
+        <div class="MainContainerFooter"></div>
+      </div>
+      <div class="right-section73"></div>
+    </div> -->
+  </body>
+</ng-container>

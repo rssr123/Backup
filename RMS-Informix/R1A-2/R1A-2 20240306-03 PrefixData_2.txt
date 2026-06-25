@@ -1,0 +1,541 @@
+INSERT INTO rms_role(role_id, role_nm_en, role_nm_bm, role_desc, role_special, role_owner, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(1, 'SUPERADMIN', 'SUPERADMIN', 'Master User for Finance System Admin', 0, NULL, EXTEND(MDY(10,19,2023), YEAR to SECOND)+10 UNITS HOUR+59 UNITS MINUTE+42 UNITS SECOND, EXTEND(MDY(1,8,2024), YEAR to SECOND)+10 UNITS HOUR+7 UNITS MINUTE+10 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role(role_id, role_nm_en, role_nm_bm, role_desc, role_special, role_owner, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(2, 'ADMIN', 'ADMIN', 'Executive Supervisor', 0, NULL, EXTEND(MDY(10,19,2023), YEAR to SECOND)+11 UNITS HOUR+0 UNITS MINUTE+3 UNITS SECOND, EXTEND(MDY(1,9,2024), YEAR to SECOND)+11 UNITS HOUR+0 UNITS MINUTE+58 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role(role_id, role_nm_en, role_nm_bm, role_desc, role_special, role_owner, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(3, 'REQUESTER', 'REQUESTER', 'MFT Requester to add/edit MFT', 0, NULL, EXTEND(MDY(10,19,2023), YEAR to SECOND)+11 UNITS HOUR+0 UNITS MINUTE+18 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+11 UNITS HOUR+0 UNITS MINUTE+18 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role(role_id, role_nm_en, role_nm_bm, role_desc, role_special, role_owner, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(4, 'REQUESTERHOD', 'REQUESTERHOD', 'Approval for MFT Workflow', 0, NULL, EXTEND(MDY(10,20,2023), YEAR to SECOND)+21 UNITS HOUR+53 UNITS MINUTE+13 UNITS SECOND, EXTEND(MDY(1,9,2024), YEAR to SECOND)+16 UNITS HOUR+16 UNITS MINUTE+18 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role(role_id, role_nm_en, role_nm_bm, role_desc, role_special, role_owner, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(5, 'FINANCEHOD', 'FINANCEHOD', 'Final Approval for MFT Workflow', 0, NULL, EXTEND(MDY(10,20,2023), YEAR to SECOND)+21 UNITS HOUR+53 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,12,2024), YEAR to SECOND)+14 UNITS HOUR+25 UNITS MINUTE+25 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role(role_id, role_nm_en, role_nm_bm, role_desc, role_special, role_owner, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(6, 'AUDITOR', 'AUDITOR', 'Internal audit or Third-party viewer (View Only Access)', 0, NULL, EXTEND(MDY(10,20,2023), YEAR to SECOND)+21 UNITS HOUR+54 UNITS MINUTE+44 UNITS SECOND, EXTEND(MDY(10,20,2023), YEAR to SECOND)+21 UNITS HOUR+54 UNITS MINUTE+44 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role(role_id, role_nm_en, role_nm_bm, role_desc, role_special, role_owner, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(7, 'FINANCEADMIN', 'FINANCEADMIN', 'Approval for MFT Workflow', 0, NULL, EXTEND(MDY(10,28,2023), YEAR to SECOND)+13 UNITS HOUR+15 UNITS MINUTE+5 UNITS SECOND, EXTEND(MDY(10,28,2023), YEAR to SECOND)+13 UNITS HOUR+15 UNITS MINUTE+5 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role(role_id, role_nm_en, role_nm_bm, role_desc, role_special, role_owner, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(8, 'VERIFIED_CUSTOMER', 'VERIFIED_CUSTOMER', 'Verified Customer', 0, NULL, EXTEND(MDY(10,28,2023), YEAR to SECOND)+13 UNITS HOUR+15 UNITS MINUTE+5 UNITS SECOND, EXTEND(MDY(1,5,2024), YEAR to SECOND)+11 UNITS HOUR+45 UNITS MINUTE+13 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role(role_id, role_nm_en, role_nm_bm, role_desc, role_special, role_owner, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(9, 'GENERAL_USER', 'GENERAL_USER', 'General User', 0, NULL, EXTEND(MDY(10,28,2023), YEAR to SECOND)+13 UNITS HOUR+15 UNITS MINUTE+5 UNITS SECOND, EXTEND(MDY(10,28,2023), YEAR to SECOND)+13 UNITS HOUR+15 UNITS MINUTE+5 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role(role_id, role_nm_en, role_nm_bm, role_desc, role_special, role_owner, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(10, 'IT', 'IT', 'IT Personnel for RMS', 0, NULL, EXTEND(MDY(1,3,2024), YEAR to SECOND)+15 UNITS HOUR+28 UNITS MINUTE+53 UNITS SECOND, EXTEND(MDY(1,16,2024), YEAR to SECOND)+15 UNITS HOUR+40 UNITS MINUTE+31 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_runno(runno_id, runno_cd, branch_cd, counter_cd, dt_last_runno, last_runno, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(1, 'PG', NULL, NULL, EXTEND(MDY(4,2,2024), YEAR to SECOND)+11 UNITS HOUR+14 UNITS MINUTE+22 UNITS SECOND, 0, EXTEND(MDY(11,2,2023), YEAR to SECOND)+17 UNITS HOUR+24 UNITS MINUTE+10 UNITS SECOND, EXTEND(MDY(11,2,2023), YEAR to SECOND)+17 UNITS HOUR+24 UNITS MINUTE+10 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_runno(runno_id, runno_cd, branch_cd, counter_cd, dt_last_runno, last_runno, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(2, 'OR', NULL, NULL, EXTEND(MDY(4,2,2024), YEAR to SECOND)+11 UNITS HOUR+14 UNITS MINUTE+37 UNITS SECOND, 0, EXTEND(MDY(11,2,2023), YEAR to SECOND)+17 UNITS HOUR+29 UNITS MINUTE+6 UNITS SECOND, EXTEND(MDY(11,2,2023), YEAR to SECOND)+17 UNITS HOUR+29 UNITS MINUTE+6 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_runno(runno_id, runno_cd, branch_cd, counter_cd, dt_last_runno, last_runno, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(4, 'RC', NULL, NULL, EXTEND(MDY(4,3,2024), YEAR to SECOND)+11 UNITS HOUR+19 UNITS MINUTE+14 UNITS SECOND, 0, EXTEND(MDY(1,3,2024), YEAR to SECOND)+16 UNITS HOUR+14 UNITS MINUTE+21 UNITS SECOND, EXTEND(MDY(1,3,2024), YEAR to SECOND)+16 UNITS HOUR+14 UNITS MINUTE+21 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_ss(ss_id, ss_cd, ss_nm, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(1, 'CRS', 'Corporate Registry System', EXTEND(MDY(10,26,2023), YEAR to SECOND)+15 UNITS HOUR+27 UNITS MINUTE+27 UNITS SECOND, EXTEND(MDY(10,26,2023), YEAR to SECOND)+15 UNITS HOUR+27 UNITS MINUTE+27 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_ss(ss_id, ss_cd, ss_nm, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(2, 'MPSI', 'MPSI', EXTEND(MDY(10,26,2023), YEAR to SECOND)+15 UNITS HOUR+27 UNITS MINUTE+27 UNITS SECOND, EXTEND(MDY(10,26,2023), YEAR to SECOND)+15 UNITS HOUR+27 UNITS MINUTE+27 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_ss(ss_id, ss_cd, ss_nm, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(3, 'e-COMTRAC', 'e-COMTRAC', EXTEND(MDY(10,26,2023), YEAR to SECOND)+15 UNITS HOUR+27 UNITS MINUTE+27 UNITS SECOND, EXTEND(MDY(10,26,2023), YEAR to SECOND)+15 UNITS HOUR+27 UNITS MINUTE+27 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_ss(ss_id, ss_cd, ss_nm, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(4, 'eBSK', 'eBSK', EXTEND(MDY(10,26,2023), YEAR to SECOND)+15 UNITS HOUR+27 UNITS MINUTE+27 UNITS SECOND, EXTEND(MDY(10,26,2023), YEAR to SECOND)+15 UNITS HOUR+27 UNITS MINUTE+27 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_user(ssm4uuserrefno, nm, email, dt_created, dt_modified, created_by, modified_by, status, is_internal_user, user_status)
+  VALUES('ssotest1', 'sso test1', 'ssotest1@gmail.com', current, current, 'system', 'system', 'A', 1, NULL)
+GO
+INSERT INTO rms_user(ssm4uuserrefno, nm, email, dt_created, dt_modified, created_by, modified_by, status, is_internal_user, user_status)
+  VALUES('ssotest2', 'sso test2', 'ssotest2@yahoo.com', current, current, 'system', 'system', 'A', 1, NULL)
+GO
+INSERT INTO rms_user(ssm4uuserrefno, nm, email, dt_created, dt_modified, created_by, modified_by, status, is_internal_user, user_status)
+  VALUES('testcore1', 'test core1', 'testcore1@gmail.com', current, current, 'system', 'system', 'A', 1, NULL)
+GO
+INSERT INTO rms_user_role(ssm4uuserrefno, role_id, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES('ssotest1', 1, current, current, NULL, NULL, 'A')
+GO
+INSERT INTO rms_user_role(ssm4uuserrefno, role_id, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES('ssotest1', 2, current, current, NULL, NULL, 'A')
+GO
+INSERT INTO rms_user_role(ssm4uuserrefno, role_id, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES('ssotest1', 3, current, current, NULL, NULL, 'A')
+GO
+INSERT INTO rms_user_role(ssm4uuserrefno, role_id, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES('ssotest1', 4, current, current, NULL, NULL, 'A')
+GO
+INSERT INTO rms_user_role(ssm4uuserrefno, role_id, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES('ssotest2', 1, current, current, NULL, NULL, 'A')
+GO
+INSERT INTO rms_user_role(ssm4uuserrefno, role_id, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES('ssotest2', 2, current, current, NULL, NULL, 'A')
+GO
+INSERT INTO rms_user_role(ssm4uuserrefno, role_id, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES('ssotest2', 3, current, current, NULL, NULL, 'A')
+GO
+INSERT INTO rms_user_role(ssm4uuserrefno, role_id, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES('ssotest2', 4, current, current, NULL, NULL, 'A')
+GO
+INSERT INTO rms_user_role(ssm4uuserrefno, role_id, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES('testcore1', 1, current, current, NULL, NULL, 'A')
+GO
+INSERT INTO rms_user_role(ssm4uuserrefno, role_id, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES('testcore1', 2, current, current, NULL, NULL, 'A')
+GO
+INSERT INTO rms_user_role(ssm4uuserrefno, role_id, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES('testcore1', 3, current, current, NULL, NULL, 'A')
+GO
+INSERT INTO rms_user_role(ssm4uuserrefno, role_id, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES('testcore1', 4, current, current, NULL, NULL, 'A')
+GO
+
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(1, 2, 1, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(2, 2, 2, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(3, 2, 3, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(4, 2, 4, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(5, 2, 5, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(6, 2, 6, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(7, 2, 7, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(8, 2, 8, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(9, 2, 9, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(10, 2, 10, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(11, 2, 11, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(12, 2, 12, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(13, 2, 13, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(14, 2, 14, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(15, 2, 15, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(16, 2, 16, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(17, 2, 17, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(18, 2, 18, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(19, 2, 19, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(20, 2, 20, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(21, 2, 21, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(22, 2, 22, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(23, 2, 23, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(24, 2, 24, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(25, 2, 25, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(26, 2, 26, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(27, 2, 27, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(28, 2, 28, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(29, 2, 29, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(30, 2, 30, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(31, 2, 31, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(32, 2, 32, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(33, 2, 33, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(34, 2, 34, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(35, 2, 35, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(36, 3, 28, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(37, 3, 3, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(38, 3, 27, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(39, 3, 35, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(40, 3, 29, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(41, 7, 34, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(42, 7, 35, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(43, 7, 4, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(44, 7, 25, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(45, 7, 26, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(46, 7, 27, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(47, 7, 7, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(48, 7, 8, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(49, 7, 9, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(50, 7, 11, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(51, 7, 12, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(52, 7, 13, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(53, 7, 14, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(54, 7, 15, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(55, 7, 16, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(56, 7, 17, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(57, 7, 18, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(58, 7, 19, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(59, 7, 20, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(60, 7, 21, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(61, 7, 22, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(62, 7, 23, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(63, 7, 30, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(64, 7, 31, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(65, 7, 32, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(66, 7, 33, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(67, 7, 1, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(68, 7, 2, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(69, 7, 3, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(70, 7, 5, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(71, 7, 6, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(72, 7, 24, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(73, 7, 28, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(74, 7, 29, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(75, 7, 10, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(76, 5, 29, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(77, 5, 34, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(78, 5, 35, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(79, 5, 4, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(80, 5, 5, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(81, 5, 7, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(82, 5, 9, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(83, 5, 8, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(84, 5, 10, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(85, 5, 11, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(86, 5, 12, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(87, 5, 6, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(88, 5, 13, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(89, 5, 15, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(90, 5, 14, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(91, 5, 17, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(92, 5, 18, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(93, 5, 24, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(94, 5, 21, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(95, 5, 22, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(96, 5, 23, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(97, 5, 20, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(98, 5, 26, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(99, 5, 19, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(100, 5, 25, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(101, 5, 30, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(102, 5, 33, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(103, 5, 1, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(104, 5, 2, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(105, 5, 3, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(106, 4, 2, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(107, 4, 3, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(108, 4, 34, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(109, 4, 35, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(110, 4, 4, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(111, 4, 8, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(112, 4, 5, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(113, 4, 7, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(114, 4, 10, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(115, 4, 9, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(116, 4, 12, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(117, 4, 11, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(118, 4, 6, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(119, 4, 13, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(120, 4, 14, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(121, 4, 16, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(122, 4, 15, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(123, 4, 20, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(124, 4, 19, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(125, 4, 18, 1, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(126, 4, 21, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(127, 4, 25, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(128, 4, 22, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(129, 4, 26, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(130, 4, 27, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(131, 4, 28, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(132, 4, 32, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(133, 4, 23, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(134, 4, 1, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(135, 3, 13, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(136, 3, 18, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(137, 3, 30, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(138, 3, 31, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(139, 3, 26, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_role_perm(role_perm_id, role_id, perm_id, is_allow, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(140, 3, 24, 0, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(4,4,2024), YEAR to SECOND)+12 UNITS HOUR+13 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+update rms_role
+set dt_created = current,
+dt_modified = current
+GO
+update rms_runno
+set dt_created = current,
+dt_modified = current
+GO
+update rms_ss
+set dt_created = current,
+dt_modified = current
+GO
+update rms_user
+set dt_created = current,
+dt_modified = current
+GO
+update rms_user_role
+set dt_created = current,
+dt_modified = current
+GO
+update rms_role_perm
+set dt_created = current,
+dt_modified = current
+GO

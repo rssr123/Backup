@@ -1,0 +1,66 @@
+<div class="SingleContainer">
+    <!-- Header for Add Item -->
+    <div class="SingleContainerHeader">
+        <h2 class="text-center">
+          <div *ngIf="status; else enableUserRole">
+            {{ 'labels.disableuserrole' | translate }}
+          </div>
+          <ng-template #enableUserRole>
+            {{ 'labels.enableuserrole' | translate }}
+          </ng-template>
+          </h2>
+    </div>
+    <form #formRef="ngForm" (ngSubmit)="handleFormSubmit(formRef)">
+      <div class="MALoadingContainer">
+        <!-- Loading spinner overlay -->
+        <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+          <div class="spinner-border" role="status">
+            <span class="sr-only"></span>
+          </div>
+        </div>
+        <div [ngClass]="{ 'TableDimmed': isLoading }">
+          <!-- Error Box -->
+          <div *ngIf="error" class="error-box">
+            <i class="bi bi-x-circle-fill error-icon"></i>
+            <div>
+              <strong>{{"labels.unabletodisable" | translate}}</strong>
+              <ul>
+                <ul>
+                  <li *ngFor="let errorMsg of errorMessages">{{ "labels.thereareuserscurrentlyassignedtothisuserrole"| translate }}</li>
+                </ul>
+              </ul>
+            </div>
+          </div>
+          <!-- User Role-->
+          <div class="form-group">
+            <label for="userRole">{{ "labels.userrolename" | translate }} <span class='RedAsterisk'>*</span></label>
+            <input type="text" class="form-control" id="userRole" name="userRole" [(ngModel)]="roleName"
+              #roleNameRef="ngModel" required readonly>
+          </div>
+  
+          <!-- Conditionally display content based on the status -->
+          <div *ngIf="status; else disabledContent">
+            <!-- Content for active status -->
+          </div>
+          <ng-template #disabledContent>
+            <!-- Content for other statuses (assuming 'D' for disabled) -->
+          </ng-template>
+        </div>
+        <!-- Buttons -->
+        <div class="button-group">
+            <button class="btn" [ngClass]="{ 'btnUpdate': true, 'btn-disable': status, 'btn-enable': !status }"
+            type="submit">
+            <div *ngIf="status; else enableUserRole">
+              {{ 'buttons.disable' | translate }}
+            </div>
+            <ng-template #enableUserRole>
+              {{ 'buttons.enable' | translate }}
+            </ng-template>
+            <!-- {{ status  ? 'buttons.disable' : 'buttons.enable' | translate }} -->
+          </button>
+          <button class="btn btnClose" type="button" (click)="closed()">{{ "buttons.cancel" | translate }}</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  

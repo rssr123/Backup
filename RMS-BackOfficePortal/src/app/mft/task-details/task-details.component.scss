@@ -1,0 +1,860 @@
+@import '../../app.component.scss';
+
+$backgroundColor: #f2f2f2;
+$columnLineColor: #e0dcdc;
+$leftPadding: 3%;
+$MainBackGroundColor: #eaeaea;
+$buttonMinWidth: 30%;
+$PaddingTopAndBottom: 20px;
+$MarginFromFooter:110px;
+
+.table {
+  width: 80%;
+  border: $backgroundColor ;
+  margin-left: 3%;
+
+}
+
+
+th {
+  border-left: 3px solid $columnLineColor;
+  border-right: 3px solid $columnLineColor;
+  text-align: center;
+  color: black;
+  background-color: #FFC107 !important;
+
+}
+
+.btnView {
+  color: #AFE1AF;
+  background-color: #D1FFBD;
+  border: #D1FFBD;
+}
+
+.marginTopAndBottom {
+  // margin-top:40px;
+  // margin-bottom:40px;
+  border: 10px solid $MainBackGroundColor;
+}
+
+.allFormClass {
+  width: 100%;
+  // border: 2px solid $backgroundColor;
+  // margin-left: 5%;
+}
+
+
+.formContainer {
+  display: flex;
+  gap: 5%;
+}
+
+
+.btnSubmit {
+  float: left;
+  // margin-left: 10%;
+  background-color: #21BA45;
+  color: white;
+  min-width: $buttonMinWidth;
+}
+
+.btnCancel {
+  float: right;
+  // margin-right: 10%;
+  background-color: #767676;
+  min-width: $buttonMinWidth;
+  color: white;
+}
+
+.leftSectionContainer {
+  padding: 5%;
+  border: solid 1px #dfdfdf;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+}
+
+.leftSection {
+  width: 67%;
+  // flex: 1; // This will make both tables take up equal space
+  min-height: 0; // This ensures the tables respect the height of the container
+
+}
+
+.rightSection {
+  // width: 33%;
+  // flex: 1; // This will make both tables take up equal space
+  min-height: 0; // This ensures the tables respect the height of the container
+  margin-right: 3%;
+}
+
+
+h5 {
+  text-align: center;
+  margin: 10px;
+  padding-top: $MAMainPaddingTopAndBottom;
+  padding-bottom: $MAMainPaddingTopAndBottom;
+}
+
+
+//roy form
+.allFormClass {
+  background-color: $MainBackGroundColor;
+}
+
+.mainContainer {
+  background-color: $MainBackGroundColor;
+}
+
+.common {
+  margin-left: $leftPadding;
+  padding-top: $PaddingTopAndBottom;
+  padding-bottom: $PaddingTopAndBottom;
+}
+
+h2 {
+  margin-bottom: 0px;
+  margin-left: $leftPadding;
+  padding-top: $PaddingTopAndBottom;
+  padding-bottom: $PaddingTopAndBottom;
+}
+
+.tableHeader {
+  margin-bottom: 0px;
+  margin-left: 3%;
+  //padding-top:$PaddingTopAndBottom;
+  padding-bottom: $PaddingTopAndBottom;
+}
+
+.leftSection {
+  margin: 0;
+  margin-left: $leftPadding;
+
+
+  table.leftSectionContainer {
+    width: 100%;
+    border-collapse: collapse;
+
+    th,
+    td {
+      border: 1px solid #dfdfdf;
+      padding: 10px;
+      text-align: left;
+      max-width: 200px;
+      word-wrap: break-word;
+      word-break: break-all;
+
+      input,
+      select {
+        width: 100%;
+        height: 30px; // Ensuring consistent height
+        padding: 8px; // Some padding for text
+        box-sizing: border-box; // Makes sure the width includes padding and borders
+        border-radius: 8px;
+        border: 1px solid #dfdfdf;
+      }
+
+      mat-form-field {
+        width: 100%;
+        display: block; // Ensures it takes up full width
+
+        .mat-form-field-wrapper {
+          padding-bottom: 0; // Removes extra spacing at the bottom
+        }
+
+        // Angular Material select dropdown specifics
+        .mat-select-value {
+          line-height: 30px; // Aligns with the height of the input
+        }
+      }
+
+      input,
+      select,
+      mat-form-field {
+        width: 100%;
+        border-radius: 8px;
+        border: 1px solid #644ded; // Curve the borders with a 5px radius
+      }
+
+      mat-form-field {
+        width: 100%;
+
+        .mat-form-field-wrapper {
+          padding-bottom: 0;
+        }
+
+        .mat-form-field-infix {
+          border: 1px solid #ccc;
+          border-radius: 4px;
+
+          input.mat-input-element {
+            padding: 10px;
+            height: auto;
+          }
+        }
+
+        & input.mat-input-element {
+          border-radius: 5px;
+          border: 1px solid #dfdfdf; // Apply curve to the inner input of mat-form-field
+        }
+      }
+    }
+
+
+
+    .header {
+      color: black;
+      background-color: #FFC107 !important;
+
+    }
+
+    tr:nth-child(odd) {
+      background-color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f0f0f0;
+    }
+  }
+}
+
+
+
+
+.rightSectionContainer {
+  h5 {
+    // If you have any styles for h5, you can include them here
+  }
+
+  .taskActionTable {
+    // If you have any styles for the table, you can include them here
+
+    input,
+    select,
+    mat-form-field {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #644ded; // Curve the borders with a 5px radius
+    }
+
+    mat-form-field {
+      width: 100%;
+      display: block; // Ensures it takes up full width
+
+      .mat-form-field-wrapper {
+        padding-bottom: 0; // Removes extra spacing at the bottom
+      }
+
+      .mat-form-field-infix {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+
+        input.mat-input-element {
+          padding: 10px;
+          height: auto;
+          border-radius: 5px;
+          border: 1px solid #dfdfdf; // Apply curve to the inner input of mat-form-field
+        }
+      }
+
+      // Angular Material select dropdown specifics
+      .mat-select-value {
+        line-height: 30px; // Aligns with the height of the input
+      }
+    }
+
+    // If you have styles for other elements inside the table, you can include them here
+  }
+}
+
+
+
+.taskActionTable {
+  border-collapse: separate;
+  //border-spacing: 0 15px; // This sets 0 horizontal spacing and 15px vertical spacing
+  border: 1px solid $MainBackGroundColor; // Apply a red border around the table
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // Apply a shadow to the table
+  background-color: white;
+  padding-left: 30px;
+  padding-right: 30px;
+
+  // height: 700px;
+  tr {
+    td {
+      background-color: white; // White background for the cell
+      // border: #FFFFFF solid 7.5px; // Half of the vertical spacing for top and bottom
+      text-align: left;
+      border-left: 3px solid transparent;
+      border-right: 3px solid transparent;
+    }
+
+    &:first-child td,
+    &:last-child td {
+      border-top-width: 0; // Remove top border for the first row
+      border-bottom-width: 0; // Remove bottom border for the last row
+    }
+
+    textarea {
+      float: left;
+      resize: none;
+      border-radius: 8px;
+      border: 1px solid #644ded;
+      padding: 8px;
+    }
+  }
+
+}
+
+.divider {
+  margin-bottom: 45px;
+  margin-top: 20px;
+  // width:200px;
+  width: 100%;
+
+  td {
+    width: 350px
+  }
+}
+
+.button-group {
+  margin-bottom: 20px;
+  display: flex; /* Align buttons horizontally */
+  justify-content: space-between; /* Equal spacing between buttons */
+  align-items: center; /* Ensures vertical alignment of buttons */
+  gap: 10px; /* Uniform space between buttons */
+
+}
+
+.button-group button {
+  height: 40px; /* Sets consistent height */
+}
+
+
+
+// #btnSubmit {
+//   margin-bottom: 20px
+// }
+
+//effective date start
+.effectiveDateColumn {
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+}
+
+#effectiveDate {
+  vertical-align: middle;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #644ded;
+  height: 40px;
+}
+
+//effective date end
+
+
+h6 {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.tableWrapper {
+  display: flex;
+  flex-direction: column;
+  // justify-content: flex-end;
+  // margin: 0;
+  margin-left: 3%;
+  margin-right: 3%;
+}
+
+.leftPadding {
+  margin-left: 3%;
+}
+
+.rightPadding {
+  margin-right: 3%;
+}
+
+.paginationRight {
+  float: right;
+}
+
+
+.flexContainer {
+  display: flex;
+}
+
+.resultDisplay {
+  margin-left: auto;
+  margin-right: 0px;
+}
+
+.rightAlign {
+  width: 61.5%;
+  //margin-right: 35%;
+}
+
+.MATable {
+  tr:nth-child(odd) {
+    background-color: white;
+  }
+
+  tr:nth-child(even) {
+    background-color: #eaeaea;
+  }
+}
+
+.button-row {
+  display: flex; // Use flexbox to align the buttons horizontally
+  gap: 15px; // Add a 10px gap between the buttons
+  margin-bottom: 20px;
+  margin-top: 20px;
+  margin-left: 3%;
+}
+
+.btnCancelTask {
+  background-color: #767676;
+  color: white;
+  min-width: $MAButtonMinWidth;
+}
+
+.btnGoBack {
+  background-color: #767676;
+  min-width: $MAButtonMinWidth;
+  color: white;
+}
+
+.thWidth {
+  width: 5%;
+}
+
+.remarks {
+  max-width: 500px;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+//checkbox start
+:host ::ng-deep .mat-mdc-checkbox.mat-mdc-checkbox-checked .mdc-checkbox__background,
+.mdc-checkbox__ripple {
+  background-color: #21ba45 !important;
+ // border-color: white !important;
+
+  .mdc-checkbox__checkmark {
+    color: white !important;
+  }
+}
+
+:host ::ng-deep .mdc-form-field .mdc-label {
+  padding-left: 0;
+}
+
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  //  margin-left: 0 !important;
+  // margin-right: 10px !important;
+  //padding-right: 10px !important;
+  // width:30px !important;
+ // height: 23px !important;
+  flex-wrap: wrap; //this allow overflow items to wrap to next line w/o exceed the 15% width
+}
+
+.checkBoxText {
+
+  color: black !important;
+}
+
+//checkbox end
+
+//dropdown start
+:host ::ng-deep .multiselect-dropdown .dropdown-btn,
+ng-select {
+
+  display: inline-block;
+  width: 100% !important;
+  padding: 8px !important;
+  margin-bottom: 0 !important;
+  border: 1px solid blue !important;
+  text-align: left !important;
+  vertical-align: middle !important;
+  cursor: pointer !important;
+  background-image: none !important;
+  border-radius: 8px !important;
+  align-items: center;
+
+}
+
+:host ::ng-deep ng-select .ng-select-container,
+:host ::ng-deep ng-select .ng-value-container {
+
+  min-height: 0 !important;
+  padding: 0 !important;
+  border-top: none !important;
+
+}
+
+:host ::ng-deep ng-dropdown-panel {
+
+  top: auto !important;
+
+}
+
+//remove drop down underline
+:host ::ng-deep ng-select .ng-select-container::after {
+  border-bottom: 5px solid transparent !important;
+}
+
+ ///////////////////////added after roy add mobile view start//////////////////////
+/////////////////////added after roy add mobile view start //////////////////////////////////////////
+:host ::ng-deep .ng-select .ng-arrow-wrapper {
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+}
+
+:host ::ng-deep .ng-select .ng-select-container {
+  display: flex;
+  align-items: center; /* Ensures items inside stay centered */
+}
+
+:host ::ng-deep .ng-select.ng-select-single .ng-select-container .ng-arrow-wrapper {
+  bottom: unset; /* Remove bottom positioning */
+}
+:host ::ng-deep .ng-select .ng-arrow-wrapper,
+:host ::ng-deep .ng-select .ng-clear-wrapper {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+:host ::ng-deep .ng-select .ng-select-container {
+  display: flex;
+  align-items: center; /* Ensures items inside stay centered */
+}
+
+:host ::ng-deep .ng-select.ng-select-single .ng-select-container .ng-arrow-wrapper,
+:host ::ng-deep .ng-select.ng-select-single .ng-select-container .ng-clear-wrapper {
+  bottom: unset; /* Remove bottom positioning */
+}
+/////////////////added after roy add mobile view end////////////////////////
+
+//dropdown end
+
+.formTable {
+  background-color: white;
+  width: 100%;
+  border-collapse: collapse;
+  padding: 5%;
+  margin-bottom: 20px;
+  border-spacing: 50px;
+  // border: solid 1px #dfdfdf;
+  // box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  td {
+    // border: 1px solid #dfdfdf;
+    // margin-left: 20px;
+    padding: 15px;
+    padding-left: 25px;
+    text-align: left;
+    //max-width: 200px;
+    word-wrap: break-word;
+    word-break: break-all;
+
+    //padding-left: 10px;
+    &:first-child {
+      width: 30%;
+    }
+
+    &:nth-child(2) {
+      width: 70%;
+    }
+  }
+}
+
+#requester {
+  text-align: left;
+  padding: 0%;
+  margin-left: 3%;
+  // font-weight:bold;
+}
+
+.error-box{
+  margin-left: 3%;
+  margin-right: 3%;
+}
+
+#mftItemDetails {
+  text-align: left;
+  padding: 0%;
+  margin-left: 0;
+  margin-top: 30px;
+  //  font-weight:bold;
+}
+
+.PA-alert-box {
+  margin-top:30px;
+  width:100%;
+  }
+
+.MAPagination{
+    margin-bottom: 0px;
+  }
+  
+.marginFromFooter{
+    margin-bottom: $MarginFromFooter;
+  }
+
+
+
+
+
+// Dropdown wrapped text in mobile view -Roy-Start
+:host ::ng-deep ng-select .ng-select-container .ng-value-container {
+  white-space: normal !important;
+  /* Allow text to wrap */
+  overflow-wrap: break-word !important;
+  /* Ensure words break properly */
+  word-break: break-word !important;
+  /* Break long words */
+  display: flex !important;
+  /* Use flex for vertical centering */
+  align-items: center !important;
+  /* Center text vertically */
+  justify-content: flex-start !important;
+  /* Align text to left */
+  height: auto !important;
+  /* Allow dynamic height for wrapping */
+  min-height: 18px !important;
+  /* Ensure consistent height */
+  padding-right: 30px !important;
+  /* Prevent text from crossing into close button */
+  // padding-left: 10px !important; /* Add padding to prevent text from touching border */ too comment it
+}
+
+/* Ensure each value (when multiple selections exist) is centered */
+:host ::ng-deep ng-select .ng-value {
+  display: flex !important;
+  align-items: center !important;
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  // padding: 5px 10px !important; /* Add padding for spacing */  too comment it
+}
+
+/* Ensure dropdown container maintains correct height */
+:host ::ng-deep ng-select .ng-select-container {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  /* Maintain consistent height */
+  max-height: none;
+  /* Allow height to adjust based on text */
+  position: relative;
+  /* Ensures arrow & close button positioning */
+  padding: 5px 0px !important;
+  /* Add vertical padding for better spacing */
+}
+
+/* Ensure multiple selected items in ng-select are well spaced */
+:host ::ng-deep ng-select.ng-select-multiple .ng-value-container {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 5px !important;
+  /* Add spacing between selected items */
+}
+
+/* Align dropdown items properly */
+:host ::ng-deep ng-dropdown-panel .ng-dropdown-panel-items {
+  white-space: normal !important;
+  /* Ensure wrapping in dropdown */
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  max-width: 100% !important;
+  /* Prevent text from being cut */
+  //padding: 5px !important; /* Add padding for spacing */ too comment it
+}
+
+/* Ensure options inside the dropdown are centered */
+:host ::ng-deep ng-dropdown-panel .ng-option {
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  display: flex !important;
+  align-items: center !important;
+  /* Center text vertically */
+  padding: 8px 10px !important;
+  /* Adjust padding for spacing */
+}
+
+/* Center the dropdown arrow */
+:host ::ng-deep ng-select .ng-select-container .ng-arrow-wrapper {
+  position: absolute;
+  right: 10px;
+  /* Adjust arrow position */
+  top: 40%;
+  transform: translateY(-50%);
+  /* Vertically centers the arrow */
+}
+
+/* Center and properly space the close button */
+:host ::ng-deep ng-select .ng-select-container .ng-clear-wrapper {
+  position: absolute;
+  right: 30px;
+  /* Adjust close button position */
+  top: 50%;
+  transform: translateY(-50%);
+  /* Vertically centers the close button */
+}
+
+/* 🔥 Fix for Multiple Select Mode 🔥 */
+/* Center the dropdown arrow in MULTIPLE SELECT mode */
+:host ::ng-deep ng-select.ng-select-multiple .ng-select-container .ng-arrow-wrapper {
+  position: absolute;
+  right: 10px;
+  /* Keep arrow aligned to the right */
+  top: 40%; //too comment it
+  transform: translateY(-50%);
+  /* Perfect vertical centering */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  /* Ensure it spans the full height */
+}
+
+/* Center the clear (×) button in MULTIPLE SELECT mode */
+:host ::ng-deep ng-select.ng-select-multiple .ng-select-container .ng-clear-wrapper {
+  position: absolute;
+  right: 35px;
+  /* Keep close button aligned properly */
+  top: 40%;
+  transform: translateY(-50%);
+  /* Perfect vertical centering */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  /* Ensure it spans the full height */
+}
+
+// Dropdown wrapped text in mobile view -Roy-End
+
+
+//mobile view-Roy-Start
+@media screen and (max-width: 768px) {
+
+  /* Ensure the body container has proper spacing */
+  .BodyCointaner {
+    padding: 10px;
+  }
+
+  /* Make left and right sections take full width */
+  .leftSection,
+  .rightSection {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 0 0 100%;
+    margin-left: 0%;
+  }
+
+  .MatFormTable {
+    padding: 0px;
+  }
+
+  .divider {
+    display: inline-table;
+  }
+
+  /* Remove unnecessary paddings for a clean look */
+  .leftPadding {
+    padding: 0 !important;
+  }
+
+  .formContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    /* Adds spacing between sections */
+  }
+
+  /* Adjust tables for better readability */
+  .MatFormTable,
+  .taskActionTable,
+  .MATable {
+    width: 100% !important;
+    display: block;
+    overflow-x: auto;
+  }
+
+  /* Ensure table headers are always visible */
+  .MATable thead {
+    display: block;
+  }
+
+  .MATable tbody {
+    display: block;
+    width: 100%;
+  }
+
+  /* Style form elements to be more touch-friendly */
+  .form-control,
+  ng-select {
+    width: 100% !important;
+  }
+
+  /* Fix pagination to stack properly */
+  .MAPagination {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .pagination-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* File upload section */
+  .file-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .btnSelectFile {
+    width: 100%;
+    text-align: center;
+  }
+
+  .taskActionTable {
+    width: 100%;
+    table-layout: fixed;
+    /* Forces equal column width */
+  }
+
+  .taskActionTable td {
+    width: 100% !important;
+    display: block;
+    /* Allows buttons to expand */
+    text-align: center;
+  }
+
+  .button-group {
+    width: 100%;
+  }
+
+  .button-group button {
+    width: 100% !important;
+    display: block;
+  }
+
+  .btnSubmit,
+  .btnCancel {
+    width: 100% !important;
+    max-width: 100%;
+  }
+
+
+
+}
+
+//mobile view-Roy-end 

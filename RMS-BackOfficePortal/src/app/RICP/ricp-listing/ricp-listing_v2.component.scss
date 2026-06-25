@@ -1,0 +1,272 @@
+@import '../../app.component.scss';
+
+
+.right-section73{
+    background-color: white;
+}
+
+.form-group {
+    margin-bottom: 15px;
+  }
+  
+  .button-group {
+    margin-top: 20px;
+  }
+  
+
+  .btnApply{
+    float:left;
+  }
+
+  .btnReset{
+    float:right;
+  }
+
+  .btnView {
+    background-color: #2185D0;
+    color: white;
+    //min-width: $MAButtonMinWidth;
+  }
+
+
+  .MAPagination {
+    display: flex;
+    flex-direction: column; 
+    align-items: flex-end; 
+}
+
+.fgSpacing{
+    margin-bottom:5px;
+}
+
+
+//toggle start
+.custom-switch .form-check-input{
+  width:$ToggleButtonWidth !important;
+}
+.custom-switch .form-check { 
+  display: flex;
+  align-items: center; /* Aligns items in the center vertically */
+}
+
+.custom-switch .form-check-input {
+  width: 2.5rem; /* Adjust width to your preference */
+  height: 1.25rem; /* Adjust height to your preference */
+  margin-right: 0.5rem; /* Space between the toggle and the label */
+  /* The next two lines are to adjust the position of the circle within the switch */
+  background-position: left center;
+  transition: background-position 0.2s;
+ 
+}
+
+.custom-switch .form-check-input:checked {
+  background-color: #198754; /* Bootstrap's green color for 'success' */
+  background-position: right center;
+ 
+}
+
+.custom-switch .form-check-input::before {
+  /* Adjust the switch's circle size if necessary */
+  height: 1.25rem; /* Should match the height of the switch */
+  width: 1.25rem;  /* Adjust width as needed */
+  transition: transform 0.2s;
+
+}
+
+.custom-switch .form-check-input:checked::before {
+  transform: translateX(1.25rem); /* The translation should match the height to keep it centered */
+}
+
+.custom-switch .form-check-label {
+  margin-bottom: 0; /* Remove bottom margin from label if present */
+  white-space: nowrap; /* Prevent the label from wrapping */
+  margin-top: 5px;
+  flex: 1;
+  width:auto;
+}
+
+
+
+
+//toggle end
+
+// Mobile Search Section - Hidden on desktop
+.mobile-search-section {
+  display: none;
+}
+
+// Mobile Responsive Styles
+@media (max-width: 767px) {
+  // Show mobile search section
+  .mobile-search-section {
+    display: block !important;
+    background-color: white;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .mobile-search-header {
+    padding: 10px 0;
+    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 15px;
+
+    h5 {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .btn {
+      padding: 5px 12px;
+    }
+  }
+
+  .mobile-search-body {
+    padding-top: 15px;
+
+    .form-group {
+      margin-bottom: 15px;
+
+      label {
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-bottom: 5px;
+      }
+
+      input, select {
+        font-size: 0.9rem;
+      }
+    }
+
+    .button-group-mobile {
+      margin-top: 20px;
+      
+      .btn {
+        font-size: 0.95rem;
+        padding: 10px;
+      }
+    }
+  }
+
+  // Hide desktop search section
+  .middle-section73,
+  .right-section73,
+  .right-section73-mobile {
+    display: none !important;
+  }
+
+  // Adjust main container
+  .PAContainer73 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .left-section73 {
+    padding: 10px !important;
+
+    h2 {
+      font-size: 1.3rem;
+    }
+
+    .LeftSectionPosition {
+      margin-bottom: 15px;
+
+      .btnAdd {
+        width: 100%;
+        font-size: 0.95rem;
+      }
+    }
+  }
+
+  // Table adjustments
+  .MATableContainer {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+
+    .MATable {
+      font-size: 0.85rem;
+      min-width: 800px;
+
+      thead th {
+        padding: 8px 5px;
+        font-size: 0.8rem;
+        white-space: nowrap;
+      }
+
+      tbody td {
+        padding: 8px 5px;
+        font-size: 0.85rem;
+      }
+    }
+  }
+
+  // Pagination adjustments
+  .MAPagination {
+    font-size: 0.85rem;
+    padding: 10px;
+
+    .pagination-row {
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+
+      .dropdown {
+        width: 100%;
+
+        .PaginControl {
+          width: 100%;
+        }
+      }
+
+      ::ng-deep ngb-pagination {
+        .pagination {
+          flex-wrap: wrap;
+          justify-content: center;
+
+          .page-item {
+            margin: 2px;
+
+            .page-link {
+              padding: 5px 10px;
+              font-size: 0.85rem;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Alert boxes
+  .PA-alert-box {
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+}
+
+// Tablet Responsive Styles
+@media (min-width: 768px) and (max-width: 991px) {
+  .mobile-search-section {
+    display: none;
+  }
+
+  .PAContainer73 {
+    grid-template-columns: 1fr auto auto !important;
+  }
+
+  .left-section73 {
+    h2 {
+      font-size: 1.5rem;
+    }
+  }
+
+  .MATableContainer {
+    .MATable {
+      font-size: 0.9rem;
+
+      thead th,
+      tbody td {
+        padding: 10px 8px;
+      }
+    }
+  }
+}

@@ -1,0 +1,163 @@
+drop procedure sp_insdailysettlement
+
+go
+
+CREATE OR REPLACE PROCEDURE "rms".sp_insdailysettlement(
+    i_profile_nm NVARCHAR(150),
+    i_dt_collection DATETIME YEAR TO fraction(3),
+    i_total_amt DECIMAL,
+    i_daily_stmt_id NVARCHAR(150)
+)
+RETURNING NVARCHAR(50) AS result;
+
+DEFINE o_result INT;
+DEFINE o_profile_name_exist INT;
+DEFINE o_exist INT;
+DEFINE o_ag_pf_id INT;
+DEFINE o_ag_bil_no NVARCHAR(50);
+DEFINE o_cust_nm NVARCHAR(255);
+DEFINE o_cust_addr_1 NVARCHAR(255);
+DEFINE o_cust_addr_2 NVARCHAR(255);
+DEFINE o_cust_addr_3 NVARCHAR(255);
+DEFINE o_cust_postcode NVARCHAR(20);
+DEFINE o_cust_city NVARCHAR(100);
+DEFINE o_cust_state NVARCHAR(100);
+DEFINE o_cust_email NVARCHAR(255);
+DEFINE o_cust_phone NVARCHAR(50);
+DEFINE o_status NVARCHAR(50);
+DEFINE o_fee_detail_id NVARCHAR(50);
+DEFINE o_entity_type NVARCHAR(50);
+DEFINE o_entity_no NVARCHAR(50);
+DEFINE o_entity_nm NVARCHAR(50);
+DEFINE o_fee_detail_pk int;
+DEFINE o_fee_detail_nm_e NVARCHAR(50);
+DEFINE o_mtt_id INT;
+
+ON EXCEPTION
+    ROLLBACK WORK;
+    RETURN -7;
+END EXCEPTION;
+
+LET o_result = 0;
+
+-- Check if profile exists
+SELECT COUNT(1) INTO o_profile_name_exist 
+FROM rms_ag_pf 
+WHERE profile_nm = i_profile_nm ;
+
+IF o_profile_name_exist = 0 THEN
+    RETURN -1;
+END IF;
+
+-- Check uniqueness of dt_collection + daily_stmt_id
+SELECT COUNT(1) INTO o_exist 
+FROM rms_ag_settlement 
+WHERE dt_collection = i_dt_collection AND daily_stmt_id = i_daily_stmt_id;
+
+IF o_exist > 0 THEN
+    RETURN -6;
+END IF;
+
+BEGIN WORK;
+SET LOCK MODE TO WAIT 30;
+
+-- Insert into rms_ag_settlement
+INSERT INTO rms_ag_settlement (
+    profile_nm, dt_collection, total_amt, daily_stmt_id, 
+    dt_created, dt_modified, created_by, modified_by, status
+) VALUES (
+    i_profile_nm, i_dt_collection, i_total_amt, i_daily_stmt_id, 
+    CURRENT, CURRENT, 'Anonymous', 'Anonymous', 'A'
+);
+
+LET o_result = DBINFO('sqlca.sqlerrd1'); 
+
+IF o_result = 0 OR o_result IS NULL THEN
+    RETURN -2;
+END IF;
+
+-- Generate ag_bil_no (e.g. AGB20250506000001)
+SELECT FIRST 1 ('AGB' || TO_CHAR(TODAY, '%Y%m%d') || LPAD(last_runno, 6, '0'))
+INTO o_ag_bil_no 
+FROM rms_runno 
+WHERE runno_cd = 'AGB';
+
+IF o_ag_bil_no IS NULL THEN
+    ROLLBACK WORK;
+    RETURN -4;
+END IF;
+
+-- Get agent provider and customer info
+SELECT FIRST 1 ag_pf_id, cust_nm, cust_addr_1, cust_addr_2, cust_addr_3, 
+              cust_postcode, cust_city, cust_state, cust_email, cust_phone,fee_detail_id,entity_type,entity_no,entity_nm
+INTO o_ag_pf_id, o_cust_nm, o_cust_addr_1, o_cust_addr_2, o_cust_addr_3, 
+     o_cust_postcode, o_cust_city, o_cust_state, o_cust_email, o_cust_phone,o_fee_detail_id,o_entity_type, o_entity_no,o_entity_nm
+FROM rms_ag_pf
+WHERE profile_nm = i_profile_nm;
+
+
+IF o_ag_pf_id IS NULL THEN
+    ROLLBACK WORK;
+    RETURN -5;
+END IF;
+
+-- Always insert into rms_ag_bil
+INSERT INTO rms_ag_bil (
+    ag_pf_id, ag_bil_no, cust_nm, cust_email, cust_phone, 
+    total_amt_payable, date_collection, pymt_status, dt_pymt, 
+    date_email_sent, daily_stmt_id, dt_created, dt_modified, 
+    created_by, modified_by, status
+) VALUES (
+    o_ag_pf_id, o_ag_bil_no, o_cust_nm, o_cust_email, o_cust_phone, 
+    i_total_amt, i_dt_collection, 'U', NULL, 
+    NULL, i_daily_stmt_id, CURRENT, CURRENT, 
+    'Anonymous', 'Anonymous', 'A'
+);
+
+-- Insert into rms_mtt
+INSERT INTO rms_mtt (
+    rms_type, ss_cd, orn_no, orn_dt, cust_ip, cust_nm, 
+    cust_addr_1, cust_addr_2, cust_addr_3, cust_postcode, cust_city, 
+    cust_state, cust_email, cust_phone, total_amt, ss_return_url, 
+    order_status, dt_created, dt_modified, created_by, modified_by, email_flag, dt_email_expiry
+) VALUES (
+    'Online', 'iSPARS', o_ag_bil_no, CURRENT, '0.0.0.0', o_cust_nm, 
+    o_cust_addr_1, o_cust_addr_2, o_cust_addr_3, o_cust_postcode, o_cust_city, 
+    o_cust_state, o_cust_email, o_cust_phone, i_total_amt, '/rms/', 
+    'EP', CURRENT, CURRENT, 'Anonymous', 'Anonymous', 1, TODAY + 7 UNITS DAY
+);
+
+-- Retrieve the generated mtt_id
+SELECT MAX(mtt_id) INTO o_mtt_id
+FROM rms_mtt
+WHERE orn_no = o_ag_bil_no;
+
+
+IF o_mtt_id IS NULL THEN
+    ROLLBACK WORK;
+    RETURN -8;
+END IF;
+
+select  first 1 fee_detail_pk,fee_detail_nm_e
+into o_fee_detail_pk, o_fee_detail_nm_e
+from rms_mft where fee_detail_id = o_fee_detail_id;
+
+
+-- Insert into rms_mtt_item using the generated mtt_id
+INSERT INTO rms_mtt_item (
+    mtt_id, fee_detail_pk, fee_detail_id, item_ref_no, line_no, qty, unit_fee,
+    gross_amt, tax_pct, tax_amt, net_amt, disc_amt, entity_type, entity_no, entity_nm, item_desc, dt_created, dt_modified, created_by, modified_by, status
+) VALUES (
+    o_mtt_id, o_fee_detail_pk,o_fee_detail_id , '1', '1', '1', i_total_amt, i_total_amt, '0', '0', i_total_amt, '0', o_entity_type, o_entity_no, o_entity_nm, o_fee_detail_nm_e, CURRENT, CURRENT, 'Anonymous', 'Anonymous', 'A'
+);
+
+-- Update run number
+UPDATE rms_runno 
+SET last_runno = last_runno + 1 
+WHERE runno_cd = 'AGB';
+
+COMMIT WORK;
+
+RETURN o_ag_bil_no;
+
+END PROCEDURE;

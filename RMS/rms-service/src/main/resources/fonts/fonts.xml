@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fontFamilies>
+    <fontFamily name="Microsoft YaHei UI">
+        <normal><![CDATA[fonts/msyh.ttf]]></normal>
+        <bold><![CDATA[fonts/msyhbd.ttf]]></bold>
+        <italic><![CDATA[fonts/msyh.ttf]]></italic> <!-- no italic version, fallback -->
+        <boldItalic><![CDATA[fonts/msyhbd.ttf]]></boldItalic> <!-- fallback -->
+        <pdfEncoding>Identity-H</pdfEncoding>
+        <pdfEmbedded>true</pdfEmbedded>
+    </fontFamily>
+</fontFamilies>

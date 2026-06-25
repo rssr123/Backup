@@ -1,0 +1,503 @@
+@import '../../app.component.scss';
+
+$backgroundColor: #f2f2f2;
+$MainBackGroundColor: #eaeaea;
+$leftPadding: 3%;
+$rightPadding: 3%;
+$MarginFromFooter:110px;
+
+.right-section73 {
+  background-color: white;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.button-group {
+  margin-top: 20px;
+}
+
+.rightPadding {
+  margin-right: 3%;
+}
+
+
+.btnApply {
+  float: left;
+}
+
+.btnReset {
+  float: right;
+}
+
+.btnView {
+  display: block;
+  width: 80%;
+  margin: 0 auto; /* Centers the button */
+  text-align: center; /* Ensures text is centered */
+}
+
+.MAPagination {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.fgSpacing {
+  margin-bottom: 5px;
+}
+
+.btnView {
+  background-color: #2185D0;
+  color: white;
+  //min-width: $MAButtonMinWidth;
+}
+
+.leftSide {
+  margin: 0;
+  margin-left: $leftPadding;
+  margin-right: $rightPadding;
+
+  table.leftSectionContainer {
+    width: 100%;
+    border-collapse: collapse;
+
+    th,
+    td {
+      border: 1px solid #dfdfdf;
+      padding: 10px;
+      text-align: left;
+      // max-width: 200px;
+      word-wrap: break-word;
+      word-break: break-all;
+
+      input,
+      select {
+        width: 100%;
+        height: 30px; // Ensuring consistent height
+        padding: 8px; // Some padding for text
+        box-sizing: border-box; // Makes sure the width includes padding and borders
+        border-radius: 8px;
+        border: 1px solid #dfdfdf;
+      }
+
+      mat-form-field {
+        width: 100%;
+        display: block; // Ensures it takes up full width
+
+        .mat-form-field-wrapper {
+          padding-bottom: 0; // Removes extra spacing at the bottom
+        }
+
+        // Angular Material select dropdown specifics
+        .mat-select-value {
+          line-height: 30px; // Aligns with the height of the input
+        }
+      }
+
+      input,
+      select,
+      mat-form-field {
+        width: 100%;
+        border-radius: 8px;
+        border: 1px solid #644ded; // Curve the borders with a 5px radius
+      }
+
+      mat-form-field {
+        width: 100%;
+
+        .mat-form-field-wrapper {
+          padding-bottom: 0;
+        }
+
+        .mat-form-field-infix {
+          border: 1px solid #ccc;
+          border-radius: 4px;
+
+          input.mat-input-element {
+            padding: 10px;
+            height: auto;
+          }
+        }
+
+        & input.mat-input-element {
+          border-radius: 5px;
+          border: 1px solid #dfdfdf; // Apply curve to the inner input of mat-form-field
+        }
+      }
+    }
+
+
+
+    .header {
+      color: black;
+      background-color: #FFC107 !important;
+
+    }
+
+    tr:nth-child(odd) {
+      background-color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f0f0f0;
+    }
+  }
+}
+
+.bcenterTable {
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
+  width: 90%;
+  height: 100%; // Optional, to center vertically within the container
+}
+
+
+.marginTopAndBottom {
+  // margin-top:40px;
+  // margin-bottom:40px;
+  border: 10px solid $MainBackGroundColor;
+}
+
+.centeredH2 {
+  margin-bottom: 0px;
+  margin-left: 23%;
+  // padding-top:$PaddingTopAndBottom;
+  // padding-bottom:$PaddingTopAndBottom;
+}
+
+.button-row {
+  display: flex; // Use flexbox to align the buttons horizontally
+  gap: 15px; // Add a 10px gap between the buttons
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.leftPadding {
+  margin-left: 3%;
+}
+
+.left-section73 {
+  margin-left: 3%;
+}
+
+.parameterWidth {
+  width: 45%;
+}
+
+.languageWidth {
+  width: 15%;
+}
+
+//checkbox start
+:host ::ng-deep .mat-mdc-checkbox.mat-mdc-checkbox-checked .mdc-checkbox__background,
+.mdc-checkbox__ripple {
+  background-color: #21ba45 !important;
+ // border-color: white !important;
+
+  .mdc-checkbox__checkmark {
+    color: white !important;
+  }
+}
+
+:host ::ng-deep .mdc-form-field .mdc-label {
+  padding-left: 0;
+}
+
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  //  margin-left: 0 !important;
+  // margin-right: 10px !important;
+  //padding-right: 10px !important;
+  // width:30px !important;
+  height: 23px !important;
+}
+
+.checkBoxText {
+
+  color: black !important;
+}
+
+//checkbox end
+
+.PA-alert-box {
+  margin-top:30px;
+  width:100%;
+  }
+
+.PAContainer73 {
+    margin-left: $MAMainLeftPadding;
+    min-height: 0vh;
+}
+
+.MAPagination{
+  margin-bottom: 0px;
+}
+
+.marginFromFooter{
+  margin-bottom: $MarginFromFooter;
+}
+
+.tableWrapper{
+  margin-left: 3%;
+  margin-right: 3%;
+}
+
+
+
+
+
+// Dropdown wrapped text in mobile view -Roy-Start
+:host ::ng-deep ng-select .ng-select-container .ng-value-container {
+  white-space: normal !important;
+  /* Allow text to wrap */
+  overflow-wrap: break-word !important;
+  /* Ensure words break properly */
+  word-break: break-word !important;
+  /* Break long words */
+  display: flex !important;
+  /* Use flex for vertical centering */
+  align-items: center !important;
+  /* Center text vertically */
+  justify-content: flex-start !important;
+  /* Align text to left */
+  height: auto !important;
+  /* Allow dynamic height for wrapping */
+  min-height: 18px !important;
+  /* Ensure consistent height */
+  padding-right: 30px !important;
+  /* Prevent text from crossing into close button */
+  // padding-left: 10px !important; /* Add padding to prevent text from touching border */ too comment it
+}
+
+/* Ensure each value (when multiple selections exist) is centered */
+:host ::ng-deep ng-select .ng-value {
+  display: flex !important;
+  align-items: center !important;
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  // padding: 5px 10px !important; /* Add padding for spacing */  too comment it
+}
+
+/* Ensure dropdown container maintains correct height */
+:host ::ng-deep ng-select .ng-select-container {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  /* Maintain consistent height */
+  max-height: none;
+  /* Allow height to adjust based on text */
+  position: relative;
+  /* Ensures arrow & close button positioning */
+  padding: 5px 0px !important;
+  /* Add vertical padding for better spacing */
+}
+
+/* Ensure multiple selected items in ng-select are well spaced */
+:host ::ng-deep ng-select.ng-select-multiple .ng-value-container {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 5px !important;
+  /* Add spacing between selected items */
+}
+
+/* Align dropdown items properly */
+:host ::ng-deep ng-dropdown-panel .ng-dropdown-panel-items {
+  white-space: normal !important;
+  /* Ensure wrapping in dropdown */
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  max-width: 100% !important;
+  /* Prevent text from being cut */
+  //padding: 5px !important; /* Add padding for spacing */ too comment it
+}
+
+/* Ensure options inside the dropdown are centered */
+:host ::ng-deep ng-dropdown-panel .ng-option {
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  display: flex !important;
+  align-items: center !important;
+  /* Center text vertically */
+  padding: 8px 10px !important;
+  /* Adjust padding for spacing */
+}
+
+/* Center the dropdown arrow */
+:host ::ng-deep ng-select .ng-select-container .ng-arrow-wrapper {
+  position: absolute;
+  right: 10px;
+  /* Adjust arrow position */
+  top: 40%;
+  transform: translateY(-50%);
+  /* Vertically centers the arrow */
+}
+
+/* Center and properly space the close button */
+:host ::ng-deep ng-select .ng-select-container .ng-clear-wrapper {
+  position: absolute;
+  right: 30px;
+  /* Adjust close button position */
+  top: 50%;
+  transform: translateY(-50%);
+  /* Vertically centers the close button */
+}
+
+/* 🔥 Fix for Multiple Select Mode 🔥 */
+/* Center the dropdown arrow in MULTIPLE SELECT mode */
+:host ::ng-deep ng-select.ng-select-multiple .ng-select-container .ng-arrow-wrapper {
+  position: absolute;
+  right: 10px;
+  /* Keep arrow aligned to the right */
+  top: 40%; //too comment it
+  transform: translateY(-50%);
+  /* Perfect vertical centering */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  /* Ensure it spans the full height */
+}
+
+/* Center the clear (×) button in MULTIPLE SELECT mode */
+:host ::ng-deep ng-select.ng-select-multiple .ng-select-container .ng-clear-wrapper {
+  position: absolute;
+  right: 35px;
+  /* Keep close button aligned properly */
+  top: 40%;
+  transform: translateY(-50%);
+  /* Perfect vertical centering */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  /* Ensure it spans the full height */
+}
+
+// Dropdown wrapped text in mobile view -Roy-End
+
+
+//mobile view-Roy-Start
+@media screen and (max-width: 768px) {
+
+  /* Ensure the body container has proper spacing */
+  .BodyCointaner {
+    padding: 10px;
+  }
+
+  /* Make left and right sections take full width */
+  .leftSection,
+  .rightSection {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 0 0 100%;
+    margin-left: 0%;
+  }
+
+  .MatFormTable {
+    padding: 0px;
+  }
+
+  .divider {
+    display: inline-table;
+  }
+
+  /* Remove unnecessary paddings for a clean look */
+  .leftPadding {
+    padding: 0 !important;
+  }
+
+  .formContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    /* Adds spacing between sections */
+  }
+
+  /* Adjust tables for better readability */
+  .MatFormTable,
+  .taskActionTable,
+  .MATable {
+    width: 100% !important;
+    display: block;
+    overflow-x: auto;
+  }
+
+  /* Ensure table headers are always visible */
+  .MATable thead {
+    display: block;
+  }
+
+  .MATable tbody {
+    display: block;
+    width: 100%;
+  }
+
+  /* Style form elements to be more touch-friendly */
+  .form-control,
+  ng-select {
+    width: 100% !important;
+  }
+
+  /* Fix pagination to stack properly */
+  .MAPagination {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .pagination-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* File upload section */
+  .file-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .btnSelectFile {
+    width: 100%;
+    text-align: center;
+  }
+
+  .taskActionTable {
+    width: 100%;
+    table-layout: fixed;
+    /* Forces equal column width */
+  }
+
+  .taskActionTable td {
+    width: 100% !important;
+    display: block;
+    /* Allows buttons to expand */
+    text-align: center;
+  }
+
+  .button-group {
+    width: 100%;
+  }
+
+  .button-group button {
+    width: 100% !important;
+    display: block;
+  }
+
+  .btnSubmit,
+  .btnCancel {
+    width: 100% !important;
+    max-width: 100%;
+  }
+
+
+
+}
+
+//mobile view-Roy-end 

@@ -1,0 +1,79 @@
+footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #212529; 
+  color: #fff; 
+  padding: 10px; 
+  text-align: left;
+  font-family: "Poppins", sans-serif;
+  font-weight: 400 !important;
+  padding-top: 1rem !important;
+  padding-bottom: 0rem !important;
+  
+}
+
+.footerHeader {
+  color: #fff200;
+  font-size: 1.4em;
+  font-weight: 600 !important;
+  
+}
+
+.col.mb-4 {
+  color: #fff;
+
+  p, a {
+      color: inherit;
+  }
+}
+
+.footerClass {
+  background: #212529;
+  border-top: 4px solid #2E3192;
+  font-size: 0.9em;
+  margin-top: 0px;
+  padding: 10%;
+  position: relative;
+  clear: both;
+  margin-bottom: 0px !important;
+  
+  // For Bootstrap's gutter override
+  --bs-gutter-x: 0px !important; 
+}
+
+.footer-copyright {
+  background-color: #2E3192 !important;
+  padding-bottom: 1rem !important;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.85em;
+  font-weight: normal !important;
+
+
+  .header-social-icons {
+      justify-content: center;
+      margin-top: 15px;
+      margin-bottom: 15px;
+  }
+
+  b {
+      color: white;
+  }
+}
+
+.social-icons-link {
+  color: white !important;
+  padding: 2px;
+  margin: 2px;
+  font-size: 20px;
+}
+
+// This is the media query ensuring single column view for .col in mobile
+@media only screen and (max-width: 768px) {
+  footer .col {
+      flex: 0 0 100% !important;
+      max-width: 100% !important;
+  }
+}
+

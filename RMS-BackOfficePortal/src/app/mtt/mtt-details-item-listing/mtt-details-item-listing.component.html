@@ -1,0 +1,181 @@
+<!-- <p>mtt-details-item-listing works!</p> -->
+<div class="SingleContainer">
+    <!-- Header for Add Item -->
+    <div class="SingleContainerHeader">
+        <h2 class="text-center">{{"labels.itemdetails"|translate}}</h2>
+    </div>
+
+    <div class="MALoadingContainer">
+        <!-- Loading spinner overlay -->
+        <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+            <div class="spinner-border" role="status">
+                <span class="sr-only"></span>
+            </div>
+        </div>
+        <div [ngClass]="{'TableDimmed': isLoading}">
+
+            <div class="MATableContainer">
+                <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+                    <thead>
+                        <tr class="MATableHeader">
+                            <th>No.</th>
+                            <th class="parameterWidth">Parameter</th>
+                            <th class="parameterWidth">{{"labels.currentvalue"| translate}}</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngFor="let item of MTTItemDetails">
+
+                        <tr>
+                            <td>1</td>
+                            <td>{{"labels.feedetailid"| translate}}</td>
+                            <td>{{item.fee_detail_id|| "-"}}</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>{{"labels.itemreferencenumber"| translate}}</td>
+                            <td>{{item.item_ref_no|| "-"}}</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>{{"labels.description"| translate}}</td>
+                            <td>{{item.item_desc|| "-"}}</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>{{"labels.quantity"| translate}}</td>
+                            <td>{{item.qty|| "-"}}</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>{{"labels.unitfeerm"| translate}}</td>
+                            <td>{{item.unit_fee | number:'1.2-2'}}</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>{{"labels.grossamountrm"| translate}}</td>
+                            <td>{{item.gross_amt | number:'1.2-2'}}</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>{{"labels.grantcode"| translate}}</td>
+                            <td>{{item.grant_cd|| "-"}}</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>{{"labels.discountamountrm"| translate}}</td>
+                            <td>{{item.disc_amt | number:'1.2-2'}}</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>{{"labels.tax%"| translate}}</td>
+                            <td>{{item.tax_pct | number:'1.2-2'}}</td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>{{"labels.tax(RM)"| translate}}</td>
+                            <td>{{item.tax_amt | number:'1.2-2'}}</td>
+                        </tr>
+                        <tr>
+                            <td>11</td>
+                            <td>{{"labels.netamountrm"| translate}}</td>
+                            <td>{{item.net_amt | number:'1.2-2'}}</td>
+                        </tr>
+                        <tr>
+                            <td>12</td>
+                            <td>{{"labels.entitytype"| translate}}</td>
+                            <td>{{item.entity_type|| "-"}}</td>
+                        </tr>
+                        <tr>
+                            <td>13</td>
+                            <td>{{"labels.entityno"| translate}}</td>
+                            <td>{{item.entity_no|| "-"}}</td>
+                        </tr>
+                        <tr>
+                            <td>14</td>
+                            <td>{{"labels.entityname"| translate}}</td>
+                            <td>{{item.entity_nm|| "-"}}</td>
+                        </tr>
+                        <tr>
+                            <td>15</td>
+                            <td>{{"labels.compoundno"| translate}}</td>
+                            <td>{{item.cp_no|| "-"}}</td>
+                        </tr>
+                        <tr>
+                            <td>16</td>
+                            <td>{{"labels.CPTier"| translate}}</td>
+                            <td>{{item.cp_tier|| "-"}}</td>
+                        </tr>
+                        <tr>
+                            <td>17</td>
+                            <td>{{"labels.CPTierAmount"| translate}}</td>
+                            <td>{{ (item.cp_tier_amt | number:'1.2-2') ? (item.cp_tier_amt | number:'1.2-2') : '-' }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>18</td>
+                            <td>{{"labels.CPTierdiscpct"| translate}}</td>
+                            <td>{{ (item.cp_tier_discpct | number:'1.2-2') ? (item.cp_tier_discpct | number:'1.2-2') :
+                                '-' }}</td>
+                        </tr>
+                        <tr>
+                            <td>19</td>
+                            <td>{{"labels.dpsid"| translate}}</td>
+                            <td>{{item.dps_id || "-"}}</td>
+                        </tr>
+                        <tr>
+                            <td>20</td>
+                            <td>{{"labels.dpstask"| translate}}</td>
+                            <td>{{item.dps_task || "-"}}</td>
+                        </tr>
+                        <tr>
+                            <td>21</td>
+                            <td>{{"labels.paymentcase"| translate}}</td>
+                            <td>{{item.pymt_case|| "-" }}</td>
+                        </tr>
+                        <tr>
+                            <td>22</td>
+                            <td>{{"labels.location"| translate}}</td>
+                            <td>{{item.location|| "-" }}</td>
+                        </tr>
+                        <tr>
+                            <td>23</td>
+                            <td>{{"labels.lititemref"| translate}}</td>
+                            <td>{{item.lit_item_ref|| "-" }}</td>
+                        </tr>
+                        <tr>
+                            <td>24</td>
+                            <td>{{"labels.transactiontype"| translate}}</td>
+                            <td>{{item.txn_type|| "-" }}</td>
+                        </tr>
+                        <tr>
+                            <td>25</td>
+                            <td>{{"labels.calendaryear"| translate}}</td>
+                            <td>{{item.calendar_yr|| "-" }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+            <!-- <tr>
+          <td>17</td>
+          <td>Source System Code</td>
+          <td><div class="checkboxRow">
+            <mat-checkbox *ngFor="let option of checkboxOptions" [checked]="true" [disabled]="true">
+              <div class="checkBoxText">
+                {{option}}
+              </div>
+            </mat-checkbox>
+          </div>             
+          </td>
+      </tr> -->
+
+
+            <!-- Buttons -->
+            <div class="button-group">
+                <button class="btn btnClose" type="button" (click)="closed()">{{"close"| translate}}</button>
+            </div>
+        </div>
+    </div>
+
+</div>

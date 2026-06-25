@@ -1,0 +1,352 @@
+@import 'src/app/app_v2.component.scss';
+
+/* Green color for enabled button */
+.btn-enable {
+    background-color: green;
+    color: white;
+  }
+
+.ml-2 {
+  background-color: green;
+}
+
+.btnexport {
+  width: 10%;
+  height:100%;
+  float: right;
+  background: #21ba45;
+}
+
+.btnexportgrp {
+  display: flex;
+  //position: relative;
+  flex-direction: row-reverse;
+  margin-right: 3%;
+  padding-bottom: 1.5%;
+}
+
+.right-section73 {
+  background-color: white;
+}
+
+.middle-section73{
+  //padding-top: 4.5%;
+}
+
+// Define base styles for body and html
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: #ebe8e8;
+  }
+  
+  // Create a container using Flexbox to arrange the sections
+  .container {
+    display: flex;
+    height: 100%;
+  }
+  
+  .form-control:disabled{
+    opacity: 0.5;
+  }
+
+  // SingleContainer section takes up the search panel area
+  .SingleContainer {
+    padding-top: 5%;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: white;
+    box-sizing: border-box;
+  }
+
+
+  .PAContainer73 {
+    &.right-section-collapsed{
+      .left-section73 {
+        flex: 0 0 76.5%;
+        transition: flex 0.5s ease;
+      }
+      .right-section73 {
+        transition: flex 0.5s ease;
+      }
+    }
+    .right-section {
+      flex: 0 0 80%;
+      transition: flex 0.5s ease;
+    }
+  }
+  
+  // Two-thirds section takes up 66.66% width
+  .two-thirds {
+    //width: 80%;
+    background-color: rgb(235, 232, 232);
+    padding: 10px;
+    box-sizing: border-box;
+
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  button {
+    margin-top: 20px;
+  }
+
+
+  .breadcrumbOTC {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0 0;
+    margin-bottom: 30px;
+    // margin-left: 3%;
+    display: flex;
+    // align-items: center;
+  }
+
+  .breadcrumbOTC li {
+    display: inline;
+  }
+  
+  .breadcrumbOTC a {
+    color: rgb(2, 117, 216);
+    text-decoration: none;
+    font-size: 18px;
+  }
+  
+  .breadcrumbOTC a:hover {
+    text-decoration: underline;
+  }
+  
+  .breadcrumbOTC-separator {
+    font-size: inherit; /* Inherit the font size from the breadcrumb label */
+  }
+
+  .button-group {
+    margin-top: 20px;
+  }
+
+  .btnApply{
+    float:left;
+  }
+
+  .btnReset{
+    float:right;
+  }
+
+  .MAPagination-1{
+      padding-right: 3%;
+  }
+
+  //style for dropdown start
+
+:host ::ng-deep {
+ 
+  .ng-select {
+    padding-bottom: 6px;
+    //width: 70%;
+
+    .ng-select-container {
+      min-height: 0 !important;
+      padding: 0 !important;
+      border-top: none !important;
+
+ 
+      .ng-value-container {
+        padding: 0;
+        border: 0;
+      }
+    }
+  }
+ 
+  //adjust arrow, clear and cursor position
+  .ng-select-single .ng-select-container {
+ 
+ 
+    .ng-arrow-wrapper {
+      bottom: 3px;
+    }
+ 
+    .ng-clear-wrapper {
+      bottom: 0px;
+    }
+ 
+    .ng-value-container .ng-input {
+      top: 0px
+    }
+ 
+  }
+ 
+}
+ 
+:host ::ng-deep ng-dropdown-panel {
+ 
+  top: auto !important;
+ 
+}
+ 
+//remove drop down underline
+:host ::ng-deep ng-select .ng-select-container::after {
+  border-bottom: 5px solid transparent !important;
+}
+ 
+//style for dropdown end
+
+.MATable {
+    word-wrap: break-word;
+    overflow: hidden;
+    table-layout:fixed;
+}
+
+.MATableContainer{
+  display: table;
+}
+
+// .btnApply {
+//   min-width:$MAButtonMinWidth/4*3;
+// }
+/* Mobile Search Section Styles */
+.mobile-search-section {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .mobile-search-section {
+    display: block !important;
+    background-color: white;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .mobile-search-header {
+    padding: 10px 0;
+    border-bottom: 1px solid #e0e0e0;
+    
+    h5 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+    }
+    
+    button {
+      padding: 5px 12px;
+      
+      i {
+        font-size: 16px;
+      }
+    }
+  }
+
+  .mobile-search-body {
+    padding-top: 15px;
+    
+    .form-group {
+      margin-bottom: 15px;
+      
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+        color: #555;
+        font-size: 14px;
+      }
+      
+      input.form-control,
+      select.form-control {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+    }
+    
+    .button-group-mobile {
+      margin-top: 20px;
+      
+      .btn {
+        padding: 10px;
+        font-size: 14px;
+        border-radius: 4px;
+      }
+      
+      .btnApply {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        
+        &:hover {
+          background-color: #0056b3;
+        }
+      }
+      
+      .btnReset {
+        background-color: #6c757d;
+        color: white;
+        border: none;
+        
+        &:hover {
+          background-color: #545b62;
+        }
+      }
+    }
+  }
+
+  /* Hide desktop search sections on mobile */
+  .middle-section73,
+  .right-section73 {
+    display: none !important;
+  }
+
+  /* Ensure scrollbar shows for billing listing */
+  .MATableContainer {
+    display: block !important;
+    overflow-x: scroll !important;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    
+    /* Force scrollbar to always show */
+    &::-webkit-scrollbar {
+      height: 12px;
+      -webkit-appearance: none;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background-color: #f1f1f1;
+      border-radius: 10px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background-color: #888;
+      border-radius: 10px;
+      
+      &:hover {
+        background-color: #555;
+      }
+    }
+  }
+  
+  .MALoadingContainer {
+    display: block !important;
+    width: 100%;
+  }
+
+  /* Make export button full width on mobile */
+  .btnexportgrp {
+    width: 100%;
+    margin-right: 0;
+    padding: 0 15px;
+    margin-bottom: 15px;
+    
+    .btnexport {
+      width: 100% !important;
+      float: none !important;
+      padding: 12px;
+      font-size: 1rem;
+    }
+  }
+}

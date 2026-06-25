@@ -1,0 +1,109 @@
+<ng-container *ngIf="permListAllow === 1">
+
+    <body class="BodyCointaner">
+        <!-- mainContainer start-->
+        <div class="PAContainer73">
+            <!-- left section -->
+            <div class="left-section73">
+                <div>
+
+
+                    <!-- <div class="LeftSectionPosition">
+                        {{"labels.Home / Report / Unmatched Transaction Listing - Months View" | translate}}
+                    </div> -->
+                    <h2>{{"labels.Unmatched Transaction Listing - Months View" | translate}}</h2>
+
+                    <div class="LeftSectionPosition">
+                        <div>
+                            <label style="font-weight: 500;">{{"year" | translate}}</label>
+                            <input type="text" placeholder="{{ 'yearpicker' | translate }}" 
+                                style="width: 110px; display: inline-block; margin-left:5px; margin-right:5px;"
+                                class="form-control"
+                                [bsConfig]="{ minMode: 'year', dateInputFormat: 'YYYY', maxDate: maxDate }" bsDatepicker
+                                name="date" [(ngModel)]="periodKey" onkeydown="return false">
+
+
+
+
+                            <button type="button" class="btn btnAdd" (click)="apply()">{{"buttons.apply" |
+                                translate}}</button>
+
+
+
+                            <button type="button" class="btn btnExport" (click)="exportSelected()" style="float:right;">
+                                {{"buttons.export" | translate}}
+                            </button>
+                            <ng-select class="form-control" style="float:right;" [(ngModel)]="selectedFileType"
+                                dropdownPosition="bottom">
+                                <ng-option *ngFor="let item of fileType" [value]="item.value">{{item.label}}</ng-option>
+                            </ng-select>
+                            <label style="float:right; font-weight: 500; padding: 5px;">{{"labels.downloadreportas:" |
+                                translate}}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="MATableContainer TablePosition-relative">
+                    <div class="MALoadingContainer">
+                        <!-- Loading spinner overlay -->
+                        <div *ngIf="isLoading"
+                            class="TableLoading-overlay d-flex align-items-center justify-content-center">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only"></span>
+                            </div>
+                        </div>
+
+                        <!-- Your table structure -->
+                        <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+                            <thead>
+                                <tr class="MATableHeader">
+                                    <th>{{"labels.period" | translate}}</th>
+                                    <th>{{"labels.in" | translate}}</th>
+                                    <th>{{"labels.out" | translate}}</th>
+                                    <th>{{"labels.variance" | translate}}</th>
+                                    <th>{{"labels.periodbalance" | translate}}</th>
+
+                                </tr>
+                            </thead>
+                            <tbody *ngIf="isDisplay">
+                                <ng-container *ngFor="let item of utlm; let i = index; let last = last">
+                                    <tr *ngIf="last" style="border-top: 2px solid black; background-color: #333;"></tr>
+                                    <tr *ngIf="item && item.period"
+                                        [ngStyle]="{ 'font-weight': last ? 'bold' : 'normal' }">
+                                        <td>
+                                            <a style="cursor: pointer;" *ngIf="!last && i !== 0" (click)="viewSelected(item)">
+                                                {{ item.period === 'Beginning Balance' ? ('labels.beginningbalance' | translate) : (item.period === 'Total' ? ('labels.total' | translate) : item.period) }}
+                                            </a>
+                                            <span *ngIf="last || i === 0">
+                                                {{ item.period === 'Beginning Balance' ? ('labels.beginningbalance' | translate) : (item.period === 'Total' ? ('labels.total' | translate) : item.period) }}
+                                            </span>
+                                        </td>
+                                    
+                                        <td>{{item.in !== null ? item.in.toLocaleString(undefined,
+                                            {minimumFractionDigits:
+                                            2, maximumFractionDigits: 2}) : ''}}</td>
+                                        <td>{{item.out !== null ? item.out.toLocaleString(undefined,
+                                            {minimumFractionDigits:
+                                            2, maximumFractionDigits: 2}) : ''}}</td>
+                                        <td>{{item.variance !== null ? item.variance.toLocaleString(undefined,
+                                            {minimumFractionDigits: 2, maximumFractionDigits: 2}) : ''}}</td>
+                                        <td>{{item.periodbalance !== null ? formatNumber(item.periodbalance) : ''}}</td>
+                                    </tr>
+
+
+                                </ng-container>
+                            </tbody>
+
+
+
+
+                        </table>
+                    </div>
+
+
+                </div>
+            </div>
+
+
+        </div>
+    </body>
+</ng-container>

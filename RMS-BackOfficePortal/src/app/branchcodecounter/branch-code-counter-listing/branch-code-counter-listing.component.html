@@ -1,0 +1,235 @@
+<ng-container *ngIf="permListAllow === 1">
+
+    <body class="BodyCointaner">
+  
+      <!-- mainContainer start-->
+      <div [class.right-section-collapsed]="rightSectionCollapsed" class="PAContainer73">
+        <!-- left section -->
+        <div class="left-section73">
+          <div>
+            <!-- alert box -->
+            <div *ngIf="showInsertAlert" [@fadeInOut]>
+              <div class="alert alert-success PA-alert-box" role="alert">
+                {{"added successfully" | translate}}
+              </div>
+            </div>
+  
+            <div *ngIf="showUpdateAlert" [@fadeInOut]>
+              <div class="alert alert-info PA-alert-box" role="alert">
+                {{"updated successfully" | translate}}
+              </div>
+            </div>
+  
+            <div *ngIf="showDeleteAlert" [@fadeInOut]>
+              <div class="alert alert-danger PA-alert-box" role="alert">
+                {{"deleted successfully" | translate}}
+              </div>
+            </div>
+  
+            <div *ngIf="showResultAlert" [@fadeInOut]>
+              <div class="alert alert-warning PA-alert-box" role="alert">
+                {{"showResultAlert" | translate}}
+              </div>
+            </div>
+  
+            <div *ngIf="showDeactiveAlert" [@fadeInOut]>
+              <div class="alert alert-warning PA-alert-box" role="alert">
+                {{"The record cannot be deactivated because it is in use by another module." | translate }}
+              </div>
+            </div>
+            
+            <h2>{{"labels.branchcodecountermapping" | translate}}</h2>
+  
+            <div class="LeftSectionPosition">
+              <button [disabled]="permAddAllow === 0" type="button" class="btn btnAdd" (click)="addSelected()">
+                {{"add" | translate}}
+              </button>
+            </div>
+          </div>
+          <div class="MATableContainer TablePosition-relative" *ngIf="isDisplay">
+            <div class="MALoadingContainer">
+              <!-- Loading spinner overlay -->
+              <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+                <div class="spinner-border" role="status">
+                  <span class="sr-only"></span>
+                </div>
+              </div>
+  
+              <!-- Your table structure -->
+              <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+                <thead>
+                  <tr class="MATableHeader">
+                    <th>{{"No" | translate}}</th>
+                    <th>{{"counter id" | translate}}</th>
+                    <th>{{"terminal id" | translate}}</th>
+                    <th>{{"counter ip" | translate}}</th>
+                    <th>{{"branch code" | translate}}</th>
+                    <th>{{"modified by" | translate}}</th>
+                    <th>{{"date modified" | translate}}</th>
+                    <th>{{"edit" | translate}}</th>
+                    <th>{{"action" | translate}}</th>
+  
+                    <!-- <th>Delete</th> -->
+  
+                  </tr>
+                </thead>
+                <ng-container *ngIf="model.length > 0; else noResults">
+                  <tbody *ngIf="isDisplay">
+                    <tr *ngFor="let item of model; let i = index">
+                      <td>{{ (page - 1) * itemsPerPage + i + 1 }}</td>
+                      <td>{{ item.counter_id }}</td>
+                      <td>{{ item.terminal_id }}</td>
+                      <td>{{ item.counter_ip }}</td>
+                      <td>{{ item.bcm_code }}</td>
+                      <td>{{ item.modified_by }}</td>
+                      <td>{{ item.dt_modified | date : "dd MMM yyyy HH:mm:ss" }}</td>
+  
+                      
+                      <td>
+                        <button type="button" [disabled]="permEditAllow === 0" class="btn btnEdit"
+                          (click)="editSelected(item)">
+                          {{"edit" | translate}}
+                        </button>
+                      </td>
+                      <td>
+                        <div class="form-check form-switch custom-switch d-flex align-items-center">
+                         
+                          <input class="form-check-input" type="checkbox" id="activationSwitch{{ item.bcc_id }}"
+                            [checked]="item.status_en === 'Active' || item.status_bm === 'Active'"
+                            (change)="toggleActivation(item)" [disabled]="!permEditAllow" />
+                          <label class="form-check-label ms-2" for="activationSwitch{{ item.bcc_id }}">
+                            <!-- {{ item.status === "A" ? "Active" : "Deactivate" }} -->
+                            {{ item.status_en}}
+                          </label>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </ng-container>
+                <ng-template #noResults>
+                  <tr style="height: 100px;">
+                    <td colspan="20" class="text-center">{{"searchcriteriadoesnotmatch"| translate}}</td>
+                  </tr>
+                </ng-template>
+  
+              </table>
+            </div>
+  
+            <div class="MAPagination" *ngIf="isDisplay" style="margin-bottom:100px; margin-top:30px;">
+              <div class="fgSpacing">
+                <div *ngIf="page * itemsPerPage < totalRecords">
+                  {{"showing" | translate}} {{ page * itemsPerPage }} {{"from" | translate}} {{ totalRecords }}
+                  {{"results"
+                  | translate}}
+                </div>
+                <div *ngIf="!(page * itemsPerPage < totalRecords)">
+                  {{"showing" | translate}} {{ totalRecords }} {{"from" | translate}} {{ totalRecords }} {{"results" |
+                  translate}}
+                </div>
+              </div>
+              <div class="pagination-row">
+                <div class="dropdown">
+                  <button class="btn btn-secondary dropdown-toggle PaginControl" type="button" id="dropdownMenuButton"
+                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{ selectedValue }}
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton">
+                    <button class="dropdown-item" *ngFor="let singleItem of dropdownOptions"
+                      (click)="LoadData(singleItem)">
+                      {{ singleItem }}
+                    </button>
+                  </div>
+                </div>
+  
+                <ngb-pagination [(page)]="page" [pageSize]="itemsPerPage" [collectionSize]="totalRecords"
+                  (pageChange)="loadData()"></ngb-pagination>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- right section -->
+        <div class="middle-section73">
+          <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#rightSection"
+            [attr.aria-expanded]="!rightSectionCollapsed" (click)="toggleRightSection()">
+            <ng-container *ngIf="rightSectionCollapsed; else arrowIcon">
+              <i class="bi bi-search"></i>
+            </ng-container>
+            <ng-template #arrowIcon>
+              <i class="bi" [class.bi-chevron-double-right]="!rightSectionCollapsed"
+                [class.bi-chevron-double-left]="rightSectionCollapsed"></i>
+            </ng-template>
+          </button>
+        </div>
+  
+        <div class="right-section73 collapse" [class.show]="!rightSectionCollapsed ">
+          <div class="SingleContainer">
+            <!-- Header -->
+            <div class="SingleContainerHeader">
+              <h2 class="text-center">{{ "search filter" | translate }}</h2>
+            </div>
+
+            <div class="form-group">
+              <label for="counterID">{{"counter id" | translate}}</label>
+              <input type="text" class="form-control" id="counterID" [(ngModel)]="counterID" />
+            </div>
+
+            <div class="form-group">
+              <label for="terminalID">{{"terminal id" | translate}}</label>
+              <input type="text" class="form-control" id="terminalID" [(ngModel)]="terminalID" />
+            </div>
+
+            <div class="form-group">
+              <label for="counterIP">{{"counter ip" | translate}}</label>
+              <input type="text" class="form-control" id="counterIP" [(ngModel)]="counterIP" />
+            </div>
+  
+            <!-- <div class="form-group">
+              <label for="branchCode">{{"branch code" | translate}}</label>
+              <input type="text" class="form-control" id="branchCode" [(ngModel)]="branchCode" />
+            </div> -->
+            
+            <div class="form-group">
+              <label>{{"branch code" | translate}}</label>
+              <select class="form-control" [(ngModel)]="branchID">
+                <option disabled selected [value]="null">{{"select branch code" | translate}}</option>
+                <option *ngFor="let item of model2" [value]="item.bcm_id">
+                  {{ item.bcm_code }}
+                </option>
+              </select>
+            </div>
+  
+            <!-- Modified By -->
+            <div class="form-group">
+              <label for="modifiedBy">{{"modified by" | translate}}</label>
+              <input type="text" class="form-control" id="modifiedBy" [(ngModel)]="modifiedBy" />
+            </div>
+  
+            <!-- Date Modified Range -->
+            <div class="form-group">
+              <label>{{"date modified range" | translate}}</label>
+              <input type="text" [placeholder]="'labels.daterangepicker'| translate" class="form-control"
+                [bsConfig]="{ rangeInputFormat : 'DD MMM YYYY', dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,rangeSeparator:' to ',containerClass:'theme-default',adaptivePosition: true}"
+                bsDaterangepicker [(ngModel)]="selected" name="daterange" readonly>
+            </div>
+  
+            <div class="form-group">
+              <label>Status</label>
+              <select class="form-control" [(ngModel)]="selectedState">
+                <option *ngFor="let state of states" [value]="state.param_cd">
+                  {{ state.nm_en }}
+                </option>
+              </select>
+            </div>
+  
+            <!-- Buttons -->
+            <div class="button-group">
+              <button class="btn btnApply" (click)="apply()">{{"buttons.apply" |translate}}</button>
+              <button class="btn btnReset" (click)="reset()">{{"buttons.reset" |translate}}</button>
+            </div>
+  
+            <br /><br />
+          </div>
+        </div>
+      </div>
+    </body>
+  </ng-container>

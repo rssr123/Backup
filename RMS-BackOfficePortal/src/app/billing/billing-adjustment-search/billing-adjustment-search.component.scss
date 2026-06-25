@@ -1,0 +1,157 @@
+@import 'src/app/app.component.scss';
+
+/* Green color for enabled button */
+.btn-enable {
+    background-color: green;
+    color: white;
+  }
+
+// Define base styles for body and html
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+  
+  // Create a container using Flexbox to arrange the sections
+  .container {
+    display: flex;
+    height: 100%;
+  }
+  
+  .SingleContainer{
+    right: 10%;
+    position: relatve;
+    margin: unset;
+    padding: unset;
+  }
+
+  // One-third section takes up 33.33% width
+  .one-third {
+    width: 20%;
+    background-color: white;
+    box-sizing: border-box;    
+    padding-right: 1%;
+  }
+  
+  // Two-thirds section takes up 66.66% width
+  .two-thirds {
+    width: 80%;
+    background-color: rgb(235, 232, 232);
+    padding: 10px;
+    box-sizing: border-box;
+    padding-left: 2%;
+  }
+
+  .form-group {
+    display: block;
+    margin-bottom: 15px;
+    
+    label {
+      margin-right: 10px;
+      text-align: left;
+      font-weight: bold; // Makes the label text bold
+    }
+  
+    input {
+      padding: 8px;
+      box-sizing: border-box;
+    }
+  }
+  
+  button {
+    margin-top: 20px;
+  }
+  
+
+  .breadcrumbOTC {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0 0;
+    margin-bottom: 30px;
+    // margin-left: 3%;
+    display: flex;
+    // align-items: center;
+  }
+
+  .breadcrumbOTC li {
+    display: inline;
+  }
+  
+  .breadcrumbOTC a {
+    color: rgb(2, 117, 216);
+    text-decoration: none;
+    font-size: 18px;
+  }
+  
+  .breadcrumbOTC a:hover {
+    text-decoration: underline;
+  }
+  
+  .breadcrumbOTC-separator {
+    font-size: inherit; /* Inherit the font size from the breadcrumb label */
+  }
+
+  .form-buttons {
+    display: flex;
+    justify-content: flex-end; /* Align buttons to the right */
+    gap: 10px; /* Add space between buttons */
+  }
+
+
+  //style for dropdown start
+
+:host ::ng-deep {
+ 
+  .ng-select {
+    padding-bottom: 6px;
+    //width: 70%;
+
+    .ng-select-container {
+      min-height: 0 !important;
+      padding: 0 !important;
+      border-top: none !important;
+
+ 
+      .ng-value-container {
+        padding: 0;
+        border: 0;
+      }
+    }
+  }
+ 
+  //adjust arrow, clear and cursor position
+  .ng-select-single .ng-select-container {
+ 
+ 
+    .ng-arrow-wrapper {
+      bottom: 3px;
+    }
+ 
+    .ng-clear-wrapper {
+      bottom: 0px;
+    }
+ 
+    .ng-value-container .ng-input {
+      top: 0px
+    }
+ 
+  }
+ 
+}
+ 
+:host ::ng-deep ng-dropdown-panel {
+ 
+  top: auto !important;
+ 
+}
+ 
+//remove drop down underline
+:host ::ng-deep ng-select .ng-select-container::after {
+  border-bottom: 5px solid transparent !important;
+}
+ 
+//style for dropdown end
+
+  
+  

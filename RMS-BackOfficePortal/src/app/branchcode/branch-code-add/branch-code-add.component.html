@@ -1,0 +1,93 @@
+<div class="SingleContainer">
+   <!-- Header for Add Branch -->
+   <div class="SingleContainerHeader">
+     <h2 class="text-center">{{ "labels.addbranch" | translate }}</h2>
+   </div>
+   <form #formRef="ngForm" (ngSubmit)="handleFormSubmit(formRef)">
+     <div class="MALoadingContainer">
+       <!-- Loading spinner overlay -->
+       <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+         <div class="spinner-border" role="status">
+           <span class="sr-only"></span>
+         </div>
+       </div>
+       <div [ngClass]="{ 'TableDimmed': isLoading }">
+         <!-- Error Box -->
+         <div *ngIf="error" class="error-box">
+           <i class="bi bi-x-circle-fill error-icon"></i>
+           <div>
+             <strong>{{ "labels.validationerror" | translate }}</strong>
+             <ul>
+               <li *ngFor="let errorMsg of errorMessages">{{ errorMsg }}</li>
+             </ul>
+           </div>
+         </div>
+         <!-- Branch Code -->
+         <div class="form-group">
+           <label for="branchCode">{{ "labels.branchcode" | translate }} <span class='RedAsterisk'>*</span></label>
+           <input
+             type="text"
+             class="form-control"
+             id="branchCode"
+             name="branchCode"
+             [(ngModel)]="branchCode"
+             #branchCodeRef="ngModel"
+             required
+             pattern="^\S.*"
+           />
+           <div *ngIf="branchCodeRef.errors?.['required'] && branchCodeRef.touched" class="error-text">
+             {{ "labels.branchcodeisrequired" | translate }}
+           </div>
+           <div *ngIf="branchCodeRef.errors?.['pattern'] && branchCodeRef.touched" class="error-text">
+             {{ "labels.branchcodecannotbeginwithwhitespace" | translate }}
+           </div>
+         </div>
+         <!-- Branch Type -->
+         <div class="form-group">
+           <label for="branchType">{{ "labels.branchtype" | translate }} <span class='RedAsterisk'>*</span></label>
+           <select
+             class="form-control"
+             id="branchType"
+             name="branchType"
+             [(ngModel)]="branchType"
+             #branchTypeRef="ngModel"
+             required
+           >
+             <option value="STATE">STATE</option>
+             <option value="BRANCH">BRANCH</option>
+           </select>
+           <div *ngIf="branchTypeRef.errors?.['required'] && branchTypeRef.touched" class="error-text">
+             {{ "labels.branchtypeisrequired" | translate }}
+           </div>
+         </div>
+         <!-- Branch Name -->
+         <div class="form-group">
+           <label for="branchName">{{ "labels.branchname" | translate }} <span class='RedAsterisk'>*</span></label>
+           <input
+             type="text"
+             class="form-control"
+             id="branchName"
+             name="branchName"
+             [(ngModel)]="branchName"
+             #branchNameRef="ngModel"
+             required
+             pattern="^\S.*"
+           />
+           <div *ngIf="branchNameRef.errors?.['required'] && branchNameRef.touched" class="error-text">
+             {{ "labels.branchnameisrequired" | translate }}
+           </div>
+           <div *ngIf="branchNameRef.errors?.['pattern'] && branchNameRef.touched" class="error-text">
+             {{ "labels.branchnamecannotbeginwithwhitespace" | translate }}
+           </div>
+         </div>
+         <!-- Buttons -->
+         <div class="button-group">
+           <div>{{ "labels.Fields with * are mandatory" | translate }}</div>
+           <button class="btn btnSubmit" type="submit">{{ "buttons.submit" | translate }}</button>
+           <button class="btn btnClose" type="button" (click)="onClose()">{{ "buttons.close" | translate }}</button>
+         </div>
+       </div>
+     </div>
+   </form>
+ </div>
+ 

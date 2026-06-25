@@ -1,0 +1,518 @@
+create or replace procedure sp_insfmsari_h(i_type nvarchar(20), i_link_branch nvarchar(30), i_customer nvarchar(100)
+											, i_desc lvarchar(256), i_attr_ext_sys lvarchar(256), i_user nvarchar(25),
+											i_genpdf int, i_amt decimal(16,2), i_inv_dt datetime year to fraction(3))
+returning int8 as hid;
+
+define o_batch_no       nvarchar(30);
+define o_hid            int8;
+define o_result         int;
+define runno            nvarchar(30);
+define i_branch nvarchar(30);
+
+on exception
+	rollback work;
+end exception;
+
+    -- check got overnight anot
+    execute procedure sp_getrunno('ARIV') into o_result;
+
+    begin work;
+    set lock mode to wait 30;
+
+    /* UPDATE last running no */
+    UPDATE rms_runno
+    SET last_runno = last_runno +1
+    WHERE runno_cd = 'ARIV';
+
+    -- get running number
+	SELECT last_runno
+	INTO o_result
+	FROM rms_runno
+	WHERE runno_cd = 'ARIV';
+
+	-- Generate unique receipt number
+	LET o_batch_no = 'ARIV' || TO_CHAR(TODAY, '%Y%m%d') || LPAD(o_result, 6, '0');
+	
+	let i_branch = i_link_branch;
+	if i_link_branch is null or i_link_branch != '' then
+    	select limit 1 config_value into i_branch from rms_config where config_cd = 'FMSBranch';
+    end if;
+   
+    -- insert rms_fms_ari_h
+    -- geo: dt_sent = current
+    INSERT INTO rms_fms_ari_h(type, link_branch, amt, cust, rms_batch_no, 
+                                dt_sent, desc, attr_ext_sys, resp_attr_ext_sys, fms_ref_no, 
+                                resp_co, resp_status, resp_msg, resp_dt, 
+                                dt_created, dt_modified, created_by, modified_by, 
+                                status, retry, genpdf)--, inv_dt) 
+        VALUES(i_type, i_branch, i_amt, i_customer, o_batch_no 
+                , current, i_desc, i_attr_ext_sys, null, null
+                , null, null, null, null, current, current, i_user, i_user
+                , 'A', 0, i_genpdf);--, i_inv_dt);
+
+    let o_hid = dbinfo('serial8');
+
+    commit work;
+
+return o_hid;
+
+end procedure;
+
+GO;
+
+create or replace procedure sp_getfmsari()
+returning nvarchar(100) as type,nvarchar(100) as link_branch,decimal(16,2) as amt,nvarchar(100) as cust,nvarchar(100) as rms_batch_no, date as dt_sent,nvarchar(255) as desc,
+            nvarchar(100) as attr_ext_sys, nvarchar(100) as coa1,nvarchar(100) as coa2,nvarchar(100) as branch,int as qty,nvarchar(100) as sub_acct,nvarchar(100) as txn_desc,
+            decimal(16,2) as unit_price, nvarchar(30) as rcpt_no,nvarchar(100) as payee_info,nvarchar(100) as ent_nm,nvarchar(100) as ent_no,nvarchar(100) as ent_ty,
+            decimal(16,2) as item_amt,nvarchar(100) as pymt_mode,decimal(16,2) as item_tax_amt, 
+            integer as line_nbr, decimal(16,2) as disc_amt, nvarchar(10) as deposit_id, nvarchar(30) as deposit_task, int as pdf;--, datetime year to fraction(3) as inv_dt;
+define o_type           nvarchar(100);
+define o_link_branch    nvarchar(100);
+define o_amt            decimal(16,2);
+define o_cust           nvarchar(100);
+define o_rms_batch_no   nvarchar(100);
+define o_dt_sent        date;
+define o_desc           nvarchar(255);
+define o_attr_ext_sys   nvarchar(100);
+define o_coa1           nvarchar(100);
+define o_coa2           nvarchar(100);
+define o_branch         nvarchar(100);
+define o_qty            int;
+define o_sub_acct       nvarchar(100);
+define o_txn_desc       nvarchar(100);
+define o_unit_price     decimal(16,2);
+define o_rcpt_no        nvarchar(30);
+define o_payee_info     nvarchar(100);
+define o_ent_nm         nvarchar(100);
+define o_ent_no         nvarchar(100);
+define o_ent_ty         nvarchar(100);
+define o_item_amt       decimal(16,2);
+define o_pymt_mode      nvarchar(100);
+define o_item_tax_amt   decimal(16,2);
+define o_pdf            int;
+-- new added 4 fields
+define o_line_nbr integer;
+define o_disc_amt decimal(16,2);
+define o_deposit_id nvarchar(10);
+define o_deposit_task nvarchar(30);
+--
+define o_inv_dt         datetime year to fraction(3);
+
+foreach c_ari for
+    select t1.type,t1.link_branch,t1.amt,t1.cust,t1.rms_batch_no,t1.dt_sent,t1.desc,t1.attr_ext_sys,
+            t2.coa1,t2.coa2,t2.branch,t2.qty,t2.sub_acct,t2.txn_desc,t2.unit_price,t2.rcpt_no,
+            t2.payee_info,t2.ent_nm,t2.ent_no,t2.ent_ty,t2.item_amt,t2.pymt_mode,t2.item_tax_amt,
+            t2.line_nbr,t2.disc_amt,t2.dps_id,t2.dps_task,t1.genpdf--,t1.inv_dt
+    into o_type,o_link_branch,o_amt,o_cust,o_rms_batch_no,o_dt_sent,o_desc,o_attr_ext_sys,
+            o_coa1,o_coa2,o_branch,o_qty,o_sub_acct,o_txn_desc,o_unit_price,o_rcpt_no,
+            o_payee_info,o_ent_nm,o_ent_no,o_ent_ty,o_item_amt,o_pymt_mode,o_item_tax_amt,
+            o_line_nbr,o_disc_amt,o_deposit_id,o_deposit_task,o_pdf--,o_inv_dt
+    from rms_fms_ari_h t1
+    inner join rms_fms_ari_b t2 on t1.ari_hid = t2.ari_hid
+    where (t1.fms_ref_no is null
+    or t1.resp_status <> 200) and t1.status = 'A'
+
+    return o_type,o_link_branch,o_amt,o_cust,o_rms_batch_no,o_dt_sent,o_desc,o_attr_ext_sys,
+            o_coa1,o_coa2,o_branch,o_qty,o_sub_acct,o_txn_desc,o_unit_price,o_rcpt_no,
+            o_payee_info,o_ent_nm,o_ent_no,o_ent_ty,o_item_amt,o_pymt_mode,o_item_tax_amt,
+            o_line_nbr,o_disc_amt,o_deposit_id,o_deposit_task,o_pdf with resume;--,o_inv_dt with resume;
+    
+end foreach;
+end procedure;           
+
+GO;
+
+create or replace procedure sp_getfmsaribyarihid(i_ari_hid integer)
+returning nvarchar(100) as type,nvarchar(100) as link_branch,decimal(16,2) as amt,nvarchar(100) as cust,nvarchar(100) as rms_batch_no, date as dt_sent,nvarchar(255) as desc,
+            nvarchar(100) as attr_ext_sys, nvarchar(100) as coa1,nvarchar(100) as coa2,nvarchar(100) as branch,int as qty,nvarchar(100) as sub_acct,nvarchar(100) as txn_desc,
+            decimal(16,2) as unit_price, nvarchar(30) as rcpt_no,nvarchar(100) as payee_info,nvarchar(100) as ent_nm,nvarchar(100) as ent_no,nvarchar(100) as ent_ty,
+            decimal(16,2) as item_amt,nvarchar(100) as pymt_mode,decimal(16,2) as item_tax_amt, integer as line_nbr, decimal(16,2) as disc_amt, nvarchar(10) as deposit_id, 
+            nvarchar(30) as deposit_task,int as pdf;--, datetime year to fraction(3) as inv_dt;
+
+define o_type           nvarchar(100);
+define o_link_branch    nvarchar(100);
+define o_amt            decimal(16,2);
+define o_cust           nvarchar(100);
+define o_rms_batch_no   nvarchar(100);
+define o_dt_sent        date;
+define o_desc           nvarchar(255);
+define o_attr_ext_sys   nvarchar(100);
+define o_coa1           nvarchar(100);
+define o_coa2           nvarchar(100);
+define o_branch         nvarchar(100);
+define o_qty            int;
+define o_sub_acct       nvarchar(100);
+define o_txn_desc       nvarchar(100);
+define o_unit_price     decimal(16,2);
+define o_rcpt_no        nvarchar(30);
+define o_payee_info     nvarchar(100);
+define o_ent_nm         nvarchar(100);
+define o_ent_no         nvarchar(100);
+define o_ent_ty         nvarchar(100);
+define o_item_amt       decimal(16,2);
+define o_pymt_mode      nvarchar(100);
+define o_item_tax_amt   decimal(16,2);
+
+-- new added 4 fields
+define o_line_nbr integer;
+define o_disc_amt decimal(16,2);
+define o_deposit_id nvarchar(10);
+define o_deposit_task nvarchar(30);
+--
+define o_pdf int;
+define o_inv_dt         datetime year to fraction(3);
+
+foreach c_ari for
+    select t1.type,t1.link_branch,t1.amt,t1.cust,t1.rms_batch_no,t1.dt_sent,t1.desc,t1.attr_ext_sys,
+            t2.coa1,t2.coa2,t2.branch,t2.qty,t2.sub_acct,t2.txn_desc,t2.unit_price,t2.rcpt_no,
+            t2.payee_info,t2.ent_nm,t2.ent_no,t2.ent_ty,t2.item_amt,t2.pymt_mode,t2.item_tax_amt,
+            t2.line_nbr,t2.disc_amt,t2.dps_id,t2.dps_task,t1.genpdf--, t1.inv_dt
+    into o_type,o_link_branch,o_amt,o_cust,o_rms_batch_no,o_dt_sent,o_desc,o_attr_ext_sys,
+            o_coa1,o_coa2,o_branch,o_qty,o_sub_acct,o_txn_desc,o_unit_price,o_rcpt_no,
+            o_payee_info,o_ent_nm,o_ent_no,o_ent_ty,o_item_amt,o_pymt_mode,o_item_tax_amt,
+            o_line_nbr,o_disc_amt,o_deposit_id,o_deposit_task,o_pdf--,o_inv_dt
+    from rms_fms_ari_h t1
+    inner join rms_fms_ari_b t2 on t1.ari_hid = t2.ari_hid and t2.ari_hid = i_ari_hid
+    where t1.ari_hid = i_ari_hid
+
+    return o_type,o_link_branch,o_amt,o_cust,o_rms_batch_no,o_dt_sent,o_desc,o_attr_ext_sys,
+            o_coa1,o_coa2,o_branch,o_qty,o_sub_acct,o_txn_desc,o_unit_price,o_rcpt_no,
+            o_payee_info,o_ent_nm,o_ent_no,o_ent_ty,o_item_amt,o_pymt_mode,o_item_tax_amt,
+            o_line_nbr,o_disc_amt,o_deposit_id,o_deposit_task,o_pdf with resume;--,o_inv_dt with resume;
+    
+end foreach;
+
+end procedure;
+
+GO;
+
+create or replace procedure sp_getfmsaribybilchildid(i_bil_child_id int)
+returning nvarchar(100) as type,nvarchar(100) as link_branch,decimal(16,2) as amt,nvarchar(100) as cust,nvarchar(100) as rms_batch_no, date as dt_sent,nvarchar(255) as desc,
+            nvarchar(100) as attr_ext_sys, nvarchar(100) as coa1,nvarchar(100) as coa2,nvarchar(100) as branch,int as qty,nvarchar(100) as sub_acct,nvarchar(100) as txn_desc,
+            decimal(16,2) as unit_price, nvarchar(30) as rcpt_no,nvarchar(100) as payee_info,nvarchar(100) as ent_nm,nvarchar(100) as ent_no,nvarchar(100) as ent_ty,
+            decimal(16,2) as item_amt,nvarchar(100) as pymt_mode,decimal(16,2) as item_tax_amt, integer as line_nbr, decimal(16,2) as disc_amt, nvarchar(10) as deposit_id, 
+            nvarchar(30) as deposit_task, nvarchar(50) as fms_ref_no,int as pdf;--, datetime year to fraction(3) as inv_dt;
+
+define o_type           nvarchar(100);
+define o_link_branch    nvarchar(100);
+define o_amt            decimal(16,2);
+define o_cust           nvarchar(100);
+define o_rms_batch_no   nvarchar(100);
+define o_dt_sent        date;
+define o_desc           nvarchar(255);
+define o_attr_ext_sys   nvarchar(100);
+define o_coa1           nvarchar(100);
+define o_coa2           nvarchar(100);
+define o_branch         nvarchar(100);
+define o_qty            int;
+define o_sub_acct       nvarchar(100);
+define o_txn_desc       nvarchar(100);
+define o_unit_price     decimal(16,2);
+define o_rcpt_no        nvarchar(30);
+define o_payee_info     nvarchar(100);
+define o_ent_nm         nvarchar(100);
+define o_ent_no         nvarchar(100);
+define o_ent_ty         nvarchar(100);
+define o_item_amt       decimal(16,2);
+define o_pymt_mode      nvarchar(100);
+define o_item_tax_amt   decimal(16,2);
+define o_line_nbr integer;
+define o_disc_amt decimal(16,2);
+define o_deposit_id nvarchar(10);
+define o_deposit_task nvarchar(30);
+define o_fms_ref_no      nvarchar(50);
+define o_pdf            int;
+define o_inv_dt         datetime year to fraction(3);
+
+foreach c_ari for
+    select t1.type,t1.link_branch,t1.amt,t1.cust,t1.rms_batch_no,t1.dt_sent,t1.desc,t1.attr_ext_sys,
+            t2.coa1,t2.coa2,t2.branch,t2.qty,t2.sub_acct,t2.txn_desc,t2.unit_price,t2.rcpt_no,
+            t2.payee_info,t2.ent_nm,t2.ent_no,t2.ent_ty,t2.item_amt,t2.pymt_mode,t2.item_tax_amt,
+            t2.line_nbr,t2.disc_amt,t2.dps_id,t2.dps_task,t1.fms_ref_no,t1.genpdf--,t1.inv_dt
+    into o_type,o_link_branch,o_amt,o_cust,o_rms_batch_no,o_dt_sent,o_desc,o_attr_ext_sys,
+            o_coa1,o_coa2,o_branch,o_qty,o_sub_acct,o_txn_desc,o_unit_price,o_rcpt_no,
+            o_payee_info,o_ent_nm,o_ent_no,o_ent_ty,o_item_amt,o_pymt_mode,o_item_tax_amt,
+            o_line_nbr,o_disc_amt,o_deposit_id,o_deposit_task,o_fms_ref_no,o_pdf--,o_inv_dt
+    from rms_fms_ari_h t1
+    inner join rms_fms_ari_b t2 on t1.ari_hid = t2.ari_hid
+    where t2.bil_child_id = i_bil_child_id
+
+    return o_type,o_link_branch,o_amt,o_cust,o_rms_batch_no,o_dt_sent,o_desc,o_attr_ext_sys,
+            o_coa1,o_coa2,o_branch,o_qty,o_sub_acct,o_txn_desc,o_unit_price,o_rcpt_no,
+            o_payee_info,o_ent_nm,o_ent_no,o_ent_ty,o_item_amt,o_pymt_mode,o_item_tax_amt,
+            o_line_nbr,o_disc_amt,o_deposit_id,o_deposit_task,o_fms_ref_no,o_pdf with resume;--,o_inv_dt with resume;
+    
+end foreach;
+
+end procedure;
+
+GO;
+
+create or replace procedure sp_getfmsariimmediate(
+                i_rms_batch_no nvarchar(40), 
+                i_otc_cash_s_id integer, 
+                i_otc_mo_s_id integer, 
+                i_otc_emv_s_id integer, 
+                i_otc_che_id integer, 
+                i_otc_bd_id integer, 
+                i_non_bil_id integer)
+
+returning nvarchar(100) as type,nvarchar(100) as link_branch,decimal(16,2) as amt,nvarchar(100) as cust,nvarchar(100) as rms_batch_no, date as dt_sent,nvarchar(255) as desc,
+            nvarchar(100) as attr_ext_sys, nvarchar(100) as coa1,nvarchar(100) as coa2,nvarchar(100) as branch,int as qty,nvarchar(100) as sub_acct,nvarchar(100) as txn_desc,
+            decimal(16,2) as unit_price, nvarchar(30) as rcpt_no,nvarchar(100) as payee_info,nvarchar(100) as ent_nm,nvarchar(100) as ent_no,nvarchar(100) as ent_ty,
+            decimal(16,2) as item_amt,nvarchar(100) as pymt_mode,decimal(16,2) as item_tax_amt, 
+            integer as line_nbr, decimal(16,2) as disc_amt, nvarchar(10) as deposit_id, nvarchar(30) as deposit_task;--, datetime year to fraction(3) as inv_dt;
+
+define o_type           nvarchar(100);
+define o_link_branch    nvarchar(100);
+define o_amt            decimal(16,2);
+define o_cust           nvarchar(100);
+define o_rms_batch_no   nvarchar(100);
+define o_dt_sent        date;
+define o_desc           nvarchar(255);
+define o_attr_ext_sys   nvarchar(100);
+define o_coa1           nvarchar(100);
+define o_coa2           nvarchar(100);
+define o_branch         nvarchar(100);
+define o_qty            int;
+define o_sub_acct       nvarchar(100);
+define o_txn_desc       nvarchar(100);
+define o_unit_price     decimal(16,2);
+define o_rcpt_no        nvarchar(30);
+define o_payee_info     nvarchar(100);
+define o_ent_nm         nvarchar(100);
+define o_ent_no         nvarchar(100);
+define o_ent_ty         nvarchar(100);
+define o_item_amt       decimal(16,2);
+define o_pymt_mode      nvarchar(100);
+define o_item_tax_amt   decimal(16,2);
+
+-- new added 4 fields
+define o_line_nbr integer;
+define o_disc_amt decimal(16,2);
+define o_deposit_id nvarchar(10);
+define o_deposit_task nvarchar(30);
+--
+define o_inv_dt         datetime year to fraction(3);
+
+foreach c_ari for
+    select t1.type,t1.link_branch,t1.amt,t1.cust,t1.rms_batch_no,t1.dt_sent,t1.desc,t1.attr_ext_sys,
+            t2.coa1,t2.coa2,t2.branch,t2.qty,t2.sub_acct,t2.txn_desc,t2.unit_price,t2.rcpt_no,
+            t2.payee_info,t2.ent_nm,t2.ent_no,t2.ent_ty,t2.item_amt,t2.pymt_mode,t2.item_tax_amt,
+            t2.line_nbr,t2.disc_amt,t2.dps_id,t2.dps_task--,t1.inv_dt
+    into o_type,o_link_branch,o_amt,o_cust,o_rms_batch_no,o_dt_sent,o_desc,o_attr_ext_sys,
+            o_coa1,o_coa2,o_branch,o_qty,o_sub_acct,o_txn_desc,o_unit_price,o_rcpt_no,
+            o_payee_info,o_ent_nm,o_ent_no,o_ent_ty,o_item_amt,o_pymt_mode,o_item_tax_amt,
+            o_line_nbr,o_disc_amt,o_deposit_id,o_deposit_task--,o_inv_dt
+    from rms_fms_ari_h t1
+    inner join rms_fms_ari_b t2 on t1.ari_hid = t2.ari_hid
+    where t1.rms_batch_no = i_rms_batch_no 
+    or t2.otc_cash_s_id = i_otc_cash_s_id
+    or t2.otc_mo_s_id  = i_otc_mo_s_id 
+    or t2.otc_emv_s_id = i_otc_emv_s_id
+    or t2.otc_che_id = i_otc_che_id
+    or t2.otc_bd_id = i_otc_bd_id
+    or t2.non_bil_id = i_non_bil_id
+
+    return o_type,o_link_branch,o_amt,o_cust,o_rms_batch_no,o_dt_sent,o_desc,o_attr_ext_sys,
+            o_coa1,o_coa2,o_branch,o_qty,o_sub_acct,o_txn_desc,o_unit_price,o_rcpt_no,
+            o_payee_info,o_ent_nm,o_ent_no,o_ent_ty,o_item_amt,o_pymt_mode,o_item_tax_amt,
+            o_line_nbr,o_disc_amt,o_deposit_id,o_deposit_task with resume;--,o_inv_dt with resume;
+    
+end foreach;
+
+end procedure;
+
+GO;
+
+create or replace procedure sp_getfmsarijson(i_rms_batch_no nvarchar(100))
+returning nvarchar(100) as type,nvarchar(100) as link_branch,decimal(16,2) as amt,nvarchar(100) as cust,nvarchar(100) as rms_batch_no, date as dt_sent,nvarchar(255) as desc,
+            nvarchar(100) as attr_ext_sys, nvarchar(100) as coa1,nvarchar(100) as coa2,nvarchar(100) as branch,int as qty,nvarchar(100) as sub_acct,nvarchar(100) as txn_desc,
+            decimal(16,2) as unit_price, nvarchar(30) as rcpt_no,nvarchar(100) as payee_info,nvarchar(100) as ent_nm,nvarchar(100) as ent_no,nvarchar(100) as ent_ty,
+            decimal(16,2) as item_amt,nvarchar(100) as pymt_mode,decimal(16,2) as item_tax_amt, 
+            integer as line_nbr, decimal(16,2) as disc_amt, nvarchar(10) as deposit_id, nvarchar(30) as deposit_task, int as pdf;--, datetime year to fraction(3) as inv_dt;
+
+define o_type           nvarchar(100);
+define o_link_branch    nvarchar(100);
+define o_amt            decimal(16,2);
+define o_cust           nvarchar(100);
+define o_rms_batch_no   nvarchar(100);
+define o_dt_sent        date;
+define o_desc           nvarchar(255);
+define o_attr_ext_sys   nvarchar(100);
+define o_coa1           nvarchar(100);
+define o_coa2           nvarchar(100);
+define o_branch         nvarchar(100);
+define o_qty            int;
+define o_sub_acct       nvarchar(100);
+define o_txn_desc       nvarchar(100);
+define o_unit_price     decimal(16,2);
+define o_rcpt_no        nvarchar(30);
+define o_payee_info     nvarchar(100);
+define o_ent_nm         nvarchar(100);
+define o_ent_no         nvarchar(100);
+define o_ent_ty         nvarchar(100);
+define o_item_amt       decimal(16,2);
+define o_pymt_mode      nvarchar(100);
+define o_item_tax_amt   decimal(16,2);
+define o_pdf            int;
+
+-- new added 4 fields
+define o_line_nbr integer;
+define o_disc_amt decimal(16,2);
+define o_deposit_id nvarchar(10);
+define o_deposit_task nvarchar(30);
+--
+define o_inv_dt         datetime year to fraction(3);
+
+foreach c_ari for
+    select t1.type,t1.link_branch,t1.amt,t1.cust,t1.rms_batch_no,t1.dt_sent,t1.desc,t1.attr_ext_sys,
+            t2.coa1,t2.coa2,t2.branch,t2.qty,t2.sub_acct,t2.txn_desc,t2.unit_price,t2.rcpt_no,
+            t2.payee_info,t2.ent_nm,t2.ent_no,t2.ent_ty,t2.item_amt,t2.pymt_mode,t2.item_tax_amt,
+            t2.line_nbr,t2.disc_amt,t2.dps_id,t2.dps_task,t1.genpdf--,t1.inv_dt
+    into o_type,o_link_branch,o_amt,o_cust,o_rms_batch_no,o_dt_sent,o_desc,o_attr_ext_sys,
+            o_coa1,o_coa2,o_branch,o_qty,o_sub_acct,o_txn_desc,o_unit_price,o_rcpt_no,
+            o_payee_info,o_ent_nm,o_ent_no,o_ent_ty,o_item_amt,o_pymt_mode,o_item_tax_amt,
+            o_line_nbr,o_disc_amt,o_deposit_id,o_deposit_task,o_pdf--,o_inv_dt
+    from rms_fms_ari_h t1
+    inner join rms_fms_ari_b t2 on t1.ari_hid = t2.ari_hid
+    where rms_batch_no = i_rms_batch_no
+
+    return o_type,o_link_branch,o_amt,o_cust,o_rms_batch_no,o_dt_sent,o_desc,o_attr_ext_sys,
+            o_coa1,o_coa2,o_branch,o_qty,o_sub_acct,o_txn_desc,o_unit_price,o_rcpt_no,
+            o_payee_info,o_ent_nm,o_ent_no,o_ent_ty,o_item_amt,o_pymt_mode,o_item_tax_amt,
+            o_line_nbr,o_disc_amt,o_deposit_id,o_deposit_task,o_pdf with resume;--,o_inv_dt with resume;
+    
+end foreach;
+
+end procedure;
+
+GO;
+
+CREATE OR REPLACE PROCEDURE sp_approvebilreg(i_billing_no nvarchar(255), i_user nvarchar(25), i_remark nvarchar(255))
+RETURNING integer as result;
+
+    define o_billing_mthd nvarchar(255);
+    define o_bil_wf_id int;
+    define o_bil_id int;
+    define o_result int;
+    define i_running_time datetime year to fraction(5);
+    define o_old_pickup nvarchar(255);
+    define o_old_pickup_time datetime year to fraction(5);
+
+    on exception
+        rollback work;
+    end exception;
+
+    begin work;
+    set lock mode to wait 30;
+
+    let o_bil_wf_id = 0;
+    let o_bil_id = 0;
+    let o_result = 0;
+    let i_running_time = current;
+    
+    select limit 1 bil_wf_id, billing_mthd, pickup_by, dt_pick 
+        into o_bil_wf_id, o_billing_mthd, o_old_pickup, o_old_pickup_time
+        from rms_bil_wf where billing_no = i_billing_no and status = 'A';
+    
+    if o_bil_wf_id == 0 or o_bil_wf_id is null then
+        return -103;
+    end if;
+
+    if o_old_pickup != i_user then
+        let o_old_pickup_time = i_running_time;
+    end if;
+
+    update rms_bil_wf set
+        action = 'Billing Registration Approval',
+        bil_wf_status = 'WF-A',
+        pickup_by = i_user,
+        dt_pick = o_old_pickup_time,
+        dt_modified = i_running_time,
+        modified_by = i_user
+    where bil_wf_id = o_bil_wf_id and status = 'A';
+    
+    let o_result = dbinfo('sqlca.sqlerrd2');
+    if o_result == 0 or o_result is null then
+        return -101;
+    end if;
+    let o_result = 1;
+
+    if o_old_pickup != i_user then
+        EXECUTE PROCEDURE sp_insbilhistwf(o_bil_wf_id, i_running_time, i_user, 'Task override', 'PU') into o_result;
+        if o_result < 1 then
+            return o_result;
+        elif o_result is null then
+            rollback work;
+            return -2;
+        end if;
+        let o_result = 1;
+    end if;
+
+    select limit 1 bil_id into o_bil_id from rms_bil where billing_no = i_billing_no and status = 'A';
+    -- Prevent duplication of bil insertion
+    if o_bil_id == 0 or o_bil_id is null then
+        insert into rms_bil(bltc_id, bilcust_id, req_name, req_email, ss_cd, billing_no, billing_desc, action, dps_amt
+            , billing_cnt, billing_freq, loa_id, dt_loa_start, dt_loa_end, agm_id, dt_agm_start, dt_agm_end
+            , bil_wf_status, pickup_by, dt_pick, dt_created, dt_modified, created_by, modified_by,billing_mthd, billing_origin)
+        select bltc_id,bilcust_id,req_name,req_email,ss_cd,billing_no,billing_desc, action, dps_amt
+            , billing_cnt,billing_freq,loa_id,dt_loa_start,dt_loa_end,agm_id,dt_agm_start,dt_agm_end
+            , bil_wf_status,pickup_by,dt_pick,i_running_time,i_running_time,created_by,modified_by,billing_mthd, 'C'
+        from rms_bil_wf where bil_wf_id = o_bil_wf_id and status = 'A';
+        
+        let o_bil_id = dbinfo('sqlca.sqlerrd1');
+        if o_bil_id == 0 or o_bil_id is null then
+            return -3;
+        end if;
+    end if;
+
+    select count(1) into o_result from rms_bil_child where bil_no = i_billing_no and status = 'A';
+    -- Prevent duplication of bil child insertion
+    if o_billing_mthd == 'O' and o_result == 0 then
+        insert into rms_bil_child (bil_child_date, bil_status, dt_created, dt_modified, created_by, modified_by, bil_wf_id, bil_no, bil_id, bil_child_status)
+            values(i_running_time, 'WF-A', i_running_time, i_running_time, i_user, i_user, o_bil_wf_id, i_billing_no, o_bil_id, 'A');
+    elif o_billing_mthd == 'L' or o_billing_mthd == 'A' or o_result > 0 then
+        update rms_bil_child set
+            modified_by = i_user,
+            bil_status = 'WF-A',
+            dt_modified = i_running_time,
+            bil_id = o_bil_id
+        where status = 'A' and (bil_wf_id = o_bil_wf_id or bil_no = i_billing_no);
+    else
+        return -4;
+    end if;
+    let o_result = 0;
+        
+    update rms_bil_doc set bil_id = o_bil_id,
+                                modified_by = i_user,
+                                dt_modified = i_running_time
+            where bil_wf_id = o_bil_wf_id and status = 'A';
+    
+    update rms_bilitem set bil_id = o_bil_id,
+                                modified_by = i_user,
+                                dt_modified = i_running_time
+            where bil_wf_id = o_bil_wf_id and status = 'A';
+
+    let o_result = dbinfo('sqlca.sqlerrd2');
+    if o_result == 0 or o_result is null then
+        return -5;
+    end if;
+    let o_result = 0;
+
+    EXECUTE PROCEDURE sp_insbilhistwf(o_bil_wf_id, i_running_time, i_user, i_remark, 'R') into o_result;
+    if o_result < 1 then
+        return o_result;
+    elif o_result is null then
+        rollback work;
+        return -6;
+    end if;
+    let o_result = 1;
+
+    if o_billing_mthd == 'O' then
+        let o_result = 2;
+    end if;
+
+    commit work;
+    return o_result;
+END procedure;

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Pending Payment Notification</title>
+</head>
+<body>
+    <p>Entity Name: <b th:text="${entityNm}">[entityNm]</b></p>
+    <p>Order Reference No.: <b th:text="${ornNo}">[ornNo]</b></p>
+    <p>Total Amount Payable: RM<b th:text="${totalAmt}">[totalAmt]</b></p>
+
+    <br/>Dear Sir/Madam,<br/>
+    <i>Tuan/Puan</i>,<br/><br/>
+
+    We wish to inform you that a payment is pending in our system.
+    Please review and complete the transactions using the payment link provided below within 7 days from this e-mail issuance.<br/>
+
+    <i>Kami ingin memaklumkan bahawa bahawa terdapat pembayaran yang masih terunggak dalam sistem kami.
+        Kami memohon Tuan/Puan untuk membuat semakan dan menyelesaikan transaksi menggunakan pautan pembayaran yang disediakan di bawah.</i>
+
+    <br/><br/>
+    <a th:href="${redirect1}">CLICK HERE</a> to proceed with the payment.<br/>
+    <i><a th:href="${redirect1}">KLIK DI SINI</a> untuk tujuan pemprosesan pembayaran.</i>
+
+    <br/><br/>
+    For further information or to access other services, you may also visit our RMS Public Portal:
+    <a th:href="${redirect2}">RMS Public Portal Link</a>.<br/>
+    <i>Untuk maklumat lanjut atau untuk mengakses perkhidmatan lain, anda juga boleh melayari Portal Awam RMS kami:
+        <a th:href="${redirect2}">Pautan Portal Awam RMS</a>.</i>
+
+    <br/><br/>
+    **PLEASE IGNORE THIS EMAIL IF YOUR PAYMENT HAS ALREADY BEEN PROCESSED***<br/>
+    **<i>MOHON ABAIKAN EMEIL INI SEKIRANYA PEMBAYARAN TELAH DILAKUKAN</i>***
+
+    <br/><br/>
+    Thank you for using our services.<br/>
+    <i>Terima kasih kerana menggunakan perkhidmatan kami.</i>
+
+    <br/><br/><br/>
+    [THIS IS AN AUTOMATED MESSAGE - PLEASE DO NOT REPLY DIRECTLY TO THIS EMAIL]
+</body>
+</html>

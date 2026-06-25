@@ -1,0 +1,3 @@
+alter table informix.rms_rc_bank
+modify (created_by nvarchar(25) not null, modified_by nvarchar(25) not null,remarks nvarchar )
+go

@@ -1,0 +1,21 @@
+<div class="loading-overlay">
+  <div class="white-box">
+    <div class="spinner-container">
+      <div class="top-half">
+        <div class="logo-section">
+          <img class="logo" src="assets/logo/logo-ssm-new.png" alt="Loading..."/>
+          <div class="loader"></div>
+        </div>
+      </div>
+      <h2
+        *ngIf="
+          prefixText.trim() !== ''
+          || loadingText.trim() !== ''
+          || suffixText.trim() !== ''
+        "
+      >
+        {{ prefixText | translate }}{{ loadingText | translate }}{{ suffixText | translate }}
+      </h2>
+    </div>
+  </div>
+</div>

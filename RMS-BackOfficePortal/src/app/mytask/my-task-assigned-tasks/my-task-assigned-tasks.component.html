@@ -1,0 +1,899 @@
+<ng-container *ngIf="permListAllow === 1">
+<body class="BodyCointaner">   
+
+  <div
+  [class.right-section-collapsed]="rightSectionCollapsed"
+  class="PAContainer73"
+>
+    <!-- left section -->
+    <div class="left-section73">
+      <div>  
+        <div *ngIf="showTaskApprovedAlert" [@fadeInOut]>
+          <div class="alert alert-info PA-alert-box" role="alert">
+            {{"taskapproved" | translate}}
+          </div>
+        </div>
+
+        <div *ngIf="showQuerySubmittedAlert" [@fadeInOut]>
+          <div class="alert alert-info PA-alert-box" role="alert">
+            {{"querysubmitted" | translate}}
+          </div>
+        </div>
+
+        <div *ngIf="showRejectedAlert" [@fadeInOut]>
+          <div class="alert alert-info PA-alert-box" role="alert">
+            {{"rejected" | translate}}
+          </div>
+        </div>
+
+        <div *ngIf="showSubmittedForApprovalAlert" [@fadeInOut]>
+          <div class="alert alert-success PA-alert-box" role="alert">
+            {{"submittedforapproval" | translate}}
+          </div>
+        </div>
+
+        <div *ngIf="showGenericAlert" [@fadeInOut]>
+          <div class="alert alert-warning PA-alert-box" role="alert">
+             {{"generalalert" | translate}}
+          </div>
+        </div>
+
+        <div *ngIf="showResultAlert" [@fadeInOut]>
+          <div class="alert alert-warning PA-alert-box" role="alert">
+            {{"showResultAlert" | translate}}
+          </div>
+        </div>  
+
+        <div *ngIf="showTaskNotExist" [@fadeInOut]>
+          <div class="alert alert-error PA-alert-box" role="alert">
+            {{"labels.thetaskstatushasbeenupdated.pleaserefreshthepagetoreflectthelatestchanges" | translate}}
+          </div>
+        </div>
+
+        <div *ngIf="showTaskSubmittedAlert" [@fadeInOut]>
+          <div class="alert alert-success PA-alert-box" role="alert">
+            {{"tasksubmitted" | translate}}
+          </div>
+        </div>
+        
+        <h2>{{"labels.assignedtasks" | translate}}</h2>
+      </div>
+      <div class="MATableContainer TablePosition-relative">
+        <div class="MALoadingContainer">
+        <!-- Loading spinner overlay -->
+        <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+            <div class="spinner-border" role="status">
+                <span class="sr-only"></span>
+            </div>
+        </div>
+
+        <app-my-task-tab-navigation [currentTab]="currentTab" [currentTaskMode]="currentTaskMode" (tabChange)="onTabChange($event)"></app-my-task-tab-navigation>
+        <div class="TableContainer">
+
+        <!-- Master Fee Table -->
+        <div *ngIf="currentTab === 'mft'">
+          <h2>{{"labels.Assigned Tasks - Master Fee Table (MFT)" | translate}}</h2>
+            <!-- Your table structure -->
+            <table class="MATable" [ngClass]="{'TableDimmed': isLoading}">
+            <thead>
+              <tr class="MATableHeader">
+                <th>No.</th>
+                <th>{{"labels.taskid" | translate}}</th>
+                <th>{{"labels.actiontype" | translate}}</th>
+                <th>{{"labels.feedetailid" | translate}}</th>
+                <th class="languageWidth">{{"labels.feedetailnameen" | translate}}</th>
+                <th>{{"labels.status" | translate}}</th>
+                <th>{{"labels.effectivedate" | translate}}</th>
+                <th>{{"labels.modifiedby" | translate}}</th>
+                <th>{{"labels.datemodified" | translate}}</th>
+                <th>{{"labels.action" | translate}}</th>
+              </tr>
+            </thead>
+            <ng-container *ngIf="totalRecords>0; else noResults">
+            <tbody  *ngIf="isDisplay">
+              <tr *ngFor="let item of mftwfs; let i = index">
+                <td>{{ (page - 1) * itemsPerPage + i + 1 }}</td>
+                <td>{{item.task_id}}</td>
+                <td>{{ (item.action === 'Request Add' || item.action === 'Request Add-FIN') ?
+                  ((item.status === 'Q-R' || item.status === 'Q-RHOD' || item.status === 'Q-FA') ? 'Add-Reply' : 'Add') :
+                  ((item.status === 'Q-R' || item.status === 'Q-RHOD' || item.status === 'Q-FA') ? 'Edit-Reply' : 'Edit')}}
+                </td>
+                <td>{{item.fee_detail_id || '-'}}</td>
+                <td>{{item.fee_detail_nm_e || '-'}}</td>
+                <td>{{item.status_en}}</td>
+                <td>{{item.effective_date}}</td>
+                <td>{{item.modified_by_nm}}</td>
+                <td>{{item.dt_modified | date:'dd MMM yyyy HH:mm:ss'}}</td>
+                <td class="text-center"><button type="button" class="btn btnView" (click)="viewSeletedMft(item)">{{"buttons.view" | translate}}</button></td>
+              </tr>
+            </tbody>
+          </ng-container>
+          <ng-template #noResults>
+            <tr style="height: 100px;">
+              <td colspan="20" class="text-center">{{"searchcriteriadoesnotmatch"| translate}}</td>
+            </tr>
+          </ng-template>
+          </table>
+        </div>
+
+        <!-- Refund -->
+        <div *ngIf="currentTab === 'refund'">
+          <h2>{{"labels.Assigned Tasks - Refund" | translate}}</h2>
+            <!-- Your table structure -->
+            <table class="MATable" [ngClass]="{'TableDimmed': isLoading}">
+            <thead>
+              <tr class="MATableHeader">
+                <th>No.</th>
+                <th>{{"labels.taskid" | translate}}</th>
+                <th>{{"labels.taskdescription" | translate}}</th>
+                <th>{{"labels.refundapplicationno" | translate}}</th>
+                <th>{{"labels.requestedby" | translate}}</th>
+                <th>{{"labels.daterequested" | translate}}</th>
+                <th>{{"labels.datepickup" | translate}}</th>
+                <th>{{"labels.refundstatus" | translate}}</th>
+                <th>{{"labels.action" | translate}}</th>
+              </tr>
+            </thead>
+            <ng-container *ngIf="refundTotalRecords>0; else noResults">
+            <tbody  *ngIf="isDisplayRefund">
+              <tr *ngFor="let item of RefundMyTaskListing; let i = index">
+                <td>{{ (refundPage - 1) * refundItemsPerPage + i + 1 }}</td>
+                <td>{{item.task_id}}</td>
+                <td>{{item.refund_ty}}</td>
+                <td>{{item.rtt_app_no}}</td>
+                <td>{{item.requested_by}}</td>
+                <td>{{item.dt_requested | date : "dd MMM yyyy HH:mm:ss"}}</td>
+                <td>{{item.dt_pick | date : "dd MMM yyyy HH:mm:ss"}}</td>
+                <td>{{item.rtt_status}}</td>
+                <td class="text-center"><button type="button" class="btn btnView" (click)="viewSeletedRefund(item)">{{"buttons.view" | translate}}</button></td>
+              </tr>
+            </tbody>
+          </ng-container>
+          <ng-template #noResults>
+            <tr style="height: 100px;">
+              <td colspan="20" class="text-center">{{"searchcriteriadoesnotmatch"| translate}}</td>
+            </tr>
+          </ng-template>
+          </table>
+        </div>
+
+        <!-- Billing -->
+        <div *ngIf="currentTab === 'billing'">
+          <h2>{{"labels.Assigned Tasks - Billing" | translate}}</h2>
+            <!-- Your table structure -->
+            <table class="MATable" [ngClass]="{'TableDimmed': isLoading}">
+            <thead>
+              <tr class="MATableHeader">
+                <th>No.</th>
+                <th>{{"labels.taskid" | translate}}</th>
+                <th>{{"labels.taskdescription" | translate}}</th>
+                <th>{{"labels.approvalstatus" | translate}}</th>
+                <th>{{"labels.requestedby" | translate}}</th>
+                <th>{{"labels.daterequested" | translate}}</th>
+                <th>{{"labels.action" | translate}}</th>
+              </tr>
+            </thead>
+            <ng-container *ngIf="billingTotalRecords>0; else noResults">
+            <tbody  *ngIf="isDisplayBilling">
+              <tr *ngFor="let item of BillingMyTaskListing; let i = index">
+                <td>{{ (billingPage - 1) * billingItemsPerPage + i + 1 }}</td>
+                <td>{{item.task_id}}</td>
+                <td>{{item.billing_desc}}</td>
+                <td>{{item.bil_wf_status}}</td>
+                <td>{{item.requested_by}}</td>
+                <td>{{item.dt_requested}}</td>
+                <td class="text-center"><button type="button" class="btn btnView" (click)="viewSeletedBilling(item)">{{"buttons.view" | translate}}</button></td>
+              </tr>
+            </tbody>
+          </ng-container>
+          <ng-template #noResults>
+            <tr style="height: 100px;">
+              <td colspan="20" class="text-center">{{"searchcriteriadoesnotmatch"| translate}}</td>
+            </tr>
+          </ng-template>
+          </table>
+        </div>
+
+        <!-- Over The Counter -->
+        <div *ngIf="currentTab === 'otc'">
+          <!-- Dropdown for Over The Counter -->
+          <div class="dropdown">
+            <button class="btn btn-white dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"
+              style="font-weight: 600 !important; font-size: 14px; border: none;" [disabled]='isLoading'>
+              {{ "labels.otctype" | translate }}
+            </button>
+            <ul class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton" style="font-size:14px;">
+                <li>
+                  <a class="dropdown-item" (click)="onOTCModeChange('otc-rc')">{{"labels.otcreceiptcancellation" | translate}}</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" (click)="onOTCModeChange('otc-b')">{{"labels.otcbalancing" | translate}}</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" (click)="onOTCModeChange('otc-emv-r')">{{"labels.otcemvreconciliation" | translate}}</a>
+                </li>
+            </ul>
+          </div>
+
+          <div *ngIf="currentOTCMode === 'otc-rc'">
+            <h2>{{"labels.Assigned Tasks - OTC Receipt Cancellation" | translate}}</h2>
+              <!-- Your table structure -->
+              <table class="MATable" [ngClass]="{'TableDimmed': isLoading}">
+                <thead>
+                  <tr class="MATableHeader">
+                    <th>No.</th>
+                    <th>{{"labels.taskid" | translate}}</th>
+                    <th>{{"labels.taskdescription" | translate}}</th>
+                    <th>{{"labels.counterID" | translate}}</th>
+                    <th class="languageWidth">{{"labels.status" | translate}}</th>
+                    <th>{{"labels.requestedby" | translate}}</th>
+                    <th>{{"labels.daterequested" | translate}}</th>
+                    <th>{{"labels.action" | translate}}</th>
+                  </tr>
+                </thead>
+                <ng-container *ngIf="otcRCTotalRecords>0; else noResults">
+                <tbody  *ngIf="isDisplayOtcRC">
+                  <tr *ngFor="let item of OTCReceiptCancellationMyTaskListing; let i = index">
+                    <td>{{ (otcRCPage - 1) * otcRCItemsPerPage + i + 1 }}</td>
+                    <td>{{item.task_id}}</td>
+                    <td>{{item.task_description}}</td>
+                    <!-- <td>
+                      {{ 
+                        item.rc_status === 'PS' ? 
+                            (item.rc_type === 1 ? 'Type 1 - Receipt Cancellation for EMV Payment' :
+                             item.rc_type === 2 || item.rc_type === 3 ? 'Type 2 - Receipt Cancellation for Physical Payment' : '') :
+                      
+                        (item.rc_status === 'PEMV' || item.rc_status === 'PPC' || item.rc_status === 'PCR') ? 
+                            (item.rc_type === 1 ? 'Type 1 - Receipt Cancellation for EMV Payment' :
+                             item.rc_type === 2 || item.rc_type === 3 ? 'Type 3 - OTC Cash Return' : '') :
+                      
+                        item.rc_type === 1 ? 'Type 1 - Receipt Cancellation for EMV Payment' :
+                        item.rc_type === 2 ? 'Type 2 - Receipt Cancellation for Physical Payment' :
+                        item.rc_type === 3 ? 'Type 3 - OTC Cash Return' : ''
+                      }}
+                  </td>                   -->
+                    <td>{{item.counter_id}}</td>
+                    <td>{{item.status}}</td>
+                    <!-- <td>
+                        {{item.rc_status === 'A' ? 'Approved' : 
+                        item.rc_status === 'R' ? 'Rejected' :
+                        item.rc_status === 'VS' ? 'Successful' : 
+                        item.rc_status === 'VF' ? 'Failed' : 
+                        item.rc_status === 'PS' ? 'Pending OTC Supervisor' : 
+                        item.rc_status === 'PEMV' ? 'Pending EMV Status' :
+                        item.rc_status === 'PPC' ? 'Pending Physical Cancellation' :
+                        item.rc_status === 'PCR' ? 'Pending Cash Return' :''}}
+                    </td> -->
+                    <td>{{item.requested_by_nm}}</td>
+                    <td>{{item.date_requested}}</td>
+                    <td class="text-center"><button type="button" class="btn btnView" (click)="viewSeletedOtcRC(item)">{{"buttons.view" | translate}}</button></td>
+                  </tr>
+                </tbody>
+              </ng-container>
+              <ng-template #noResults>
+                <tr style="height: 100px;">
+                  <td colspan="20" class="text-center">{{"searchcriteriadoesnotmatch"| translate}}</td>
+                </tr>
+              </ng-template>
+              </table>
+          </div>
+
+          <div *ngIf="currentOTCMode === 'otc-b'">
+            <h2>{{"labels.Assigned Tasks - OTC Balancing" | translate}}</h2>
+              <!-- Your table structure -->
+              <table class="MATable" [ngClass]="{'TableDimmed': isLoading}">
+                <thead>
+                  <tr class="MATableHeader">
+                    <th>No.</th>
+                    <th>{{"labels.taskid" | translate}}</th>
+                    <th>{{"labels.taskdescription" | translate}}</th>
+                    <th>{{"labels.blancingtype" | translate}}</th>
+                    <th>{{"labels.branchcode" | translate}}</th>
+                    <th>{{"labels.balancingdateperiod" | translate}}</th>
+                    <th>{{"labels.action" | translate}}</th>
+                  </tr>
+                </thead>
+                <!-- <ng-container *ngIf="totalRecords>0; else noResults">
+                <tbody  *ngIf="isDisplay">
+                  <tr *ngFor="let item of OTCReceiptCancellationMyTaskListing; let i = index">
+                    <td>{{ (page - 1) * itemsPerPage + i + 1 }}</td>
+                    <td>{{item.task_id}}</td>
+                    <td>
+                        {{item.rc_type === 1 ? 'Task 1 - Receipt Cancellation for payment via EMV' : 
+                        item.rc_type === 2 ? 'Task 2 - Receipt Cancellation for payment via Physical' :
+                        item.rc_type === 3 ? 'Task 3 - Task for Cash Return to Customer' : ''}}</td>
+                    <td>{{item.counter_id}}</td>
+                    <td>
+                        {{item.rc_status === 'A' ? 'Approved' : 
+                        item.rc_status === 'R' ? 'Rejected' :
+                        item.rc_status === 'VS' ? 'Successful' : 
+                        item.rc_status === 'VF' ? 'Failed' : 
+                        item.rc_status === 'PS' ? 'Pending OTC Supervisor' : 
+                        item.rc_status === 'PEMV' ? 'Pending EMV Status' :
+                        item.rc_status === 'PPC' ? 'Pending Physical Cancellation' :
+                        item.rc_status === 'PCR' ? 'Pending Cash Return' :''}}
+                    </td>
+                    <td>{{item.requsted_by}}</td>
+                    <td>{{item.date_requested}}</td>
+                    <td><button type="button" class="btn btnView" (click)="viewSeleted(item)">{{"buttons.view" | translate}}</button></td>
+                  </tr>
+                </tbody>
+              </ng-container> -->
+              <ng-template #noResults>
+                <tr style="height: 100px;">
+                  <td colspan="20" class="text-center">{{"searchcriteriadoesnotmatch"| translate}}</td>
+                </tr>
+              </ng-template>
+              </table>
+          </div>
+
+          <div *ngIf="currentOTCMode === 'otc-emv-r'">
+            <h2>{{"labels.Assigned Tasks - OTC EMV Reconciliation" | translate}}</h2>
+              <!-- Your table structure -->
+              <table class="MATable" [ngClass]="{'TableDimmed': isLoading}">
+                <thead>
+                  <tr class="MATableHeader">
+                    <th>No.</th>
+                    <th>{{"labels.taskid" | translate}}</th>
+                    <th>{{"labels.taskdescription" | translate}}</th>
+                    <th>{{"labels.balancingdateperiod" | translate}}</th>
+                    <th>{{"labels.action" | translate}}</th>
+                  </tr>
+                </thead>
+                <!-- <ng-container *ngIf="totalRecords>0; else noResults">
+                <tbody  *ngIf="isDisplay">
+                  <tr *ngFor="let item of OTCReceiptCancellationMyTaskListing; let i = index">
+                    <td>{{ (page - 1) * itemsPerPage + i + 1 }}</td>
+                    <td>{{item.task_id}}</td>
+                    <td>
+                        {{item.rc_type === 1 ? 'Task 1 - Receipt Cancellation for payment via EMV' : 
+                        item.rc_type === 2 ? 'Task 2 - Receipt Cancellation for payment via Physical' :
+                        item.rc_type === 3 ? 'Task 3 - Task for Cash Return to Customer' : ''}}</td>
+                    <td>{{item.counter_id}}</td>
+                    <td>
+                        {{item.rc_status === 'A' ? 'Approved' : 
+                        item.rc_status === 'R' ? 'Rejected' :
+                        item.rc_status === 'VS' ? 'Successful' : 
+                        item.rc_status === 'VF' ? 'Failed' : 
+                        item.rc_status === 'PS' ? 'Pending OTC Supervisor' : 
+                        item.rc_status === 'PEMV' ? 'Pending EMV Status' :
+                        item.rc_status === 'PPC' ? 'Pending Physical Cancellation' :
+                        item.rc_status === 'PCR' ? 'Pending Cash Return' :''}}
+                    </td>
+                    <td>{{item.requsted_by}}</td>
+                    <td>{{item.date_requested}}</td>
+                    <td><button type="button" class="btn btnView" (click)="viewSeleted(item)">{{"buttons.view" | translate}}</button></td>
+                  </tr>
+                </tbody>
+              </ng-container> -->
+              <ng-template #noResults>
+                <tr style="height: 100px;">
+                  <td colspan="20" class="text-center">{{"searchcriteriadoesnotmatch"| translate}}</td>
+                </tr>
+              </ng-template>
+              </table>
+          </div>
+        </div>
+
+
+        <!-- Credit Control -->
+        <div *ngIf="currentTab === 'ccc'">
+          <h2>{{"labels.cccase" | translate}}</h2>
+          <!-- Your table structure -->
+          <div class="MALoadingContainer tableWrapper">
+            <div *ngIf="isLoadingCCData"
+                class="TableLoading-overlay d-flex align-items-center justify-content-center " style= "z-index: auto;">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only"></span>
+                </div>
+            </div>
+            <table class="MATable" [ngClass]="{'TableDimmed': isLoadingCCData}">
+              <thead>
+                <tr class="MATableHeader">
+                  <th class="thWidth">No.</th>
+                  <th>{{"labels.taskid" | translate}}</th>
+                  <th>{{"labels.taskstatus" | translate}}</th>
+                  <th>{{"labels.paymentstatus" | translate}}</th>
+                  <th>{{"labels.txntype" | translate}}</th>
+                  <th>{{"labels.caseno" | translate}}</th>
+                  <th>{{"labels.remindercount" | translate}}</th>
+                  <th>{{"labels.lastemailsentdate" | translate}}</th>
+                  <th>{{"labels.amountrm" | translate}}</th>
+                  <th>{{"labels.action" | translate}}</th>
+                </tr>
+              </thead>
+              <ng-container *ngIf="ccTotalRecords>0; else noResults">
+                <tbody *ngIf="isDisplay">
+                  <tr *ngFor="let item of creditControlCaseListing; let i = index">
+                    <td>{{ (page - 1) * ccItemsPerPage + i + 1 }}</td>
+                    <td>{{ item.taskId }}</td>
+                    <td>{{ getCCTaskStatus(item.taskStatus) }}</td>
+                    <td>{{ getCCTaskPymtStatus(item.pymtStatus) }}</td>
+                    <td>{{ getCCTaskTxnType(item.txnType) }}</td>
+                    <td>{{ item.caseNo }}</td>
+                    <td>{{ item.reminderCount }}</td>
+                    <td>{{ item.emailSent | date:'dd MMM yyyy HH:mm:ss'}}</td>
+                    <td>{{ item.amount | number:'1.2-2' }}</td>
+                    <td class="text-center"><button type="button" class="btn btnView" (click)="viewSelectedCCC(item)">{{"buttons.view" | translate}}</button></td>
+                  </tr>
+                </tbody>
+              </ng-container>
+              <ng-template #noResults>
+                <tr style="height: 100px;">
+                  <td colspan="20"
+                    class="text-center">{{"searchcriteriadoesnotmatch"|
+                    translate}}</td>
+                </tr>
+              </ng-template>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+      
+    <div class="MAPagination">
+      <div class="fgSpacing">
+        <!--MFT-->
+        <div *ngIf="this.currentTab === 'mft'">
+          <div *ngIf="page * itemsPerPage < totalRecords">
+            {{"showing" | translate}} {{ page * itemsPerPage }}  {{"from" | translate}} {{ totalRecords }}  {{"results" | translate}}
+          </div>
+          <div *ngIf="!(page * itemsPerPage < totalRecords)">
+            {{"showing" | translate}} {{ totalRecords }} {{"from" | translate}} {{ totalRecords }} {{"results" | translate}}
+          </div>
+        </div>
+      </div>
+
+      <!--Refund-->
+      <div *ngIf="this.currentTab === 'refund'">
+        <div *ngIf="refundPage * refundItemsPerPage < refundTotalRecords">
+          {{"showing" | translate}} {{ refundPage * refundItemsPerPage }}  {{"from" | translate}} {{ refundTotalRecords }}  {{"results" | translate}}
+        </div>
+        <div *ngIf="!(refundPage * refundItemsPerPage < refundTotalRecords)">
+          {{"showing" | translate}} {{ refundTotalRecords }} {{"from" | translate}} {{ refundTotalRecords }} {{"results" | translate}}
+        </div>
+      </div>
+
+      <!--Billing-->
+      <div *ngIf="this.currentTab === 'billing'">
+        <div *ngIf="billingPage * billingItemsPerPage < billingTotalRecords">
+          {{"showing" | translate}} {{ billingPage * billingItemsPerPage }}  {{"from" | translate}} {{ billingTotalRecords }}  {{"results" | translate}}
+        </div>
+        <div *ngIf="!(billingPage * billingItemsPerPage < billingTotalRecords)">
+          {{"showing" | translate}} {{ billingTotalRecords }} {{"from" | translate}} {{ billingTotalRecords }} {{"results" | translate}}
+        </div>
+      </div>
+
+      <!--OTC-RC-->
+      <div *ngIf="this.currentTab === 'otc' && this.currentOTCMode === 'otc-rc'">
+        <div *ngIf="otcRCPage * otcRCItemsPerPage < otcRCTotalRecords">
+          {{"showing" | translate}} {{ otcRCPage * otcRCItemsPerPage }}  {{"from" | translate}} {{ otcRCTotalRecords }}  {{"results" | translate}}
+        </div>
+        <div *ngIf="!(otcRCPage * otcRCItemsPerPage < otcRCTotalRecords)">
+          {{"showing" | translate}} {{ otcRCTotalRecords }} {{"from" | translate}} {{ otcRCTotalRecords }} {{"results" | translate}}
+        </div>
+      </div>
+
+      <!--Credit Control Case-->
+      <div *ngIf="this.currentTab === 'ccc'">
+        <div *ngIf="ccPage * ccItemsPerPage < ccTotalRecords">
+          {{"showing" | translate}} {{ ccPage * ccItemsPerPage }}
+          {{"from" | translate}} {{ ccTotalRecords }} {{"results" |
+          translate}}
+        </div>
+        <div *ngIf="!(ccPage * ccItemsPerPage < ccTotalRecords)">
+          {{"showing" | translate}} {{ ccTotalRecords }} {{"from" |
+          translate}} {{ ccTotalRecords }} {{"results" | translate}}
+        </div>
+      </div>
+
+      <div class="pagination-row">
+
+           <div class="dropdown">
+        <button
+          class="btn btn-secondary dropdown-toggle PaginControl"
+          type="button"
+          id="dropdownMenuButton"
+          data-bs-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          {{ selectedValue }}
+        </button>
+        <div
+          class="dropdown-menu dropdown-menu-white"
+          aria-labelledby="dropdownMenuButton"
+        >
+          <button
+            class="dropdown-item"
+            *ngFor="let singleItem of dropdownOptions"
+            (click)="LoadData(singleItem)"
+          >
+            {{singleItem }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Pagination for MFT -->
+      <ng-container *ngIf="currentTab === 'mft'">
+        <ngb-pagination
+          [(page)]="page"
+          [pageSize]="itemsPerPage"
+          [collectionSize]="totalRecords"
+          (pageChange)="loadMftData()"
+        ></ngb-pagination>
+      </ng-container>
+
+      <!-- Pagination for Refund -->
+      <ng-container *ngIf="currentTab === 'refund'">
+        <ngb-pagination
+          [(page)]="refundPage"
+          [pageSize]="refundItemsPerPage"
+          [collectionSize]="refundTotalRecords"
+          (pageChange)="loadRefundData()"
+        ></ngb-pagination>
+      </ng-container>
+
+      <!-- Pagination for Billing -->
+      <ng-container *ngIf="currentTab === 'billing'">
+        <ngb-pagination
+          [(page)]="billingPage"
+          [pageSize]="billingItemsPerPage"
+          [collectionSize]="billingTotalRecords"
+          (pageChange)="loadBillingData()"
+        ></ngb-pagination>
+      </ng-container>
+
+      <!-- Pagination for OTC-RC -->
+      <ng-container *ngIf="currentTab === 'otc' && currentOTCMode === 'otc-rc'">
+        <ngb-pagination
+          [(page)]="otcRCPage"
+          [pageSize]="otcRCItemsPerPage"
+          [collectionSize]="otcRCTotalRecords"
+          (pageChange)="loadOtcRCData()"
+        ></ngb-pagination>
+      </ng-container>
+      
+      <!-- Pagination for Credit Control -->
+      <ng-container *ngIf="currentTab === 'ccc'">
+        <ngb-pagination
+          [(page)]="ccPage"
+          [pageSize]="ccItemsPerPage"
+          [collectionSize]="ccTotalRecords"
+          (pageChange)="loadCCCData()"></ngb-pagination>
+      </ng-container>
+      </div>
+    </div>
+    </div>
+    </div>
+  
+   <div class="middle-section73">
+    <button
+    class="btn btn-primary"
+    type="button"
+    data-bs-toggle="collapse"
+    data-bs-target="#rightSection"
+    [attr.aria-expanded]="!rightSectionCollapsed"
+    (click)="toggleRightSection()"
+  >
+  <ng-container *ngIf="rightSectionCollapsed; else arrowIcon">
+    <i class="bi bi-search"></i>
+  </ng-container>
+  <ng-template #arrowIcon>
+    <i
+      class="bi"
+      [class.bi-chevron-double-right]="!rightSectionCollapsed"
+      [class.bi-chevron-double-left]="rightSectionCollapsed"
+    ></i>
+  </ng-template>
+  </button>
+</div>
+    <!-- right section -->
+    <div class="right-section73 collapse" [class.show]="!rightSectionCollapsed">
+      <div class="SingleContainer">
+        <!-- Wilson's -->
+        <!-- Search Filter for MFT-->
+        <div *ngIf="currentTab === 'mft'">
+          <!-- Header -->
+          <div class="SingleContainerHeader">
+            <h2 class="text-center">{{ "search filter" | translate }}</h2>
+          </div>
+
+          <!-- Task ID -->
+          <div class="form-group">
+            <label for="taskId">{{"labels.taskid" | translate}}</label>
+            <input type="text" class="form-control" id="taskId" [(ngModel)]="taskId">
+          </div>
+        
+          <!-- Fee Detail ID -->
+          <div class="form-group">
+            <label for="feeDetailId">{{"labels.feedetailid" | translate}}</label>
+            <input type="text" class="form-control" id="feeDetailId" [(ngModel)]="feeDetailId">
+          </div>
+        
+          <!-- Modified By -->
+          <div class="form-group">
+            <label for="modifiedByNm">{{"labels.modifiedby" | translate}}</label>
+            <input type="text" class="form-control" id="modifiedByNm" [(ngModel)]="modifiedByNm">
+          </div>
+        
+          <!-- Date Modified Range -->
+          <div class="form-group">
+            <label>{{"labels.datemodifiedrange" | translate}}</label>
+            <input type="text"
+                  [placeholder]="'labels.daterangepicker'| translate"
+                  class="form-control" [bsConfig]="{ rangeInputFormat : 'DD MMM YYYY', dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,rangeSeparator:' - ',containerClass:'theme-default',adaptivePosition: true}"
+                  bsDaterangepicker 
+                  [(ngModel)]="selected"
+                  name="daterange" 
+                  readonly onkeydown="return false">
+          </div>
+
+          <!-- Status-->
+          <div class="form-group">
+            <label for="status">Status</label>
+            <ng-select class="form-control" name="status" [(ngModel)]="status" id="status"  dropdownPosition="bottom">
+              <ng-option *ngFor="let item of statusOptions" [value]="item.param_cd">{{item.nm_en}}</ng-option>
+          </ng-select>
+          </div>
+
+          <!-- Buttons -->
+          <div class="button-group">
+            <button class="btn btnApply" (click)="apply()">{{"buttons.apply" |translate}}</button>
+            <button class="btn btnReset" (click)="reset()">{{"buttons.reset" |translate}}</button>
+          </div>
+          <br /><br />
+        </div>
+
+        <!-- Search Filter for Refund-->
+        <div *ngIf="currentTab === 'refund'">
+          <!-- Header -->
+          <div class="SingleContainerHeader">
+            <h2 class="text-center">{{ "search filter" | translate }}</h2>
+          </div>
+
+          <!-- Task ID -->
+          <div class="form-group">
+            <label for="taskId">{{"labels.taskid" | translate}}</label>
+            <input type="text" class="form-control" id="taskId" [(ngModel)]="taskId">
+          </div>
+
+          <!-- Task Description -->
+          <div class="form-group">
+            <label for="taskDescription">{{"labels.taskdescription" | translate}}</label>
+            <ng-select class="form-control" name="taskDescription" [(ngModel)]="refundTaskDescription" id="refundTaskDescription" dropdownPosition="bottom">
+              <ng-option *ngFor="let item of refundTaskDescriptionOption" [value]="item.param_cd">{{item.nm_en}}</ng-option>
+          </ng-select>
+          </div>
+
+          <!-- Refund Application No -->
+          <div class="form-group">
+            <label for="refundApplicationNo">{{"labels.refundapplicationno" | translate}}</label>
+            <input type="text" class="form-control" id="refundApplicationNo" [(ngModel)]="refundApplicationNo">
+          </div>
+
+          <!-- Requested By -->
+          <div class="form-group">
+            <label for="refundRequestedBy">{{"labels.requestedby" | translate}}</label>
+            <input type="text" class="form-control" id="refundRequestedBy" [(ngModel)]="refundRequestedBy">
+          </div>  
+
+          <!-- Date Requested -->
+           <div class="form-group">
+            <label>{{"labels.daterequested" | translate}}</label>
+            <input type="text"
+                  placeholder="Date Picker"
+                  class="form-control" [bsConfig]="{ dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,containerClass:'theme-default',adaptivePosition: true}"
+                  bsDatepicker 
+                  [(ngModel)]="refundDateRequested"
+                  name="date" 
+                  readonly>
+           </div>
+
+          <!-- Date Pick Up -->
+          <div class="form-group">
+            <label>{{"labels.datepickup" | translate}}</label>
+            <input type="text"
+                  placeholder="Date Picker"
+                  class="form-control" [bsConfig]="{ dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,containerClass:'theme-default',adaptivePosition: true}"
+                  bsDatepicker 
+                  [(ngModel)]="refundDatePickup"
+                  name="date" 
+                  readonly>
+          </div>
+
+          <!-- Refund Status -->
+          <div class="form-group">
+            <label for="refundStatus">{{"labels.refundstatus" | translate}}</label>
+            <ng-select class="form-control" name="refundStatus" [(ngModel)]="refundStatus" id="refundStatus" dropdownPosition="bottom">
+              <ng-option *ngFor="let item of refundStatusOption" [value]="item.param_cd">{{item.nm_en}}</ng-option>
+          </ng-select>
+          </div>
+
+          <!-- Buttons -->
+          <div class="button-group">
+            <button class="btn btnApply" (click)="apply()">{{"buttons.apply" |translate}}</button>
+            <button class="btn btnReset" (click)="reset()">{{"buttons.reset" |translate}}</button>
+          </div>
+          <br /><br />
+        </div>
+
+        <!-- Search Filter for Billing-->
+        <div *ngIf="currentTab === 'billing'"> 
+          <!-- Header -->
+          <div class="SingleContainerHeader">
+            <h2 class="text-center">{{ "search filter" | translate }}</h2>
+          </div>
+
+          <!-- Task ID -->
+          <div class="form-group">
+            <label for="taskId">{{"labels.taskid" | translate}}</label>
+            <input type="text" class="form-control" id="taskId" [(ngModel)]="taskId">
+          </div>
+
+          <div class="form-group">
+            <label for="taskDescription">{{"labels.taskdescription" | translate}}</label>
+            <input type="text" class="form-control" id="billingTaskDescription" [(ngModel)]="billingTaskDescription">
+          </div>
+
+          <!-- Approval Status -->
+          <div class="form-group">
+            <label for="billingApprovalStatus">{{"labels.approvalstatus" | translate}}</label>
+            <ng-select class="form-control" name="billingApprovalStatus" [(ngModel)]="billingApprovalStatus" id="billingApprovalStatus" dropdownPosition="bottom">
+              <ng-option *ngFor="let item of billingApprovalStatusOption" [value]="item.param_cd">{{item.nm_en}}</ng-option>
+          </ng-select>
+          </div>
+
+          <!-- Requested By -->
+          <div class="form-group">
+            <label for="billingRequestedBy">{{"labels.requestedby" | translate}}</label>
+            <input type="text" class="form-control" id="billingRequestedBy" [(ngModel)]="billingRequestedBy">
+          </div> 
+
+          <!-- Date Requested -->
+          <div class="form-group">
+            <label>{{"labels.daterequested" | translate}}</label>
+            <input type="text"
+                  placeholder="Date Picker"
+                  class="form-control" [bsConfig]="{ dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,containerClass:'theme-default',adaptivePosition: true}"
+                  bsDatepicker 
+                  [(ngModel)]="billingDateRequested"
+                  name="date" 
+                  readonly>
+           </div>
+
+          <!-- Buttons -->
+          <div class="button-group">
+            <button class="btn btnApply" (click)="apply()">{{"buttons.apply" |translate}}</button>
+            <button class="btn btnReset" (click)="reset()">{{"buttons.reset" |translate}}</button>
+          </div>
+          <br /><br />
+        </div>
+
+        <!-- Search Filter for OTC-RC-->
+        <div *ngIf="currentTab === 'otc' && currentOTCMode === 'otc-rc'">
+          <!-- Header -->
+          <div class="SingleContainerHeader">
+            <h2 class="text-center">{{ "search filter" | translate }}</h2>
+          </div>
+
+          <!-- Task ID -->
+          <div class="form-group">
+            <label for="taskId">{{"labels.taskid" | translate}}</label>
+            <input type="text" class="form-control" id="taskId" [(ngModel)]="taskId">
+          </div>
+        
+          <!-- Task Description -->
+          <div class="form-group">
+            <label for="otcReceiptCancellationTaskDescription">{{"labels.taskdescription" | translate}}</label>
+            <ng-select class="form-control" name="otcReceiptCancellationTaskDescription" [(ngModel)]="otcReceiptCancellationTaskDescription" id="otcReceiptCancellationTaskDescription"  dropdownPosition="bottom">
+              <ng-option *ngFor="let item of otcReceiptCancellationTaskDescriptionOption" [value]="item.value">{{item.label}}</ng-option>
+          </ng-select>
+          </div>
+
+          <!-- counterID -->
+          <div class="form-group">
+            <label for="otcRCCounterID">{{"labels.counterID" | translate}}</label>
+            <input type="text" class="form-control" id="otcRCCounterID" [(ngModel)]="counterID">
+          </div>
+        
+          <!-- Status-->
+          <div class="form-group">
+            <label for="otcRCStatus">{{"labels.status" | translate}}</label>
+            <ng-select class="form-control" name="otcRCStatus" [(ngModel)]="otcRCStatus" id="otcRCStatus"  dropdownPosition="bottom">
+              <ng-option *ngFor="let item of otcRCStatusOptions" [value]="item.param_cd">{{item.nm_en}}</ng-option>
+          </ng-select>
+          </div>
+
+          <!-- Requested By -->
+          <div class="form-group">
+            <label for="otcRCRequestedBy">{{"labels.requestedby" | translate}}</label>
+            <input type="text" class="form-control" id="otcRCRequestedBy" [(ngModel)]="otcRCRequestedBy">
+          </div>
+
+          <!-- Date Requested -->
+          <div class="form-group">
+            <label>{{"labels.daterequested" | translate}}</label>
+            <input type="text"
+                  placeholder="Date Picker"
+                  class="form-control" [bsConfig]="{ dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,containerClass:'theme-default',adaptivePosition: true}"
+                  bsDatepicker 
+                  [(ngModel)]="otcRCDateRequested"
+                  name="date" 
+                  readonly>
+          </div>
+
+          <!-- Buttons -->
+          <div class="button-group">
+            <button class="btn btnApply" (click)="apply()">{{"buttons.apply" |translate}}</button>
+            <button class="btn btnReset" (click)="reset()">{{"buttons.reset" |translate}}</button>
+          </div>
+          <br /><br />
+        </div>
+
+        
+        <!-- Search Filter for Credit Control-->
+        <div *ngIf="currentTab === 'ccc'"> 
+           <!-- Header -->
+          <div class="SingleContainerHeader">
+            <h2 class="text-center">{{ "search filter" | translate }}</h2>
+          </div>
+
+          <!-- Task ID -->
+          <div class="form-group">
+            <label for="taskId">{{"labels.taskid" | translate}}</label>
+            <input type="text" class="form-control" id="taskId" [(ngModel)]="taskId">
+          </div>
+        
+          <!-- Task Status -->
+          <div class="form-group">
+            <label for="ccTaskStatus">{{"labels.taskstatus" | translate}}</label>
+            <ng-select class="form-control" name="ccTaskStatus" [(ngModel)]="ccTaskStatus" id="ccTaskStatus"  dropdownPosition="bottom">
+              <ng-option *ngFor="let item of ccTaskStatusOption" [value]="item.param_cd">{{item.nm_en}}</ng-option>
+          </ng-select>
+          </div>
+
+          <!-- Payment Status -->
+          <div class="form-group">
+            <label for="ccPymtStatus">{{"labels.paymentstatus" | translate}}</label>
+            <ng-select class="form-control" name="ccPymtStatus" [(ngModel)]="ccPymtStatus" id="ccPymtStatus"  dropdownPosition="bottom">
+              <ng-option *ngFor="let item of ccTaskPymtTypeOption" [value]="item.param_cd">{{item.nm_en}}</ng-option>
+            </ng-select>
+          </div>
+        
+          <!-- Txn Type -->
+          <div class="form-group">
+            <label for="ccTxnType">{{"labels.txntype" | translate}}</label>
+            <ng-select class="form-control" name="ccTxnType" [(ngModel)]="ccTxnType" id="ccTxnType"  dropdownPosition="bottom">
+              <ng-option *ngFor="let item of ccTaskTxnTypeOption" [value]="item.param_cd">{{item.nm_en}}</ng-option>
+            </ng-select>
+          </div>
+
+          <!-- Case No -->
+          <div class="form-group">
+            <label for="ccCaseNo">{{"labels.caseno" | translate}}</label>
+            <input type="text" class="form-control" id="ccCaseNo" [(ngModel)]="ccCaseNo">
+          </div>
+          
+          <!-- Buttons -->
+          <div class="button-group">
+            <button class="btn btnApply" (click)="apply()">{{"buttons.apply" |translate}}</button>
+            <button class="btn btnReset" (click)="reset()">{{"buttons.reset" |translate}}</button>
+          </div>
+          <br /><br />        
+        </div>
+
+
+      </div>
+    </div>
+</div>
+ <!-- mainContainer end-->
+<!--   <div class="PAContainer73">
+    <div class="left-section73">
+      <div class="MainContainerFooter"></div>
+    </div>
+    <div class="right-section73"></div>
+  </div>    -->
+</body>
+</ng-container>

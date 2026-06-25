@@ -1,0 +1,19 @@
+<!-- Wilson's code -->
+<nav class="my-task-tab-navigation">
+  <div class="tab-container">
+    <div
+      class="tab-block"
+      *ngFor="let tab of tabs"
+      [class.active]="currentTab === tab.id"
+      [class]="currentTaskMode === currentTaskMode"
+      (click)="selectTab(tab.id)">
+      {{tab.label | translate}}
+      <div class="notificationTask" *ngIf="currentTaskMode == 'A'">
+        {{ tab.assignedTaskCount | async }}
+      </div>
+      <div class="notificationTask" *ngIf="currentTaskMode == 'C'">
+        {{ tab.createdTaskCount | async }}
+      </div>
+    </div>
+  </div>
+</nav>

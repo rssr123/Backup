@@ -1,0 +1,224 @@
+@import '../../app_v2.component.scss';
+
+.search-btn{
+  position: relative !important;
+  float: right !important;  
+}
+
+.right-section73{
+    background-color: white;
+}
+
+.form-group {
+    margin-bottom: 15px;
+  }
+  
+  .button-group {
+    margin-top: 20px;
+  }
+  
+
+  .btnApply{
+    float:left;
+  }
+
+  .btnReset{
+    float:right;
+  }
+
+  .btnPickUp{
+    float:left;
+    background-color: #2185D0;
+    color:white;
+    width: 80px;
+  }
+
+  .btnSelectAll{
+    float:left;
+    background-color: #2185D0;
+    color:white;
+    width: 80px;
+  }
+
+  .MAPagination {
+    display: flex;
+    flex-direction: column; 
+    align-items: flex-end; 
+}
+
+.fgSpacing{
+    margin-bottom:5px;
+}
+
+.btnView{
+    background-color: #2185D0;
+    color:white;
+    width: 80px;
+  //min-width: $MAButtonMinWidth;
+  }
+
+.languageWidth{
+    width: 15%;
+}
+
+//style for dropdown start
+:host ::ng-deep {
+
+  .ng-select{
+    padding-bottom: 6px;
+
+    .ng-select-container{
+      min-height: 0 !important;
+      padding:0 !important;
+      border-top: none !important;
+    
+      .ng-value-container{
+        padding: 0;
+        border: 0;
+        }
+      }
+    }
+
+    //adjust arrow, clear and cursor position
+    .ng-select-single .ng-select-container {
+
+
+      .ng-arrow-wrapper{
+        bottom: 3px;
+      }
+
+      .ng-clear-wrapper{
+        bottom: 0px;
+      }
+
+      .ng-value-container .ng-input{
+        top:0px
+      }
+
+    }
+}
+
+:host ::ng-deep ng-dropdown-panel {
+
+  top: auto !important;
+ 
+}
+
+//remove drop down underline
+:host ::ng-deep ng-select .ng-select-container::after {
+  border-bottom: 5px solid transparent !important;
+}
+
+//style for dropdown end
+
+td{
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+// Mobile search section
+.mobile-search-section {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .mobile-search-section {
+    display: block !important;
+    background-color: white;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .mobile-search-header {
+    padding: 10px 0;
+    border-bottom: 1px solid #e0e0e0;
+    
+    h5 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+    }
+    
+    button {
+      padding: 5px 12px;
+      
+      i {
+        font-size: 16px;
+      }
+    }
+  }
+
+  .mobile-search-body {
+    padding-top: 15px;
+    
+    .form-group {
+      margin-bottom: 15px;
+      
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+        color: #555;
+        font-size: 14px;
+      }
+      
+      input.form-control,
+      select.form-control {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+    }
+    
+    .button-group-mobile {
+      margin-top: 20px;
+      
+      .btn {
+        padding: 10px;
+        font-size: 14px;
+        border-radius: 4px;
+      }
+      
+      .btnApply {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        
+        &:hover {
+          background-color: #0056b3;
+        }
+      }
+      
+      .btnReset {
+        background-color: #6c757d;
+        color: white;
+        border: none;
+        
+        &:hover {
+          background-color: #545b62;
+        }
+      }
+    }
+  }
+
+  /* Hide desktop search sections on mobile */
+  .middle-section73,
+  .right-section73 {
+    display: none !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .mobile-search-section {
+    display: none;
+  }
+
+  .middle-section73,
+  .right-section73 {
+    display: flex !important;
+  }
+}

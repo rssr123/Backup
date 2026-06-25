@@ -1,0 +1,285 @@
+@import '../../../../app.component.scss';
+
+
+.right-section73{
+    background-color: white;
+}
+
+.form-group {
+    margin-bottom: 15px;
+  }
+  
+  .button-group {
+    margin-top: 20px;
+  }
+  
+
+  
+
+  .btnReset{
+    float:right;
+  }
+
+  .btnExport {
+    background-color: #21ba45;
+    color: white;
+    min-width: $MAButtonMinWidth;
+    float: right;
+    margin-right: 3%;
+  }
+
+  .MAPagination {
+    display: flex;
+    flex-direction: column; 
+    align-items: flex-end; 
+}
+
+.fgSpacing{
+    margin-bottom:5px;
+}
+
+.btnView{
+    background-color: #2185D0;
+    color:white;
+    width: 80px;
+  //min-width: $MAButtonMinWidth;
+  }
+
+  .rangePosition {
+    display: flex;
+    align-items: center; /* Vertically align the content in the center */
+  }
+
+
+.languageWidth{
+    width: 15%;
+}
+
+//style for dropdown start
+:host ::ng-deep {
+
+  .ng-select{
+    padding-bottom: 6px;
+    width: 100px;
+    float:right;
+    margin-left:5px;
+    margin-right:5px;
+
+    .ng-select-container{
+      min-height: 0 !important;
+      padding:0 !important;
+      border-top: none !important;
+    
+      .ng-value-container{
+        padding: 0;
+        border: 0;
+        }
+      }
+    }
+
+    //adjust arrow, clear and cursor position
+    .ng-select-single .ng-select-container {
+
+
+      .ng-arrow-wrapper{
+        bottom: 3px;
+      }
+
+      .ng-clear-wrapper{
+        bottom: 0px;
+      }
+
+      .ng-value-container .ng-input{
+        top:0px
+      }
+
+    }
+}
+
+:host ::ng-deep ng-dropdown-panel {
+
+  top: auto !important;
+ 
+}
+
+//remove drop down underline
+:host ::ng-deep ng-select .ng-select-container::after {
+  border-bottom: 5px solid transparent !important;
+}
+
+//style for dropdown end
+
+//checkbox start
+:host ::ng-deep .mat-mdc-checkbox.mat-mdc-checkbox-checked .mdc-checkbox__background,
+.mdc-checkbox__ripple {
+  background-color: #21ba45 !important;
+ // border-color: white !important;
+
+  .mdc-checkbox__checkmark {
+    color: white !important;
+  }
+}
+
+:host ::ng-deep .mdc-form-field .mdc-label{
+  padding-left: 0;
+ }
+
+ .checkBoxSsCd{
+//  max-width: 50px;
+  width: 15%;
+
+ }
+.checkBoxRow {
+     display: flex;
+     align-items: center;
+     flex-wrap: wrap; //this allow overflow items to wrap to next line w/o exceed the 15% width
+
+}
+  
+.checkBoxText{
+  
+  color: black !important;
+}
+//checkbox end
+
+td{
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+// th{
+//   background-color: #BDBDBD;
+// }
+
+tfoot{
+  font-weight: bold;
+}
+
+table{
+  margin-bottom: 35px;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 767px) {
+  .mobile-search-section {
+    display: block;
+    padding: 15px;
+    background-color: #f8f9fa;
+  }
+
+  .mobile-search-header {
+    padding: 10px 0;
+    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 15px;
+
+    h5 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .btn-primary {
+      padding: 0.25rem 0.75rem;
+      font-size: 0.875rem;
+
+      i {
+        font-size: 1rem;
+      }
+    }
+  }
+
+  .mobile-search-body {
+    padding: 15px 0;
+
+    .form-group {
+      margin-bottom: 15px;
+
+      label {
+        font-weight: 600;
+        margin-bottom: 5px;
+        font-size: 0.9rem;
+        color: #333;
+      }
+
+      .form-control {
+        font-size: 0.9rem;
+        padding: 0.5rem;
+      }
+
+      .ng-select {
+        font-size: 0.9rem;
+        width: 100% !important;
+        float: none !important;
+        margin: 0 !important;
+      }
+    }
+
+    .button-group-mobile {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      .btn {
+        padding: 0.75rem;
+        font-size: 0.95rem;
+        font-weight: 500;
+      }
+    }
+  }
+
+  /* Hide desktop section header (search controls) on mobile */
+  .LeftSectionPosition {
+    display: none !important;
+  }
+
+  /* Hide desktop h2 title on mobile */
+  .left-section73 h2 {
+    display: none;
+  }
+
+  .PAContainer73 {
+    padding: 0 15px;
+  }
+
+  /* Keep table visible and make it responsive */
+  .MATableContainer {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .MATable {
+    font-size: 0.85rem;
+
+    th, td {
+      padding: 8px 4px;
+      font-size: 0.85rem;
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .mobile-search-section {
+    display: none;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

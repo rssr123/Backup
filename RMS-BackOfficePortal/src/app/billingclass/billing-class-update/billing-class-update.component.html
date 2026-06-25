@@ -1,0 +1,54 @@
+<div class="SingleContainer">
+  <div class="SingleContainerHeader">
+    <h2 class="text-center">{{ "labels.updatebillingclass" | translate }}</h2>
+  </div>
+  <form #formRef="ngForm" (ngSubmit)="handleFormSubmit(formRef)">
+    <div class="MALoadingContainer">
+      <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+        <div class="spinner-border" role="status">
+          <span class="sr-only"></span>
+        </div>
+      </div>
+      <div [ngClass]="{ 'TableDimmed': isLoading }">
+        <div *ngIf="error" class="error-box">
+          <i class="bi bi-x-circle-fill error-icon"></i>
+          <div>
+            <strong>{{ "Validation Error" | translate }}</strong>
+            <ul>
+              <li *ngFor="let errorMsg of errorMessages">{{ errorMsg }}</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Billing Class ID -->
+        <div class="form-group">
+          <label for="billingClassId">{{ "labels.billingclassid" | translate }} <span
+              class='RedAsterisk'>*</span></label>
+          <input type="text" class="form-control" id="billingClassId" name="billingClassId" [(ngModel)]="billingClassId"
+            #billingClassIdRef="ngModel" required />
+          <div *ngIf="billingClassIdRef?.errors?.['required'] && billingClassIdRef.touched" class="error-text">
+            {{ "labels.billingclassidisrequired" | translate }}
+          </div>
+        </div>
+
+        <!-- Billing Class Description -->
+        <div class="form-group">
+          <label for="billingClassDesc">{{ "labels.billingclassdescription" | translate }} <span
+              class='RedAsterisk'>*</span></label>
+          <input type="text" class="form-control" id="billingClassDesc" name="billingClassDesc"
+            [(ngModel)]="billingClassDesc" #billingClassDescRef="ngModel" required />
+          <div *ngIf="billingClassDescRef?.errors?.['required'] && billingClassDescRef.touched" class="error-text">
+            {{ "labels.billingclassdescisrequired" | translate }}
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="button-group">
+          <div>{{ "labels.Fields with * are mandatory" | translate }}</div>
+          <button class="btn btnUpdate" type="submit">{{ "update" | translate }}</button>
+          <button class="btn btnClose" type="button" (click)="closeDialog()">{{ "buttons.close" | translate }}</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

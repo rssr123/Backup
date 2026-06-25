@@ -1,0 +1,64 @@
+/* filepath: /d:/Project/SSM-RMS/CRS/src/app/otc-page/otc-page.component.scss */
+@import 'src/app/app.component.scss';
+
+.container {
+    max-width: 600px;
+    margin: 80px auto;
+    padding: 40px;
+    text-align: center;
+    background-color: #fdfdfd;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.header h1 {
+    font-size: 24px;
+    color: #333;
+}
+
+.content {
+    text-align: center;
+}
+
+.response-message {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.success-message {
+    color: #4caf50;
+    font-weight: bold;
+}
+
+.error-message {
+    color: #f44336;
+    font-weight: bold;
+}
+
+.actions {
+    text-align: center;
+    margin-top: 30px;
+  }
+
+.btn-back {
+    background-color: #2e3192;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .btn-back:hover {
+    background-color: #1f216a;
+    transform: scale(1.03);
+  }

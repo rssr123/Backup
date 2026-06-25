@@ -1,0 +1,78 @@
+drop procedure sp_checkotcrcpt
+
+go
+
+CREATE PROCEDURE sp_checkotcrcpt()
+   RETURNING int8 as mtt_id,  -- mtt_id
+             int8 as otc_rc_id,  -- otc_rc_id
+             nvarchar(255) as ssdocref_id;
+
+   DEFINE v_mtt_id INTEGER;
+   DEFINE v_otc_rc_id INTEGER;
+   DEFINE v_ssdocref_id NVARCHAR(255);
+   
+
+   FOREACH c_check_otc_rcpt FOR
+
+      SELECT 
+    t2.mtt_id, 
+    t3.otc_rc_id,
+    t1.ssdocref_id
+	INTO 
+     v_mtt_id, 
+     v_otc_rc_id,
+     v_ssdocref_id
+FROM rms_otc_rcpt t1
+INNER JOIN rms_otc t2 ON t2.otc_id = t1.otc_id
+INNER JOIN rms_otc_rc t3 ON t3.otc_id = t2.otc_id
+WHERE (t1.ver_id IS NULL OR t1.is_uploaded = 0)
+
+      RETURN v_mtt_id, v_otc_rc_id, v_ssdocref_id WITH RESUME;
+
+   END FOREACH;
+
+END PROCEDURE;
+
+go
+
+drop procedure sp_getrttwf_id_list()
+
+go
+
+CREATE OR REPLACE PROCEDURE sp_getrttwf_id_list()
+   RETURNING INTEGER AS rtt_wf_id,   -- 1st column: rtt_wf_id
+             INTEGER AS count,       -- 2nd column: count
+             NVARCHAR(255) AS ssdocref_id; -- 3rd column: ssdocref_id
+
+   -- local variables
+   DEFINE v_rttwfid     INTEGER;
+   DEFINE v_count       INTEGER;
+   DEFINE v_ssdocref_id NVARCHAR(255);
+
+   -- get the count (same for all rows)
+   SELECT COUNT(a.rtt_wf_id) 
+     INTO v_count 
+     FROM rms_rtt_wf a 
+     JOIN rms_rtt b 
+       ON a.rtt_app_no = b.rtt_app_no
+    WHERE (a.refund_ty = 'RS01' OR a.refund_ty = 'RS02')
+      AND (b.ver_id IS NULL OR b.ver_id = '') 
+      AND (a.refund_slip_no IS NOT NULL AND a.refund_slip_no != '');
+
+   -- loop through results
+   FOREACH get_rtt_wf_id FOR
+      SELECT a.rtt_wf_id, b.ssdocref_id
+        INTO v_rttwfid, v_ssdocref_id
+        FROM rms_rtt_wf a 
+        JOIN rms_rtt b 
+          ON a.rtt_app_no = b.rtt_app_no
+       WHERE (a.refund_ty = 'RS01' OR a.refund_ty = 'RS02')
+         AND (b.ver_id IS NULL OR b.ver_id = '')
+         AND (a.refund_slip_no IS NOT NULL AND a.refund_slip_no != '') 
+       ORDER BY b.dt_created ASC
+
+      -- return row
+      RETURN v_rttwfid, v_count, v_ssdocref_id WITH RESUME;
+   END FOREACH;
+
+END PROCEDURE;

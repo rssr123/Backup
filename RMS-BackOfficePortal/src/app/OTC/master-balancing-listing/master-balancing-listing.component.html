@@ -1,0 +1,129 @@
+<ng-container *ngIf="permOTCMBalListingAllow === 1">
+    <div *ngIf="isLoading" class="loading-icon">
+        <div class="spinner"></div>
+    </div>
+    <body class="BodyCointaner">
+        <div [class.right-section-collapsed]="rightSectionCollapsed" class="PAContainer73">
+    
+            <div class="left-section me-4">
+                <div class="left-side">
+                    <div class="subContainer">
+                        <label class="form-label bsfLabel">{{"labels.branchcode" | translate}}</label>
+                        <select class="dropdown" name="branchCode" class="form-control form-select" [(ngModel)]="selectedBranchCode">
+                            <option [ngValue]="null" disabled selected>{{"labels.selectabranchcode" | translate}}</option>
+                            <option *ngFor="let option of modelParam" [ngValue]="option">{{option.branch_code}}</option>
+                        </select>
+                    </div>
+                    <div class="subContainer">
+                        <label class="form-label bsfLabel">{{"labels.balancingdateperiod" | translate}}</label>
+                        <input  type="text"
+                        class="dropdown-upload form-control"
+                        [placeholder]="'datepicker' | translate"
+                        bsDatepicker
+                        [(ngModel)]="balancingDate"
+                        name="balDatePeriod"
+                        [bsConfig]="{ dateInputFormat: 'DD MMM YYYY' }">
+                    </div>
+                </div>
+                <div class="button-container">
+                    <button class="btn btnCancel" type="button" (click)="clear()">{{"buttons.clear" | translate}}</button>
+                    <button class="btn btn-primary" type="button" (click)="search()" [disabled]="!selectedBranchCode">{{"buttons.search >" | translate}}</button>
+                </div>
+            </div>
+    
+            <div class="middle-section">
+                <ul class="breadcrumbOTC">
+                    <li>
+                        <a [routerLink]="'/home'">{{"menu.home" | translate}}</a>
+                        <span class="breadcrumb-separator"> / </span>
+                        <a [routerLink]="'/master-balancing-listing'">{{"labels.masterbalancinglisting" | translate}}</a>
+                    </li>
+                </ul>
+                <div class="success-box" *ngIf="successBox === true || showView === true">
+                    <i class="bi-check-circle-fill success-icon"></i>
+                    <div>
+                       <strong>{{"masterbalancingcompleted" | translate}}</strong>
+                       <p>
+                          {{"Master Balancing for the selected Branch Code and Balancing Date Period has been completed." | translate}}
+                       </p>
+                    </div>
+                 </div>
+                 <div class="error-box" *ngIf="errorBox === true || this.disableSubmit">
+                    <i class="bi bi-x-circle-fill error-icon"></i>
+                    <div>
+                       <strong>{{"Unable to Begin Master Balancing" | translate}}</strong>
+                       <p>
+                          {{"Daily Balancing Status must be "| translate}} 
+                          <span style="font-weight: bold;">"Completed"</span>
+                          {{" to begin Master Balancing"| translate }}
+                       </p>
+                    </div>
+                 </div>
+                 <div class="error-box" *ngIf="errorBox1 === true">
+                    <i class="bi bi-x-circle-fill error-icon"></i>
+                    <div>
+                       <strong>{{"Unable to Begin Master Balancing" | translate}}</strong>
+                       <p>
+                          {{"There are Receipt Cancellation tasks(Type 2) currently pending." + 
+                          " Please complete all receipt cancellation tasks before initiating Master"| translate }}
+                       </p>
+                    </div>
+                 </div>
+                <h3>{{"labels.masterbalancinglisting" | translate}}</h3>
+                <div class="topSection">
+                    <div class="fgSpacing">
+                        <div>
+                            {{"showing" | translate}} {{" "}} {{totalRecords}} {{" "}} {{"results" | translate}}
+                        </div>
+                    </div>
+                    <div>
+                        <button *ngIf="showSubmit" [disabled]="selectedBranchCode === null || totalRecords === 0 || disableSubmit" class="btn btnApply" type="button" (click)="submit()">{{"buttons.beginmasterbalancing" | translate}}</button>
+                        <button *ngIf="showView" [disabled]="selectedBranchCode === null || totalRecords === 0" class="btn btnView" type="button" (click)="viewMasterBal()">{{"buttons.viewmasterbalancing" | translate}}</button>
+                    </div>
+                </div>
+                
+                <div>
+                    <table class="MATable">
+                        <thead>
+                            <tr class="MATableHeader">
+                                <th>No.</th>
+                                <th>{{ "labels.branchcode" | translate }}</th>
+                                <th>{{ "labels.dailybalancingstatus" | translate }}</th>
+                                <th>{{ "labels.noofcounters" | translate }}</th>
+                                <th>{{ "userid" | translate }}</th>
+                                <th>{{ "labels.lastmodifieddate" | translate }}</th>
+                                <th>{{ "labels.otctotalamountrm" | translate }}</th>                            
+                                <th>{{ "labels.action" | translate}}</th>
+                            </tr>
+                        </thead>
+                        <tbody *ngIf="isEmptyResult">
+                            <tr>
+                                <td colspan="8">
+                                    <div>
+                                        <div>
+                                            <div class="alert alert-warning" role="alert">
+                                                {{"showResultAlert" | translate}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tbody *ngIf="isEmptyResult === false">
+                            <tr *ngFor="let item of modelList;let i = index">
+                                <td>{{(page - 1) * itemsPerPage + i + 1 }}</td>
+                                <td>{{item.branch_code}}</td>
+                                <td>{{item.daily_bal_status}}</td>
+                                <td>{{item.no_of_counters}}</td>
+                                <td>{{item.user_id}}</td>
+                                <td>{{item.check_in}}</td>
+                                <td>{{item.total_amt || 0 | number:'2.2'}}</td>
+                                <td><button [disabled]="item.daily_bal_status.toLowerCase().trim() === 'in progress'" class="btn btnView" (click)="viewCtrBal(item)">{{"buttons.view" | translate}}</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </body>
+</ng-container>

@@ -1,0 +1,496 @@
+// .responsive-table {
+//     overflow-x: auto; // This will add horizontal scrolling when needed
+//     width: 100%; // Make sure the div takes full width
+//     display: block; // To ensure it behaves like a block element
+
+//     table {
+//         width: 100%; // Make the table span the full width of its container
+//         border-collapse: collapse; // Remove gaps between table cells
+
+//         th, td {
+//             border: 1px solid black;
+//             padding: 8px 12px;
+//         }
+
+//         thead {
+//             th {
+//                 background-color: #FFC107;
+//             }
+//         }
+
+//         .total-row {
+//             td {
+//                 text-align: right;
+//             }
+//         }
+//     }
+// }
+
+
+
+// .button-container {
+//     text-align: right;
+//     margin-top: 20px;
+
+//     .pay-online-btn {
+//         background-color: blue;
+//         color: white;
+//         padding: 10px 20px;
+//         border: none;
+//         border-radius: 5px;
+//         cursor: pointer;
+
+//         &:hover {
+//             background-color: darken(blue, 10%);
+//         }
+//     }
+// }
+
+
+
+
+@import 'src/app/app.component.scss';
+
+$leftPadding: 3%;
+$rightPadding: 3%;
+$MarginFromFooter: 110px;
+$MAButtonMinWidth: 100px; //original is 30%
+$MarginSeparator: 30px;
+
+.table-container {
+    // overflow-x: auto; /* Prevent overflow issues */
+    padding-right: 20px;
+    /* Add padding inside the container */
+}
+
+table {
+    background-color: white;
+    width: 100%;
+    //margin-left: 5%;
+    margin-right: 5%;
+    table-layout: fixed;
+    /* make all column width equal*/
+
+    //   label {
+    //     margin-bottom: 10px;
+    //     font-weight: bold;
+    //   }
+
+    td .displayColumn {
+        display: flex;
+        flex-direction: column;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        margin-left: 20px;
+        margin-right: 20px;
+        height: 80px;
+        /* set a fixed height */
+    }
+
+    td .displayRow {
+        display: flex;
+
+        gap: 10px;
+        /* gap between each element */
+        align-items: center;
+        float: right;
+        margin-right: 20px;
+        margin-bottom: 20px;
+        margin-top: 20px;
+
+        label {
+            white-space: nowrap;
+            /* make multiple lines into one sentence*/
+        }
+
+        select {
+            height: 100%;
+        }
+
+        .ng-select {
+            margin-right: 50px;
+            width: 200px;
+            // height: 50px;
+            // padding-top: 12px !important;
+        }
+    }
+
+    .note {
+        margin-bottom: 0;
+        margin-right: 60px;
+        float: right;
+        font-weight: normal;
+        color: #767676;
+    }
+}
+
+.tableLabel {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+//style for dropdown start
+:host ::ng-deep {
+
+    .ng-select {
+        padding-bottom: 6px;
+
+        .ng-select-container {
+            min-height: 0 !important;
+            padding: 0 !important;
+            border-top: none !important;
+
+            .ng-value-container {
+                padding: 0;
+                border: 0;
+            }
+        }
+    }
+
+    //adjust arrow, clear and cursor position
+    .ng-select-single .ng-select-container {
+
+
+        .ng-arrow-wrapper {
+            bottom: 3px;
+        }
+
+        .ng-clear-wrapper {
+            bottom: 0px;
+        }
+
+        .ng-value-container .ng-input {
+            top: 0px
+        }
+
+    }
+
+}
+
+:host ::ng-deep ng-dropdown-panel {
+
+    top: auto !important;
+
+}
+
+//remove drop down underline
+:host ::ng-deep ng-select .ng-select-container::after {
+    border-bottom: 5px solid transparent !important;
+}
+
+//style for dropdown end
+
+.marginFromFooter {
+    margin-bottom: $MarginFromFooter;
+}
+
+.tableWrapper {
+    margin-left: 3%;
+    margin-right: 3%;
+}
+
+// .PAContainer73 {
+//   margin-left: $MAMainLeftPadding;
+//   // max-height: 100vh;
+// }
+
+.btnClear {
+    background-color: #84958803;
+    ;
+    min-width: $MAButtonMinWidth;
+    border: solid 1px #dfdfdf;
+}
+
+.thWidth {
+    width: 60px;
+
+}
+
+.thFileName {
+    width: 250px;
+
+}
+
+.thAction {
+    width: 130px;
+
+}
+
+.thFileSize {
+    width: 130px;
+
+}
+
+.thInitiadtedBy {
+    width: 200px;
+
+}
+
+.left-section73 {
+    overflow: visible !important;
+}
+
+// .PAContainer73 {
+//   margin-left: $MAMainLeftPadding;
+//   min-height: 0vh;
+// }
+
+//menu with button start
+.order-info {
+    display: flex;
+    justify-content: space-between;
+    /* Ensure h2 is on the far left, and the rest on the far right */
+    align-items: center;
+    /* Align items vertically on the same line */
+}
+
+.order-details {
+    display: flex;
+    align-items: center;
+    /* Align elements in the center vertically */
+    gap: 5px;
+    /* Optional: Adjust spacing between elements */
+}
+
+.left-section {
+    display: flex;
+    align-items: center;
+    /* Align button and label vertically */
+    gap: 20px;
+    /* Space between the button and Status label */
+}
+
+//  menu with button end
+
+.full-width-line {
+    border: none;
+    /* Remove the default border style */
+    border-top: 1px solid #000;
+    /* Add a top border for the line */
+    width: 96%;
+    /* Ensure the line spans the entire width */
+    margin: 0;
+    /* Optional: Adjust the margin as needed */
+    margin-top: 50px;
+    margin-right: 2%;
+    margin-left: 2%;
+}
+
+.paymentinfo {
+    margin-left: 3%;
+    margin-right: 3%;
+    background-color: white;
+
+    .paymentinfodetails {
+        margin-top: 20px;
+        margin-left: 3%;
+
+        label {
+            display: block;
+            width: 350px;
+            word-wrap: break-word;
+            /* Allows long words to break and wrap */
+            word-break: break-word;
+            /* Breaks words if necessary */
+            overflow-wrap: break-word;
+            /* Ensures compatibility */
+            white-space: normal;
+            /* Allows text to wrap */
+        }
+
+        .form-control {
+            border: 1px solid blue;
+            /* Sets the border color to blue */
+        }
+
+    }
+}
+
+.tableWrapperPaymentInfo {
+    margin-top: 20px;
+    margin-left: 3%;
+    margin-right: 3%;
+}
+
+.MarginSeparator {
+    margin-top: $MarginSeparator;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+
+.marginTop {
+    margin-top: 10px;
+}
+
+
+.marginLeft {
+    margin-left: 10px;
+}
+
+body.BodyCointaner {
+    padding-left: 3%;
+    /* Add space on the left */
+    padding-right: 3%;
+    /* Add space on the right */
+}
+
+input {
+    border: 1px solid #ccc;
+    /* Light gray border */
+    border-radius: 4px;
+    /* Rounded corners */
+    padding: 10px;
+    /* Inner padding for better spacing */
+    font-size: 14px;
+    /* Adjust text size */
+    width: 100%;
+    /* Full-width inputs */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow for depth */
+}
+
+input:focus {
+    outline: none;
+    /* Remove default focus outline */
+    border-color: #007BFF;
+    /* Change border color on focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    /* Highlighted shadow on focus */
+}
+
+button {
+    background-color: #007BFF;
+    /* Blue background */
+    color: white;
+    /* White text */
+    padding: 10px 15px;
+    /* Padding for a better click area */
+    border: none;
+    /* Remove default border */
+    border-radius: 4px;
+    /* Rounded corners */
+    font-size: 14px;
+    /* Font size */
+    cursor: pointer;
+    /* Change cursor to pointer */
+    transition: background-color 0.3s ease;
+    /* Smooth hover effect */
+}
+
+button:hover {
+    background-color: #0056b3;
+    /* Darken the color on hover */
+}
+
+.item-container {
+    display: flex;
+    /* Align items horizontally */
+    align-items: center;
+    /* Center vertically */
+    gap: 30px;
+    /* Add space between the text and button */
+}
+
+.MATable {
+    width: 100%;
+    /* Ensure table takes full width */
+    table-layout: auto;
+    /* Allow column widths to adjust dynamically */
+    // overflow-x: auto; /* Enable horizontal scrolling */
+    // display: block; /* Allow table to be scrollable */
+    min-width: 800px;
+    /* Ensure the table has a minimum width */
+}
+
+.MATable thead th {
+    white-space: nowrap;
+    /* Prevent headers from wrapping */
+}
+
+.MATable tbody td {
+    white-space: nowrap;
+    /* Prevent cell content from wrapping */
+}
+
+.table-container {
+    overflow-x: auto;
+    /* Enable horizontal scrolling */
+    margin: 20px 0;
+    /* Add vertical spacing for the table */
+    max-width: 100%;
+    /* Ensure the container doesn't exceed parent width */
+}
+
+button:disabled {
+    background-color: #cccccc;
+    /* Gray background for disabled state */
+    cursor: not-allowed;
+    /* Prevent clicking */
+}
+
+.txn-info {
+    background-color: #f8f9fa;
+    /* Light gray background */
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    // margin: auto;
+}
+
+.txn-info h3 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.txn-info ul {
+    list-style: none;
+    padding: 0;
+}
+
+.txn-info li {
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+.txn-info strong {
+    color: #007bff;
+    /* Highlighted numbers */
+}
+
+.failed {
+    color: red;
+    font-weight: bold;
+}
+
+.no-response {
+    color: orange;
+    font-weight: bold;
+}
+
+.approved {
+    color: green;
+    font-weight: bold;
+}
+
+.MarginSeparator {
+    margin-top: 30px;
+}
+
+#entityType {
+    height: 30px;
+    /* Adjust height as needed */
+    font-size: 14px;
+    /* Increase text size for better readability */
+    padding: 5px;
+    /* Add padding for spacing */
+}
+
+.red-asterisk {
+    color: red;
+    font-weight: bold;
+}

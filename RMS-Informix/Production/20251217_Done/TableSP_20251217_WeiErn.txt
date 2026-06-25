@@ -1,0 +1,98 @@
+
+CREATE OR REPLACE PROCEDURE sp_getfmsdrmemo()
+returning 
+    int8 as drmemo_hid,
+    nvarchar(20) as type,
+    nvarchar(30) as link_branch,
+    decimal(16,2) as amt,
+    nvarchar(30) as cust,
+    nvarchar(40) as rms_batch_no,
+    datetime year to second as dt_sent,
+    nvarchar(255) as desc,
+    nvarchar(255) as attr_ext_sys,
+    nvarchar(20) as fms_ref_no,
+    nvarchar(20) as doc_ty,
+    nvarchar(30) as acct,
+    nvarchar(30) as branch,
+    int as qty,
+    nvarchar(50) as sub_acct,
+    nvarchar(255) as txn_desc,
+    decimal(16,2) as unit_price,
+--    nvarchar(30) as rcpt_no,
+--    nvarchar(255) as payee_info,
+    nvarchar(50) as ent_nm,
+    nvarchar(50) as ent_no,
+    nvarchar(20) as ent_ty,
+--    decimal(16,2) as item_amt,
+--    decimal(16,2) as pymt,
+--    decimal(16,2) as item_tax_amt,
+    nvarchar(50) as coa1,
+    nvarchar(50) as coa2,
+    nvarchar(10) as dps_id,
+    nvarchar(30) as dps_task,
+   	integer as genpdf,
+   	integer as bil_child_id,
+    int8 as crmemo_hid,
+    int8 as mtt_pg_id;
+
+-- 2401010: added 2 new fields, depositID and depositTask
+
+	define o_drmemo_hid int8;
+	define o_type nvarchar(20);
+	define o_link_branch nvarchar(30);
+	define o_amt decimal(16,2);
+	define o_cust nvarchar(30);
+	define o_rms_batch_no nvarchar(40);
+	define o_dt_sent datetime year to second;
+	define o_desc nvarchar(255);
+	define o_attr_ext_sys nvarchar(255);
+	define o_fms_ref_no nvarchar(20);
+	define o_doc_ty nvarchar(20);
+	define o_acct nvarchar(30);
+	define o_branch nvarchar(30);
+	define o_qty int;
+	define o_sub_acct nvarchar(50);
+	define o_txn_desc nvarchar(255);
+	define o_unit_price decimal(16,2);
+--	define o_rcpt_no nvarchar(30);
+--	define o_payee_info nvarchar(255);
+	define o_ent_nm nvarchar(50);
+	define o_ent_no nvarchar(50);
+	define o_ent_ty nvarchar(20);
+--	define o_item_amt decimal(16,2);
+--	define o_pymt decimal(16,2);
+--	define o_item_tax_amt decimal(16,2);
+	define o_coa1 nvarchar(50);
+	define o_coa2 nvarchar(50);
+
+    define o_dps_id nvarchar(10);
+    define o_dps_task nvarchar(30);
+   	define o_bil_child_id integer;
+	define o_genpdf integer;
+    define o_crmemo_hid int8;
+    define o_mtt_pg_id int8;
+
+	foreach c_drmemo for 
+	    select 
+	      	t1.drmemo_hid, t1.type, t1.link_branch, t1.amt, t1.cust, t1.rms_batch_no, t1.dt_sent, t1.desc, t1.attr_ext_sys, 
+	      	t2.fms_ref_no, t2.doc_ty,
+	      	t3.acct, t3.branch, t3.qty, t3.sub_acct, t3.txn_desc, t3.unit_price, t3.ent_nm, t3.ent_no, t3.ent_ty, t3.coa1, t3.coa2,
+            t3.dps_id, t3.dps_task, t1.genpdf, t3.bil_child_id, t1.crmemo_hid, t3.mtt_pg_id
+	    into 
+	        o_drmemo_hid, o_type, o_link_branch, o_amt, o_cust, o_rms_batch_no, o_dt_sent, o_desc, o_attr_ext_sys, 
+	        o_fms_ref_no, o_doc_ty,
+	        o_acct, o_branch, o_qty, o_sub_acct, o_txn_desc, o_unit_price, o_ent_nm, o_ent_no, o_ent_ty, o_coa1, o_coa2, o_dps_id, o_dps_task, o_genpdf, o_bil_child_id, o_crmemo_hid, o_mtt_pg_id
+	    from rms_fms_drmemo_h t1
+	    	inner join rms_fms_drmemo_f t2 on t1.drmemo_hid = t2.drmemo_hid
+	    	left join rms_fms_drmemo_b t3 on t1.drmemo_hid = t3.drmemo_hid
+		where t1.fms_ref_no is null or t1.fms_ref_no = ''
+			and (t1.resp_status!='200' or t1.resp_status is null) and t1.status = 'A'
+		return 
+		    o_drmemo_hid, o_type, o_link_branch, o_amt, o_cust, o_rms_batch_no, o_dt_sent, o_desc, o_attr_ext_sys, 
+		    o_fms_ref_no, o_doc_ty,
+		    o_acct, o_branch, o_qty, o_sub_acct, o_txn_desc, o_unit_price, o_ent_nm, o_ent_no, o_ent_ty, o_coa1, o_coa2,
+            o_dps_id, o_dps_task, o_genpdf, o_bil_child_id, o_crmemo_hid, o_mtt_pg_id
+		    with resume;
+	end foreach;
+
+end procedure;

@@ -1,0 +1,85 @@
+<body class="BodyCointaner">
+<!-- First Container -->
+<div class="PAContainer74">
+    <!-- <span>{{"Home / Reconciliation / Bank Statement File Upload / Payment Gateway VS Bank Statement Reconciliation" | translate}}</span> -->
+    <h2>{{"Payment Gateway Settlement VS Bank Statement" | translate}}</h2>
+    <div class="parent-div"> <!-- Parent Div -->
+        <div class="left-div"> <!-- Left Div -->
+            <h3>{{"PG SETTLEMENT SUMMARY" | translate}}</h3>
+            <table class="custom-table">
+                <tr><td>{{"PG Settlement Filename" | translate}}</td><td><a style="color: blue; text-decoration: underline;" *ngIf="file_nm !== null" (click)="permDLPGBankAllow === 0 ? null : downloadFile(file_nm)" [class.disabled]="permDLPGBankAllow === 0">{{file_nm}}</a></td></tr>
+                <tr><td>{{"Total number of Transaction" | translate}}</td><td><a style="color: blue; text-decoration: underline;" (click)="permViewPGTransAllow === 0 ? null : pgTxn()" [class.disabled] = "permViewPGTransAllow === 0">{{total_no_pg_txn}}</a></td></tr>
+                <tr><td>{{"Total Transaction Amount (Total Gross Amount)" | translate}}</td><td>{{total_gross_amt | number:'.2-2'}}</td></tr>
+                <tr><td>{{"Total Merchant Discount Rate (MDR)" | translate}}</td><td>{{total_mdr | number:'.2-2'}}</td></tr>
+                <tr><td>{{"Total Paid by GHL (Total Net Amount)" | translate}}</td><td>{{total_net_amt | number:'.2-2'}}</td></tr>
+            </table>
+        </div> <!-- End Left Div -->
+        <div class="right-div"> <!-- Right Div -->
+            <h3>{{"BANK STATEMENT SUMMARY" | translate}}</h3>
+            <table class="custom-table">
+                <tr><td>{{"Number of Bank Statement(s)" | translate}}</td><td><a style="color: blue; text-decoration: underline;" (click)="noBkTxn()">{{total_no_bk_txn}}</a></td></tr>
+                <tr><td>{{"All Bank Statement Transactions" | translate}}</td><td><a style="color: blue; text-decoration: underline;" (click)="permBankTransListAllow === 0 ? null : bankTxn()" [class.disabled] = "permBankTransListAllow === 0">{{total_bank_txn}}</a></td></tr>
+                <tr><td>{{"PG Settlement File Related Transactions" | translate}}</td><td><a style="color: blue; text-decoration: underline;" (click)="pgFileTxn()">{{total_pg_file_txn}}</a></td></tr>
+                <tr><td>{{"Total PG Disbursed Amount" | translate }}</td><td [style.color]="colorResult ? '#21ba45' : '#d01919'">{{total_pg_disbursed_amt || 0 | number:'.2-2'}}</td></tr>
+            </table>
+        </div> <!-- End Right Div -->
+    </div> <!-- End Parent Div -->
+</div> <!-- End First Container -->
+ 
+<!-- Second Container -->
+<div class="PAContainer74">
+    <div class="content">
+        <h3 style="margin-left:0.5% !important">{{"Reconciliation Task" | translate}}</h3>
+        <table>
+            <tr>
+                <td>{{"Task ID" | translate}}</td>
+                <td>:</td>
+                <td>{{task_no}}</td>
+                <td>{{"Remarks" | translate}}<span style="color: red; display:initial; margin-left: 4px">*</span></td>
+                <td>:</td>
+                <td rowspan="2">
+                    <textarea [(ngModel)]="remarks" [disabled]="permOpenCloseCancelAllow === 0||isStatusCancelClosed == true"></textarea>
+                    <div *ngIf="remarksError" class="error-text">
+                        {{"labels.remarksisrequired" | translate}}
+                    </div>
+                </td>            
+            </tr>
+            <tr>
+                <td>{{"PG Settlement Status" | translate}}</td>
+                <td>:</td>
+                <td colspan="3">{{recon_status}}</td>
+       
+            </tr>
+            <tr>
+                <td>{{"PG Settlement No." | translate}}</td>
+                <td>:</td>
+                <td>{{stmt_no}}</td>
+                <td>{{"Task Status" | translate}}</td>
+                <td>:</td>
+                <td style="display: flex;">     
+                    <div style="margin-right: 20px;" *ngFor="let choice of choices">
+                        <input type="radio"
+                        id="taskStatus"
+                        name="taskStatus"
+                        [value]="choice"
+                        [(ngModel)]="task_status" 
+                        [disabled]="permOpenCloseCancelAllow === 0 || isStatusCancelClosed == true"/>
+                        <label class="toggle-button" for="taskStatus">{{ choice }}</label>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>{{"Settlement Date" | translate}}</td>
+                <td>:</td>
+                <td>{{dt_settlement | date : "dd MMM yyyy"}}</td>
+                <td colspan="3" class="button-container">
+                    <button class="btn btnApply" *ngIf="isStatusCancelClosed == false" (click)="apply()" type="button" [disabled]="permOpenCloseCancelAllow === 0">{{"buttons.apply" | translate}} </button>
+                    <button class="btn btnApply" *ngIf="isStatusCancelClosed == true" disabled type="button">{{"buttons.apply" | translate}}</button>
+                    <button class="btn btnCancel" (click)="cancel()" type="button" [disabled]="permOpenCloseCancelAllow === 0">{{"buttons.cancel" | translate}}</button>
+                 </td>
+            </tr>
+        </table>
+    </div>
+</div>
+ <!-- End Second Container -->
+</body>

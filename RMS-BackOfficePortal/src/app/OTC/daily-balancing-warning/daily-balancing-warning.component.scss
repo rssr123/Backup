@@ -1,0 +1,20 @@
+@import '../../app.component.scss';
+
+.button-container{
+    text-align: right;
+}
+
+.btnApply {
+    background-color: #21ba45;
+    color: white;
+    min-width: $MAButtonMinWidth;
+    margin:10px;
+}
+ 
+ 
+.btnCancel {
+    background-color: #767676;
+    min-width: $MAButtonMinWidth;
+    color: white;
+    margin:10px;
+}

@@ -1,0 +1,183 @@
+<body class="BodyContainer">
+  <div class="PAContainer73">
+    <div class="two-thirds">
+      <h1>Billing Listing</h1>
+      <h2>Search Result(s)</h2>
+      <div class="MATableContainer">
+        <div class="MALoadingContainer">
+          <!-- Loading spinner overlay -->
+          <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+            <div class="spinner-border" role="status">
+              <span class="sr-only"></span>
+            </div>
+          </div>
+        <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+          <thead>
+            <tr class="MATableHeader">
+              <th class="thWidth" style="width:5%;">No</th>
+              <th>Customer ID</th>
+              <th>Entity Name</th>
+              <th>Entity No</th>
+              <th>Billing No.</th>
+              <th>Amount (RM)</th>
+              <th>Billing Method</th>
+              <th>Billing Status</th>
+              <th>Receipt No.</th>
+              <th>Requester Name</th>
+              <th>Issuance</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody *ngIf="model.length > 0; else noResults">
+            <!-- Loop through the model to display rows -->
+           <tr *ngFor="let item of model; let i = index">
+              <td>{{ ((page-1) * itemsPerPage) + i + 1 }}</td>
+              <td>{{ item.cust_id }}</td>
+              <td>{{ item.ent_nm }}</td>
+              <td>{{ item.ent_no }}</td>
+              <td>{{ item.billing_no }}</td>
+              <td style="text-align: end;">{{ item.amount | number: '1.2-2' }}</td>
+              <td>{{ getParamDescBM(item.billing_method.trim()) }}</td>
+              <td>{{ getParamDescWF(item.bil_wf_status) }}</td>
+              <td>{{ item.receipt_no }}</td>
+              <td>{{ item.req_name }}</td>
+              <td>{{ item.issuance }}</td>
+              <td>
+                <button *ngIf="checkButtonToUse(item.bil_wf_status, item.action, item.created_by)"
+                (click)="navigateToBillingAppScreen(item.billing_no)" class="btn btnApply" style="background-color:#2185d0;margin-top:0px;">View</button>
+                <button *ngIf="!checkButtonToUse(item.bil_wf_status, item.action, item.created_by)"
+                (click)="navigateToBillingDetScreen(item.bil_id, item.billing_method)" class="btn btnApply" style="background-color:#2185d0;margin-top:0px;">View</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <ng-template #noResults>
+          <tr style="height: 100px;">
+            <td colspan="20" class="text-center">{{ "searchcriteriadoesnotmatch" | translate }}</td>
+          </tr>
+        </ng-template>
+
+      </div>
+      </div>
+      <div class="MAPagination MAPagination-1" *ngIf="isDisplay">
+        <div class="fgSpacing">
+          <div *ngIf="page * itemsPerPage < totalRecords">
+            {{"showing" | translate}} {{ page * itemsPerPage }} {{"from" | translate }} {{ totalRecords }}
+            {{"results" | translate }}
+          </div>
+          <div *ngIf="!(page * itemsPerPage < totalRecords)">
+            {{"showing" | translate }} {{ totalRecords }} {{"from" | translate }} {{ totalRecords }}
+            {{"results" | translate }}
+          </div>
+        </div>
+        <div class="pagination-row">
+          <div class="dropdown">
+            <button
+              class="btn btn-secondary dropdown-toggle PaginControl"
+              type="button"
+              id="dropdownMenuButton"
+              data-bs-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              {{ selectedValue }}
+            </button>
+            <div class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton">
+              <button
+                class="dropdown-item"
+                *ngFor="let singleItem of dropdownOptions"
+                (click)="LoadData(singleItem)"
+              >
+                {{ singleItem }}
+              </button>
+            </div>
+          </div>
+
+          <ngb-pagination
+            [(page)]="page"
+            [pageSize]="itemsPerPage"
+            [collectionSize]="totalRecords"
+            (pageChange)="loadData()"
+          ></ngb-pagination>
+        </div>
+      </div>
+    </div>
+    <div class="one-third">
+      <h3>Search Filter</h3><br>
+      <div class="form-group">
+        <label for="entNm">Entity Name</label>
+        <input
+          type="text"
+          id="entNm"
+          class="form-control"
+          placeholder="Enter Entity Name"
+          [(ngModel)]="entNm"
+        />
+      </div>
+      <div class="form-group">
+        <label for="entNo">Entity No.</label>
+        <input
+          type="text"
+          id="entNo"
+          class="form-control"
+          placeholder="Enter Entity No"
+          [(ngModel)]="entNo"
+        />
+      </div>
+      <div class="form-group">
+        <label for="sourceSys">Source System</label>
+        <ng-select [disabled]="sourceSysList1.length < 1" class="form-control" name="sourceSys" [(ngModel)]="sourceSys" id="sourceSys" dropdownPosition="bottom" [clearable]="false" [searchable]="false"placeholder="Enter Source System">
+        <ng-option *ngFor="let item of sourceSysList1;" [value]="sourceSysList2.get(item)" style="width: 70%;">{{item}}</ng-option>
+        </ng-select>
+      </div>
+      <div class="form-group">
+        <label for="receiptNo">Receipt No.</label>
+        <input
+          type="text"
+          id="receiptNo"
+          class="form-control"
+          placeholder="Enter Receipt No."
+          [(ngModel)]="receiptNo"
+        />
+      </div>
+      <div class="form-group">
+        <label for="dateRange">Date Range</label>
+        <input type="text" [placeholder]="'labels.daterangepicker'| translate" class="form-control"
+        [bsConfig]="{ rangeInputFormat : 'DD MMM YYYY', dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,rangeSeparator:' to ',containerClass:'theme-default',adaptivePosition: true}"
+        bsDaterangepicker [(ngModel)]="dateRange" name="dateRange" readonly>
+      </div>
+      <div class="form-group">
+        <label for="billingMthd">Billing Method</label>
+        <ng-select [disabled]="bilMthds.length < 1" class="form-control" name="bilMthds" [(ngModel)]="billingMthd" id="billingMthd" dropdownPosition="bottom" [clearable]="false" [searchable]="false" placeholder="Enter Billing Method">
+        <ng-option *ngFor="let item of bilMthds | keyvalue" [value]="item.key" style="width: 70%;">{{item.value}}</ng-option>
+        </ng-select>
+      </div>
+        <div class="form-group">
+        <label for="billingType">Billing Type</label>
+        <ng-select [disabled]="bilType.length < 1" class="form-control" name="billingType" [(ngModel)]="billingType" id="billingType" dropdownPosition="bottom" [clearable]="false" [searchable]="false" placeholder="Enter Billing Type">
+        <ng-option *ngFor="let item of bilType" [value]="item.param_cd" style="width: 70%;">{{item.nm_en}}</ng-option>
+        </ng-select>
+      </div>
+      <div class="form-group">
+        <label for="billingNo">Billing No.</label>
+        <input
+          type="text"
+          id="billingNo"
+          class="form-control"
+          placeholder="Enter Billing No."
+          [(ngModel)]="billingNo"
+        />
+      </div>
+      <div class="form-group">
+        <label for="receiptNo">Payment Status</label>
+        <ng-select [disabled]="bilWfStatuses.length < 1" class="form-control" name="billStatus" [(ngModel)]="billStatus" id="billStatus" dropdownPosition="bottom" [clearable]="false" [searchable]="false" placeholder="Enter Payment Status">
+        <ng-option *ngFor="let item of bilWfStatuses" [value]="item.param_cd" style="width: 70%;">{{item.nm_en}}</ng-option>
+        </ng-select>
+      </div>
+      <div class="form-buttons mt-3">
+        <button type="button" class="btn btn-secondary" (click)="clearFields()">Clear</button>
+        <button type="button" class="btn btn-primary ml-2" (click)="filterButton()">Search ></button>
+      </div>
+    </div>
+  </div>
+</body>

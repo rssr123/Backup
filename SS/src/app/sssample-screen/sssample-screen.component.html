@@ -1,0 +1,51 @@
+<!-- <form #form name="frmPayment" method="post" action="https://localhost:8080/api/billing/v1/rms_billingIssuanceBySSPage"> -->
+<form #form name="frmPayment" method="post" [attr.action]="apiURL + '/api/billing/v1/submitBilling'">
+    <!-- <input type="hidden" name="ss_cd" [value]="ss_cd"> 
+    <input type="hidden" name="callbackurl" [value]="callbackurl"> 
+   
+    <h3>Source System Billing Screen</h3>
+    <table>
+        <tr>
+            <td><label>Source sytem code :</label></td>
+            <td><input type="text"  style="width: 300px;" [(ngModel)]="ss_cd" name="sourcesystemcode"></td>
+        </tr>
+        <tr>
+            <td><label>Callback URL :</label></td>
+            <td><input type="text"  style="width: 300px;" [(ngModel)]="callbackurl" name="callBackURL"></td>
+        </tr>
+    </table> 
+
+    <button type="button" name="Submit" (click)="form.submit()">Submit</button> -->
+    <h3>Mock billing initiate by Source System</h3>
+    <input type="hidden" name="ss_cd" [value]="ss_cd">
+    <input type="hidden" name="callbackurl" [value]="mockss_url + '/ssstatus'">
+
+
+    <table class="MATable">
+        <thead>
+            <tr>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <td>Source System Code <span class="red-asterisk">*</span></td>
+            <td style="padding-left: 10px;">
+                  <select class="form-control" [(ngModel)]="ss_cd" name="ssSelect">
+                    <option [ngValue]="null" disabled>Select Source System</option>
+                    <option *ngFor="let item of ssOptions" [ngValue]="item.ss_cd">
+                        {{ item.ss_cd }}
+                    </option>
+                </select>
+            </td>
+        </tbody>
+    </table>
+
+    <button style="margin-top: 5px;"  type="button" name="Submit" (click)="form.submit()">Submit</button>
+
+
+    <div style="margin-top:30px">
+        <div><strong>JSON Output</strong></div>
+        <pre>{{ requestPayload | json }}</pre>
+    </div>
+
+</form>

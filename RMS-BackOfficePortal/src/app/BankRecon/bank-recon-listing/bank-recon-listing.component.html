@@ -1,0 +1,372 @@
+<ng-container *ngIf="permListAllow === 1">
+
+    <body class="BodyCointaner">
+        <!-- mainContainer start-->
+        <div [class.right-section-collapsed]="rightSectionCollapsed" class="PAContainer73">
+            <div class="left-section me-4">
+
+                <div class="left-side">
+                    <!-- Settlement date dropdown -->
+                    <div class="form-group-upload mb-4 mt-5">
+                        <label class="dtSettlement" for="settlementDate">
+                            {{"labels.settlementdate" | translate}} <span style="color: red;">*</span> &nbsp;
+                            <i class="bi bi-info-square-fill info-icon" [ngbTooltip]="tooltipContent"></i>
+                            <ng-template #tooltipContent>
+                                <div style="width: 100%; text-align: left;">
+                                    <strong>{{"Settlement Date(s) Display Condition" | translate}}</strong>
+                                    <br />
+                                    {{"Settlement Date(s) displayed in the dropdown only consists of dates that" |
+                                    translate}}<br>
+                                    {{"have completed Payment Gateway vs. RMS Collection reconciliation." | translate}}
+                                </div>
+                            </ng-template>
+                        </label>
+                        <select class="input-left-side dropdown-upload form-control form-select" name="settlementDate"
+                            [(ngModel)]="settlementDate" required>
+                            <option *ngFor="let dt of dt_settle" [value]="dt">
+                                {{ dt }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- file upload -->
+                    <div class="file-upload mt-4">
+                        <label class="form-label bsfLabel" for="statementFile">{{"bankstatementfile"
+                            |translate}}: <span style="color: red;">*</span></label>
+                        <div class="file-container" [style.width.px]="fileContainerWidth">
+                            <ng-container *ngFor="let file of selectedFiles; let last = last">
+                                <div class="file-item">{{ file.name }}</div>
+                                <!-- <br *ngIf="!last" /> Add a line break between files -->
+                            </ng-container>
+                        </div>
+                        <!-- <div *ngIf="isDisplayFileRequired && inputDetails" class="error-text">
+                        File is required
+                    </div> -->
+                    </div>
+                    <div class="button-container">
+                        <div class="fileSize">{{"filelimit" |translate}}: {{ selectedFilesSize / 1000000 |
+                            number:'1.2-2'
+                            }}/5MB</div>
+                        <div class="input-container">
+                            <button type="button" class="btn btnCancel" (click)="clearFiles()">{{"buttons.clearfiles" |
+                                translate}}</button>
+                            <label for="fileInput" class="btn btnSelectFile">{{"buttons.selectfile"| translate}}</label>
+                            <input class='input-left-side' type="file" [(ngModel)]="fileInput" id="fileInput"
+                                #fileInputModel (change)="onFileSelected($event)" accept=".txt" required
+                                placeholder="{{ 'buttons.choosefile' | translate }}">
+                        </div>
+                    </div>
+
+                    <!-- file upload error message -->
+                    <div class="error-message-container mt-5 msgPosition" *ngIf="errorMessage">
+                        <div class="error-message-box">
+                            <i class="bi bi-x-circle-fill error-icon"></i>
+                            <div>
+                                <strong>{{"uploaderror" | translate}}</strong>
+                                <div class="error-content">
+                                    <p>{{ errorMessage }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="error-message-container mt-5 msgPosition" *ngIf="formatError">
+                        <div class="error-message-box">
+                            <i class="bi bi-x-circle-fill error-icon"></i>
+                            <div>
+                                <strong>{{"uploaderror" | translate}}</strong>
+                                <div class="error-content">
+                                    <p>{{"formaterrormessage" | translate}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="error-message-container mt-5 msgPosition" *ngIf="duplicateError">
+                        <div class="error-message-box">
+                            <i class="bi bi-x-circle-fill error-icon"></i>
+                            <div>
+                                <strong>{{"uploaderror" | translate}}</strong>
+                                <div class="error-content">
+                                    <p>{{"duplicateerrormessage" | translate}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="error-message-container mt-5 msgPosition" *ngIf="serverError">
+                        <div class="error-message-box">
+                            <i class="bi bi-x-circle-fill error-icon"></i>
+                            <div>
+                                <strong>{{"uploaderror" | translate}}</strong>
+                                <div class="error-content">
+                                    <p>{{"servererrormessage" | translate}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- Buttons -->
+                <div class="button-group btnSpace ">
+                    <button class="btn btnClear" (click)="clear()">{{"buttons.clear" | translate}}</button>
+                    <button class="btn btnUpload" (click)="upload()"
+                        [disabled]="isUploadDisabled || permUploadAllow === 0">{{"buttons.upload" | translate}}</button>
+                </div>
+                <div>
+                    <div class="leftSectionBtnSpace"></div>
+                </div>
+            </div>
+
+
+
+            <!-- middle section -->
+            <div class="middle-section">
+                <div>
+                    <div *ngIf="showResultAlert" [@fadeInOut]>
+                        <div class="alert alert-warning PA-alert-box" role="alert">
+                            {{"showResultAlert" | translate}}
+                        </div>
+                    </div>
+                    <div>
+                        <ul class="breadcrumbOTC">
+                            <li>
+                                <a [routerLink]="'/home'">{{"menu.home" | translate}}</a>
+                                <span class="breadcrumb-separator"> / </span>
+                            </li>
+                            <li>
+                                <a [routerLink]="'/bank-recon-listing'">{{"menu.bankstatementfileupload" |
+                                    translate}}</a>
+                            </li>
+                        </ul>
+                        <div class="error-box" *ngIf="errorBox === true">
+                            <i class="bi bi-x-circle-fill error-icon"></i>
+                            <div>
+                               <strong>{{"unablerecon" | translate}}</strong>
+                               <p>
+                                    {{"unablereconmsg1" | translate}}
+                               </p>
+                               <p>
+                                    {{"unablereconmsg2" | translate}}
+                               </p>
+                            </div>
+                         </div>
+                        <h2>{{"labels.Bank Statement File Record(s)"| translate}}</h2>
+                    </div>
+
+                </div>
+
+                <div class="MATableContainer TablePosition-relative" *ngIf="isDisplay">
+                    <div class="MALoadingContainer">
+                        <!-- Loading spinner overlay -->
+                        <div *ngIf="isLoading"
+                            class="TableLoading-overlay d-flex align-items-center justify-content-center">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only"></span>
+                            </div>
+                        </div>
+
+                        <!-- No results found -->
+                        <table class="MATable emptytable" *ngIf="isEmptyResult">
+                            <thead>
+                                <tr class="MATableHeader">
+                                    <th>No.</th>
+                                    <th>{{"labels.taskid" | translate}}</th>
+                                    <th>{{"labels.settlementdate" |translate}}</th>
+                                    <th>{{"labels.merchantid" | translate}}</th>
+                                    <th>{{"labels.taskstatus" | translate}}</th>
+                                    <th>{{"labels.uploadedby" | translate}}</th>
+                                    <th>{{"labels.dateuploaded" | translate}}</th>
+                                    <th>{{"labels.pgsettlementstatus" | translate}}</th>
+                                    <th>{{"action" | translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="20" style="text-align: center;">{{"searchcriteriadoesnotmatch" |
+                                        translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Your table structure -->
+                        <table class="MATable" *ngIf="!isEmptyResult">
+                            <thead>
+                                <tr class="MATableHeader">
+                                    <th>No.</th>
+                                    <th>{{"labels.taskid" | translate}}</th>
+                                    <th>{{"labels.settlementdate" |translate}}</th>
+                                    <th>{{"labels.merchantid" | translate}}</th>
+                                    <th>{{"labels.taskstatus" | translate}}</th>
+                                    <th>{{"labels.uploadedby" | translate}}</th>
+                                    <th>{{"labels.dateuploaded" | translate}}</th>
+                                    <th>{{"labels.pgsettlementstatus" | translate}}</th>
+                                    <th>{{"action" | translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of model; let i = index">
+                                    <td>{{ (page - 1) * itemsPerPage + i + 1 }}</td>
+                                    <td>{{ item.i_task_no }}</td>
+                                    <td>{{ item.i_dt_settlement }}</td>
+                                    <td>{{ item.i_merchant_id }}</td>
+                                    <td>{{ item.i_task_status }}</td>
+                                    <td>{{ item.i_uploaded_by }}</td>
+                                    <td>{{ item.i_dt_uploaded }}</td>
+                                    <td>{{ item.i_recon_status }}</td>
+                                    <td>
+                                        <button *ngIf="item.i_recon_status === 'Pending Extraction'" type="button"
+                                            class="btn btnView" (click)="cancel(item)">{{"buttons.cancel" | translate}}
+                                        </button>
+                                        <button *ngIf="item.i_recon_status === 'Pending Bank Statement Reconciliation'"
+                                            type="button" class="btn btnReconcile" (click)="viewSelected(item)"
+                                            [disabled]="permReconViewAllow === 0">
+                                            {{"buttons.reconcile" | translate}}
+                                        </button>
+                                        <button
+                                            *ngIf="item.i_recon_status === 'Successful Bank Statement Reconciliation'"
+                                            type="button" class="btn btnView" (click)="viewSelected(item)"
+                                            [disabled]="permCancelViewAllow === 0">
+                                            {{"buttons.view" | translate}}
+                                        </button>
+                                        <button *ngIf="item.i_recon_status === 'Failed Bank Statement Reconciliation'"
+                                            type="button" class="btn btnView" (click)="viewSelected(item)"
+                                            [disabled]="permCancelViewAllow === 0">
+                                            {{"buttons.view" | translate}}
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+
+                    <div class="MAPagination" *ngIf="isDisplay">
+                        <div class="fgSpacing">
+                            <div *ngIf="page * itemsPerPage < totalRecords">
+                                {{"showing" | translate}} {{ page * itemsPerPage }} {{"from" | translate}} {{
+                                totalRecords
+                                }} {{"results"
+                                | translate}}
+                            </div>
+                            <div *ngIf="!(page * itemsPerPage < totalRecords)">
+                                {{"showing" | translate}} {{ totalRecords }} {{"from" | translate}} {{ totalRecords }}
+                                {{"results" |
+                                translate}}
+                            </div>
+                        </div>
+                        <div class="pagination-row">
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle PaginControl" type="button"
+                                    id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">
+                                    {{ selectedValue }}
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton">
+                                    <button class="dropdown-item" *ngFor="let singleItem of dropdownOptions"
+                                        (click)="LoadData(singleItem)">
+                                        {{ singleItem }}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <ngb-pagination [(page)]="page" [pageSize]="itemsPerPage" [collectionSize]="totalRecords"
+                                (pageChange)="loadData()"></ngb-pagination>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- right section -->
+            <div class="middle-section73">
+                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#rightSection"
+                    [attr.aria-expanded]="!rightSectionCollapsed" (click)="toggleRightSection()">
+                    <ng-container *ngIf="rightSectionCollapsed; else arrowIcon">
+                        <i class="bi bi-search"></i>
+                    </ng-container>
+                    <ng-template #arrowIcon>
+                        <i class="bi" [class.bi-chevron-double-right]="!rightSectionCollapsed"
+                            [class.bi-chevron-double-left]="rightSectionCollapsed"></i>
+                    </ng-template>
+                </button>
+            </div>
+
+            <div class="right-section73 collapse" [class.show]="!rightSectionCollapsed">
+                <div class="SingleContainer">
+                    <!-- Header -->
+                    <div class="SingleContainerHeader">
+                        <h2 class="text-center">{{"search filter" | translate}}</h2>
+                    </div>
+
+                    <!-- Task ID -->
+                    <div class="form-group">
+                        <label for="task_id">{{"labels.taskid" | translate}}</label>
+                        <input type="text" class="form-control" id="task_id" [(ngModel)]="taskId" />
+                    </div>
+
+                    <!-- Setlement Date-->
+                    <div class="form-group">
+                        <label for="date_uploaded">{{"labels.settlementdate" |translate}}</label>
+                        <input type="text" [placeholder]="'datepicker'| translate" class="form-control"
+                            [bsConfig]="{  dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,containerClass:'theme-default',adaptivePosition: true}"
+                            bsDatepicker onkeydown="return false" name="date" readonly [(ngModel)]="settleDate">
+                    </div>
+
+                    <!-- Merchant ID -->
+                    <div class="form-group">
+                        <label for="merchant_id">{{"labels.merchantid" | translate}}</label>
+                        <input type="text" class="form-control" id="merchant_id" [(ngModel)]="merchantId" />
+                    </div>
+
+                    <!-- Task Status-->
+                    <div class="form-group">
+                        <label for="task_status">{{"labels.taskstatus" | translate}}</label>
+                        <select class="dropdown" name="task_status" class="form-control form-select"
+                            [(ngModel)]="taskStatus" [required]="!isReadOnly">
+                            <option *ngFor="let item of task_status" [value]="item.param_cd">
+                                {{ item.nm_en }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Date Uploaded-->
+                    <div class="form-group">
+                        <label for="date_uploaded">{{"labels.dateuploaded" | translate}}</label>
+                        <input type="text" [placeholder]="'datepicker'| translate" class="form-control"
+                            [bsConfig]="{  dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,containerClass:'theme-default',adaptivePosition: true}"
+                            bsDatepicker onkeydown="return false" name="date" readonly [(ngModel)]="dateUploaded">
+                    </div>
+
+                    <!-- PG Settlement Status-->
+                    <div class="form-group">
+                        <label for="pg_settlement_status">{{"labels.pgsettlementstatus" | translate}}</label>
+                        <select class="dropdown" name="pg_settlement_status" class="form-control form-select"
+                            [(ngModel)]="reconStatus" [required]="!isReadOnly">
+                            <option *ngFor="let item of recon_status" [value]="item.param_cd">
+                                {{ item.nm_en }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="button-group">
+                        <button class="btn btnApply" (click)="apply()">{{"buttons.apply" | translate}}</button>
+                        <button class="btn btnReset" (click)="reset()">{{"buttons.reset" | translate}}</button>
+                    </div>
+
+                    <br /><br />
+                </div>
+            </div>
+        </div>
+        <!-- mainContainer end-->
+
+        <!-- <div class="PAContainer73">
+      <div class="left-section73">
+        <div class="MainContainerFooter"></div>
+      </div>
+      <div class="right-section73"></div>
+    </div> -->
+    </body>
+</ng-container>

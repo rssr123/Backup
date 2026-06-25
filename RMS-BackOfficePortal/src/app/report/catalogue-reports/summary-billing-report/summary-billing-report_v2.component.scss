@@ -1,0 +1,182 @@
+@import '../../../app.component.scss';
+
+
+table{
+    background-color: white;
+    width: 100%;
+    //margin-left: 5%;
+    margin-right: 5%;
+    table-layout: fixed; /* make all column width equal*/
+
+    label{
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    td .displayColumn{
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    margin-bottom: 10px; 
+    margin-left: 20px;
+    margin-right: 20px;
+    height: 80px; /* set a fixed height */
+    }
+
+    td .displayRow{
+        display: flex;
+        gap: 10px; /* gap between each element */
+        align-items: center; 
+        float: right;
+        margin-right: 20px;
+        margin-bottom: 20px;
+        margin-top: 20px;
+
+        label {
+          white-space: nowrap; /* make multiple lines into one sentence*/
+        }
+
+        .ng-select{
+          margin-right: 50px;
+          width: 200px;
+         // height: 50px;
+         // padding-top: 12px !important;
+        }
+    }
+  }
+
+//style for dropdown start
+:host ::ng-deep {
+
+  .ng-select{
+    padding-bottom: 6px;
+
+    .ng-select-container{
+      min-height: 0 !important;
+      padding:0 !important;
+      border-top: none !important;
+    
+      .ng-value-container{
+        padding: 0;
+        border: 0;
+        }
+      }
+    }
+
+    //adjust arrow, clear and cursor position
+    .ng-select-single .ng-select-container {
+
+
+      .ng-arrow-wrapper{
+        bottom: 3px;
+      }
+
+      .ng-clear-wrapper{
+        bottom: 0px;
+      }
+
+      .ng-value-container .ng-input{
+        top:0px
+      }
+
+    }
+
+}
+
+:host ::ng-deep ng-dropdown-panel {
+
+  top: auto !important;
+ 
+}
+
+//remove drop down underline
+:host ::ng-deep ng-select .ng-select-container::after {
+  border-bottom: 5px solid transparent !important;
+}
+//style for dropdown end
+
+/* Mobile Styles */
+@media (min-width: 768px) {
+  .mobile-search-section {
+    display: none !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .left-section73 {
+    display: none !important;
+  }
+
+  .mobile-search-section {
+    display: block;
+    padding: 15px;
+    background-color: #fff;
+    margin-bottom: 20px;
+
+    .mobile-search-header {
+      padding: 10px 0;
+      border-bottom: 1px solid #dee2e6;
+      margin-bottom: 15px;
+
+      h5 {
+        font-weight: 600;
+        color: #333;
+      }
+
+      .btn-primary {
+        padding: 5px 15px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+
+        i {
+          font-size: 16px;
+        }
+      }
+    }
+
+    .mobile-search-body {
+      padding-top: 15px;
+
+      .form-group {
+        margin: 0;
+      }
+
+      .mb-3 {
+        margin-bottom: 15px !important;
+
+        label {
+          font-weight: 600;
+          margin-bottom: 5px;
+          display: block;
+        }
+
+        .form-control,
+        .ng-select {
+          width: 100%;
+        }
+      }
+
+      .d-grid {
+        margin-top: 20px;
+
+        button {
+          width: 100%;
+          padding: 10px;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+
+  .PAContainer73 {
+    margin-left: 0;
+    padding: 10px;
+  }
+
+  .tableWrapper {
+    margin-left: 0;
+    margin-right: 0;
+    overflow-x: auto;
+  }
+}

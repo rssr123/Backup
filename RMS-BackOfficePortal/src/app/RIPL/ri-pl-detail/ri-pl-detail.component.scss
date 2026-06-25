@@ -1,0 +1,190 @@
+@import '../../app.component.scss';
+
+$backgroundColor:#f2f2f2;
+$MainBackGroundColor:#eaeaea ;
+.right-section73{
+    background-color: white;
+}
+
+.form-group {
+    margin-bottom: 15px;
+  }
+  
+  .button-group {
+    margin-top: 20px;
+  }
+  
+
+  .btnApply{
+    float:left;
+  }
+
+  .btnReset{
+    float:right;
+  }
+
+
+  .MAPagination {
+    display: flex;
+    flex-direction: column; 
+    align-items: flex-end; 
+}
+
+.fgSpacing{
+    margin-bottom:5px;
+}
+
+.btnView{
+   background-color: #2185D0;
+    color:white;
+  //min-width: $MAButtonMinWidth;
+  }
+
+
+
+
+  $leftPadding:3%;
+  $rightPadding:3%;
+
+
+
+
+
+
+  .leftSide{
+    margin: 0;
+    margin-left:$leftPadding;
+    margin-right:$rightPadding;
+  
+    table.leftSectionContainer {
+      width: 100%;
+      border-collapse: collapse;
+  
+      th, td {
+        border: 1px solid #dfdfdf;
+        padding: 10px;
+        text-align: left;
+  
+        input, select {
+          width: 100%;
+          height: 30px;  // Ensuring consistent height
+          padding: 8px;  // Some padding for text
+          box-sizing: border-box; // Makes sure the width includes padding and borders
+          border-radius: 8px;
+          border: 1px solid #dfdfdf;
+      }
+      
+      mat-form-field {
+          width: 100%;
+          display: block; // Ensures it takes up full width
+          
+          .mat-form-field-wrapper {
+              padding-bottom: 0; // Removes extra spacing at the bottom
+          }
+      
+          // Angular Material select dropdown specifics
+          .mat-select-value {
+              line-height: 30px; // Aligns with the height of the input
+          }
+      }
+  
+        input, select, mat-form-field {
+          width: 100%;
+          border-radius: 8px;
+          border: 1px solid #644ded;  // Curve the borders with a 5px radius
+        }
+  
+        mat-form-field {
+          width: 100%;
+  
+    .mat-form-field-wrapper {
+      padding-bottom: 0;
+    }
+  
+    .mat-form-field-infix {
+      border: 1px solid #ccc;
+      border-radius: 4px;
+  
+      input.mat-input-element {
+        padding: 10px;
+        height: auto;
+      }
+    }
+  
+          & input.mat-input-element {
+            border-radius: 5px; 
+            border: 1px solid #dfdfdf;// Apply curve to the inner input of mat-form-field
+          }
+        }
+      }
+  
+      
+  
+      .header {
+        color: black;
+        background-color: #FFC107 !important;
+        
+      }
+  
+      tr:nth-child(odd) {
+        background-color: white;
+      }
+  
+      tr:nth-child(even) {
+        background-color: #f0f0f0;
+      }
+    }
+  }
+
+  .bcenterTable {
+   // display: flex;
+   // justify-content: center;
+   // align-items: center;
+    width: 90%;
+    height: 100%; // Optional, to center vertically within the container
+  }
+
+  
+.marginTopAndBottom{
+  // margin-top:40px;
+  // margin-bottom:40px;
+  border: 10px solid $MainBackGroundColor;
+}
+
+.centeredH2{
+  margin-bottom: 0px;
+  margin-left:23%;
+ // padding-top:$PaddingTopAndBottom;
+ // padding-bottom:$PaddingTopAndBottom;
+}
+
+.button-row{
+  display: flex;     // Use flexbox to align the buttons horizontally
+  gap: 15px;         // Add a 10px gap between the buttons
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.leftPadding{
+  margin-left: 3%;
+}
+
+.left-section73{
+  margin-left: 3%;
+}
+
+.parameterWidth{
+  width: 45%;
+}
+
+.parameterWidthNo{
+  width: 2%;
+}
+
+.languageWidth{
+  width: 15%;
+}
+
+#accrId {
+  text-align: right;
+}

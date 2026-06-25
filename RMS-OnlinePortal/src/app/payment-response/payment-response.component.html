@@ -1,0 +1,52 @@
+<!-- ✅ Success Screen -->
+<div *ngIf="isPaymentSuccess">
+    <div><img src="assets/logo/logo-ssm-new-resize.png" alt="Loading Image"></div>
+    <div><h4>Your payment has been successfully received.</h4></div>
+    <div class="MarginSeparator10"></div>
+    <div><img src="assets/Email Logo.png" alt="Loading Image" class="email-icon"></div>
+    <div class="MarginSeparator10"></div>
+    <div>
+      <h5>A receipt has been emailed to your registered SSM4U email address.</h5><br>
+    </div>
+      <!-- Show Order Number if orn_no starts with CTL -->
+    <div *ngIf="orn_no?.startsWith('CTL')">
+      <h5>Your Order Number is: {{ orn_no }}</h5>
+    </div>
+    <div>
+      <button class="btnSubmit" type="submit" (click)="proceed()">Proceed</button>
+    </div>
+    <div class="MarginSeparator"></div>
+  </div>
+  
+  <!-- ✅ Failure Screen -->
+  <div *ngIf="isPaymentFailed">
+    <div><img src="assets/logo/logo-ssm-new-resize.png" alt="Loading Image"></div>
+    <div><h4>Your payment attempt has failed.</h4></div>
+    <br>
+    <div>
+      <h5>It seems there was an issue processing your</h5>
+      <h5>payment. Please double-check your payment</h5>
+      <h5>information, and try again.</h5><br>
+    </div>
+    <div>
+      <button class="btnSubmit" type="submit" (click)="proceed()">Go Back</button>
+    </div>
+    <div class="MarginSeparator"></div>
+  </div>
+  
+  <!-- ✅ Pending Screen -->
+  <div *ngIf="isPaymentPending">
+    <div><img src="assets/logo/logo-ssm-new-resize.png" alt="Loading Image"></div>
+    <div><h4>Your payment is being processed.</h4></div>
+    <br>
+    <div>
+      <h5>This payment is currently being</h5>
+      <h5>processed by the payment gateway.</h5>
+      <h5>Please check the payment status later.</h5><br>
+    </div>
+    <div>
+      <button class="btnSubmit" type="submit" (click)="proceed()">Go Back</button>
+    </div>
+    <div class="MarginSeparator"></div>
+  </div>
+  

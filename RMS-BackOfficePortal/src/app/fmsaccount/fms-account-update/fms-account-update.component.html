@@ -1,0 +1,55 @@
+<div class="SingleContainer">
+   <!-- Header for Add Item -->
+   <div class="SingleContainerHeader">
+      <h2 class="text-center">{{"update" | translate}}</h2>
+   </div>
+   <form #formRef="ngForm" (ngSubmit)="handleFormSubmit(formRef)">
+     <div class="MALoadingContainer">
+        <!-- Loading spinner overlay -->
+        <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+           <div class="spinner-border" role="status" aria-label="Loading...">
+              <span class="sr-only"></span>
+           </div>
+        </div>
+        <div [ngClass]="{'TableDimmed': isLoading}">
+           <!-- Error Box -->
+           <div *ngIf="error && errorMessages.length > 0" class="error-box">
+              <i class="bi bi-x-circle-fill error-icon"></i>
+              <div>
+                 <strong>{{"labels.validationerror" | translate}}</strong>
+                 <ul>
+                   <li *ngFor="let errorMsg of errorMessages">{{ errorMsg }}</li>
+                 </ul>
+              </div>
+           </div>
+           <!-- FMS Account Name -->
+           <div class="form-group">
+              <label for="fmsAccountName">{{"labels.fmsaccountname" | translate}}</label>
+              <input type="text" class="form-control" id="fmsAccountName" name="fmsAccountName" [(ngModel)]="acctName" #fmsAccountNameRef="ngModel" disabled>
+           </div>
+           <!-- FMS Account Type -->
+           <div class="form-group">
+              <label for="fmsAccountType">{{"labels.fmsaccounttype" | translate}} <span class='RedAsterisk'>*</span></label>
+              <input type="text" class="form-control" id="fmsAccountType" name="fmsAccountType" [(ngModel)]="acctType" #fmsAccountTypeRef="ngModel" required>
+              <div *ngIf="fmsAccountTypeRef.errors && fmsAccountTypeRef.errors['required'] && fmsAccountTypeRef.touched" class="error-text">
+               {{"labels.fmsaccounttypeisrequired" | translate}}
+             </div>
+           </div>
+           <!-- FMS Account Code -->
+           <div class="form-group">
+              <label for="fmsAccountCode">{{"labels.fmsaccountcode" | translate}}  <span class='RedAsterisk'>*</span></label>
+              <input type="text" class="form-control" id="fmsAccountCode" name="fmsAccountCode" [(ngModel)]="acctCode" #fmsAccountCodeRef="ngModel" required>
+              <div *ngIf="fmsAccountCodeRef.errors && fmsAccountCodeRef.errors['required'] && fmsAccountCodeRef.touched" class="error-text">
+               {{"labels.fmsaccountcodeisrequired" | translate}}
+              </div>
+           </div>
+           <!-- Buttons -->
+           <div class="button-group">
+              <div>{{"labels.Fields with * are mandatory" | translate}}</div>
+              <button class="btn btnUpdate" type="submit">{{"update" | translate}}</button>
+              <button class="btn btnClose" type="button" (click)="closed()">{{"buttons.close" | translate}}</button>
+           </div>
+        </div>
+     </div>
+   </form>
+ </div>

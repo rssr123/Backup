@@ -1,0 +1,21 @@
+export interface billinglisting{
+    cust_id:string;
+    ent_nm:string;
+    ent_no:string;
+    billing_no:string;
+    amount:number;
+    billing_method:string;
+    bil_wf_status:string;
+    receipt_no:string;
+    req_name:string;
+    issuance:string;
+    action:string;
+    created_by:string;
+    ent_ty:string;
+    bt_cd:string;
+    bt_desc:string;
+    unpaid:number;
+    dt_modified:Date;
+    modified_by:string;
+    can_status:string;
+}

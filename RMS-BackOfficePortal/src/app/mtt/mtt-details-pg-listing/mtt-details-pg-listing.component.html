@@ -1,0 +1,104 @@
+<!-- <p>mtt-details-item-listing works!</p> -->
+<div class="SingleContainer">
+    <!-- Header for Add Item -->
+    <div class="SingleContainerHeader">
+       <h2 class="text-center">{{"labels.paymentgatewaydetails"| translate}}</h2>
+    </div>
+
+    <div class="MALoadingContainer">
+       <!-- Loading spinner overlay -->
+       <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+          <div class="spinner-border" role="status">
+             <span class="sr-only"></span>
+          </div>
+       </div>
+       <div [ngClass]="{'TableDimmed': isLoading}">
+
+         <div class="MATableContainer">
+        <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+            <thead>
+                <tr class="MATableHeader">
+                    <th>No.</th>
+                    <th class="parameterWidth">Parameter</th>
+                    <th class="parameterWidth">{{"labels.currentvalue"| translate}}</th>
+                </tr>
+            </thead>
+            <tbody *ngFor="let item of MTTItemDetails">
+                
+                <tr>
+                    <td>1</td>
+                    <td>{{"labels.paymentsubmissiondate"| translate}}</td>
+                    <td>{{(item.pymt_submit_dt| date: 'dd MMM yyyy HH:mm:ss') ? (item.pymt_submit_dt| date: 'dd MMM yyyy HH:mm:ss') : '-'}}</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>{{"labels.paymentgatewaypaymentmethod"| translate}}</td>
+                    <td>{{item.pg_pymt_method ? item.pg_pymt_method : '-'}}</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>{{"labels.pgpaymentid"| translate}}</td>
+                    <td>{{item.pg_pymt_id ? item.pg_pymt_id : '-'}}</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>{{"labels.paymentgatewaypaymentdescription"| translate}}</td>
+                    <td>{{item.pg_pymt_desc ? item.pg_pymt_desc : '-'}}</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>{{"labels.pgpaymentamount"| translate}}</td>
+                    <td>{{(item.pg_pymt_amt | number:'1.2-2') ? (item.pg_pymt_amt | number:'1.2-2') : '-'}}</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>{{"labels.paymentgatewaycurrencycode"| translate}}</td>
+                    <td>{{item.pg_curr_cd ? item.pg_curr_cd : '-'}}</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>{{"labels.paymentgatewaytaxamount"| translate}}</td>
+                    <td>{{(item.pg_tax_amt| number:'1.2-2') ? (item.pg_tax_amt| number:'1.2-2') : '-'}}</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>{{"labels.paymentgatewaybeforetaxamount"| translate}}</td>
+                    <td>{{(item.pg_b4tax_amt| number:'1.2-2') ?(item.pg_b4tax_amt | number:'1.2-2') : '-' }}</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>{{"labels.paymentgatewaytransactionid"| translate}}</td>
+                    <td>{{item.pg_txn_id ? item.pg_txn_id : '-'}}</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>{{"labels.paymentgatewaytransactionstatus"| translate}}</td>
+                    <td>{{item.pg_txn_status ? item.pg_txn_status : '-' }}</td>
+                </tr>
+                </tbody>
+                </table>
+                </div>
+
+
+                <!-- <tr>
+          <td>17</td>
+          <td>Source System Code</td>
+          <td><div class="checkboxRow">
+            <mat-checkbox *ngFor="let option of checkboxOptions" [checked]="true" [disabled]="true">
+              <div class="checkBoxText">
+                {{option}}
+              </div>
+            </mat-checkbox>
+          </div>             
+          </td>
+      </tr> -->
+
+         
+          <!-- Buttons -->
+          <div class="button-group">
+             <button class="btn btnClose" type="button" (click)="closed()">{{"close"| translate}}</button>
+          </div>
+       </div>
+    </div>
+
+  </div>

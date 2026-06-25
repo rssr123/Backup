@@ -1,0 +1,479 @@
+@import '../../app.component.scss';
+
+ 
+$leftPadding: 3%;
+$rightPadding: 3%;
+$MarginFromFooter: 110px;
+$MAButtonMinWidth: 100px; //original is 30%
+$MarginSeparator: 30px;
+
+.table-container {
+  // overflow-x: auto; /* Prevent overflow issues */
+  padding-left: 20px;
+  padding-right: 20px; /* Add padding inside the container */
+}
+ 
+table {
+  background-color: white;
+  width: 100%;
+  //margin-left: 5%;
+  margin-right: 5%;
+  table-layout: fixed;
+  /* make all column width equal*/
+ 
+//   label {
+//     margin-bottom: 10px;
+//     font-weight: bold;
+//   }
+ 
+  td .displayColumn {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+    height: 80px;
+    /* set a fixed height */
+  }
+ 
+  td .displayRow {
+    display: flex;
+ 
+    gap: 10px;
+    /* gap between each element */
+    align-items: center;
+    float: right;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+ 
+    label {
+      white-space: nowrap;
+      /* make multiple lines into one sentence*/
+    }
+
+    select{
+      height: 100%;
+    }
+ 
+    .ng-select {
+      margin-right: 50px;
+      width: 200px;
+      // height: 50px;
+      // padding-top: 12px !important;
+    }
+  }
+ 
+ 
+  .note {
+    margin-bottom: 0;
+    margin-right: 60px;
+    float: right;
+    font-weight: normal;
+    color: #767676;
+  }
+
+  input[type="checkbox"] {
+    transform: scale(0.8); /* Makes the checkbox smaller */
+    margin: 0; /* Optional: Reduce margin for better alignment */
+  }
+ 
+}
+
+ 
+.tableLabel{
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+ 
+//style for dropdown start
+:host ::ng-deep {
+ 
+  .ng-select {
+    padding-bottom: 6px;
+ 
+    .ng-select-container {
+      min-height: 0 !important;
+      padding: 0 !important;
+      border-top: none !important;
+ 
+      .ng-value-container {
+        padding: 0;
+        border: 0;
+      }
+    }
+  }
+ 
+  //adjust arrow, clear and cursor position
+  .ng-select-single .ng-select-container {
+ 
+ 
+    .ng-arrow-wrapper {
+      bottom: 3px;
+    }
+ 
+    .ng-clear-wrapper {
+      bottom: 0px;
+    }
+ 
+    .ng-value-container .ng-input {
+      top: 0px
+    }
+ 
+  }
+ 
+}
+ 
+:host ::ng-deep ng-dropdown-panel {
+ 
+  top: auto !important;
+ 
+}
+ 
+//remove drop down underline
+:host ::ng-deep ng-select .ng-select-container::after {
+  border-bottom: 5px solid transparent !important;
+}
+ 
+//style for dropdown end
+ 
+.marginFromFooter {
+  margin-bottom: $MarginFromFooter;
+}
+ 
+.tableWrapper {
+  margin-left: 3%;
+  margin-right: 3%;
+}
+ 
+// .PAContainer73 {
+// width: 100%;
+// }
+ 
+.btnClear {
+  background-color: #84958803;
+  ;
+  min-width: $MAButtonMinWidth;
+  border: solid 1px #dfdfdf;
+}
+ 
+.thWidth {
+  width: 60px;
+ 
+}
+ 
+.thFileName {
+  width: 250px;
+ 
+}
+ 
+.thAction {
+  width: 130px;
+ 
+}
+ 
+.thFileSize {
+  width: 130px;
+ 
+}
+ 
+.thInitiadtedBy {
+  width: 200px;
+ 
+}
+ 
+.left-section73 {
+  overflow: visible !important;
+}
+ 
+// .PAContainer73 {
+//   margin-left: $MAMainLeftPadding;
+//   min-height: 0vh;
+// }
+ 
+//menu with button start
+.order-info {
+    display: flex;
+    justify-content: space-between; /* Ensure h2 is on the far left, and the rest on the far right */
+    align-items: center; /* Align items vertically on the same line */
+  }
+ 
+  .order-details {
+    display: flex;
+    align-items: center; /* Align elements in the center vertically */
+    gap: 5px; /* Optional: Adjust spacing between elements */
+  }
+ 
+  .left-section {
+    display: flex;
+    align-items: center; /* Align button and label vertically */
+    gap: 20px; /* Space between the button and Status label */
+  }
+//  menu with button end
+ 
+.full-width-line {
+  border: none; /* Remove the default border style */
+  border-top: 1px solid #000; /* Add a top border for the line */
+  width: 96%; /* Ensure the line spans the entire width */
+  margin: 0; /* Optional: Adjust the margin as needed */
+  margin-top: 50px;
+  margin-right: 2%;
+  margin-left: 2%;
+}
+ 
+.paymentinfo{
+  margin-left: 3%;
+  margin-right: 3%;
+  background-color: white;
+ 
+  .paymentinfodetails{
+    margin-top: 20px;
+    margin-left: 3%;
+ 
+    label{
+      display: block;
+      width: 350px;
+      word-wrap: break-word; /* Allows long words to break and wrap */
+      word-break: break-word; /* Breaks words if necessary */
+      overflow-wrap: break-word; /* Ensures compatibility */
+      white-space: normal; /* Allows text to wrap */
+    }
+    .form-control{
+      border: 1px solid blue; /* Sets the border color to blue */
+    }
+   
+  }
+}
+ 
+.small-dot {
+  display: inline-block;
+  width: 7px; /* Size of the dot */
+  height: 7px; /* Size of the dot */
+  background-color: black; /* Fill color */
+  border-radius: 50%; /* Makes it a perfect circle */
+  margin-left: 2%;
+}
+ 
+.tableWrapperPaymentInfo {
+  margin-top: 20px;
+  margin-left: 3%;
+  margin-right: 3%;
+}
+ 
+.MarginSeparator {
+  margin-top: $MarginSeparator;
+}
+ 
+.bold {
+  font-weight: bold;
+}
+ 
+.custom-radio{
+  accent-color: black; /* Change the radio button color to black */
+}
+ 
+.payment-mode{
+ 
+  .form-control {
+    display: inline-block; /* Ensures proper alignment */
+    border: 1px solid blue; /* Sets the border color to blue */
+  }
+}
+ 
+.marginTop{
+  margin-top: 10px;
+}
+
+.marginTopCash{
+  margin-top: 10px;
+
+  input{
+    width: 350px;
+  }
+}
+
+.marginPayerEmail{
+
+  input{
+    width: 350px;
+  }
+}
+ 
+.marginLeft{
+  margin-left: 10px;
+}
+
+.request-btn{
+  background-color: red ;
+  color: white;
+  text-align: center;
+  border: none;
+  border-radius: 5px;
+}
+
+
+.breadcrumbOTC {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0 0;
+    margin-bottom: 30px;
+    // margin-left: 3%;
+    display: flex;
+    // align-items: center;
+  }
+
+  .breadcrumbOTC li {
+    display: inline;
+  }
+  
+  .breadcrumbOTC a {
+    color: rgb(2, 117, 216);
+    text-decoration: none;
+    font-size: 18px;
+  }
+  
+  .breadcrumbOTC a:hover {
+    text-decoration: underline;
+  }
+  
+  .breadcrumbOTC-separator {
+    font-size: inherit; /* Inherit the font size from the breadcrumb label */
+  }
+
+  .text-green {
+    color: green;
+  }
+  
+  .text-red {
+    color: red;
+  }
+
+// for the identity form
+.IdentityFormTable {
+  width: 100%;
+  border-collapse: collapse;
+
+  td {
+      padding: 10px;
+      vertical-align: middle;
+  }
+
+  label {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 5px;
+      margin-left: 20%;
+  }
+
+  input,
+  select {
+      width: 80%;
+      padding: 8px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      margin-right: 20%;
+
+      &::placeholder {
+          color: #aaa;
+      }
+  }
+
+  td[colspan="2"] input,
+  td[colspan="2"] select {
+      width: calc(100% - 20px); // Adjust for padding
+  }
+
+  td:nth-child(2),
+  td:nth-child(4),
+  td:nth-child(6) {
+      width: 33%; // Equal column widths
+  }
+}
+.IdentityFormTable td:first-child {
+  width: 10%; /* Adjust the percentage to your preference */
+  white-space: nowrap; /* Prevent text from wrapping */
+  vertical-align: top; /* Align labels at the top */
+}
+
+
+.align-right {
+    text-align: right; /* Align the label to the right */
+    display: block;    /* Ensure it takes the full width of the cell */
+  }
+
+
+
+
+  /* Style wrapper for the dropdown */
+.select-container {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+
+/* Style the select element */
+.select-container select {
+  appearance: none; /* Hide default arrow */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 8px 12px;
+  width: 100%;
+  font-size: 14px;
+  cursor: pointer;
+  padding-right: 30px; /* Leave space for the arrow */
+  box-sizing: border-box;
+}
+
+/* Add the custom arrow */
+.select-container::after {
+  content: '';
+  position: absolute;
+  right: 30px; /* Position near the edge */
+  top: 50%; /* Center vertically */
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid #333; /* Arrow color */
+  pointer-events: none; /* Non-clickable */
+}
+
+/* On focus */
+.select-container select:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+}
+
+
+/* Set standard width for the No. column */
+th.no-column,
+td.no-column {
+    width: 50px; /* Adjust the size as needed */
+    text-align: center; /* Center align the content */
+}
+
+/* Set standard width for the Action column */
+th.action-column,
+td.action-column {
+    width: 120px; /* Adjust the size as needed */
+    text-align: center; /* Center align the content */
+}
+
+th.long-column,
+td.long-column {
+    width: 300px; /* Adjust the size as needed */
+}
+
+th.short-column,
+td.short-column {
+    width: 120px; /* Adjust the size as needed */
+}

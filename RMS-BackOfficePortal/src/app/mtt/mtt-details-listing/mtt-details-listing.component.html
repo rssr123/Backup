@@ -1,0 +1,629 @@
+<body class="BodyCointaner">
+    <!-- mainContainer start-->
+    <div class="leftPadding">
+        <!-- <div class="LeftSectionPosition">{{"labels.Home / Setup & Maintenance / MTT Details" | translate}}</div> -->
+        <!-- <h2>{{"labels.MTT Listing Details" | translate}} </h2> -->
+        <!-- <h2>{{"labels.mttdetails" | translate}} </h2> -->
+        <!-- <div class="button-row">
+    <button type="button" class="btn btnEdit" (click)="editSelected()">
+      <i class="bi bi-pencil-square"></i> Request Edit
+    </button>
+  </div> -->
+    </div>
+    <div class="MALoadingContainer">
+        <!-- Loading spinner overlay -->
+        <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+            <div class="spinner-border" role="status">
+                <span class="sr-only"></span>
+            </div>
+        </div>
+        <div class="formContainer">
+            <div class="leftSide">
+                <div class="order-info">
+                    <h2>{{"labels.mttdetails" | translate}} </h2>
+                    <div class="order-details">
+                        <div class="left-section">
+
+                            <button *ngIf="order_status === 'Paid'" (click)="reprint()" type="button" class="btn btnApply">
+                                {{"labels.reprint" | translate}}
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+                <table class="leftSectionContainer" [ngClass]="{ TableDimmed: isLoading }">
+                    <thead>
+                        <tr class="header">
+                            <th style="width: 40px;">No.</th>
+                            <th class="parameterWidth">{{"labels.parameter"| translate}}</th>
+                            <th class="parameterWidth">{{"labels.currentvalue"| translate}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>{{"labels.sourcesystem"| translate}}</td>
+                            <td>{{ss_cd}}</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>{{"labels.orderreferenceno"| translate}}</td>
+                            <td>{{orn_no}}</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>{{"labels.transactiondate"| translate}}</td>
+                            <td>{{orn_dt | date: "dd MMM yyyy HH:mm:ss"}}</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>{{"labels.customername"| translate}}</td>
+                            <td>{{cust_nm}}</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>{{"labels.addressline1"| translate}}</td>
+                            <td>{{cust_addr_1}}</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>{{"labels.addressline2"| translate}}</td>
+                            <td>{{cust_addr_2|| '-'}}</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>{{"labels.addressline3"| translate}}</td>
+                            <td>{{cust_addr_3|| "-"}}</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>{{"labels.postcode"| translate}}</td>
+                            <td>{{cust_postcode}}</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>{{"labels.city"| translate}}</td>
+                            <td>{{cust_city }}</td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>{{"labels.state"| translate}}</td>
+                            <td>{{cust_state}}</td>
+                        </tr>
+                        <tr>
+                            <td>11</td>
+                            <td>{{"labels.customeremail"| translate}}</td>
+                            <td>{{cust_email}}</td>
+                        </tr>
+                        <tr>
+                            <td>12</td>
+                            <td>{{"labels.customerphoneno"| translate}}</td>
+                            <td>{{cust_phone}}</td>
+                        </tr>
+                        <tr>
+                            <td>13</td>
+                            <td>{{"labels.transactionamount(RM)"| translate}}</td>
+                            <td>{{total_amt | number:'1.2-2'}}</td>
+                        </tr>
+                        <tr>
+                            <td>14</td>
+                            <td>{{"labels.transactionstatus"| translate}}</td>
+                            <td>{{order_status}}</td>
+                        </tr>
+
+                        <!-- <tr>
+                  <td>17</td>
+                  <td>Source System Code</td>
+                  <td><div class="checkboxRow">
+                    <mat-checkbox *ngFor="let option of checkboxOptions" [checked]="true" [disabled]="true">
+                      <div class="checkBoxText">
+                        {{option}}
+                      </div>
+                    </mat-checkbox>
+                  </div>             
+                  </td>
+              </tr> -->
+
+                    </tbody>
+                </table>
+                <br>
+                <h2>{{"labels.Item Details" | translate}} </h2>
+                <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+                    <thead>
+                        <tr class="MATableHeader">
+                            <th>{{"labels.no." | translate}}</th>
+                            <th>{{"labels.itemreferencenumber" | translate}}</th>
+                            <th>{{"labels.itemdescription" | translate}}</th>
+                            <th>{{"labels.quantity" | translate}}</th>
+                            <th>{{"labels.unitfee(RM)" | translate}}</th>
+                            <th>{{"labels.grossamount(RM)" | translate}}</th>
+                            <th>{{"labels.tax(RM)" | translate}}</th>
+                            <th>{{"labels.discount/incentive(RM)" | translate}}</th>
+                            <th>{{"labels.netamount(RM)" | translate}}</th>
+                            <th class="custom-align-center">{{"buttons.view"| translate}}</th>
+                        </tr>
+                    </thead>
+                    <ng-container *ngIf="MTTItemModel.length > 0; else noResults">
+                        <tbody *ngIf="isDisplay">
+                            <tr *ngFor="let item of MTTItemModel; let i = index">
+                                <td>{{ i + 1 }}</td>
+                                <td>{{ item.item_ref_no ? item.item_ref_no : '-'}}</td>
+                                <td>{{ item.item_desc ? item.item_desc : '-'}}</td>
+                                <td>{{ item.qty ? item.qty : '-' }}</td>
+                                <td>{{ (item.unit_fee | number:'1.2-2') ? (item.unit_fee | number:'1.2-2') : '-' }}</td>
+                                <td>{{ (item.gross_amt | number:'1.2-2') ? (item.gross_amt | number:'1.2-2') : '-'}}</td>
+                                <td>{{ (item.tax_amt | number:'1.2-2') ? (item.tax_amt | number:'1.2-2') : '-' }}</td>
+                                <td>{{ (item.disc_amt | number:'1.2-2') ?(item.disc_amt | number:'1.2-2') : '-' }}</td>
+                                <td>{{ (item.net_amt | number:'1.2-2') ? (item.net_amt | number:'1.2-2') : '-' }}</td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btnView" (click)="viewMTTItemDetails(item)">
+                                        {{"buttons.view"| translate}}
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="9"
+                                    style="text-align: right; font-weight: bold; border-top: 2px solid black; border-bottom: 2px solid black;">
+                                    {{"labels.TOTAL" | translate}}</td>
+                                <td
+                                    style="font-weight: bold; border-top: 2px solid black; border-bottom: 2px solid black;">
+                                    RM {{ getTotalNetAmount() | number: '1.2-2' }}</td>
+                            </tr>
+                        </tbody>
+                    </ng-container>
+                    <ng-template #noResults>
+                        <tr style="height: 100px;">
+                            <td colspan="20" class="text-center">{{"searchcriteriadoesnotmatch"| translate}}</td>
+                        </tr>
+                    </ng-template>
+                </table>
+                <br>
+
+                <div *ngIf="otcRcptModel[0].rcptNo !=null">
+                    <div>
+                        <h2>{{"labels.paymentinformation" | translate}}</h2>
+                    </div>
+                    <div class="paymentinfo">
+                        <div class="paymentinfodetails">
+                            <label class="bold">{{"labels.payeremail" | translate}}</label>
+                            <div class="marginTopCash">
+                                <input class="form-control" type="text" [(ngModel)]="otcPayerEmail"
+                                    placeholder="Enter Payer Email" disabled />
+                            </div>
+
+                        </div>
+                        <div class="paymentinfodetails">
+                            <label class="bold">{{"labels.selectpaymentmode" | translate}}</label>
+                            <div class="marginTop">
+                                <input type="radio" class="custom-radio" name="paymentMethod" disabled
+                                    [checked]="otcPymtMode==='EV'" />
+                                <span class="marginLeft">{{"labels.Europay, MasterCard, and Visa Terminal" |
+                                    translate}}</span>
+                                <div class="payment-mode">
+                                    <div class="marginTop">
+                                        <span class="marginLeft">{{"labels.Click \"Submit Payment\" to prompt EMV
+                                            terminal payment" | translate}}</span>
+                                    </div>
+                                </div>
+                                <div class="marginTop">
+                                    <input type="radio" class="custom-radio" name="paymentMethod" disabled
+                                        [checked]="otcPymtMode==='CA' ||otcPymtMode==='CE'|| otcPymtMode==='MO'|| otcPymtMode==='BD'|| otcPymtMode==='MX'" />
+                                    <span class="marginLeft">{{"labels.physicalcollection" | translate}}</span>
+                                </div>
+
+                                <div class="marginTopCash" *ngIf="cashPayments.length > 0">
+                                    <span class="small-dot"></span>
+                                    <span class="marginLeft">{{"labels.cashamountrm" | translate}}</span>
+                                    <input class="form-control" style="margin-left: 45px;" type="text"
+                                        [value]="otcPaymentDetailsCashAmt | number: '1.2-2'" disabled />
+                                </div>
+
+                                <div class="marginTop" *ngIf="otcEMVModel.length > 0">
+                                    <span class="small-dot"></span>
+                                    <span class="marginLeft">{{"labels.emvtransactioninformation"| translate}}</span>
+                                    <div class="table-container">
+                                        <table class="MATable" *ngIf="!isLoading">
+                                            <thead>
+                                                <tr class="MATableHeader">
+                                                    <th class="thWidth">No.</th>
+                                                    <th>{{"labels.transactiontrace" | translate}} </th>
+                                                    <th>{{"labels.batchnumber" | translate}}</th>
+                                                    <th class="thFileName">{{"labels.hostnumber" | translate}}</th>
+                                                    <th>{{"labels.terminalid" | translate}}</th>
+                                                    <th>{{"labels.transactionamountrm" | translate}}</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody *ngIf="otcEMVModel.length > 0">
+                                                <tr *ngFor="let item of otcEMVModel; let i = index">
+                                                    <td>{{ (page - 1) * itemsPerPage + i + 1 }}</td>
+                                                    <td>{{ item.trans_trace }}</td>
+                                                    <td>{{ item.batch_no }}</td>
+                                                    <td>{{ item.host_no }}</td>
+                                                    <td>{{ item.t_id }}</td>
+                                                    <td>{{ item.amt | number: '1.2-2' }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="MarginSeparator"></div>
+
+                                <div class="marginTop" *ngIf="chequePayments.length > 0">
+                                    <span class="small-dot"></span>
+                                    <span class="marginLeft">{{"labels.chequeinformation" | translate}}</span>
+                                    <div class="table-container">
+                                        <table class="MATable" *ngIf="!isLoading">
+                                            <thead>
+                                                <tr class="MATableHeader">
+                                                    <th class="thWidth">No.</th>
+                                                    <th>{{"labels.chequeid" | translate}}</th>
+                                                    <th>{{"labels.bankname" | translate}}</th>
+                                                    <th>{{"labels.payername" | translate}}</th>
+                                                    <th>{{"labels.chequeno" | translate}}</th>
+                                                    <th>{{"labels.chequedate" | translate}}</th>
+                                                    <th>{{"labels.bankaccno" | translate}}</th>
+                                                    <th>{{"labels.amountrm" | translate}}</th>
+                                                    <th>{{"labels.chequestatus" | translate}}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody *ngIf="chequePayments.length >= 0">
+                                                <tr *ngFor="let item of chequePayments; let i = index">
+                                                    <td>{{ (page - 1) * itemsPerPage + i + 1 }}</td>
+                                                    <td>
+                                                        {{ item.che_id }}
+                                                        <!-- <input type="text" [(ngModel)]="item.che_id" disabled placeholder="Enter Cheque ID" /> -->
+                                                    <td>
+                                                        {{ item.che_bank_nm }}
+                                                        <!-- <input type="text" [(ngModel)]="item.che_bank_nm" disabled /> -->
+                                                    </td>
+                                                    <td>
+                                                        {{ item.che_payer_nm }}
+                                                        <!-- <input type="text" [(ngModel)]="item.che_payer_nm" disabled
+                                                        placeholder="Enter Cheque Payer Name" /> -->
+                                                    </td>
+                                                    <td>
+                                                        {{ item.che_no }}
+                                                        <!-- <input type="text" [(ngModel)]="item.che_no" disabled
+                                                        placeholder="Enter Cheque No" /> -->
+                                                    </td>
+                                                    <td>
+                                                        <!-- <input type="date" [(ngModel)]="item.cheDate | date: 'dd MMM yyyy'" disabled> -->
+                                                        {{ item.cheDate | date: 'dd MMM yyyy' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ item.che_ba_acct_no }}
+                                                        <!-- <input type="text" [(ngModel)]="item.che_ba_acct_no " disabled
+                                                        placeholder="Enter Bank Account No" /> -->
+                                                    </td>
+                                                    <td>
+                                                        {{ item.che_amt | number: '1.2-2' }}
+                                                        <!-- <input type="text" [(ngModel)]="item.che_amt" disabled
+                                                        placeholder="Enter Amount" /> -->
+                                                    </td>
+
+                                                    <td>
+                                                        {{ item.che_status}}
+                                                        <!-- <input type="text" [(ngModel)]="item.che_amt" disabled
+                                                        placeholder="Enter Amount" /> -->
+                                                    </td>
+
+
+                                                </tr>
+
+                                                <tr>
+                                                    <td colspan="8"
+                                                        style="text-align: right; font-weight: bold; border-top: 2px solid black; border-bottom: 2px solid black;">
+                                                        {{"labels.TOTAL" | translate}}
+                                                    <td
+                                                        style="font-weight: bold; border-top: 2px solid black; border-bottom: 2px solid black;">
+                                                        RM {{ totalChequeAmount | number: '1.2-2' }}</td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="MarginSeparator"></div>
+
+                                <div class="marginTop" *ngIf="bankDraftPayments.length > 0">
+                                    <span class="small-dot"></span>
+                                    <span class="marginLeft">{{"labels.bankdraftinformation" | translate}}</span>
+                                    <div class="table-container">
+                                        <table class="MATable" *ngIf="!isLoading">
+                                            <thead>
+                                                <tr class="MATableHeader">
+                                                    <th class="thWidth">No.</th>
+                                                    <th>{{"labels.bankname" | translate}}</th>
+                                                    <th>{{"labels.bankdraftno" | translate}}</th>
+                                                    <th>{{"labels.bankdraftdate" | translate}}</th>
+                                                    <th>{{"labels.amountrm" | translate}}</th>
+                                                    <!-- <th>Action</th> -->
+                                                </tr>
+                                            </thead>
+                                            <tbody *ngIf="bankDraftPayments.length >= 0">
+                                                <tr *ngFor="let item of bankDraftPayments; let i = index">
+                                                    <td>{{ (page - 1) * itemsPerPage + i + 1 }}</td>
+                                                    <td>
+                                                        {{ item.bd_bank_nm }}
+                                                        <!-- <select id="bankNm" class="form-control" [(ngModel)]="item.bd_bank_nm" disabled>
+                                                        <option value="" disabled selected>Select Bank</option>
+                                                        <option *ngFor="let bank of bankmodel" [value]="bank.nm_en" disabled>
+                                                            {{ bank.nm_en }}
+                                                        </option>
+                                                    </select> -->
+                                                    </td>
+                                                    <td>
+                                                        {{ item.bd_no }}
+                                                        <!-- <input type="text" [(ngModel)]="item.bd_no" disabled
+                                                        placeholder="Enter Bank Draft No" /> -->
+                                                    </td>
+                                                    <td>
+                                                        <!-- <input type="date"  [(ngModel)]="item.bd_date" name="daterange" readonly> -->
+                                                        {{ item.bd_date | date: 'dd MMM yyyy' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ item.bd_amt | number: '1.2-2' }}
+                                                        <!-- <input type="text" [(ngModel)]="item.bd_amt" disabled
+                                                        placeholder="Enter Bank Draft Amount" /> -->
+                                                    </td>
+
+                                                    <!-- <td>
+                                                <button *ngIf="item.isNew" class="btn btnAdd" (click)="saveBDRow(i)">Save</button>
+                                                <button *ngIf="!item.isNew && !item.isEditable" class="btn btnEdit" (click)="editBDRow(i)">Edit</button>
+                                                <button *ngIf="!item.isNew && item.isEditable" class="btn btnAdd" (click)="saveBDRow(i)">Update</button>
+                                                <button *ngIf="item.isNew" class="btn btn-danger" (click)="removeBDNewRow(i)" style="margin-left: 10px;">Remove</button>
+                                                <button *ngIf="!item.isEditable" class="btn btn-danger" (click)="deleteBDRow(i)" style="margin-left: 10px;">Delete</button>
+                                              </td> -->
+                                                </tr>
+
+                                                <tr>
+                                                    <td colspan="4"
+                                                        style="text-align: right; font-weight: bold; border-top: 2px solid black; border-bottom: 2px solid black;">
+                                                        {{"labels.TOTAL" | translate}}
+                                                    <td
+                                                        style="font-weight: bold; border-top: 2px solid black; border-bottom: 2px solid black;">
+                                                        RM {{ totalBDAmount | number: '1.2-2' }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="marginTop" *ngIf="moneyOrderPayments.length > 0">
+                                    <span class="small-dot"></span>
+                                    <span class="marginLeft">{{"labels.moneyorderinformation" | translate}}</span>
+                                    <div class="table-container">
+                                        <table class="MATable" *ngIf="!isLoading">
+                                            <thead>
+                                                <tr class="MATableHeader">
+                                                    <th class="thWidth">No.</th>
+                                                    <th>{{"labels.remitno" | translate}}</th>
+                                                    <th>{{"labels.moneyorderdate" | translate}}</th>
+                                                    <th>{{"labels.payername" | translate}}</th>
+                                                    <th>{{"labels.IDno" | translate}}</th>
+                                                    <th>{{"labels.contactno" | translate}}</th>
+                                                    <th>{{"labels.amountrm" | translate}}</th>
+                                                    <!-- <th>Action</th> -->
+                                                </tr>
+                                            </thead>
+                                            <tbody *ngIf="moneyOrderPayments.length >= 0">
+                                                <tr *ngFor="let item of moneyOrderPayments; let i = index">
+                                                    <td>{{ (page - 1) * itemsPerPage + i + 1 }}</td>
+                                                    <td>
+                                                        <!-- <input type="text" [(ngModel)]="item.mo_rm_no" disabled
+                                                        placeholder="Enter Remit No" /> -->
+                                                        {{ item.mo_rm_no }}
+                                                    </td>
+                                                    <td>
+                                                        <!-- <input type="date" [(ngModel)]="item.mo_date" name="daterange" readonly> -->
+                                                        {{ item.mo_date | date: 'dd MMM yyyy' }}
+
+                                                    </td>
+                                                    <td>
+                                                        {{ item.mo_payer_nm }}
+                                                        <!-- <input type="text" [(ngModel)]="item.mo_payer_nm" disabled
+                                                        placeholder="Enter Payer Name" /> -->
+                                                    </td>
+                                                    <td>
+                                                        {{ item.mo_id_no }}
+                                                        <!-- <input type="text" [(ngModel)]="item.mo_id_no" disabled
+                                                        placeholder="Enter ID No" /> -->
+                                                    </td>
+                                                    <td>
+                                                        {{ item.mo_contact_no }}
+                                                        <!-- <input type="text" [(ngModel)]="item.mo_contact_no" disabled
+                                                        placeholder="Enter Contact No" /> -->
+                                                    </td>
+                                                    <td>
+                                                        {{ item.mo_amt | number: '1.2-2' }}
+                                                        <!-- <input type="text" [(ngModel)]="item.mo_amt" placeholder="Enter Amount"
+                                                        disabled /> -->
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td colspan="6"
+                                                        style="text-align: right; font-weight: bold; border-top: 2px solid black; border-bottom: 2px solid black;">
+                                                        {{"labels.TOTAL" | translate}}
+                                                    <td
+                                                        style="font-weight: bold; border-top: 2px solid black; border-bottom: 2px solid black;">
+                                                        RM {{ totalMOAmount | number: '1.2-2' }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="MarginSeparator"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="MarginSeparator"></div>
+
+                    <div>
+                        <h2>{{"labels.Receipt Details" | translate}}</h2>
+                    </div>
+                    <div class="tableWrapper">
+                        <table class="MATable">
+                            <thead>
+                                <tr class="MATableHeader">
+                                    <th class="thWidth">No.</th>
+                                    <th>{{"labels.receiptno" | translate}}</th>
+                                    <th>{{"labels.filename" | translate}}</th>
+                                    <th>{{"labels.generateddate" | translate}}</th>
+                                    <th>{{"labels.receiptstatus" | translate}}</th>
+                                    <th>{{"labels.reprintcount" | translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody *ngIf="otcRcptModel[0].rcptNo !=null; else noResults">
+                                <tr *ngFor="let item of otcRcptModel; let i = index">
+                                    <td>{{ i + 1 }}</td>
+                                    <td>{{ item.rcptNo? item.rcptNo: '-' }}</td>
+                                    <!-- <td> <a href="javascript:void(0)"
+                                            (click)="downloadFile(item.rcptNo, item.ver_id, item.ssdocref_id)">
+                                            {{ item.file_nm ? item.file_nm: '-'}}
+                                        </a></td> -->
+
+                                    <td> {{ item.file_nm ? item.file_nm: '-'}}</td>
+                                    <td>{{ (item.rcpt_dt | date: 'dd MMM yyyy') ? (item.rcpt_dt | date: 'dd MMM yyyy') :
+                                        '-'}}</td>
+                                    <td>{{ item.rcpt_status ? item.rcpt_status: '-'}}</td>
+                                    <td>{{ item.rcpt_reprint? item.rcpt_reprint: '-'}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <ng-template #noResults>
+                            <tr style="height: 100px;">
+                                <td colspan="6" class="text-center">{{ "searchcriteriadoesnotmatch" | translate }}</td>
+                            </tr>
+                        </ng-template>
+                    </div>
+
+                    <div>
+                        <h2>{{"labels.historicaltable" | translate}}</h2>
+                    </div>
+                    <div class="tableWrapper">
+                        <table class="MATable">
+                            <thead>
+                                <tr class="MATableHeader">
+                                    <th class="thWidth">No.</th>
+                                    <th>{{"labels.action" | translate}}</th>
+                                    <th>{{"labels.actiontimestamp" | translate}}</th>
+                                    <th>{{"labels.status" | translate}}</th>
+                                    <th>{{"labels.branch" | translate}}</th>
+                                    <th>{{"labels.counterid" | translate}}</th>
+                                    <th>{{"labels.performedby" | translate}}</th>
+                                    <th>{{"labels.justification" | translate}}</th>
+                                    <th>{{"labels.remark" | translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody *ngIf="otcHistModel.length > 0; else noResults">
+                                <tr *ngFor="let item of otcHistModel; let i = index">
+                                    <td>{{ otcHistModel.length - i }}</td>
+                                    <td>{{ item.action ? item.action : '-'}}</td>
+                                    <td>{{ item.dt_action | date: 'dd MMM yyyy HH:MM:ss'}}</td>
+                                    <td>{{ item.otc_status === 'Pending OTC' ? 'Unpaid' : (item.otc_status ?
+                                        item.otc_status : '-') }}</td>
+                                    <td>{{ item.branch ? item.branch : '-'}}</td>
+                                    <td>{{ item.counter_id ? item.counter_id : '-'}}</td>
+                                    <td>{{ item.act_by? item.act_by : '-'}}</td>
+                                    <td> {{ item.justification ? '(' + item.justification + ')' + ' ' + (item.others ||
+                                        '') : '-' }}</td>
+                                    <td>{{ item.remark || '-'}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <ng-template #noResults>
+                            <tr style="height: 100px;">
+                                <td colspan="6" class="text-center">{{ "searchcriteriadoesnotmatch" | translate }}</td>
+                            </tr>
+                        </ng-template>
+                    </div>
+                    <div class="MarginSeparator"></div>
+                </div>
+
+                <div *ngIf="otcRcptModel[0].rcptNo===null">
+                    <h2>{{"labels.Payment Gateway Details" | translate}} </h2>
+                    <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+                        <thead>
+                            <tr class="MATableHeader">
+                                <th>{{"labels.paymentsubmissiondate" | translate}}</th>
+                                <th>{{"labels.paymentid" | translate}}</th>
+                                <th>{{"labels.paymentamount(RM)" | translate}}</th>
+                                <th>{{"labels.transactionstatus" | translate}}</th>
+                                <th class="custom-align-center">{{"buttons.view"| translate}}</th>
+
+                            </tr>
+                        </thead>
+                        <ng-container *ngIf="MTTPGModel.length > 0; else noResults">
+                            <tbody *ngIf="isDisplay">
+                                <tr *ngFor="let item of MTTPGModel">
+                                    <td>{{ item.pymt_submit_dt | date: 'dd MMM yyyy HH:mm:ss'}}</td>
+                                    <td>{{ item.pg_pymt_id }}</td>
+                                    <td>{{ item.pg_pymt_amt | number:'1.2-2' }}</td>
+                                    <td>{{ item.pg_txn_status }}</td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btnView" (click)="viewMTTPgDetails(item)">
+                                            {{"buttons.view"| translate}}
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ng-container>
+                        <ng-template #noResults>
+                            <tr style="height: 100px;">
+                                <td colspan="20" class="text-center">{{"searchcriteriadoesnotmatch"| translate}}</td>
+                            </tr>
+                        </ng-template>
+
+                    </table>
+
+                    <br>
+                    <h2>{{"labels.Receipt Details" | translate}} </h2>
+                    <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+                        <thead>
+                            <tr class="MATableHeader">
+                                <th>{{"labels.rcptno" | translate}}</th>
+                                <th>{{"labels.rcptdate" | translate}}</th>
+                                <!-- <th>{{"labels.rcptreprint" | translate}}</th>
+                            <th>{{"date modified" | translate}}</th> -->
+                                <!-- <th class="custom-align-center">{{"buttons.view"| translate}}</th> -->
+                            </tr>
+                        </thead>
+                        <ng-container *ngIf="MTTRCPTModel.length > 0; else noResults">
+                            <tbody *ngIf="isDisplay">
+                                <tr *ngFor="let item of MTTRCPTModel">
+                                    <!-- <td><a style="cursor: pointer" class="hyperlink" (click)="dlRcpt(item.rcpt_no)">
+                                            {{ item.rcpt_no }}
+                                        </a></td> -->
+                                    <td>{{ item.rcpt_no }}</td>
+                                    <td>{{ item.rcpt_dt | date: 'dd MMM yyyy'}}</td>
+                                    <!-- <td>{{ item.rcpt_reprint }}</td>
+                                <td>{{ item.dt_modified }}</td> -->
+                                    <!-- <td class="text-center">
+                                    <button type="button" class="btn btnView" (click)="viewMTTItemDetails()">
+                                        <i class="bi bi-eye"></i> {{"buttons.view"| translate}}
+                                    </button>
+                                </td> -->
+                                </tr>
+                            </tbody>
+                        </ng-container>
+                        <ng-template #noResults>
+                            <tr style="height: 100px;">
+                                <td colspan="20" class="text-center">{{"searchcriteriadoesnotmatch"| translate}}</td>
+                            </tr>
+                        </ng-template>
+                    </table>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br /><br />
+
+    <!-- <div *ngIf="isDisplayTaskLists" class="marginTopAndBottom"></div>
+  <div *ngIf="!isDisplayTaskLists" class="MainContainerFooter"></div> -->
+</body>

@@ -1,0 +1,101 @@
+<body class="BodyCointaner">
+    <!-- mainContainer start-->
+    <div class="leftPadding">
+        <!-- <div class="LeftSectionPosition"> {{"labels.Home / Setup & Maintenance / Receivable Income Periodic Lodgment Listing"| translate}} -->
+        <!-- </div> -->
+
+
+        <h2>{{"labels.Receivable Income Periodic Lodgment Details"| translate}}</h2>
+
+    </div>
+    <!-- Loading spinner overlay -->
+    <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+        <div class="spinner-border" role="status">
+            <span class="sr-only"></span>
+        </div>
+    </div>
+    <div class="formContainer">
+        <div class="leftSide">
+            <table class="leftSectionContainer" [ngClass]="{ TableDimmed: isLoading }">
+                <thead>
+                    <tr class="header">
+                        <th class="parameterWidthNo">No.</th>
+                        <th class="parameterWidth">Parameter</th>
+                        <th class="parameterWidth">{{"labels.currentvalue"| translate}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>{{"txntype" | translate}}</td>
+                        <td>{{transactionType}}</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>{{"entitytype" | translate}}</td>
+                        <td>{{entityType === 'C' ? 'Company' : entityType}}</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>{{"labels.entitynumber"| translate}}</td>
+                        <td>{{entityNo}}</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>{{"labels.calendaryear" | translate}}</td>
+                        <td>{{calendarYear | date : "YYYY"}}</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>{{"labels.duedate" | translate}}</td>
+                        <td>{{dueDate | date : "dd MMM yyyy"}}</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>{{"labels.impairdate" | translate}}</td>
+                        <td>{{impairDate | date : "dd MMM yyyy"}}</td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>{{"labels.writeoffdate" | translate}}</td>
+                        <td>{{writeOffDate| date : "dd MMM yyyy"}}</td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td>{{"labels.riplcompanytype" | translate}}</td>
+                        <td>{{companyType}}</td>
+                    </tr>
+                    <tr>
+                        <td>9</td>
+                        <td>{{"labels.accrualamount" | translate}} (RM)</td>
+                        <td >{{ accrualAmount | number:'1.2-2' }}</td>
+                    </tr>
+                    <tr>
+                        <td>10</td>
+                        <td>{{"labels.receiptnumber" | translate}}</td>
+                        <td>{{receiptNo}}</td>
+                    </tr>
+                    <tr>
+                        <td>11</td>
+                        <td>{{"labels.createddate" | translate}}</td>
+                        <td>{{createdDate | date : "dd MMM yyyy HH:mm:ss"}}</td>
+                    </tr>
+                    <tr>
+                        <td>12</td>
+                        <td>{{"labels.RIPLstatus" | translate}}</td>
+                        <td>{{riplStatus}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div style="display: flex; justify-content: flex-end; margin-top: 20px;margin-right: 3%;">
+        <button class="btn btnCancel" type="button" (click)="back()">
+            {{"buttons.back" | translate}}
+        </button>
+    </div>
+    <div class="marginTopAndBottom"></div>
+
+
+
+</body>

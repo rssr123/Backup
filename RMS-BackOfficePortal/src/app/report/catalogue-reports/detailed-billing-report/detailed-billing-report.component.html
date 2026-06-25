@@ -1,0 +1,112 @@
+<body class="BodyCointaner" *ngIf="permViewAllow === 1">
+    <div class="PAContainer73">
+        <div class="left-section73">
+            <h2>{{"labels.detailedbillingreport" | translate}}</h2>
+
+                <table>
+                    <!--<div class="displayColumn" style="height: 30px; margin-left: 20px; margin-top: 20px;">
+                        <label>{{"labels.reportpre-filters" | translate}}</label>
+                    </div>-->
+                    <tr>
+                        <td>
+                            <div class="displayColumn form-group" id="daterange-container">
+                                <label for="daterange">{{"labels.daterange" | translate}} <span class='RedAsterisk'>*</span></label>
+                                <input type="text" id="daterange" placeholder="" class="form-control"
+                                  [bsConfig]="{ rangeInputFormat : 'DD MMM YYYY', dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,rangeSeparator:' to ',containerClass:'theme-default',adaptivePosition: true, maxDateRange: 365}"
+                                  bsDaterangepicker [(ngModel)]="detailedBillingDateRange" name="daterange" readonly>
+                                <div *ngIf="dateCheck()" class="error-text">
+                                    {{"labels.invaliddaterange12months" | translate}}
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label>{{"labels.classidselection" | translate}} <span class='RedAsterisk'>*</span></label>
+                                <!-- <ng-select
+                                    class="form-control"
+                                    dropdownPosition="bottom"
+                                    [(ngModel)]="classIdSelection"
+                                    name="classIdSelection"
+                                    #classIdSelectionRef="ngModel"
+                                    required
+                                >
+                                    <ng-option *ngFor="let classId of classIdSelections" [value]="classId.value">{{classId.label}}</ng-option>
+                                </ng-select> -->
+
+                                <ng-select class="form-control" name="tempRFeeDetNm" [(ngModel)]="tempClassId" required
+                                    #classIdSelectionRef="ngModel" dropdownPosition="bottom" maxlength="100">
+                                    <ng-option *ngFor="let item of classid" [value]="item.blcm_id">{{item.classId}}
+                                    -
+                                    {{item.classDesc}}</ng-option>
+                                </ng-select>
+                                
+                                <div *ngIf="classIdSelectionRef.errors && classIdSelectionRef.errors['required'] && classIdSelectionRef.touched" class="error-text">
+                                    {{"labels.classidselectionisrequired" | translate}}
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label>{{"labels.entitycustomerid" | translate}}</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    [(ngModel)]="entityCustomerId"
+                                    name="entityCustomerId"
+                                    maxlength="30"
+                                />
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <!-- <td>
+                            <div class="displayColumn">
+                                <label>{{"labels.emailstatus" | translate}}</label>
+                                <ng-select class="form-control" dropdownPosition="bottom" [(ngModel)]="emailStatus" name="emailStatus">
+                                    <ng-option *ngFor="let status of emailStatuses" [value]="status">{{status}}</ng-option>
+                                </ng-select>
+                            </div>
+                        </td> -->
+                        <td>
+                            <div class="displayColumn">
+                                <label>{{"labels.billingstatus" | translate}}</label>
+                                <ng-select
+                                    class="form-control"
+                                    dropdownPosition="bottom"
+                                    [(ngModel)]="billingStatus"
+                                    name="billingStatuses"
+                                >
+                                    <ng-option *ngFor="let status of billingStatuses" [value]="status.param_cd">{{status.nm_en}}</ng-option>
+                                </ng-select>
+                            </div>
+                        </td>
+                        <td></td>
+                    </tr>
+                    
+                        <tr>
+                            <td></td>
+                            <td colspan="2">
+                                <div class="displayRow">
+                                    <label>{{"labels.downloadreportas:" | translate}}</label>
+                                    <ng-select class="form-control" [(ngModel)]="selectedFileType" name="selectedFileType"
+                                        dropdownPosition="bottom" #selectedFileTypeRef="ngModel" required [clearable]=false>
+                                        <ng-option *ngFor="let item of fileType"
+                                            [value]="item.value">{{item.label}}</ng-option>
+                                    </ng-select>
+                                    <div *ngIf="selectedFileTypeRef.errors && selectedFileTypeRef.errors['required'] && selectedFileTypeRef.touched"
+                                        class="error-text">
+                                        {{"File type is required" | translate}}
+                                    </div>
+                                    <button class="btn btnReset" type="button" (click)="resetWithDefaults()">{{"buttons.reset" | translate}}</button>
+                                    <button id= "submit" class="btn btnAdd" (click)="downloadReport()" [disabled]="dlbuttonPerms()">{{"buttons.generate" | translate}}</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
+            </div>
+        </div>
+    </body>
+        <!-- </ng-container> -->
+        

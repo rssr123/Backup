@@ -1,0 +1,480 @@
+INSERT INTO rms_api_auth(api_auth_id, nm, pw, status)
+  VALUES(1, 'roy', 'pass', 'A')
+GO
+INSERT INTO rms_api_auth(api_auth_id, nm, pw, status)
+  VALUES(2, 'crs', 'P@$$w0rd$$M', 'A')
+GO
+INSERT INTO rms_api_auth(api_auth_id, nm, pw, status)
+  VALUES(3, 'ssm', 'P@$$w0rd$$M', 'A')
+GO
+INSERT INTO rms_config(config_id, config_cd, config_value, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(1, 'PIP_BlockPayOnline_In_Minute', '5', EXTEND(MDY(10,26,2023), YEAR to SECOND)+21 UNITS HOUR+25 UNITS MINUTE+29 UNITS SECOND, EXTEND(MDY(10,26,2023), YEAR to SECOND)+21 UNITS HOUR+25 UNITS MINUTE+29 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_config(config_id, config_cd, config_value, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(2, 'Payment_Date_Expiry_Limit_Days', '7', EXTEND(MDY(10,29,2023), YEAR to SECOND)+16 UNITS HOUR+2 UNITS MINUTE+35 UNITS SECOND, EXTEND(MDY(10,29,2023), YEAR to SECOND)+16 UNITS HOUR+2 UNITS MINUTE+35 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_config(config_id, config_cd, config_value, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(3, 'RIPL_Impair_In_Month', '36', EXTEND(MDY(12,13,2023), YEAR to SECOND)+0 UNITS HOUR+0 UNITS MINUTE+0 UNITS SECOND, EXTEND(MDY(12,13,2023), YEAR to SECOND)+0 UNITS HOUR+0 UNITS MINUTE+0 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_config(config_id, config_cd, config_value, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(4, 'RIPL_WriteOff_In_Month', '60', EXTEND(MDY(12,13,2023), YEAR to SECOND)+0 UNITS HOUR+0 UNITS MINUTE+0 UNITS SECOND, EXTEND(MDY(12,13,2023), YEAR to SECOND)+0 UNITS HOUR+0 UNITS MINUTE+0 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_config(config_id, config_cd, config_value, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(5, 'RICP_WriteOff_In_Month', '6', EXTEND(MDY(12,29,2023), YEAR to SECOND)+0 UNITS HOUR+0 UNITS MINUTE+0 UNITS SECOND, EXTEND(MDY(12,29,2023), YEAR to SECOND)+0 UNITS HOUR+0 UNITS MINUTE+0 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_config(config_id, config_cd, config_value, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(6, 'PGRecon_Period_In_Days', '7', EXTEND(MDY(1,9,2024), YEAR to SECOND)+15 UNITS HOUR+37 UNITS MINUTE+42 UNITS SECOND, EXTEND(MDY(1,9,2024), YEAR to SECOND)+15 UNITS HOUR+37 UNITS MINUTE+42 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(1, 'A', 'Active', 'Active', 'Status', 1, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(2, 'D', 'Inactive', 'Inactive', 'Status', 2, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(3, 'P-RHOD', 'Pending Requester HOD Approval', 'Pending Requester HOD Approval', 'Status-MFT', 1, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(4, 'P-FA', 'Pending Finance Admin Approval', 'Pending Finance Admin Approval', 'Status-MFT', 2, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(5, 'P-FHOD', 'Pending Finance HOD Approval', 'Pending Finance HOD Approval', 'Status-MFT', 3, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(6, 'Q-R', 'Query Pending Requester', 'Query Pending Requester', 'Status-MFT', 4, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(7, 'Q-RHOD', 'Query Pending Requester HOD', 'Query Pending Requester HOD', 'Status-MFT', 5, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(8, 'Q-FA', 'Query Pending Finance Admin', 'Query Pending Finance Admin', 'Status-MFT', 6, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(9, 'RJ-RHOD', 'Rejected by Requester HOD', 'Rejected by Requester HOD', 'Status-MFT', 7, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(10, 'RJ-FA', 'Rejected by Finance Admin', 'Rejected by Finance Admin', 'Status-MFT', 8, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(11, 'RJ-FHOD', 'Rejected by Finance HOD', 'Rejected by Finance HOD', 'Status-MFT', 9, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(12, 'APV', 'Approved', 'Approved', 'Status-MFT', 10, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(13, 'EFT', 'Effective', 'Effective', 'Status-MFT', 11, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(14, 'C', 'Cancelled', 'Cancelled', 'Status-MFT', 12, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(15, 'PCR', 'Practicing Certificate Recognition', 'Practicing Certificate Recognition', 'DI-ActionType', 1, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(16, 'PCA', 'Practicing Certificate Annual Amortization', 'Practicing Certificate Annual Amortization', 'DI-ActionType', 2, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(17, 'PCT', 'Practicing Certificate Termination', 'Practicing Certificate Termination', 'DI-ActionType', 3, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(18, 'CA', 'Collectable', 'Collectable', 'Status-RIPL', 1, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(19, 'CE', 'Collected', 'Collected', 'Status-RIPL', 2, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(20, 'IP', 'Impair', 'Impair', 'Status-RIPL', 3, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(21, 'WO', 'Write Off', 'Write Off', 'Status-RIPL', 4, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(22, 'PE', 'Pending Execution', 'Pending Execution', 'Status-Scheduler', 1, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(23, 'IP', 'In Progress', 'In Progress', 'Status-Scheduler', 2, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(24, 'JHR', 'JOHOR', 'JOHOR', 'State', 1, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(25, 'KDH', 'KEDAH', 'KEDAH', 'State', 2, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(26, 'KTN', 'KELANTAN', 'KELANTAN', 'State', 3, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(27, 'MLK', 'MELAKA', 'MELAKA', 'State', 4, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(28, 'NSN', 'NEGERI SEMBILAN', 'NEGERI SEMBILAN', 'State', 5, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(29, 'PHG', 'PAHANG', 'PAHANG', 'State', 6, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(30, 'PNG', 'PULAU PINANG', 'PULAU PINANG', 'State', 7, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(31, 'PRK', 'PERAK', 'PERAK', 'State', 8, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(32, 'PLS', 'PERLIS', 'PERLIS', 'State', 9, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(33, 'SGR', 'SELANGOR', 'SELANGOR', 'State', 10, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(34, 'TRG', 'TERENGGANU', 'TERENGGANU', 'State', 11, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(35, 'SBH', 'SABAH', 'SABAH', 'State', 12, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(36, 'SWK', 'SARAWAK', 'SARAWAK', 'State', 13, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(37, 'KUL', 'WILAYAH PERSEKUTUAN KUALA LUMPUR', 'WILAYAH PERSEKUTUAN KUALA LUMPUR', 'State', 14, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(38, 'LBN', 'WILAYAH PERSEKUTUAN LABUAN', 'WILAYAH PERSEKUTUAN LABUAN', 'State', 15, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(39, 'PJY', 'WILAYAH PERSEKUTUAN PUTRAJAYA', 'WILAYAH PERSEKUTUAN PUTRAJAYA', 'State', 16, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(40, 'I', 'Individual', 'Individual', 'EntityType', 1, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(41, 'C', 'Company', 'Company', 'EntityType', 2, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(42, 'B', 'Business', 'Business', 'EntityType', 3, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(43, 'L', 'LLP', 'LLP', 'EntityType', 4, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(10,19,2023), YEAR to SECOND)+1 UNITS HOUR+2 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(44, 'PIP', 'Payment In Process', 'Payment In Process', 'OrderStatus', 1, EXTEND(MDY(10,26,2023), YEAR to SECOND)+14 UNITS HOUR+25 UNITS MINUTE+58 UNITS SECOND, EXTEND(MDY(10,26,2023), YEAR to SECOND)+14 UNITS HOUR+25 UNITS MINUTE+58 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(45, 'PP', 'Pending Payment', 'Pending Payment', 'OrderStatus', 2, EXTEND(MDY(10,26,2023), YEAR to SECOND)+14 UNITS HOUR+25 UNITS MINUTE+58 UNITS SECOND, EXTEND(MDY(10,26,2023), YEAR to SECOND)+14 UNITS HOUR+25 UNITS MINUTE+58 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(46, 'PE', 'Payment-Expired', 'Payment-Expired', 'OrderStatus', 3, EXTEND(MDY(10,26,2023), YEAR to SECOND)+14 UNITS HOUR+25 UNITS MINUTE+58 UNITS SECOND, EXTEND(MDY(10,26,2023), YEAR to SECOND)+14 UNITS HOUR+25 UNITS MINUTE+58 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(47, 'P', 'Paid', 'Paid', 'OrderStatus', 4, EXTEND(MDY(10,26,2023), YEAR to SECOND)+14 UNITS HOUR+25 UNITS MINUTE+58 UNITS SECOND, EXTEND(MDY(10,26,2023), YEAR to SECOND)+14 UNITS HOUR+25 UNITS MINUTE+58 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(48, 'F', 'Failed', 'Failed', 'OrderStatus', 5, EXTEND(MDY(10,26,2023), YEAR to SECOND)+14 UNITS HOUR+25 UNITS MINUTE+58 UNITS SECOND, EXTEND(MDY(10,26,2023), YEAR to SECOND)+14 UNITS HOUR+25 UNITS MINUTE+58 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(51, 'WA', 'e-Wallet', 'e-Wallet', 'PGPaymentMethod', 3, EXTEND(MDY(10,26,2023), YEAR to SECOND)+14 UNITS HOUR+42 UNITS MINUTE+18 UNITS SECOND, EXTEND(MDY(10,26,2023), YEAR to SECOND)+14 UNITS HOUR+42 UNITS MINUTE+18 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(49, 'CC', 'Credit Card', 'Credit Card', 'PGPaymentMethod', 1, EXTEND(MDY(10,26,2023), YEAR to SECOND)+14 UNITS HOUR+42 UNITS MINUTE+40 UNITS SECOND, EXTEND(MDY(10,26,2023), YEAR to SECOND)+14 UNITS HOUR+42 UNITS MINUTE+40 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(50, 'DD', 'Direct Debit', 'Direct Debit', 'PGPaymentMethod', 2, EXTEND(MDY(10,26,2023), YEAR to SECOND)+14 UNITS HOUR+42 UNITS MINUTE+40 UNITS SECOND, EXTEND(MDY(10,26,2023), YEAR to SECOND)+14 UNITS HOUR+42 UNITS MINUTE+40 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(52, 'R', 'Recognized', 'Recognized', 'DI-Status', 1, EXTEND(MDY(12,4,2023), YEAR to SECOND)+15 UNITS HOUR+58 UNITS MINUTE+35 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+15 UNITS HOUR+58 UNITS MINUTE+35 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(53, 'A', 'Amortized', 'Amortized', 'DI-Status', 2, EXTEND(MDY(12,4,2023), YEAR to SECOND)+15 UNITS HOUR+58 UNITS MINUTE+35 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+15 UNITS HOUR+58 UNITS MINUTE+35 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(54, 'C', 'Completed', 'Completed', 'DI-Status', 3, EXTEND(MDY(12,4,2023), YEAR to SECOND)+15 UNITS HOUR+58 UNITS MINUTE+35 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+15 UNITS HOUR+58 UNITS MINUTE+35 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(55, 'T', 'Terminated', 'Terminated', 'DI-Status', 4, EXTEND(MDY(12,4,2023), YEAR to SECOND)+15 UNITS HOUR+58 UNITS MINUTE+36 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+15 UNITS HOUR+58 UNITS MINUTE+36 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(56, 'ROC-RPC', 'Renewal of Practicing Certificate', 'Renewal of Practicing Certificate', 'DI-TxnType', 1, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+1 UNITS MINUTE+5 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+1 UNITS MINUTE+5 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(57, 'ROB-NB', 'ROB New Business', 'ROB New Business', 'DI-TxnType', 2, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+1 UNITS MINUTE+5 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+1 UNITS MINUTE+5 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(58, 'ROB-RB', 'ROB Renewal of Business', 'ROB Renewal of Business', 'DI-TxnType', 3, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+1 UNITS MINUTE+6 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+1 UNITS MINUTE+6 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(59, 'MPSI-FS', 'MPSI Financing Statement', 'MPSI Financing Statement', 'DI-TxnType', 4, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+1 UNITS MINUTE+6 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+1 UNITS MINUTE+6 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(60, 'CT-PP', 'COMTRAC Pre-Payment', 'COMTRAC Pre-Payment', 'DI-TxnType', 5, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+1 UNITS MINUTE+6 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+1 UNITS MINUTE+6 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(61, 'A', 'Approved', 'Approved', 'DI-ApprovalStatus', 1, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+2 UNITS MINUTE+33 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+2 UNITS MINUTE+33 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(62, 'R', 'Rejected', 'Rejected', 'DI-ApprovalStatus', 2, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+2 UNITS MINUTE+33 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+2 UNITS MINUTE+33 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(63, 'AR', 'Annual Return', 'Annual Return', 'RIPL-TxnType', 1, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+3 UNITS MINUTE+46 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+3 UNITS MINUTE+46 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(64, 'FS', 'Financial Statement', 'Financial Statement', 'RIPL-TxnType', 2, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+3 UNITS MINUTE+46 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+3 UNITS MINUTE+46 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(65, 'ARR', 'Annual Return Recognition', 'Annual Return Recognition', 'RIPL-ActionType', 1, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+6 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+6 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(66, 'ARRP', 'Annual Return Realized Payment', 'Annual Return Realized Payment', 'RIPL-ActionType', 2, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+6 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+6 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(67, 'ARI', 'Annual Return Impair', 'Annual Return Impair', 'RIPL-ActionType', 3, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+6 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+6 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(68, 'ARWO', 'Annual Return Write Off', 'Annual Return Write Off', 'RIPL-ActionType', 4, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+6 UNITS MINUTE+50 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+6 UNITS MINUTE+50 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(69, 'FSR', 'Financial Statement Recognition', 'Financial Statement Recognition', 'RIPL-ActionType', 5, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+6 UNITS MINUTE+51 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+6 UNITS MINUTE+51 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(70, 'FSRP', 'Financial Statement Realized Payment', 'Financial Statement Realized Payment', 'RIPL-ActionType', 6, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+6 UNITS MINUTE+51 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+6 UNITS MINUTE+51 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(71, 'FSI', 'Financial Statement Impair', 'Financial Statement Impair', 'RIPL-ActionType', 7, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+6 UNITS MINUTE+51 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+6 UNITS MINUTE+51 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(72, 'FSWO', 'Financial Statement Write Off', 'Financial Statement Write Off', 'RIPL-ActionType', 8, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+6 UNITS MINUTE+51 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+6 UNITS MINUTE+51 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(73, 'CA', 'Collectable', 'Collectable', 'RIPL-Status', 1, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+9 UNITS MINUTE+29 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+9 UNITS MINUTE+29 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(74, 'CE', 'Collected', 'Collected', 'RIPL-Status', 2, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+9 UNITS MINUTE+29 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+9 UNITS MINUTE+29 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(75, 'IP', 'Impair', 'Impair', 'RIPL-Status', 3, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+9 UNITS MINUTE+29 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+9 UNITS MINUTE+29 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(76, 'WO', 'Write Off', 'Write Off', 'RIPL-Status', 4, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+9 UNITS MINUTE+29 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+9 UNITS MINUTE+29 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(77, 'CP', 'Compound', 'Compound', 'RICP-TxnType', 1, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+10 UNITS MINUTE+8 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+10 UNITS MINUTE+8 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(78, 'CPI', 'Compound Issuance', 'Compound Issuance', 'RICP-ActionType', 1, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+11 UNITS MINUTE+44 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+11 UNITS MINUTE+44 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(79, 'CPP', 'Compound Paid', 'Compound Paid', 'RICP-ActionType', 2, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+11 UNITS MINUTE+44 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+11 UNITS MINUTE+44 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(80, 'CPC', 'Compound Cancelled', 'Compound Cancelled', 'RICP-ActionType', 3, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+11 UNITS MINUTE+44 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+11 UNITS MINUTE+44 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(81, 'CPV', 'Compound Void', 'Compound Void', 'RICP-ActionType', 4, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+11 UNITS MINUTE+44 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+11 UNITS MINUTE+44 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(82, 'CPWO', 'Compound Write Off', 'Compound Write Off', 'RICP-ActionType', 5, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+11 UNITS MINUTE+44 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+11 UNITS MINUTE+44 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(83, 'CA', 'Collectable', 'Collectable', 'RICP-Status', 1, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+12 UNITS MINUTE+59 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+12 UNITS MINUTE+59 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(84, 'CE', 'Collected', 'Collected', 'RICP-Status', 2, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+12 UNITS MINUTE+59 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+12 UNITS MINUTE+59 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(85, 'WO', 'Write Off', 'Write Off', 'RICP-Status', 3, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+12 UNITS MINUTE+59 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+12 UNITS MINUTE+59 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(86, 'C', 'Cancel', 'Cancel', 'RICP-Status', 4, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+12 UNITS MINUTE+59 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+12 UNITS MINUTE+59 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(87, 'V', 'Void', 'Void', 'RICP-Status', 5, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+12 UNITS MINUTE+59 UNITS SECOND, EXTEND(MDY(12,4,2023), YEAR to SECOND)+16 UNITS HOUR+12 UNITS MINUTE+59 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(89, 'O', 'Open', 'Open', 'Status-Task', 1, EXTEND(MDY(1,3,2024), YEAR to SECOND)+16 UNITS HOUR+28 UNITS MINUTE+5 UNITS SECOND, EXTEND(MDY(1,3,2024), YEAR to SECOND)+16 UNITS HOUR+28 UNITS MINUTE+5 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(90, 'CS', 'Close', 'Close', 'Status-Task', 2, EXTEND(MDY(1,3,2024), YEAR to SECOND)+16 UNITS HOUR+29 UNITS MINUTE+21 UNITS SECOND, EXTEND(MDY(1,3,2024), YEAR to SECOND)+16 UNITS HOUR+29 UNITS MINUTE+21 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(91, 'CL', 'Cancel', 'Cancel', 'Status-Task', 3, EXTEND(MDY(1,3,2024), YEAR to SECOND)+16 UNITS HOUR+29 UNITS MINUTE+21 UNITS SECOND, EXTEND(MDY(1,3,2024), YEAR to SECOND)+16 UNITS HOUR+29 UNITS MINUTE+21 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(93, 'PE', 'Pending Extraction', 'Pending Extraction', 'Status-PGRC', 1, EXTEND(MDY(1,3,2024), YEAR to SECOND)+16 UNITS HOUR+29 UNITS MINUTE+21 UNITS SECOND, EXTEND(MDY(1,3,2024), YEAR to SECOND)+16 UNITS HOUR+29 UNITS MINUTE+21 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(94, 'PSSCR', 'Pending SS Collection Reconciliation', 'Pending SS Collection Reconciliation', 'Status-PGRC', 2, EXTEND(MDY(1,3,2024), YEAR to SECOND)+16 UNITS HOUR+33 UNITS MINUTE+29 UNITS SECOND, EXTEND(MDY(1,3,2024), YEAR to SECOND)+16 UNITS HOUR+33 UNITS MINUTE+29 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(95, 'SSSCR', 'Successful SS Collection Reconciliation', 'Successful SS Collection Reconciliation', 'Status-PGRC', 3, EXTEND(MDY(1,3,2024), YEAR to SECOND)+16 UNITS HOUR+33 UNITS MINUTE+29 UNITS SECOND, EXTEND(MDY(1,3,2024), YEAR to SECOND)+16 UNITS HOUR+33 UNITS MINUTE+29 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(96, 'FSSCR', 'Failed SS Collection Reconciliation', 'Failed SS Collection Reconciliation', 'Status-PGRC', 4, EXTEND(MDY(1,3,2024), YEAR to SECOND)+16 UNITS HOUR+33 UNITS MINUTE+29 UNITS SECOND, EXTEND(MDY(1,3,2024), YEAR to SECOND)+16 UNITS HOUR+33 UNITS MINUTE+29 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(98, 'PE', 'Pending Extraction', 'Pending Extraction', 'Status-BRC', 1, EXTEND(MDY(1,4,2024), YEAR to SECOND)+9 UNITS HOUR+41 UNITS MINUTE+1 UNITS SECOND, EXTEND(MDY(1,4,2024), YEAR to SECOND)+9 UNITS HOUR+41 UNITS MINUTE+1 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(99, 'PBSR', 'Pending Bank Statement Reconciliation', 'Pending Bank Statement Reconciliation', 'Status-BRC', 2, EXTEND(MDY(1,4,2024), YEAR to SECOND)+9 UNITS HOUR+42 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(1,4,2024), YEAR to SECOND)+9 UNITS HOUR+42 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(101, 'SBSR', 'Successful Bank Statement Reconciliation', 'Successful Bank Statement Reconciliation', 'Status-BRC', 3, EXTEND(MDY(1,4,2024), YEAR to SECOND)+9 UNITS HOUR+43 UNITS MINUTE+12 UNITS SECOND, EXTEND(MDY(1,4,2024), YEAR to SECOND)+9 UNITS HOUR+43 UNITS MINUTE+12 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(102, 'FBSR', 'Failed Bank Statement Reconciliation', 'Failed Bank Statement Reconciliation', 'Status-BRC', 4, EXTEND(MDY(1,4,2024), YEAR to SECOND)+9 UNITS HOUR+44 UNITS MINUTE+7 UNITS SECOND, EXTEND(MDY(1,4,2024), YEAR to SECOND)+9 UNITS HOUR+44 UNITS MINUTE+7 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(103, 'F', 'Found', 'Found', 'Status-FMS', 1, EXTEND(MDY(1,9,2024), YEAR to SECOND)+14 UNITS HOUR+55 UNITS MINUTE+8 UNITS SECOND, EXTEND(MDY(1,9,2024), YEAR to SECOND)+14 UNITS HOUR+55 UNITS MINUTE+8 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(104, 'NF', 'Not Found', 'Not Found', 'Status-FMS', 2, EXTEND(MDY(1,9,2024), YEAR to SECOND)+14 UNITS HOUR+55 UNITS MINUTE+42 UNITS SECOND, EXTEND(MDY(1,9,2024), YEAR to SECOND)+14 UNITS HOUR+55 UNITS MINUTE+42 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(105, 'DU', 'Duplicate', 'Duplicate', 'Status-FMS', 3, EXTEND(MDY(1,9,2024), YEAR to SECOND)+14 UNITS HOUR+56 UNITS MINUTE+5 UNITS SECOND, EXTEND(MDY(1,9,2024), YEAR to SECOND)+14 UNITS HOUR+56 UNITS MINUTE+5 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(106, 'TXF', 'Transacion Failed', 'Transacion Failed', 'PGRecon-PGSubCri', 1, EXTEND(MDY(1,24,2024), YEAR to SECOND)+14 UNITS HOUR+10 UNITS MINUTE+31 UNITS SECOND, EXTEND(MDY(1,24,2024), YEAR to SECOND)+14 UNITS HOUR+10 UNITS MINUTE+31 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(107, 'SAM', 'Success & Amount Matched', 'Success & Amount Matched', 'PGRecon-PGSubCri', 2, EXTEND(MDY(1,24,2024), YEAR to SECOND)+14 UNITS HOUR+10 UNITS MINUTE+31 UNITS SECOND, EXTEND(MDY(1,24,2024), YEAR to SECOND)+14 UNITS HOUR+10 UNITS MINUTE+31 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(108, 'SNM', 'Success & Amount Not Matched', 'Success & Amount Not Matched', 'PGRecon-PGSubCri', 3, EXTEND(MDY(1,24,2024), YEAR to SECOND)+14 UNITS HOUR+10 UNITS MINUTE+31 UNITS SECOND, EXTEND(MDY(1,24,2024), YEAR to SECOND)+14 UNITS HOUR+10 UNITS MINUTE+31 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(109, 'NF', 'Not Found In RMS', 'Not Found In RMS', 'PGRecon-PGSubCri', 4, EXTEND(MDY(1,24,2024), YEAR to SECOND)+14 UNITS HOUR+10 UNITS MINUTE+31 UNITS SECOND, EXTEND(MDY(1,24,2024), YEAR to SECOND)+14 UNITS HOUR+10 UNITS MINUTE+31 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(110, 'TXF', 'Transaction Failed', 'Transaction Failed', 'PGRecon-RMSSubCri', 1, EXTEND(MDY(1,24,2024), YEAR to SECOND)+14 UNITS HOUR+10 UNITS MINUTE+31 UNITS SECOND, EXTEND(MDY(1,24,2024), YEAR to SECOND)+14 UNITS HOUR+10 UNITS MINUTE+31 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(111, 'SAM', 'Success & Amount Matched', 'Success & Amount Matched', 'PGRecon-RMSSubCri', 2, EXTEND(MDY(1,24,2024), YEAR to SECOND)+14 UNITS HOUR+10 UNITS MINUTE+31 UNITS SECOND, EXTEND(MDY(1,24,2024), YEAR to SECOND)+14 UNITS HOUR+10 UNITS MINUTE+31 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(112, 'SNM', 'Success & Amount Not Matched', 'Success & Amount Not Matched', 'PGRecon-RMSSubCri', 3, EXTEND(MDY(1,24,2024), YEAR to SECOND)+14 UNITS HOUR+10 UNITS MINUTE+31 UNITS SECOND, EXTEND(MDY(1,24,2024), YEAR to SECOND)+14 UNITS HOUR+10 UNITS MINUTE+31 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(113, 'NF', 'Not Found In PG Settlement', 'Not Found In PG Settlement', 'PGRecon-RMSSubCri', 4, EXTEND(MDY(1,24,2024), YEAR to SECOND)+14 UNITS HOUR+10 UNITS MINUTE+31 UNITS SECOND, EXTEND(MDY(1,24,2024), YEAR to SECOND)+14 UNITS HOUR+10 UNITS MINUTE+31 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(114, 'CIP', 'Closed in Previous PG Reconciliation', 'Closed in Previous PG Reconciliation', 'PGRecon-RMSSubCri', 5, EXTEND(MDY(1,24,2024), YEAR to SECOND)+14 UNITS HOUR+10 UNITS MINUTE+31 UNITS SECOND, EXTEND(MDY(1,24,2024), YEAR to SECOND)+14 UNITS HOUR+10 UNITS MINUTE+31 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(115, 'NCP', 'Not Closed in Previous PG Reconciliation', 'Not Closed in Previous PG Reconciliation', 'PGRecon-RMSSubCri', 6, EXTEND(MDY(1,24,2024), YEAR to SECOND)+14 UNITS HOUR+10 UNITS MINUTE+31 UNITS SECOND, EXTEND(MDY(1,24,2024), YEAR to SECOND)+14 UNITS HOUR+10 UNITS MINUTE+31 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_param(param_id, param_cd, nm_en, nm_bm, param_grp_nm, seq, dt_created, dt_modified, created_by, modified_by, status)
+  VALUES(116, 'NFP', 'Not Found in Previous PG Reconciliation', 'Not Found in Previous PG Reconciliation', 'PGRecon-RMSSubCri', 7, EXTEND(MDY(1,24,2024), YEAR to SECOND)+14 UNITS HOUR+10 UNITS MINUTE+31 UNITS SECOND, EXTEND(MDY(1,24,2024), YEAR to SECOND)+14 UNITS HOUR+10 UNITS MINUTE+31 UNITS SECOND, 'system', 'system', 'A')
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(1, 'TCD001', 'Tax Code Maintenance', 'View Page', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 1)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(2, 'TCD002', 'Tax Code Maintenance', 'Add Item', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 2)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(3, 'TCD003', 'Tax Code Maintenance', 'Edit', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 3)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(4, 'FG001', 'Fee Group Maintenance', 'View Page', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 1)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(5, 'FG002', 'Fee Group Maintenance', 'Add Item', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 2)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(6, 'FG003', 'Fee Group Maintenance', 'Edit', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 3)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(7, 'MFT001', 'Master Fee Table', 'View MFT', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 1)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(8, 'MFT002', 'Master Fee Table', 'View MFT Details', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 2)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(9, 'MFT003', 'Master Fee Table', 'View Master Task List', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 3)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(10, 'MFT004', 'Master Fee Table', 'View Task Details', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 4)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(11, 'MFT005', 'Master Fee Table', 'Add MFT Requester Form (R)', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 5)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(12, 'MFT006', 'Master Fee Table', 'Approve Add MFT Requester Form (RHOD)', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 6)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(13, 'MFT007', 'Master Fee Table', 'Request Add MFT with Requester Form (FA)', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 7)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(14, 'MFT008', 'Master Fee Table', 'Approve Add MFT with Requester Form (FHOD)', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 8)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(15, 'MFT009', 'Master Fee Table', 'Request Add MFT (FA)', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 9)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(16, 'MFT010', 'Master Fee Table', 'Approve Add MFT (FHOD)', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 10)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(17, 'MFT011', 'Master Fee Table', 'Edit MFT Requester Form (R)', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 11)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(18, 'MFT012', 'Master Fee Table', 'Approve Edit MFT Requester Form (RHOD)', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 12)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(19, 'MFT013', 'Master Fee Table', 'Request Edit MFT with Requester Form (FA)', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 13)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(20, 'MFT014', 'Master Fee Table', 'Approve Edit MFT with Requester Form (FHOD)', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 14)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(21, 'MFT015', 'Master Fee Table', 'Request Edit MFT (FA)', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 15)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(22, 'MFT016', 'Master Fee Table', 'Approve Edit MFT (FHOD)', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 16)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(23, 'MFT017', 'Master Fee Table', 'Cancel Task', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 17)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(24, 'FMS001', 'FMS Ledger Code', 'View FMS Code Listing Page', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 1)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(25, 'FMS002', 'FMS Ledger Code', 'Add FMS Code', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 2)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(26, 'FMS003', 'FMS Ledger Code', 'Edit FMS Code', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 3)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(27, 'FMS004', 'FMS Ledger Code', 'Activate FMS Code', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 4)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(28, 'FMS005', 'FMS Ledger Code', 'View FMS Ledger Code Details', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 5)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(29, 'FMS006', 'FMS Ledger Code', 'FMS Code Upload (Excel)', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 6)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(30, 'RPC001', 'Roles and Permissions Configuration', 'View Roles and Permissions Configuration Page', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 1)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(31, 'RPC002', 'Roles and Permissions Configuration', 'Add User Role', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 2)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(32, 'RPC003', 'Roles and Permissions Configuration', 'Edit User Role Name/Permissions', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 3)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(33, 'RPC004', 'Roles and Permissions Configuration', 'Deactivate User Role', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 4)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(34, 'AL001', 'Accrual Listing (Deferred Income, RI-Periodic Lodgement, RI-Compound) ', 'View Listing Page', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 1)
+GO
+INSERT INTO rms_perm(perm_id, perm_cd, module_nm, function_nm, dt_created, dt_modified, created_by, modified_by, status, function_seq)
+  VALUES(35, 'AL002', 'Accrual Listing (Deferred Income, RI-Periodic Lodgement, RI-Compound) ', 'View Details Page', EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, EXTEND(MDY(1,15,2024), YEAR to SECOND)+11 UNITS HOUR+51 UNITS MINUTE+45 UNITS SECOND, 'system', 'system', 'A', 2)
+GO
+update rms_config
+set dt_created = current,
+dt_modified = current
+GO
+update rms_param
+set dt_created = current,
+dt_modified = current
+GO
+update rms_perm
+set dt_created = current,
+dt_modified = current
+GO

@@ -1,0 +1,288 @@
+@import '../../app.component.scss';
+
+
+.right-section73{
+    background-color: white;
+}
+
+.form-group {
+    margin-bottom: 15px;
+  }
+  
+  .button-group {
+    margin-top: 20px;
+  }
+  
+
+  .btnApply{
+    float:left;
+  }
+
+  .btnReset{
+    float:right;
+  }
+
+
+  .MAPagination {
+    display: flex;
+    flex-direction: column; 
+    align-items: flex-end; 
+}
+
+.fgSpacing{
+    margin-bottom:5px;
+}
+
+.btnView{
+    background-color: #2185D0;
+    color:white;
+    width: 80px;
+  //min-width: $MAButtonMinWidth;
+  }
+
+  .languageWidth{
+    width: 15%;
+}
+
+//style for dropdown start
+:host ::ng-deep {
+
+  .ng-select{
+    padding-bottom: 6px;
+
+    .ng-select-container{
+      min-height: 0 !important;
+      padding:0 !important;
+      border-top: none !important;
+    
+      .ng-value-container{
+        padding: 0;
+        border: 0;
+        }
+      }
+    }
+
+  //adjust arrow, clear and cursor position
+    .ng-select-single .ng-select-container {
+
+
+      .ng-arrow-wrapper{
+        bottom: 3px;
+      }
+
+      .ng-clear-wrapper{
+        bottom: 0px;
+      }
+
+      .ng-value-container .ng-input{
+        top:0px
+      }
+
+    }
+}
+
+:host ::ng-deep ng-dropdown-panel {
+
+  top: auto !important;
+ 
+}
+
+//remove drop down underline
+:host ::ng-deep ng-select .ng-select-container::after {
+  border-bottom: 5px solid transparent !important;
+}
+
+//style for dropdown end
+
+td{
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+.PA-alert-box {
+  margin-top:30px;
+  width:100%;
+  position: relative;
+  }
+
+  .alert-error {
+    background-color: #ffcccc !important;
+    /* Light red */
+    color: #a94442 !important;
+    /* Darker red text */
+    border-color: #ebccd1 !important;
+    /* Red border */
+  }
+
+// Mobile Search Section - Hidden on desktop
+.mobile-search-section {
+  display: none;
+}
+
+// Mobile Responsive Styles
+@media (max-width: 767px) {
+  .mobile-search-section {
+    display: block !important;
+    background-color: white;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .mobile-search-header {
+    padding: 10px 0;
+    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 15px;
+
+    h5 {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .btn {
+      padding: 5px 12px;
+    }
+  }
+
+  .mobile-search-body {
+    padding-top: 15px;
+
+    .form-group {
+      margin-bottom: 15px;
+
+      label {
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-bottom: 5px;
+      }
+
+      input, select {
+        font-size: 0.9rem;
+      }
+    }
+
+    .button-group-mobile {
+      margin-top: 20px;
+      
+      .btn {
+        font-size: 0.95rem;
+        padding: 10px;
+      }
+    }
+  }
+
+  .middle-section73,
+  .right-section73 {
+    display: none !important;
+  }
+
+  .PAContainer73 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .left-section73 {
+    padding: 10px !important;
+
+    h2 {
+      font-size: 1.3rem;
+    }
+
+    .LeftSectionPosition {
+      margin-bottom: 15px;
+
+      .btnAdd {
+        width: 100%;
+        font-size: 0.95rem;
+      }
+    }
+  }
+
+  .MATableContainer {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+
+    .MATable {
+      font-size: 0.85rem;
+      min-width: 1000px;
+
+      thead th {
+        padding: 8px 5px;
+        font-size: 0.8rem;
+        white-space: nowrap;
+      }
+
+      tbody td {
+        padding: 8px 5px;
+        font-size: 0.85rem;
+      }
+    }
+  }
+
+  .MAPagination {
+    font-size: 0.85rem;
+    padding: 10px;
+
+    .pagination-row {
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+
+      .dropdown {
+        width: 100%;
+
+        .PaginControl {
+          width: 100%;
+        }
+      }
+
+      ::ng-deep ngb-pagination {
+        .pagination {
+          flex-wrap: wrap;
+          justify-content: center;
+
+          .page-item {
+            margin: 2px;
+
+            .page-link {
+              padding: 5px 10px;
+              font-size: 0.85rem;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .PA-alert-box {
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .mobile-search-section {
+    display: none;
+  }
+
+  .PAContainer73 {
+    grid-template-columns: 1fr auto auto !important;
+  }
+
+  .left-section73 {
+    h2 {
+      font-size: 1.5rem;
+    }
+  }
+
+  .MATableContainer {
+    .MATable {
+      font-size: 0.9rem;
+
+      thead th,
+      tbody td {
+        padding: 10px 8px;
+      }
+    }
+  }
+}

@@ -1,0 +1,114 @@
+@import '../../app.component.scss';
+
+
+.right-section73{
+    background-color: white;
+}
+
+.form-group {
+    margin-bottom: 15px;
+  }
+  
+  .button-group {
+    margin-top: 20px;
+  }
+  
+
+  .btnApply{
+    float:left;
+  }
+
+  .btnReset{
+    float:right;
+  }
+
+
+  .MAPagination {
+    display: flex;
+    flex-direction: column; 
+    align-items: flex-end; 
+}
+
+.fgSpacing{
+    margin-bottom:5px;
+}
+
+
+//toggle start
+.custom-switch .form-check-input{
+  width:$ToggleButtonWidth !important;
+}
+.custom-switch .form-check { 
+  display: flex;
+  align-items: center; /* Aligns items in the center vertically */
+}
+
+.custom-switch .form-check-input {
+  width: 2.5rem; /* Adjust width to your preference */
+  height: 1.25rem; /* Adjust height to your preference */
+  margin-right: 0.5rem; /* Space between the toggle and the label */
+  /* The next two lines are to adjust the position of the circle within the switch */
+  background-position: left center;
+  transition: background-position 0.2s;
+ 
+}
+
+.custom-switch .form-check-input:checked {
+  background-color: #198754; /* Bootstrap's green color for 'success' */
+  background-position: right center;
+ 
+}
+
+.custom-switch .form-check-input::before {
+  /* Adjust the switch's circle size if necessary */
+  height: 1.25rem; /* Should match the height of the switch */
+  width: 1.25rem;  /* Adjust width as needed */
+  transition: transform 0.2s;
+
+}
+
+.custom-switch .form-check-input:checked::before {
+  transform: translateX(1.25rem); /* The translation should match the height to keep it centered */
+}
+
+.custom-switch .form-check-label {
+  margin-bottom: 0; /* Remove bottom margin from label if present */
+  white-space: nowrap; /* Prevent the label from wrapping */
+  margin-top: 5px;
+  flex: 1;
+  width:auto;
+}
+
+app-ng-dynamic-breadcrumb {
+  background-color: "" !important;
+}
+
+//toggle end
+
+.PAContainer73 {
+  &.right-section-collapsed{
+    .left-section73 {
+      flex: 0 0 97%;
+      transition: flex 0.5s ease;
+    }
+    .right-section73 {
+      //left: 75%;
+      padding-top: 4%;
+      transition: flex 0.5s ease;
+    }
+  }
+  .left-section73 {
+    flex: 0 0 80%;
+    transition: flex 0.5s ease;
+  }
+}
+  
+
+.middle-section73{
+  padding-top: 4.3%;
+  flex: 0 0 3%;
+  transition: flex 0.5s ease;
+  z-index: 4;
+  position: absolute;
+  left: 97%;
+}

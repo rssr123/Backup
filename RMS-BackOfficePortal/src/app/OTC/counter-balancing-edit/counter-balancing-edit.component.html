@@ -1,0 +1,225 @@
+<body class="BodyCointaner2">
+    <div class="SingleContainer">
+        <h2 style="text-align: center;">{{"labels.changepaymentmode" | translate}}</h2>
+        <br>
+        <table style="width:100%">
+            <tr>
+                <td>
+                    <h4>{{"selectnewpaymentmode" | translate}}</h4>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <select class="dropdown" name="foundInRMS" class="form-control form-select" [(ngModel)]="defaultDropdownValue" (change)="changePMT()">
+                        <option *ngFor="let option of modelParam" [ngValue]="option">{{option.nm_en}}</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <br>
+        <br>
+        <!--Cheque-->
+        <table id="TableCheque" *ngIf="chequeTable" class="MATable">
+            <thead>
+                <tr class="MATableHeader">
+                    <th>{{"labels.fieldname" | translate}}</th>
+                    <th>{{"labels.value" | translate}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{"labels.collectionslipno" | translate}}</td>
+                    <td>
+                        <span>{{data.item.col_slip_no}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{"labels.orderreferenceno" | translate}}</td>
+                    <td>
+                        <span>{{data.item.orn_no}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{"labels.bankname" | translate}}<span class='RedAsterisk'> *</span></td>
+                    <td>
+                        <select required style="padding:1px !important" class="dropdown form-control form-select" [(ngModel)]="defaultBankDropdownValue" name="bankName">
+                            <option *ngFor="let option of modelBankParam" [ngValue]="option">{{option.nm_en}}</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{"labels.bankaccno" | translate}}</td>
+                    <td>
+                        <input type="text" maxlength="150" [(ngModel)]="data.item.che_ba_acct_no" name="che_ba_acct_no" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{"labels.chequeno" | translate}}<span class='RedAsterisk'> *</span></td>
+                    <td>
+                        <input type="text" maxlength="25" [(ngModel)]="data.item.che_no" required name="che_no" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{"labels.payername" | translate}}<span class='RedAsterisk'> *</span></td>
+                    <td>
+                        <input type="text" maxlength="150" [(ngModel)]="data.item.che_payer_nm" required name="che_payer_nm" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{"labels.chequedate" | translate}}<span class='RedAsterisk'> *</span></td>
+                    <td>
+                        <input  type="text"
+                        class="dropdown-upload form-control"
+                        placeholder="Date Picker"
+                        bsDatepicker
+                        required
+                        #dtSettlementModel="ngModel"
+                        [(ngModel)]="data.item.che_date" name="che_date"
+                        [bsConfig]="{ dateInputFormat: 'DD MMM YYYY' }">
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{"labels.amountrm" | translate}}</td>
+                    <td>
+                        <span>{{this.amount | number:'.2-2'}}</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!--Bank Draft-->
+        <table id="TableBD" *ngIf="bdTable" class="MATable">
+            <thead>
+                <tr class="MATableHeader">
+                    <th>{{"labels.fieldname" | translate}}</th>
+                    <th>{{"labels.value" | translate}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{"labels.collectionslipno" | translate}}</td>
+                    <td>
+                        <span>{{data.item.col_slip_no}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{"labels.orderreferenceno" | translate}}</td>
+                    <td>
+                        <span>{{data.item.orn_no}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{"labels.bankname" | translate}}<span class='RedAsterisk'> *</span></td>
+                    <td>
+                        <select required style="padding:1px !important" class="dropdown form-control form-select" [(ngModel)]="defaultBankDropdownValue" name="bankName">
+                            <option *ngFor="let option of modelBankParam" [ngValue]="option">{{option.nm_en}}</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{"labels.bankdraftno" | translate}}<span class='RedAsterisk'> *</span></td>
+                    <td>
+                        <input required type="text" maxlength="150" [(ngModel)]="data.item.bd_no" name="bd_no" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{"labels.bankdraftdate" | translate}}<span class='RedAsterisk'> *</span></td>
+                    <td>
+                        <input  type="text"
+                        class="dropdown-upload form-control"
+                        placeholder="Date Picker"
+                        bsDatepicker
+                        required
+                        #dtSettlementModel="ngModel"
+                        [(ngModel)]="data.item.bd_date" name="bd_date"
+                        [bsConfig]="{ dateInputFormat: 'DD MMM YYYY' }">
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{"labels.amountrm" | translate}}</td>
+                    <td>
+                        <span>{{amount  | number:'.2-2'}}</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    <!--Money Order-->
+        <table id="TableMO" *ngIf="moTable" class="MATable">
+            <thead>
+                <tr class="MATableHeader">
+                    <th>{{"labels.fieldname" | translate}}</th>
+                    <th>{{"labels.value" | translate}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{"labels.collectionslipno" | translate}}</td>
+                    <td>
+                        <span>{{data.item.col_slip_no}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{"labels.orderreferenceno" | translate}}</td>
+                    <td>
+                        <span>{{data.item.orn_no}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{"labels.remitno" | translate}}<span class='RedAsterisk'> *</span></td>
+                    <td>
+                        <input required type="text" maxlength="150" [(ngModel)]="data.item.mo_rm_no" name="mo_rm_no" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{"labels.moneyorderdate" | translate}}<span class='RedAsterisk'> *</span></td>
+                    <td>
+                        <input  type="text"
+                        class="dropdown-upload form-control"
+                        placeholder="Date Picker"
+                        bsDatepicker
+                        required
+                        #dtSettlementModel="ngModel"
+                        [(ngModel)]="data.item.mo_date" name="mo_date"
+                        [bsConfig]="{ dateInputFormat: 'DD MMM YYYY' }">
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{"labels.payername" | translate}}<span class='RedAsterisk'> *</span></td>
+                    <td>
+                        <input required type="text" maxlength="150" [(ngModel)]="data.item.mo_payer_nm" name="mo_payer_nm" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{"labels.IDno" | translate}}<span class='RedAsterisk'> *</span></td>
+                    <td>
+                        <input required type="text" maxlength="150" [(ngModel)]="data.item.mo_id_no" name="mo_id_no" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{"labels.contactno" | translate}}<span class='RedAsterisk'> *</span></td>
+                    <td>
+                        <input required type="text" (input)="checkPhoneLength()" (keypress)="allowOnlyNumbers($event)" [(ngModel)]="data.item.mo_contact_no" name="mo_contact_no" />  
+                        <div class="text-danger" *ngIf="isPhoneInvalid">
+                            {{"Phone number must be between 10 to 15 digits." | translate}}
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{"labels.amountrm" | translate}}</td>
+                    <td>
+                        <span>{{this.amount  | number:'.2-2'}}</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br>
+        <br>
+        <div class="button-container">
+            <button class="btn btnApply" type="button" (click)="submit()">{{"buttons.submit" | translate}}</button>
+            <button class="btn btnCancel" type="button" (click)="cancel()">{{"buttons.cancel" | translate}}</button>
+        </div>
+    </div>
+</body>
+

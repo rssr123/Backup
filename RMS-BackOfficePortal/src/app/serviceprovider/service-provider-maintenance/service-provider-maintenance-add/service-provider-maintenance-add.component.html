@@ -1,0 +1,279 @@
+<div class="mat-dialog-content">
+    <!-- Header for Add Item -->
+    <div class="SingleContainerHeader">
+        <h2 class="text-center">{{"add item" | translate}}</h2>
+    </div>
+    <form #formRef="ngForm" (ngSubmit)="handleFormSubmit(formRef)">
+        <div class="MALoadingContainer">
+            <!-- Loading spinner overlay -->
+            <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only"></span>
+                </div>
+            </div>
+            <div [ngClass]="{'TableDimmed': isLoading}">
+                <!-- Error Box -->
+                <div *ngIf="error" class="error-box">
+                    <i class="bi bi-x-circle-fill error-icon"></i>
+                    <div>
+                        <strong>{{"labels.validationerror" | translate}}</strong>
+                        <ul>
+                            <ul>
+                                <li *ngFor="let errorMsg of errorMessages">{{ errorMsg }}</li>
+                            </ul>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Profile Name -->
+                <div class="form-group">
+                    <label for="profileNm">{{"labels.profilename" | translate}} <span
+                            class='RedAsterisk'>*</span></label>
+                    <input type="text" class="form-control" id="profileNm" name="profileNm" [(ngModel)]="profileNm"
+                        #profileNameRef="ngModel" required pattern="^\S.*">
+                    <div *ngIf="profileNameRef.errors && profileNameRef.errors['required'] && profileNameRef.touched"
+                        class="error-text">
+                        {{"labels.profilenameisrequired" | translate}}
+                    </div>
+                    <div *ngIf="profileNameRef.errors && profileNameRef.errors['pattern'] && profileNameRef.touched"
+                        class="error-text">
+                        {{"labels.profilenamecannotbeginwithwhitespace" | translate}}
+                    </div>
+                </div>
+
+                <!-- Customer Name -->
+                <div class="form-group">
+                    <label for="custNm">{{"labels.customername" | translate}} <span 
+                        class='RedAsterisk'>*</span></label>
+                    <input type="text" class="form-control" id="custNm" name="custNm" [(ngModel)]="custNm"
+                        #customerNameRef="ngModel" required pattern="^\S.*">
+                    <div *ngIf="customerNameRef.errors && customerNameRef.errors['required'] && customerNameRef.touched"
+                        class="error-text">
+                        {{"labels.customernameisrequired" | translate}}
+                    </div>
+                    <div *ngIf="customerNameRef.errors && customerNameRef.errors['pattern'] && customerNameRef.touched"
+                        class="error-text">
+                        {{"labels.customernamecannotbeginwithwhitespace" | translate}}
+                    </div>
+                </div>
+
+                <!-- Customer Address 1 -->
+                <div class="form-group">
+                    <label for="custAddr1">{{"labels.addressline1" | translate}} <span
+                            class='RedAsterisk'>*</span></label>
+                    <input type="text" class="form-control" id="custAddr1" name="custAddr1" [(ngModel)]="custAddr1"
+                        #customerAddress1Ref="ngModel" required pattern="^\S.*">
+                    <div *ngIf="customerAddress1Ref.errors && customerAddress1Ref.errors['required'] && customerAddress1Ref.touched"
+                        class="error-text">
+                        {{"labels.customeraddress1isrequired" | translate}}
+                    </div>
+                    <div *ngIf="customerAddress1Ref.errors && customerAddress1Ref.errors['pattern'] && customerAddress1Ref.touched"
+                        class="error-text">
+                        {{"labels.customeraddress1cannotbeginwithwhitespace" | translate}}
+                    </div>
+                </div>
+
+                <!-- Customer Address 2 -->
+                <div class="form-group">
+                    <label for="custAddr2">{{"labels.addressline2" | translate}}</label>
+                    <input type="text" class="form-control" id="custAddr2" name="custAddr2" [(ngModel)]="custAddr2"
+                        #customerAddress2Control="ngModel" pattern="^\S.*">
+
+                    <div *ngIf="customerAddress2Control.errors && customerAddress2Control.errors['pattern'] && customerAddress2Control.touched"
+                        class="error-text">
+                        {{"labels.customeraddress2cannotbeginwithwhitespace" | translate}}
+                    </div>
+                </div>
+
+
+                <!-- Customer Address 3-->
+                <div class="form-group">
+                    <label for="custAddr3">{{"labels.addressline3" | translate}}</label>
+                    <input type="text" class="form-control" id="custAddr3" name="custAddr3" [(ngModel)]="custAddr3"
+                        #customerAddress3Control="ngModel" pattern="^\S.*">
+
+                    <div *ngIf="customerAddress3Control.errors && customerAddress3Control.errors['pattern'] && customerAddress3Control.touched"
+                        class="error-text">
+                        {{"labels.customeraddress3cannotbeginwithwhitespace" | translate}}
+                    </div>
+                </div>
+
+                <!-- Postcode -->
+                <div class="form-group">
+                    <label for="custPostcode">{{"labels.postcode" | translate}} <span
+                            class='RedAsterisk'>*</span></label>
+                    <ng-select name="postcode" [(ngModel)]="postcode" required #postcodeRef="ngModel"
+                        dropdownPosition="bottom" class="form-control"
+                        placeholder="{{'labels.pleasetypehere' | translate}}" (ngModelChange)="onPostcodeChange($event)"
+                        [addTag]="checkTag">
+                        <ng-option *ngFor="let item of postCodes" [value]="item.postcode">{{item.postcode}}</ng-option>
+                    </ng-select>
+                    <div *ngIf="postcodeRef.errors && postcodeRef.errors['required'] && postcodeRef.touched"
+                        class="error-text">
+                        {{"labels.postcodeisrequired" | translate}}
+                    </div>
+                </div>
+
+                <!-- Customer City -->
+                <div class="form-group">
+                    <label for="custCity">{{"labels.city" | translate}} <span class='RedAsterisk'>*</span></label>
+                    <ng-select name="city" [(ngModel)]="city" required #cityRef="ngModel" dropdownPosition="bottom"
+                        class="form-control" placeholder="{{'labels.pleasetypehere' | translate}}" [addTag]="upperCity">
+                        <ng-option *ngFor="let cityItem of uniqueCities" [value]="cityItem">{{ cityItem }}</ng-option>
+                    </ng-select>
+                    <div *ngIf="cityRef.errors && cityRef.errors['required'] && cityRef.touched" class="error-text">
+                        {{"labels.cityisrequired" | translate}}
+                    </div>
+                </div>
+
+                <!-- Customer State -->
+                <div class="form-group">
+                    <label for="custState">{{"labels.state" | translate}} <span class='RedAsterisk'>*</span></label>
+                    <ng-select name="state" [(ngModel)]="state" required #stateRef="ngModel" dropdownPosition="bottom"
+                        class="form-control" placeholder="{{'labels.pleasetypehere' | translate}}" maxlength="50">
+                        <ng-option *ngFor="let stateItem of uniqueStates" [value]="stateItem">{{ stateItem
+                            }}</ng-option>
+                    </ng-select>
+
+
+
+                    <div *ngIf="stateRef.errors && stateRef.errors['required'] && stateRef.touched" class="error-text">
+                        {{"labels.stateisrequired" | translate}}
+                    </div>
+                </div>
+
+                <!-- Customer Email -->
+                <div class="form-group">
+                    <label for="custEmail">{{"labels.email" | translate}} <span class='RedAsterisk'>*</span></label>
+                    <input type="email" class="form-control" id="custEmail" name="custEmail" [(ngModel)]="custEmail"
+                        #emailControl="ngModel" required pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$">
+
+                    <div *ngIf="emailControl.errors && emailControl.errors['required'] && emailControl.touched"
+                        class="error-text">
+                        {{"labels.customeremailisrequired" | translate}}
+                    </div>
+
+                    <div *ngIf="emailControl.errors && emailControl.errors['pattern'] && emailControl.touched"
+                        class="error-text">
+                        {{"labels.pleaseentervalidemail" | translate}}
+                    </div>
+
+                </div>
+
+
+
+
+                <!-- Customer Phone -->
+                <div class="form-group">
+                    <label for="custPhone">{{"labels.customerphoneno" | translate}} <span
+                            class='RedAsterisk'>*</span></label>
+                    <input class="form-control" type="text" [(ngModel)]="custPhone" name="cus_phno"
+                        #cus_phnoRef="ngModel" placeholder="{{'labels.pleasetypehere' | translate}}" required
+                        oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');"
+                        maxlength="15" minlength="10" (blur)="cus_phnoRef.control.markAsTouched()" />
+                    <div *ngIf="cus_phnoRef.errors && cus_phnoRef.errors['required'] && cus_phnoRef.touched"
+                        class="error-text">
+                        {{"labels.customerphonenumberisrequired" | translate}}
+                    </div>
+                    <div *ngIf="cus_phnoRef.errors && (cus_phnoRef.errors['minlength'] || cus_phnoRef.errors['maxlength']) && cus_phnoRef.touched"
+                        class="error-text">{{"labels.cusphonenobadcount" | translate}}</div>
+                </div>
+
+                <!-- Fee Detail ID -->
+                <div class="form-group">
+                    <label for="feeDetailId">{{"labels.feedetailid" | translate}} <span
+                            class='RedAsterisk'>*</span></label>
+                    <!-- <input type="text" class="form-control" id="feeDetailId" name="feeDetailId"
+                        [(ngModel)]="feeDetailId" #feeDetailIdRef="ngModel" required pattern="^\S.*"> -->
+
+                    <ng-select class="form-control" name="tempRFeeDetNm" [(ngModel)]="tempFeeDetailPK" required
+                        #rFeeDetNmRef="ngModel" dropdownPosition="bottom" maxlength="100">
+                        <ng-option *ngFor="let item of mfts" [value]="item.fee_detail_pk">{{item.fee_detail_id}} :
+                            {{item.fee_detail_nm_e}}</ng-option>
+                    </ng-select>
+                    <!-- <div *ngIf="tempFeeDetailPK.errors && feeDetailIdRef.errors['required'] && feeDetailIdRef.touched"
+                        class="error-text">
+                        {{"labels.feedeatialIDisrequired" | translate}}
+                    </div>
+                    <div *ngIf="feeDetailIdRef.errors && feeDetailIdRef.errors['pattern'] && feeDetailIdRef.touched"
+                        class="error-text">
+                        {{"labels.feedetailidcannotbeginwithwhitespace" | translate}}
+                    </div> -->
+                    <div *ngIf="rFeeDetNmRef.errors?.['required'] && rFeeDetNmRef.touched" class="error-text">
+                        {{"labels.feedeatialIDisrequired" | translate}}
+                    </div>
+                </div>
+
+                <!-- Entity Type -->
+                <div class="form-group">
+                    <label for="entityType">{{"labels.entitytype" | translate}} <span
+                            class='RedAsterisk'>*</span></label>
+                    <!-- <input type="text" class="form-control" id="entityType" name="entityType" [(ngModel)]="entityType"
+                        #entityTypeRef="ngModel" required pattern="^\S.*"> -->
+                    <select class="dropdown" name="entityType" #entityTypeRef="ngModel" class="form-control form-select"
+                        [(ngModel)]="entityType" [required]="!isReadOnly">
+                        <option *ngFor="let item of enType" [value]="item.param_cd">
+                            {{ item.nm_en }}
+                        </option>
+                    </select>
+                    <div *ngIf="entityTypeRef.errors && entityTypeRef.errors['required'] && entityTypeRef.touched"
+                        class="error-text">
+                        {{"labels.entitytypeisrequired" | translate}}
+                    </div>
+                    <div *ngIf="entityTypeRef.errors && entityTypeRef.errors['pattern'] && entityTypeRef.touched"
+                        class="error-text">
+                        {{"labels.entitytypecannotbeginwithwhitespace" | translate}}
+                    </div>
+                </div>
+
+
+                <!-- Entity No -->
+                <div class="form-group">
+                    <label for="entityNo">{{"labels.entityno" | translate}} <span class='RedAsterisk'>*</span></label>
+                    <input type="text" class="form-control" id="entityNo" name="entityNo" [(ngModel)]="entityNo"
+                        #entityNoRef="ngModel" required pattern="^\S.*" minlength="5" maxlength="20">
+                    <div *ngIf="entityNoRef.errors && entityNoRef.errors['required'] && entityNoRef.touched"
+                        class="error-text">
+                        {{"labels.entitynoisrequired" | translate}}
+                    </div>
+                    <div *ngIf="entityNoRef.errors && entityNoRef.errors['pattern'] && entityNoRef.touched"
+                        class="error-text">
+                        {{"labels.entitynocannotbeginwithwhitespace" | translate}}
+                    </div>
+                    <div *ngIf="entityNoRef.errors && entityNoRef.errors['maxlength'] && entityNoRef.touched"
+                        class="error-text">
+                        {{"labels.Entity No cannot exceed 20 characters." | translate}}
+                    </div>
+                    <div *ngIf="entityNoRef.errors && entityNoRef.errors['minlength'] && entityNoRef.touched"
+                        class="error-text">
+                        {{"labels.Entity No must be at least 5 characters." | translate}}
+                    </div>
+                </div>
+
+                <!-- Entity Name -->
+                <div class="form-group">
+                    <label for="entityNm">{{"labels.entityname" | translate}} <span class='RedAsterisk'>*</span></label>
+                    <input type="text" class="form-control" id="entityNm" name="entityNm" [(ngModel)]="entityNm"
+                        #entityNameRef="ngModel" required pattern="^\S.*">
+                    <div *ngIf="entityNameRef.errors && entityNameRef.errors['required'] && entityNameRef.touched"
+                        class="error-text">
+                        {{"labels.entitynameisrequired" | translate}}
+                    </div>
+                    <div *ngIf="entityNameRef.errors && entityNameRef.errors['pattern'] && entityNameRef.touched"
+                        class="error-text">
+                        {{"labels.entitynamecannotbeginwithwhitespace" | translate}}
+                    </div>
+                </div>
+
+
+                <!-- Buttons -->
+                <div class="button-group">
+                    <div>{{"fields with are mandatory" | translate}}</div>
+                    <button class="btn btnSubmit" type="submit" [disabled]="formRef.invalid">{{"buttons.submit" |
+                        translate}}</button>
+                    <button class="btn btnClose" type="button" (click)="closed()">{{"buttons.close" |
+                        translate}}</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

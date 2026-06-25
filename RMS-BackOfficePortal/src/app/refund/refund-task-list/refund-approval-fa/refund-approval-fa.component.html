@@ -1,0 +1,837 @@
+<body class="BodyCointaner">
+    <div class="leftPadding">
+        <div class="order-info">
+            <h2>{{"labels.refundapproval" | translate}}</h2>
+        </div>
+        <div *ngIf="showInsertAlert">
+            <div [ngClass]="alertClass" role="alert">
+                {{ alertMessage | translate }}
+            </div>
+        </div>
+    </div>
+    <div class="MALoadingContainer">
+        <!-- Loading spinner overlay -->
+        <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+            <div class="spinner-border" role="status">
+                <span class="sr-only"></span>
+            </div>
+        </div>
+        <form (ngSubmit)="handleFormSubmit(formRef)" #formRef="ngForm">
+            <div class="formContainer">
+                <div class="leftSection">
+                    <div class="task-info">
+                        <h3>{{"labels.taskinfomation" | translate}}</h3>
+                    </div>
+                    <div class="table-container">
+                        <table *ngFor="let item of refundApprovalTaskInfo">
+                            <tr>
+                                <td class="taskinfo" style="width: 30%; vertical-align: top;">
+                                    <label>{{"labels.taskid" | translate}}</label>
+                                </td>
+                                <td class="taskinfo" style="width: 70%; vertical-align: top;">
+                                    <label>: {{task_id}}</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="taskinfo">
+                                    <label>{{"labels.taskdescription" | translate}}</label>
+                                </td>
+                                <td class="taskinfo">
+                                    <label>: {{ getRefundLabel(item.refund_ty) }}</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="taskinfo">
+                                    <label>{{"labels.status" | translate}}</label>
+                                </td>
+                                <td class="taskinfo">
+                                    <label>: {{item.status_param_nm}}</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="taskinfo">
+                                    <label>{{"labels.referencenumber" | translate}}</label>
+                                </td>
+                                <td class="taskinfo">
+                                    <label>: {{item.rtt_app_no}}</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="taskinfo">
+                                    <label>{{"labels.assigneddate" | translate}}</label>
+                                </td>
+                                <td class="taskinfo">
+                                    <label>: {{item.dt_requested | date: 'dd MMM yyyy'}}</label>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <br>
+
+                    <div class="requester-info">
+                        <h3>{{"labels.requesterinfomation" | translate}}</h3>
+                    </div>
+                    <div class="table-container">
+                        <table *ngFor="let item of refundApprovalTaskInfo">
+
+                            <tr>
+                                <td class="taskinfo" style="width: 30%; vertical-align: top;">
+                                    <label>{{"labels.sourcesystem" | translate}}</label>
+                                </td>
+                                <td class="taskinfo" style="width: 70%; vertical-align: top;">
+                                    <label>: {{item.ss_cd}}</label>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="taskinfo">
+                                    <label>{{"labels.requestedby" | translate}}</label>
+                                </td>
+                                <td class="taskinfo">
+                                    <label>: {{item.requested_by}}</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="taskinfo">
+                                    <label>{{"labels.daterequested" | translate}}</label>
+                                </td>
+                                <td class="taskinfo">
+                                    <label>: {{item.dt_requested| date: 'dd MMM yyyy' }}</label>
+                                </td>
+                            </tr>
+
+                        </table>
+                        <hr class="full-width-line" />
+                    </div>
+
+                    <div class="order-info">
+                        <h3>{{"labels.orderinformation" | translate}}</h3>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <tr *ngFor="let order of orderInfo">
+                                <td>
+                                    <div class="displayColumn">
+                                        <label class="tableLabel">{{ "labels.sourcesystem" | translate }}</label>
+                                        <input class="form-control" type="text" [value]="order.ss_cd || 'N/A'"
+                                            disabled />
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="displayColumn">
+                                        <label class="tableLabel">{{ "labels.orderrefno" | translate }}</label>
+                                        <input class="form-control" type="text" [value]="order.orn_no || 'N/A'"
+                                            disabled />
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="displayColumn">
+                                        <label class="tableLabel">{{ "labels.transactionid" | translate }}</label>
+                                        <input class="form-control" type="text" [value]="order.txn_id || 'N/A'"
+                                            disabled />
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr *ngFor="let order of orderInfo">
+                                <td>
+                                    <div class="displayColumn">
+                                        <label class="tableLabel">{{ "labels.customername" | translate }}</label>
+                                        <input class="form-control" type="text" [value]="order.cust_nm || 'N/A'"
+                                            disabled />
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="displayColumn">
+                                        <label class="tableLabel">{{ "labels.customerphoneno" | translate }}</label>
+                                        <input class="form-control" type="text" [value]="order.cust_phone || 'N/A'"
+                                            disabled />
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="displayColumn">
+                                        <label class="tableLabel">{{ "labels.customeremail" | translate }}</label>
+                                        <input class="form-control" type="text" [value]="order.cust_email || 'N/A'"
+                                            disabled />
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr *ngFor="let order of orderInfo">
+                                <td>
+                                    <div class="displayColumn">
+                                        <label class="tableLabel">{{ "labels.addressline1" | translate }}</label>
+                                        <input class="form-control" type="text" [value]="order.cust_addr_1 || 'N/A'"
+                                            disabled />
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="displayColumn">
+                                        <label class="tableLabel">{{ "labels.addressline2" | translate }}</label>
+                                        <input class="form-control" type="text" [value]="order.cust_addr_2 || 'N/A'"
+                                            disabled />
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="displayColumn">
+                                        <label class="tableLabel">{{ "labels.addressline3" | translate }}</label>
+                                        <input class="form-control" type="text" [value]="order.cust_addr_3 || 'N/A'"
+                                            disabled />
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr *ngFor="let order of orderInfo">
+                                <td>
+                                    <div class="displayColumn">
+                                        <label class="tableLabel">{{ "labels.postcode" | translate }}</label>
+                                        <input class="form-control" type="text" [value]="order.cust_postcode || 'N/A'"
+                                            disabled />
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="displayColumn">
+                                        <label class="tableLabel">{{ "labels.city" | translate }}</label>
+                                        <input class="form-control" type="text" [value]="order.cust_city || 'N/A'"
+                                            disabled />
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="displayColumn">
+                                        <label class="tableLabel">{{ "labels.state" | translate }}</label>
+                                        <input class="form-control" type="text" [value]="order.cust_state || 'N/A'"
+                                            disabled />
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+
+                    <div>
+                        <h2>{{"labels.refundpaymentitems" | translate}}</h2>
+                    </div>
+                    <div class="MALoadingContainer">
+                        <!-- <div class="TableLoading-overlay d-flex align-items-center justify-content-center">
+                                         <div class="spinner-border" role="status">
+                                            <span class="sr-only"></span>
+                                        </div>
+                                    </div> -->
+                        <div class="tableWrapper">
+                            <table class="MATable" *ngIf="!isLoading">
+                                <thead>
+                                    <tr class="MATableHeader">
+                                        <th class="no-column">No.</th>
+                                        <th class="long-column">{{"labels.itemdescription" | translate}}</th>
+                                        <th class="entity-no-column">{{"labels.entityno" | translate}}</th>
+                                        <th class="money-column">{{"labels.unitfee(RM)" | translate}}</th>
+                                        <th class="short2-column">{{"labels.qty" | translate}}</th>
+                                        <th class="short-column">{{"labels.incentivecode" | translate}}</th>
+                                        <th class="short-column">{{"labels.discountincentiverm" | translate}}</th>
+                                        <th class="short2-column">{{"labels.tax%" | translate}}</th>
+                                        <th class="short-column">{{"labels.taxrm" | translate}}</th>
+                                        <th class="money-column">{{"labels.grossamountrm" | translate}}</th>
+                                        <th class="money-column">{{"labels.netamountrm" | translate}}</th>
+                                        <th class="money-column">{{"labels.refundamountrm" | translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of rttItems; let i = index">
+                                        <td>{{ i + 1 }}</td>
+                                        <td>{{ item.item_desc }}</td>
+                                        <td>{{ item.entity_no }}</td>
+                                        <td>{{ item.unit_fee | number: '1.2-2' }}</td>
+                                        <td>{{ item.qty }}</td>
+                                        <td>{{ item.grant_cd }}</td>
+                                        <td>{{ item.disc_amt | number: '1.2-2' }}</td>
+                                        <td>{{ item.tax_pct }}</td>
+                                        <td>{{ item.tax_amt | number: '1.2-2' }}</td>
+                                        <td>{{ item.gross_amt | number: '1.2-2' }}</td>
+                                        <td>{{ item.net_amt | number: '1.2-2' }}</td>
+                                        <td>{{ item.refund_amt | number: '1.2-2' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="11" style="text-align: right; font-weight: bold;">
+                                            {{"labels.TOTAL" |
+                                            translate}}</td>
+                                        <td style="font-weight: bold;">{{ this.totalGrossAmount | number: '1.2-2' }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                        <hr class="full-width-line" />
+                    </div>
+                    <div>
+                        <h2>{{"labels.paymentinformation" | translate}}</h2>
+                    </div>
+                    <div class="paymentinfo">
+                        <div class="paymentinfodetails">
+                            <label class="bold">{{"labels.payeremails" | translate}}</label>
+                            <div class="marginTopCash">
+                                <input class="form-control" type="text" [value]="otcPayerEmail || onlinePayerEmail"
+                                    placeholder="" disabled />
+                            </div>
+
+                        </div>
+                        <div class="paymentinfodetails" *ngIf="otcpaymentinfosection">
+                            <label class="bold">{{"labels.selectpaymentmode" | translate}}</label>
+                            <div class="marginTop">
+                                <input type="radio" class="custom-radio" disabled [checked]="false" />
+                                <span class="marginLeft">{{"labels.online" | translate}}</span>
+                                <div class="payment-mode"></div>
+
+                                <div class="marginTop">
+                                    <input type="radio" class="custom-radio" disabled name="paymentMethod"
+                                        [checked]="otcPymtMode==='EV'" />
+                                    <span class="marginLeft">{{"labels.Europay, MasterCard, and Visa Terminal" |
+                                        translate}}</span>
+                                </div>
+
+                                <div class="payment-mode"></div>
+                                <div class="marginTop">
+                                    <input type="radio" class="custom-radio" name="paymentMethod" disabled
+                                        [checked]="otcPymtMode==='CA' ||otcPymtMode==='CE'|| otcPymtMode==='MO'|| otcPymtMode==='BD'|| otcPymtMode==='MX'" />
+                                    <span class="marginLeft">{{"labels.physicalcollection" | translate}}</span>
+                                </div>
+
+                                <div class="marginTopCash" *ngIf="cashPayments.length > 0">
+                                    <span class="small-dot"></span>
+                                    <span class="marginLeft">{{"labels.cashamountrm" | translate}}</span>
+                                    <input class="form-control" style="margin-left: 45px;" type="text"
+                                        [(ngModel)]="otcPaymentDetailsCashAmt" [ngModelOptions]="{standalone: true}"
+                                        disabled />
+                                </div>
+
+                                <div class="marginTop" *ngIf="otcEMVModel.length > 0">
+                                    <span class="small-dot"></span>
+                                    <span class="marginLeft">EMV Transaction Information</span>
+                                    <div class="table-container">
+                                        <table class="MATable" *ngIf="!isLoading">
+                                            <thead>
+                                                <tr class="MATableHeader">
+                                                    <th class="no-column">No.</th>
+                                                    <th>{{"labels.transactiontrace" | translate}} </th>
+                                                    <th>{{"labels.batchnumber" | translate}}</th>
+                                                    <th class="thFileName">{{"labels.hostnumber" | translate}}</th>
+                                                    <th>{{"labels.terminalid" | translate}}</th>
+                                                    <th>{{"labels.transactionamountrm" | translate}}</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody *ngIf="otcEMVModel.length > 0">
+                                                <tr *ngFor="let item of otcEMVModel; let i = index">
+                                                    <td>{{ (page - 1) * itemsPerPage + i + 1 }}</td>
+                                                    <td>{{ item.trans_trace }}</td>
+                                                    <td>{{ item.batch_no }}</td>
+                                                    <td>{{ item.host_no }}</td>
+                                                    <td>{{ item.t_id }}</td>
+                                                    <td>{{ item.amt | number: '1.2-2' }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <br>
+                                    </div>
+                                </div>
+
+                                <div class="MarginSeparator"></div>
+
+                                <div class="marginTop" *ngIf="chequePayments.length > 0">
+                                    <span class="small-dot"></span>
+                                    <span class="marginLeft">{{"labels.chequeinformation" | translate}}</span>
+                                    <div class="table-container">
+                                        <table class="MATable" *ngIf="!isLoading">
+                                            <thead>
+                                                <tr class="MATableHeader">
+                                                    <th class="no-column">No.</th>
+                                                    <th class="short-column">{{"labels.chequeid" | translate}}</th>
+                                                    <th>{{"labels.bankname" | translate}}</th>
+                                                    <th>{{"labels.payername" | translate}}</th>
+                                                    <th>{{"labels.chequeno" | translate}}</th>
+                                                    <th>{{"labels.chequedate" | translate}}</th>
+                                                    <th>{{"labels.bankaccno" | translate}}</th>
+                                                    <th>{{"labels.amountrm" | translate}}</th>
+                                                    <th>{{"labels.chequestatus" | translate}}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody *ngIf="chequePayments.length >= 0">
+                                                <tr *ngFor="let item of chequePayments; let i = index">
+                                                    <td>{{ (page - 1) * itemsPerPage + i + 1 }}</td>
+                                                    <td class="short-column">{{ item.che_id }}
+                                                    <td>
+                                                        {{ item.che_bank_nm }}
+                                                    </td>
+                                                    <td>
+                                                        {{ item.che_payer_nm }}
+                                                    </td>
+                                                    <td>
+                                                        {{ item.che_no }}
+                                                    </td>
+                                                    <td>
+                                                        {{ item.cheDate | date: 'dd MMM yyyy' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ item.che_ba_acct_no }}
+
+                                                    </td>
+                                                    <td>
+                                                        {{ item.che_amt | number: '1.2-2' }}
+                                                    </td>
+
+                                                    <td>
+                                                        {{ item.che_status}}
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td colspan="8" style="text-align: right; font-weight: bold;">
+                                                        {{"labels.totalamountrm" | translate}}</td>
+                                                    <td style="font-weight: bold;">{{ totalChequeAmount | number:
+                                                        '1.2-2' }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="marginTop" *ngIf="bankDraftPayments.length > 0">
+                                    <span class="small-dot"></span>
+                                    <span class="marginLeft">Bank Draft Infomration</span>
+                                    <div class="table-container">
+                                        <table class="MATable" *ngIf="!isLoading">
+                                            <thead>
+                                                <tr class="MATableHeader">
+                                                    <th class="no-column">No.</th>
+                                                    <th>{{"labels.bankname" | translate}}</th>
+                                                    <th>{{"labels.bankdraftno" | translate}}</th>
+                                                    <th>{{"labels.bankdraftdate" | translate}}</th>
+                                                    <th>{{"labels.amountrm" | translate}}</th>
+                                                    <!-- <th>Action</th> -->
+                                                </tr>
+                                            </thead>
+                                            <tbody *ngIf="bankDraftPayments.length >= 0">
+                                                <tr *ngFor="let item of bankDraftPayments; let i = index">
+                                                    <td>{{ (page - 1) * itemsPerPage + i + 1 }}</td>
+                                                    <td>
+                                                        {{ item.bd_bank_nm }}
+                                                        <!-- <select id="bankNm" class="form-control" [(ngModel)]="item.bd_bank_nm" disabled>
+                                                                        <option value="" disabled selected>Select Bank</option>
+                                                                        <option *ngFor="let bank of bankmodel" [value]="bank.nm_en" disabled>
+                                                                            {{ bank.nm_en }}
+                                                                        </option>
+                                                                    </select> -->
+                                                    </td>
+                                                    <td>
+                                                        {{ item.bd_no }}
+                                                        <!-- <input type="text" [(ngModel)]="item.bd_no" disabled
+                                                                        placeholder="Enter Bank Draft No" /> -->
+                                                    </td>
+                                                    <td>
+                                                        <!-- <input type="date"  [(ngModel)]="item.bd_date" name="daterange" readonly> -->
+                                                        {{ item.bd_date | date: 'dd MMM yyyy' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ item.bd_amt | number: '1.2-2' }}
+                                                        <!-- <input type="text" [(ngModel)]="item.bd_amt" disabled
+                                                                        placeholder="Enter Bank Draft Amount" /> -->
+                                                    </td>
+
+                                                    <!-- <td>
+                                                                <button *ngIf="item.isNew" class="btn btnAdd" (click)="saveBDRow(i)">Save</button>
+                                                                <button *ngIf="!item.isNew && !item.isEditable" class="btn btnEdit" (click)="editBDRow(i)">Edit</button>
+                                                                <button *ngIf="!item.isNew && item.isEditable" class="btn btnAdd" (click)="saveBDRow(i)">Update</button>
+                                                                <button *ngIf="item.isNew" class="btn btn-danger" (click)="removeBDNewRow(i)" style="margin-left: 10px;">Remove</button>
+                                                                <button *ngIf="!item.isEditable" class="btn btn-danger" (click)="deleteBDRow(i)" style="margin-left: 10px;">Delete</button>
+                                                              </td> -->
+                                                </tr>
+
+                                                <tr>
+                                                    <td colspan="4" style="text-align: right; font-weight: bold;">Total
+                                                        Amount (RM):
+                                                    </td>
+                                                    <td style="font-weight: bold;">{{ totalBDAmount | number: '1.2-2' }}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="marginTop" *ngIf="moneyOrderPayments.length > 0">
+                                    <span class="small-dot"></span>
+                                    <span class="marginLeft">Money Order Information</span>
+                                    <div class="table-container">
+                                        <table class="MATable" *ngIf="!isLoading">
+                                            <thead>
+                                                <tr class="MATableHeader">
+                                                    <th class="no-column">No.</th>
+                                                    <th>{{"labels.remitno" | translate}}</th>
+                                                    <th>{{"labels.moneyorderdate" | translate}}</th>
+                                                    <th>{{"labels.payername" | translate}}</th>
+                                                    <th>{{"labels.idno" | translate}}</th>
+                                                    <th>{{"labels.contactno" | translate}}</th>
+                                                    <th>{{"labels.amountrm" | translate}}</th>
+                                                    <!-- <th>Action</th> -->
+                                                </tr>
+                                            </thead>
+                                            <tbody *ngIf="moneyOrderPayments.length >= 0">
+                                                <tr *ngFor="let item of moneyOrderPayments; let i = index">
+                                                    <td>{{ (page - 1) * itemsPerPage + i + 1 }}</td>
+                                                    <td>
+                                                        <!-- <input type="text" [(ngModel)]="item.mo_rm_no" disabled
+                                                                        placeholder="Enter Remit No" /> -->
+                                                        {{ item.mo_rm_no }}
+                                                    </td>
+                                                    <td>
+                                                        <!-- <input type="date" [(ngModel)]="item.mo_date" name="daterange" readonly> -->
+                                                        {{ item.mo_date | date: 'dd MMM yyyy' }}
+
+                                                    </td>
+                                                    <td>
+                                                        {{ item.mo_payer_nm }}
+                                                        <!-- <input type="text" [(ngModel)]="item.mo_payer_nm" disabled
+                                                                        placeholder="Enter Payer Name" /> -->
+                                                    </td>
+                                                    <td>
+                                                        {{ item.mo_id_no }}
+                                                        <!-- <input type="text" [(ngModel)]="item.mo_id_no" disabled
+                                                                        placeholder="Enter ID No" /> -->
+                                                    </td>
+                                                    <td>
+                                                        {{ item.mo_contact_no }}
+                                                        <!-- <input type="text" [(ngModel)]="item.mo_contact_no" disabled
+                                                                        placeholder="Enter Contact No" /> -->
+                                                    </td>
+                                                    <td>
+                                                        {{ item.mo_amt | number: '1.2-2' }}
+                                                        <!-- <input type="text" [(ngModel)]="item.mo_amt" placeholder="Enter Amount"
+                                                                        disabled /> -->
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td colspan="6" style="text-align: right; font-weight: bold;">Total
+                                                        Amount (RM):
+                                                    </td>
+                                                    <td style="font-weight: bold;">{{ totalMOAmount | number: '1.2-2' }}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="paymentinfodetails" *ngIf="onlinepaymentinfosection">
+                            <label class="bold">{{"labels.paymentmethod" | translate}}</label>
+                            <div class="marginTop">
+                                <input type="radio" class="custom-radio" [checked]="true" disabled />
+                                <span class="marginLeft">{{"labels.online" | translate}}</span>
+                                <div class="payment-mode"></div>
+                                <div class="marginTop">
+                                    <input type="radio" class="custom-radio" [checked]="false" disabled />
+                                    <span class="marginLeft">{{"labels.Europay, MasterCard, and Visa Terminal" |
+                                        translate}}</span>
+                                </div>
+
+                                <div class="payment-mode"></div>
+                                <div class="marginTop">
+                                    <input type="radio" class="custom-radio" name="paymentMethod" [checked]="false"
+                                        disabled />
+                                    <span class="marginLeft">{{"labels.physicalcollection" | translate}}</span>
+                                </div>
+                                <div class="table-container">
+                                    <table class="MATable" *ngIf="!isLoading">
+                                        <thead>
+                                            <tr class="MATableHeader">
+                                                <th class="no-column">No.</th>
+                                                <th>{{"labels.transactionid" | translate}}</th>
+                                                <th>{{"labels.paymentstatus" | translate}}</th>
+                                                <th>{{"labels.paymentdate" | translate}}</th>
+                                                <th>{{"labels.amountrm" | translate}}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody *ngIf="onlinePaymentInfos.length >= 0">
+                                            <tr *ngFor="let item of onlinePaymentInfos; let i = index">
+                                                <td>{{ (page - 1) * itemsPerPage + i + 1 }}</td>
+                                                <td>
+                                                    {{ item.pg_payment_id }}
+                                                <td>
+                                                    {{ item.pg_payment_status }}
+                                                </td>
+                                                <td>
+                                                    {{ item.pg_payment_date| date: 'dd MMM yyyy' }}
+                                                </td>
+                                                <td>
+                                                    {{ item.pg_payment_amt | number: '1.2-2'}}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="4" style="text-align: right; font-weight: bold;">
+                                                    {{"labels.totalamountrm" | translate}}</td>
+                                                <td style="font-weight: bold;">{{ totalPGAmounts | number: '1.2-2' }}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table> <br>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div>
+                        <h2>{{"labels.ReceiptInformation" | translate}}</h2>
+                    </div>
+                    <div class="tableWrapper">
+                        <table class="MATable">
+                            <thead>
+                                <tr class="MATableHeader">
+                                    <th class="no-column">No.</th>
+                                    <th>{{"labels.receiptno" | translate}}</th>
+                                    <th>{{"labels.filename" | translate}}</th>
+                                    <th>{{"labels.generateddate" | translate}}</th>
+                                    <th>{{"labels.receiptstatus" | translate}}</th>
+                                    <th>{{"labels.reprintcount" | translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    *ngFor="let item of (otcpaymentinfosection ? otcRcptModel : pgRCPTModel) ; let i = index">
+                                    <td>{{ i + 1 }}</td>
+                                    <td>{{ item.rcptNo }}</td>
+                                    <td>
+                                        <a href="javascript:void(0)"
+                                            (click)="rms_type === 'Online' ? dlRcpt(item.rcptNo) : downloadFile(item.rcptNo, item.ver_id!, item.ssdocref_id!)">
+                                            {{ item.file_nm }}
+                                        </a>
+                                    </td>
+                                    <td>{{ item.rcpt_dt | date: 'dd MMM yyyy'}}</td>
+                                    <td>{{ item.rcpt_status }}</td>
+                                    <td>{{ item.rcpt_reprint}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div>
+                        <h2> {{"labels.refundinformation" | translate}}</h2>
+                    </div>
+                    <div class="tableWrapper">
+                        <table class="MATable">
+                            <thead>
+                                <tr class="MATableHeader">
+                                    <th class="no-column">No.</th>
+                                    <th>{{"labels.refundslipno" | translate}}</th>
+                                    <th>{{"labels.requestedby" | translate}}</th>
+                                    <th>{{"labels.dtprocess" | translate}}</th>
+                                    <th>{{"labels.attemptcount" | translate}}</th>
+                                    <th>{{"labels.refundstatus" | translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of refundInfoModel; let i = index">
+                                    <td>{{ i + 1 }}</td>
+                                    <td>{{ item.refund_slip_no || '-' }}</td>
+                                    <td>{{ item.requested_by }}</td>
+                                    <td>{{ item.dt_process != null ? (item.dt_process | date: 'dd MMM yyyy HH:mm:ss') :
+                                        '-' }}</td>
+                                    <td>{{ item.appeal_cnt === -1 ? '-' : item.appeal_cnt }}</td>
+                                    <td>{{ item.rtt_status}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <h2>{{"labels.historicaltable" | translate}}</h2>
+                    </div>
+                    <div class="tableWrapper">
+                        <table class="MATable">
+                            <thead>
+                                <tr class="MATableHeader">
+                                    <th class="no-column">No.</th>
+                                    <th>{{"labels.action" | translate}}</th>
+                                    <th>{{"labels.actiontimestamp" | translate}}</th>
+                                    <th>{{"labels.status" | translate}}</th>
+                                    <th>{{"labels.performedby" | translate}}</th>
+                                    <th>{{"labels.assignedto" | translate}}</th>
+                                    <th>{{"labels.remarks" | translate}}</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of refundHistModel; let i = index">
+                                    <td>{{ i + 1 }}</td>
+                                    <td>{{ item.action }}</td>
+                                    <td>{{ item.dt_action != null ? (item.dt_action | date: 'dd MMM yyyy HH:mm:ss') :
+                                        'N/A' }}</td>
+                                    <td>{{ item.rtt_status }}</td>
+                                    <td>{{ item.modified_by_nm }}</td>
+                                    <td>{{ item.assign_to}}</td>
+                                    <td>{{ item.msg}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="MarginSeparator"></div>
+                    </div>
+
+                </div>
+                <div class="rightSection">
+                    <div class="rightSectionContainer">
+                        <table class="taskActionTable">
+                            <!-- <ng-container *ngIf="(!inputDetails && totalRecords>0) || inputDetails; else noResultsTaskAction"> -->
+                            <ng-container>
+                                <form>
+
+                                </form>
+                                <tr>
+                                    <td>
+                                        <br>
+                                        <h5>{{"labels.approveraction" | translate}}</h5>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h6> {{ 'labels.actiontype' | translate }}:
+                                            {{ headerLabel | translate }}</h6>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;padding-left: 20px;"><label>{{"labels.decision" |
+                                            translate}} <span class="RedAsterisk">*</span></label></td>
+
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="select-container">
+                                            <select class="form-control" name="decision_group"
+                                                [(ngModel)]="decision_status" id="decision_nm"
+                                                (change)="onSelectionChange($event)">
+                                                <option value="null" disabled selected>{{"labels.selecthere" |
+                                                    translate}}</option>
+                                                <option *ngFor="let item of decisiongroup" [value]="item.status">
+                                                    {{item.nm}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="smesection && previousSMEUsername === null">
+                                    <td style="text-align: left;padding-left: 20px;"><label>{{"labels.selectsmegroup" |
+                                            translate}}<span class="RedAsterisk">*</span> </label></td>
+
+                                </tr>
+                                <tr *ngIf="smesection && previousSMEUsername === null">
+                                    <td>
+                                        <div class="select-container">
+                                            <select class="form-control" name="sme_nm" [(ngModel)]="sme_nm" id="sme_nm"
+                                                (change)="onSelectionChange($event)" required>
+                                                <option value="null" disabled selected>{{"labels.selectusergroup" |
+                                                    translate}}</option>
+                                                <option *ngFor="let item of smeUserModel" [value]="item.roleNmEn">
+                                                    {{item.roleNmEn}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="refundcdsection">
+                                    <td style="text-align: left;padding-left: 20px;">
+                                        <label>{{"labels.refundcode" | translate}}
+                                            <span class="RedAsterisk">*</span>
+                                        </label>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="refundcdsection">
+                                    <td>
+                                        <div class="select-container">
+                                            <select class="form-control" name="refund_cd" [(ngModel)]="refund_cd"
+                                                id="refund_cd" (change)="onSelectionChange_refundcd($event)"
+                                                [required]="refundcdsection">
+                                                <option value="null" disabled selected>{{"labels.selectrefundcode" |
+                                                    translate}}</option>
+                                                <option *ngFor="let item of refundCdModel" [value]="item.acc_cd">{{
+                                                    item.acc_desc }}</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="refundcdsection">
+                                    <td style="text-align: left;padding-left: 20px;">{{"labels.reasonforrefund" |
+                                        translate}}
+                                        <span class="RedAsterisk">*</span>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="refundcdsection">
+                                    <td>
+                                        <div class="select-container">
+                                            <select class="form-control" name="refund_reason"
+                                                [(ngModel)]="refund_reason"
+                                                (change)="onSelectionChange_refundreason($event)" required>
+                                                <option value="" disabled selected>{{"labels.selectrefundreason" |
+                                                    translate}}</option>
+                                                <option value="Double Payment">
+                                                    {{ 'labels.Double Payment' | translate }}
+                                                </option>
+                                                <option value="System Disruption">
+                                                    {{ 'labels.System Disruption' | translate }}
+                                                </option>
+                                                <option value="Error in Registration / Application">
+                                                    {{ 'labels.Error in Registration / Application' | translate }}
+                                                </option>
+                                                <option value="Establishment / Registration Rejected / Withdrawn">
+                                                    {{ 'labels.Establishment / Registration Rejected / Withdrawn' |
+                                                    translate}}
+                                                </option>
+                                                <option value="Training Program Cancelled / Participant Did Not Attend">
+                                                    {{ 'labels.Training Program Cancelled / Participant Did Not Attend'
+                                                    | translate }}
+                                                </option>
+                                                <option value="Winding Up / Strike Off">
+                                                    {{ 'labels.Winding Up / Strike Off' | translate }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+
+
+                                <tr *ngIf="!noremarksection">
+                                    <td style="text-align: left;padding-left: 20px;">{{"labels.enterremark(Limit
+                                        500characters)" | translate}}</td>
+                                </tr>
+                                <tr *ngIf="!noremarksection">
+                                    <td>
+                                        <textarea rows="10" cols="30" class="form-control" name="remark_msg"
+                                            [(ngModel)]="remarks_msg" maxlength="500"
+                                            [placeholder]="'labels.enteryourremarkshere' | translate"
+                                            [required]="appeal_cnt !== null"></textarea>
+                                    </td>
+                                </tr>
+
+                                <div class="button-group">
+                                    <button type="button" class="btn btnBack" (click)="cancel()">
+                                        {{ "buttons.cancel" | translate }}
+                                    </button>
+
+                                    <button type="submit" class="btn btnSubmit">
+                                        {{ "buttons.submit" | translate }}
+                                    </button>
+                                    <button type="button" class="btn btnReturnTask" *ngIf="false"
+                                        (click)="returnTask()">
+                                        {{ "buttons.returntask" | translate }}
+                                    </button>
+                                </div>
+                            </ng-container>
+                            <ng-template #noResultsTaskAction>
+                                <tr style="height: 100px;">
+                                    <td colspan="20" class="text-center">{{"nodatafound"| translate}}</td>
+                                </tr>
+                            </ng-template>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</body>

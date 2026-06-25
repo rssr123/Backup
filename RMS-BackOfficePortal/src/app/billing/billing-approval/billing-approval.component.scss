@@ -1,0 +1,397 @@
+@import 'src/app/app.component.scss';
+ 
+$leftPadding: 3%;
+$rightPadding: 3%;
+$MarginFromFooter: 110px;
+$MAButtonMinWidth: 100px; //original is 30%
+$MarginSeparator: 30px;
+
+.table-container {
+  // overflow-x: auto; /* Prevent overflow issues */
+  padding-right: 20px; /* Add padding inside the container */
+}
+ 
+table {
+  background-color: white;
+  width: 100%;
+  //margin-left: 5%;
+  margin-right: 5%;
+  table-layout: fixed;
+  /* make all column width equal*/
+ 
+//   label {
+//     margin-bottom: 10px;
+//     font-weight: bold;
+//   }
+ 
+  .tdclass {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+    //height: 80px;
+    /* set a fixed height */
+  }
+
+  td .displayColumn {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+    //height: 80px;
+    /* set a fixed height */
+  }
+ 
+  td .displayRow {
+    display: flex;
+ 
+    gap: 10px;
+    /* gap between each element */
+    align-items: center;
+    float: right;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+ 
+    label {
+      white-space: nowrap;
+      /* make multiple lines into one sentence*/
+    }
+  }
+ 
+ 
+  .note {
+    margin-bottom: 0;
+    margin-right: 60px;
+    float: right;
+    font-weight: normal;
+    color: #767676;
+  }
+ 
+}
+ 
+.tableLabel{
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+ 
+ 
+.marginFromFooter {
+  margin-bottom: $MarginFromFooter;
+}
+ 
+.tableWrapper {
+  margin-left: 3%;
+  margin-right: 3%;
+}
+ 
+.btnClear {
+  background-color: #84958803;
+  ;
+  min-width: $MAButtonMinWidth;
+  border: solid 1px #dfdfdf;
+}
+ 
+.thWidth {
+  width: 60px;
+ 
+}
+ 
+.thFileName {
+  width: 250px;
+ 
+}
+ 
+.thAction {
+  width: 130px;
+ 
+}
+ 
+.thFileSize {
+  width: 130px;
+ 
+}
+ 
+.thInitiadtedBy {
+  width: 200px;
+ 
+}
+ 
+.left-section73 {
+  overflow: visible !important;
+}
+ 
+.PAContainer73 {
+  margin-left: $MAMainLeftPadding;
+  min-height: 0vh;
+}
+ 
+  .left-section {
+    display: flex;
+    align-items: center; /* Align button and label vertically */
+    gap: 20px; /* Space between the button and Status label */
+  }
+//  menu with button end
+ 
+.full-width-line {
+  border: none; /* Remove the default border style */
+  border-top: 1px solid #000; /* Add a top border for the line */
+  width: 96%; /* Ensure the line spans the entire width */
+  margin: 0; /* Optional: Adjust the margin as needed */
+  margin-top: 50px;
+  margin-right: 2%;
+  margin-left: 2%;
+}
+ 
+.small-dot {
+  display: inline-block;
+  width: 7px; /* Size of the dot */
+  height: 7px; /* Size of the dot */
+  background-color: black; /* Fill color */
+  border-radius: 50%; /* Makes it a perfect circle */
+  margin-left: 2%;
+}
+ 
+.tableWrapperPaymentInfo {
+  margin-top: 20px;
+  margin-left: 3%;
+  margin-right: 3%;
+}
+ 
+.MarginSeparator {
+  margin-top: $MarginSeparator;
+}
+ 
+.bold {
+  font-weight: bold;
+}
+ 
+.custom-radio{
+  accent-color: black; /* Change the radio button color to black */
+}
+  
+.marginTop{
+  margin-top: 10px;
+}
+ 
+.marginLeft{
+  margin-left: 10px;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.loading-spinner {
+  text-align: center;
+  color: white;
+}
+
+.loading-spinner img {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 20px;
+}
+
+.action-checklist .list-group-item.completed {
+  text-decoration: line-through;
+  color: green;
+}
+
+.action-checklist input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+  // One-third section takes up 33.33% width
+  .one-third {
+    //padding-top: 10%;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    width: 20%;
+    //padding: 50px;
+    box-sizing: border-box;
+    float: right;
+  }
+    // Two-thirds section takes up 66.66% width 
+  .two-thirds {
+    //width: 80%;
+    background-color: rgb(235, 232, 232);
+    //padding: 10px;
+    box-sizing: border-box;
+    float: left;
+    padding-right:2%;
+  }
+
+  .right-approval-side {
+    background-color: white;
+    padding: 8%;
+  }
+
+
+//style for dropdown start
+:host ::ng-deep {
+ 
+  .ng-select {
+    padding-bottom: 6px;
+
+    .ng-select-container {
+      min-height: 0 !important;
+      padding: 0 !important;
+      border-top: none !important;
+
+ 
+      .ng-value-container {
+        padding: 0;
+        border: 0;
+      }
+    }
+  }
+ 
+  //adjust arrow, clear and cursor position
+  .ng-select-single .ng-select-container {
+ 
+ 
+    .ng-arrow-wrapper {
+      bottom: 3px;
+    }
+ 
+    .ng-clear-wrapper {
+      bottom: 0px;
+    }
+ 
+    .ng-value-container .ng-input {
+      top: 0px
+    }
+ 
+  }
+ 
+}
+ 
+:host ::ng-deep ng-dropdown-panel {
+ 
+  top: auto !important;
+ 
+}
+ 
+//remove drop down underline
+:host ::ng-deep ng-select .ng-select-container::after {
+  border-bottom: 5px solid transparent !important;
+}
+ 
+//style for dropdown end
+
+
+  .form-control:disabled{
+    opacity: 0.5;
+  }
+
+  .submissionButtons{
+  display: block;
+  width: 99%;
+  left: 1%;
+  position: relative;
+}
+.btnSubmit{
+  float: right;
+}
+
+.btnSubmit:disabled{
+    opacity: 0.3;
+}
+
+.spinner-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  //height: 100vh;
+}
+
+.loader {
+  animation: spin 2s linear infinite;
+  -webkit-animation: spin 2s linear infinite;
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #00538b; /* Blue */
+  border-radius: 50%;
+  width: 400px; /* Increase the size of the spinner */
+  height: 400px; /* Increase the size of the spinner */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+img {
+  position: absolute;
+  width: auto; /* Adjust the image width as needed */
+  height: auto; /* Adjust the image height as needed */
+}
+
+.white-box {
+  background-color: #ffffff; /* White box background */
+  padding: 20px; /* Add padding for spacing */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Box shadow for depth */
+  text-align: center; /* Center align content */
+  max-width: 600px; /* Set max width for the box */
+  width: 100%; /* Ensure it scales responsively */
+}
+
+.download-spinner{
+  float: right;
+  width: 20px;
+  height: 20px;
+  color: #73ed64;
+}
+
+.hyperlink {
+  color: blue; 
+  text-decoration: underline; 
+  cursor: pointer; 
+}
+
+.check-spinner{
+  height: 19px;
+  width: 19px;
+}
+
+.is-invalid{
+  border:2px solid red;
+}
+
+.is-valid{
+  border:2px solid green;
+}
+.btn{
+  min-width: 130px;
+  min-height: 30px;
+}
+
+input.uppercase {
+text-transform: uppercase;
+}
+input::placeholder {
+text-transform: none;
+}
+input.uppercase::placeholder {
+text-transform: uppercase;
+}

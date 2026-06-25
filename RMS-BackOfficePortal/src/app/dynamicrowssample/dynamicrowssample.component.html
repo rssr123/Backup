@@ -1,0 +1,134 @@
+<body class="BodyCointaner">
+  <!-- mainContainer start-->
+  <div class="PAContainer73">
+    <!-- left section -->
+    <div class="left-section73">
+      <div>
+        <h2>{{ "Dynamic Add Rows Sample" | translate }}</h2>
+      </div>
+      <div class="MATableContainer TablePosition-relative" *ngIf="isDisplay">
+        <div class="MALoadingContainer">
+          <!-- Loading spinner overlay -->
+          <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+            <div class="spinner-border" role="status">
+              <span class="sr-only"></span>
+            </div>
+          </div>
+
+          <!-- Your table structure -->
+          <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+            <thead>
+              <tr class="MATableHeader">
+                <th>{{ "No" | translate }}</th>
+                <th>{{ "Tax Code" | translate }}</th>
+                <th>{{ "Tax Percentage" | translate }}</th>
+                <th>{{ "Tax Code Name (EN)" | translate }}</th>
+                <th>{{ "Tax Code Name (BM)" | translate }}</th>
+                <th>{{ "Modified By" | translate }}</th>
+                <th>{{ "Date Modified" | translate }}</th>
+                <th>{{ "Auto Suggestion Example" | translate }}</th>
+                <th>{{ "Action" | translate }}</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="model.length > 0; else noResults">
+              <tr *ngFor="let item of model; let i = index">
+                <td>{{ (page - 1) * itemsPerPage + i + 1 }}</td>
+                <td>
+                  <input
+                    type="text"
+                    [(ngModel)]="item.tax_cd"
+                    placeholder="Enter Tax Code"
+                    [readonly]="!item.isEditable"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    [(ngModel)]="item.tax_pct"
+                    placeholder="Enter Tax Percentage"
+                    [readonly]="!item.isEditable"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    [(ngModel)]="item.tax_cd_nm_en"
+                    placeholder="Enter Tax Code Name (EN)"
+                    [readonly]="!item.isEditable"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    [(ngModel)]="item.tax_cd_nm_bm"
+                    placeholder="Enter Tax Code Name (BM)"
+                    [readonly]="!item.isEditable"
+                  />
+                </td>
+                <td>{{ item.modifiedBy }}</td>
+                <td>{{ item.dtModified | date: "dd MMM yyyy HH:mm:ss" }}</td>
+                <td>
+                  <input
+                      type="text"
+                      [(ngModel)]="item.autoSuggest"
+                      (input)="filterSuggestions(item.autoSuggest, item)"
+                              (focus)="activeRow = item"
+                      placeholder="Type to see suggestions"
+                  />
+                  <div class="suggestion-list" *ngIf="activeRow == item && item.filteredSuggestions && item.filteredSuggestions.length > 0">
+                      <div
+                          class="suggestion-item"
+                          *ngFor="let suggestion of item.filteredSuggestions"
+                          (click)="selectSuggestion(suggestion, item)"
+                      >
+                          {{ suggestion }}
+                      </div>
+                  </div>
+              </td>
+                <td>
+                  <button *ngIf="item.isNew" class="btn btnAdd" (click)="saveRow(i)">Save</button>
+                  <button *ngIf="!item.isNew && !item.isEditable" class="btn btnEdit" (click)="editRow(i)">Edit</button>
+                  <button *ngIf="!item.isNew && item.isEditable" class="btn btnEdit" (click)="updateRow(i)">Update</button>
+                  <button *ngIf="!item.isNew" class="btn btn-danger" (click)="deleteRow(i)" style="margin-left: 10px;">
+                    Delete
+                  </button>
+                  <button *ngIf="item.isNew" class="btn btn-danger" (click)="removeNewRow(i)" style="margin-left: 10px;">
+                    Remove
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <ng-template #noResults>
+            <tr style="height: 100px;">
+              <td colspan="20" class="text-center">{{ "searchcriteriadoesnotmatch" | translate }}</td>
+            </tr>
+          </ng-template>
+          <button *ngIf="isAdd" class="btn btnAdd" (click)="addRow()">Add Item</button>
+        </div>
+
+        <div class="MAPagination" *ngIf="isDisplay" style="margin-bottom: 100px; margin-top: 30px;">
+          <div class="fgSpacing">
+            <div *ngIf="page * itemsPerPage < totalRecords">
+              {{ "showing" | translate }} {{ page * itemsPerPage }} {{ "from" | translate }} {{ totalRecords }}
+              {{ "results" | translate }}
+            </div>
+            <div *ngIf="!(page * itemsPerPage < totalRecords)">
+              {{ "showing" | translate }} {{ totalRecords }} {{ "from" | translate }} {{ totalRecords }}
+              {{ "results" | translate }}
+            </div>
+          </div>
+          <div class="pagination-row">
+            <ngb-pagination
+              [(page)]="page"
+              [pageSize]="itemsPerPage"
+              [collectionSize]="totalRecords"
+              (pageChange)="loadData()"
+            ></ngb-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+

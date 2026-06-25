@@ -1,0 +1,809 @@
+create or replace procedure sp_getpublictasks(i_page int, i_size int, i_username nvarchar(255), i_userrole nvarchar(255), 
+												i_task_id nvarchar(255), i_task_desc nvarchar(255), i_requested_by nvarchar(255),
+												i_dt_requested datetime year to second, i_status nvarchar(255))		
+returning nvarchar(255) as task_id,
+		nvarchar(255) as task_desc,
+		nvarchar(255) as requested_by,
+		datetime year to second as dt_requested,
+		nvarchar(255) as pickup_by,
+		datetime year to second as dt_pick,
+		nvarchar(255) as task_status,
+        nvarchar(255) as origin_table,
+		int8 as pk,
+		int as total;
+
+		define o_task_id nvarchar(255);
+		define o_task_desc nvarchar(255);
+		define o_requested_by nvarchar(255);
+		define o_dt_requested datetime year to second;
+		define o_pickup_by nvarchar(255);
+		define o_dt_pick datetime year to second;
+		define o_task_status nvarchar(255);
+        define o_origin_table nvarchar(255);
+		define o_pk int8;
+		define o_task_key nvarchar(255);
+		define calculatedpage int;
+        define userrole_to_check nvarchar(255);
+		define bil_total int;
+        define bil_wf_total int;
+		define rtt_total int;
+        define otcrc_total int;
+        define ccc_total int;
+		define total int;
+		
+		define s_user_branch_cd set(nvarchar(10) not null);
+		define s_userrole set(nvarchar(255) not null);
+		--define s_realroles set(nvarchar(255) not null);
+
+		define i_wLimit int;
+		define o_ur nvarchar(255);
+	
+		if (i_page is null or i_page < 1) or (i_size is null or i_page < 1) then 
+		    raise exception -746, 0, "i_page or i_size is null integer";
+		end if;
+		
+		let calculatedpage = (i_page-1)*i_size;
+	
+		let s_user_branch_cd = set{};
+		let i_wLimit = 0;
+		
+		if i_userrole like '%,OTCSTAFF,%' or i_userrole like 'OTCSTAFF,%' 
+			or i_userrole like '%,OTCSTAFF' or i_userrole like 'OTCSTAFF' then
+			let i_wLimit = 1;
+		end if;
+		if i_userrole like '%,OTCSUPERVISOR,%' or i_userrole like 'OTCSUPERVISOR,%' 
+				or i_userrole like '%,OTCSUPERVISOR' or i_userrole like 'OTCSUPERVISOR' then
+			let i_wLimit = i_wLimit + 2;
+		end if;
+		if i_userrole like '%,OTCBRANCHMANAGER,%' or i_userrole like 'OTCBRANCHMANAGER,%' 
+					or i_userrole like '%,OTCBRANCHMANAGER' or i_userrole like 'OTCBRANCHMANAGER' then
+			let i_wLimit = i_wLimit + 4;
+		end if;
+
+		if i_wLimit = 1 then
+			insert into table(s_user_branch_cd) select code from rms_bcm bc where bc.status = 'A' AND bc.bcm_id in (
+				select bcm_id from rms_role_branch where status = 'A' and role_id in (
+					select ur.role_id from rms_user_role ur left join rms_role r on r.role_id = ur.role_id 
+						where ur.ssm4uuserrefno = i_username and ur.status = 'A' and r.role_nm_en like 'OTCSTAFF-%'));	
+		elif i_wLimit = 2 then
+			insert into table(s_user_branch_cd) select code from rms_bcm bc where bc.status = 'A' AND bc.bcm_id in (
+				select bcm_id from rms_role_branch where status = 'A' and role_id in (
+					select ur.role_id from rms_user_role ur left join rms_role r on r.role_id = ur.role_id 
+						where ur.ssm4uuserrefno = i_username and ur.status = 'A' and r.role_nm_en like 'OTCSUPERVISOR-%'));	
+		elif i_wLimit = 3 then
+			insert into table(s_user_branch_cd) select code from rms_bcm bc where bc.status = 'A' AND bc.bcm_id in (
+				select bcm_id from rms_role_branch where status = 'A' and role_id in (
+					select ur.role_id from rms_user_role ur left join rms_role r on r.role_id = ur.role_id 
+						where ur.ssm4uuserrefno = i_username and ur.status = 'A' and 
+						(r.role_nm_en like 'OTCSTAFF-%' or r.role_nm_en like 'OTCSUPERVISOR-%')));	
+		elif i_wLimit = 4 then
+			insert into table(s_user_branch_cd) select code from rms_bcm bc where bc.status = 'A' AND bc.bcm_id in (
+				select bcm_id from rms_role_branch where status = 'A' and role_id in (
+					select ur.role_id from rms_user_role ur left join rms_role r on r.role_id = ur.role_id 
+						where ur.ssm4uuserrefno = i_username and ur.status = 'A' and r.role_nm_en like 'OTCBRANCHMANAGER-%'));	
+		elif i_wLimit = 5 then
+			insert into table(s_user_branch_cd) select code from rms_bcm bc where bc.status = 'A' AND bc.bcm_id in (
+				select bcm_id from rms_role_branch where status = 'A' and role_id in (
+					select ur.role_id from rms_user_role ur left join rms_role r on r.role_id = ur.role_id 
+						where ur.ssm4uuserrefno = i_username and ur.status = 'A' and 
+						(r.role_nm_en like 'OTCSTAFF-%' or r.role_nm_en like 'OTCBRANCHMANAGER-%')));	
+		elif i_wLimit = 6 then
+			insert into table(s_user_branch_cd) select code from rms_bcm bc where bc.status = 'A' AND bc.bcm_id in (
+				select bcm_id from rms_role_branch where status = 'A' and role_id in (
+					select ur.role_id from rms_user_role ur left join rms_role r on r.role_id = ur.role_id 
+						where ur.ssm4uuserrefno = i_username and ur.status = 'A' and 
+						(r.role_nm_en like 'OTCSUPERVISOR-%' or r.role_nm_en like 'OTCBRANCHMANAGER-%')));
+		elif i_wLimit = 7 then
+			insert into table(s_user_branch_cd) select code from rms_bcm bc where bc.status = 'A' AND bc.bcm_id in (
+				select bcm_id from rms_role_branch where status = 'A' and role_id in (
+					select ur.role_id from rms_user_role ur left join rms_role r on r.role_id = ur.role_id 
+						where ur.ssm4uuserrefno = i_username and ur.status = 'A' and (r.role_nm_en like 'OTCSTAFF-%' 
+							or r.role_nm_en like 'OTCSUPERVISOR-%' or r.role_nm_en like 'OTCBRANCHMANAGER-%')));
+		end if;
+		
+		let i_wLimit = 1;
+	
+		while i_wLimit > 0
+			select CHARINDEX(',', i_userrole) into i_wLimit;
+			if i_wLimit > 0 then
+				let o_ur = LEFT(i_userrole, i_wLimit-1);
+				insert into table(s_userrole) values(o_ur);
+				let i_userrole = substring(i_userrole from i_wLimit+1);
+			else
+				let o_ur = i_userrole;
+				insert into table(s_userrole) values(o_ur);
+			end if;
+			--Need to update in future if there are additional rms_param:role_names with complex strings (multi-input via commas)
+			--Ensure there's all unique role_name combinations in this set!
+			--if o_ur = 'OTCSUPERVISOR' or o_ur = 'OTCBRANCHMANAGER' then
+			--	insert into table(s_userrole) values ('OTCSUPERVISOR,OTCBRANCHMANAGER');
+			--	insert into table(s_userrole) values ('OTCBRANCHMANAGER,OTCSUPERVISOR');
+			--elif o_ur = 'FINANCEHOD' or o_ur = 'FINANCESENIORMANAGER' then
+			--	insert into table(s_userrole) values ('FINANCEHOD,FINANCESENIORMANAGER');
+			--	insert into table(s_userrole) values ('FINANCESENIORMANAGER,FINANCEHOD');
+			--end if;
+			--Workaround! Check the param table directly for those complex strings!
+			let total = (select count(1) from rms_param where role_name like '%'||o_ur||",%" or role_name like '%,'||o_ur||'%');
+			if total > 0 then
+				insert into table(s_userrole) select role_name from rms_param where role_name like '%'||o_ur||",%" or role_name like '%,'||o_ur||'%';
+			end if;
+			--Exception for the SME role!
+			if o_ur = 'SME' then
+				insert into table(s_userrole) values('CRS SME Compound,CRS SME RIPL,CRS SME Litigation');
+			end if;
+		end while;
+	
+		CREATE TEMP TABLE tt_realroles (role_nm_en NVARCHAR(255)) with no log;
+		insert into tt_realroles select role_nm_en from rms_role where role_id in (select role_id from rms_user_role where ssm4uuserrefno = i_username and status = 'A');
+						
+        let bil_wf_total = (select count(1) from rms_bil_wf t1 left outer join rms_param t2 on t1.bil_wf_status = t2.param_cd
+						left outer join (select bil_wf_id, modified_by, row_number() over (partition by bil_wf_id order by dt_created desc) as rn,
+		           		count(*) over (partition by bil_wf_id) as tc from rms_bil_wf_hist) t1b on t1.bil_wf_id = t1b.bil_wf_id and (t1b.rn = 2 or t1b.tc = 1)
+						inner join rms_user t1u3 ON t1u3.ssm4uuserrefno = t1b.modified_by
+						where (t1.status = 'A')
+                        and t2.param_grp_nm = 'Billing-Status'
+						and t1.dt_created is not null
+						and (i_task_id is null or (t1.billing_no) like '%' || i_task_id || '%')
+						and (i_task_desc is null or t1.billing_desc like '%' || i_task_desc || '%')
+						and (i_requested_by is null or t1u3.nm like '%' || i_requested_by || '%')
+						and (i_dt_requested is null or i_dt_requested = date(t1.dt_modified))
+						and (i_status is null or t1.bil_wf_status = i_status)
+                        and t2.role_name in s_userrole --like '%' || i_userrole ||'%' 
+        );
+
+        let bil_total = (select count(1) from rms_bil t1 left outer join rms_param t2 on t1.bil_wf_status = t2.param_cd
+        				left join (select bil_id, modified_by, row_number() over (partition by bil_id order by dt_created desc) as rn,
+				        count(*) over (partition by bil_id) as tc from rms_bil_wf_hist) t3b on t1.bil_id = t3b.bil_id and (t3b.rn = 2 or t3b.tc = 1)
+						inner join rms_user t3u2 ON t3u2.ssm4uuserrefno = t3b.modified_by	
+						where (t1.status = 'A')
+                        and t2.param_grp_nm = 'Billing-Status'
+						and t1.dt_created is not null
+						and (i_task_id is null or (t1.billing_no) like '%' || i_task_id || '%')
+						and (i_task_desc is null or t1.billing_desc like '%' || i_task_desc || '%')
+						and (i_requested_by is null or t3u2.nm like '%' || i_requested_by || '%')
+						and (i_dt_requested is null or i_dt_requested = date(t1.dt_modified))
+						and (i_status is null or t1.bil_wf_status = i_status)
+                        and t2.role_name in s_userrole --like '%' || i_userrole ||'%' 
+        );
+
+        let rtt_total = (select count(1) from rms_rtt_wf t1 left outer join rms_param t2 on t1.rtt_status = t2.param_cd
+    					left outer join rms_user tu1 on tu1.ssm4uuserrefno = t1.requested_by
+    					left outer join rms_param tp1 on t1.refund_ty = tp1.param_cd
+                        where (t1.status = 'A')
+                        and t2.param_grp_nm = 'RTT-Status'
+                        and t1.dt_requested is not null
+                        and (i_task_id is null or (t1.rtt_app_no) like '%' || i_task_id || '%')
+                        and (i_task_desc is null or tp1.nm_en like '%' || i_task_desc || '%')
+                        and (i_requested_by is null or tu1.nm like '%' || i_requested_by || '%')
+                        and (i_dt_requested is null or i_dt_requested = date(t1.dt_requested))
+                        and (i_status is null or t2.param_cd = i_status)
+                        and t2.role_name in s_userrole --like '%' || i_userrole ||'%' 
+                        --and t1.assign_to in s_realroles
+                        AND EXISTS (SELECT 1 FROM tt_realroles r WHERE (',' || t1.assign_to || ',') LIKE '%,' || r.role_nm_en || ',%')
+                    );
+
+        let otcrc_total = (select count(1) from rms_otc_rc t1 left outer join rms_param t2 on t1.rc_status = t2.param_cd and t2.param_grp_nm = 'OTC-RC'
+    					left join rms_otc_counter t3 on t3.otc_counter_id = t1.otc_counter_id
+    					left outer join rms_user tu1 on tu1.ssm4uuserrefno = t1.requested_by
+                        where (t1.status = 'A')
+                        and t2.param_grp_nm = 'OTC-RC'
+	            		and t1.rc_status like '%PS%'
+                        and t1.date_requested is not null
+                        and (i_task_id is null or (t1.task_id) like '%' || i_task_id || '%')
+                        and (i_task_desc is null or t2.nm_en like '%' || i_task_desc || '%')
+                        and (i_requested_by is null or tu1.nm like '%' || i_requested_by || '%')
+                        and (i_dt_requested is null or i_dt_requested = date(t1.date_requested))
+                        and (i_status is null or t2.param_cd = i_status)
+                        and t2.role_name in s_userrole --like '%' || i_userrole ||'%'
+                        and t3.branch_cd in s_user_branch_cd
+                    );
+                   
+		let ccc_total = (select count(1) from rms_cc_case t10 left outer join rms_param t11 on t10.task_status = t11.param_cd and t11.param_grp_nm = 'cc-case'
+						left outer join rms_cc_cust t12 on t10.cc_cust_id = t12.cc_cust_id
+						left join (select cc_case_id, modified_by, row_number() over (partition by cc_case_id order by dt_created desc) as rn,
+			           	count(*) over (partition by cc_case_id) as tc from rms_cc_case_a) t13 on t10.cc_case_id = t13.cc_case_id and (t13.rn = 2 or t13.tc = 1)
+						inner join rms_user t10u2 ON t10u2.ssm4uuserrefno = t13.modified_by
+			            where t10.status = 'A'
+                        and t11.param_grp_nm = 'cc-case'
+			            and (t10.task_status in ('IP', 'PFSM', 'PFH', 'PSSS', 'PL', 'PCO', 'O', 'PD'))
+			            and (i_task_id is null or (t10.task_no) like '%' || i_task_id || '%')
+						and (i_task_desc is null or t11.nm_en like '%' || i_task_desc || '%')
+						and (i_requested_by is null or t10u2.nm like '%' || i_requested_by || '%')
+						and (i_dt_requested is null or i_dt_requested = date(t10.dt_modified))
+						and (i_status is null or t10.task_status = i_status)
+						and t11.role_name in s_userrole --like '%' || i_userrole ||'%' 
+					);
+
+        let total = bil_wf_total + bil_total + rtt_total + otcrc_total + ccc_total;
+	
+		foreach c_getpublictasks_n for
+		
+			select skip calculatedpage limit i_size task_desc, requested_by, dt_requested, pickup_by, dt_pick, task_status, origin_table, pk, task_key, user_role
+				into o_task_desc, o_requested_by, o_dt_requested, o_pickup_by, o_dt_pick, o_task_status, o_origin_table, o_pk, o_task_key, userrole_to_check
+			from (
+				select t1.billing_desc as task_desc, t1u3.nm as requested_by, t1.dt_modified as dt_requested, t1u2.nm as pickup_by, t1.dt_pick as dt_pick, 
+					(t2.nm_en || case when t1a.qr >= t1a.qfa then ' Query' else '' end) as task_status, 
+					'rms_bil_wf' as origin_table, t1.bil_wf_id as pk, t1.billing_no as task_key, t2.role_name as user_role
+				from rms_bil_wf t1 left outer join rms_param t2 on t1.bil_wf_status = t2.param_cd and t2.param_grp_nm = 'Billing-Status'
+				left join (select bil_wf_id, max(case when msg_type = 'QR' then qc end) as QR, max(case when msg_type = 'QFA' then qc end) as QFA from   
+					(select h.bil_wf_id, m.msg_type, count(m.msg_type) as qc from rms_bil_wf_hist h left join rms_bil_msg m on m.bil_wf_hist_id = h.bil_wf_hist_id
+						where m.msg_type in ('QR', 'QFA') and h.status = 'A' group by h.bil_wf_id, m.msg_type) group by bil_wf_id) t1a on t1a.bil_wf_id = t1.bil_wf_id
+				--left join rms_user t1u1 on t1u1.ssm4uuserrefno = t1.req_name
+				left join rms_user t1u2 on t1u2.ssm4uuserrefno = t1.pickup_by
+				left join (select bil_wf_id, modified_by, row_number() over (partition by bil_wf_id order by dt_created desc) as rn,
+				           count(*) over (partition by bil_wf_id) as tc from rms_bil_wf_hist) t1b on t1.bil_wf_id = t1b.bil_wf_id and (t1b.rn = 2 or t1b.tc = 1)
+				inner join rms_user t1u3 ON t1u3.ssm4uuserrefno = t1b.modified_by				
+				where t1.status = 'A'
+	            and t1.bil_wf_status = 'WF-N'
+				and t1.dt_created is not null
+				and (i_task_id is null or (t1.billing_no) like '%' || i_task_id || '%')
+				and (i_task_desc is null or t1.billing_desc like '%' || i_task_desc || '%')
+				and (i_requested_by is null or t1u3.nm like '%' || i_requested_by || '%')
+				and (i_dt_requested is null or i_dt_requested = date(t1.dt_created))
+				and (i_status is null or t1.bil_wf_status = i_status)
+				and t2.role_name in s_userrole
+				
+				union 
+	
+	            select t3.billing_desc as task_desc, t3u2.nm as requested_by, t3.dt_modified as dt_requested, t3u1.nm as pickup_by, t3.dt_pick as dt_pick, 
+    				(t4.nm_en || case when t3a.qcr > t3a.rcfa or t3a.qar > t3a.qafa then ' Query' else '' end) as task_status, 
+	            	'rms_bil' as origin_table, t3.bil_id as pk, t3.billing_no as task_key, t4.role_name as user_role
+				from rms_bil t3 left outer join rms_param t4 on t3.bil_wf_status = t4.param_cd and t4.param_grp_nm = 'Billing-Status'
+				left join (select bil_id, max(case when msg_type = 'QCR' then qc end) as QCR, max(case when msg_type = 'RCFA' then qc end) as RCFA , 
+					max(case when msg_type = 'QAR' then qc end) as QAR, max(case when msg_type = 'QAFA' then qc end) as QAFA from   
+						(select h.bil_id, m.msg_type, count(m.msg_type) as qc from rms_bil_wf_hist h left join rms_bil_msg m on m.bil_wf_hist_id = h.bil_wf_hist_id
+							where m.msg_type in ('QCR', 'QAR', 'RCFA', 'QAFA') and h.status = 'A' group by h.bil_id, m.msg_type) 
+					group by bil_id) t3a on t3a.bil_id = t3.bil_id
+				left join rms_user t3u1 on t3u1.ssm4uuserrefno = t3.pickup_by
+				left join (select bil_id, modified_by, row_number() over (partition by bil_id order by dt_created desc) as rn,
+				           count(*) over (partition by bil_id) as tc from rms_bil_wf_hist) t3b on t3.bil_id = t3b.bil_id and (t3b.rn = 2 or t3b.tc = 1)
+				inner join rms_user t3u2 ON t3u2.ssm4uuserrefno = t3b.modified_by				
+				where t3.status = 'A'
+	            and (t3.bil_wf_status = 'WF-CN' or t3.bil_wf_status = 'WF-AN')
+				and t3.dt_created is not null
+				and (i_task_id is null or (t3.billing_no) like '%' || i_task_id || '%')
+				and (i_task_desc is null or t3.billing_desc like '%' || i_task_desc || '%')
+				and (i_requested_by is null or t3u2.nm like '%' || i_requested_by || '%')
+				and (i_dt_requested is null or i_dt_requested = date(t3.dt_created))
+				and (i_status is null or t3.bil_wf_status = i_status)
+				and t4.role_name in s_userrole
+				
+				union 
+				
+				select t7.nm_en as task_desc, t5u1.nm as requested_by, t5.dt_requested as dt_requested, t5u2.nm as pickup_by, t5.date_pick as dt_pick, t6.nm_en as task_status, 'rms_rtt_wf' as origin_table, t5.rtt_wf_id as pk, t5.rtt_app_no as task_key, t6.role_name as user_role
+					from rms_rtt_wf t5 left outer join rms_param t6 on t5.rtt_status = t6.param_cd left outer join rms_param t7 on t5.refund_ty = t7.param_cd
+				left join rms_user t5u1 on t5u1.ssm4uuserrefno = t5.requested_by
+				left join rms_user t5u2 on t5u2.ssm4uuserrefno = t5.pickup_by
+				where (t5.status = 'A')
+                and t6.param_grp_nm = 'RTT-Status'
+	            and (t5.rtt_status like '%P%' or t5.rtt_status like '%T1%' or t5.rtt_status like '%T2%' or t5.rtt_status like '%T3%')
+				and t5.dt_requested is not null
+				and (i_task_id is null or (t5.rtt_app_no) like '%' || i_task_id || '%')
+				and (i_task_desc is null or t7.nm_en like '%' || i_task_desc || '%')
+				and (i_requested_by is null or t5u1.nm like '%' || i_requested_by || '%')
+				and (i_dt_requested is null or i_dt_requested = date(t5.dt_requested))
+				and (i_status is null or t6.param_cd = i_status)
+				and t6.role_name in s_userrole
+                --and t5.assign_to in s_realroles
+	            AND EXISTS (SELECT 1 FROM tt_realroles r WHERE (',' || t5.assign_to || ',') LIKE '%,' || r.role_nm_en || ',%')
+
+	            union 
+	
+	            --select t9.nm_en as task_desc, t8.requested_by as requested_by, t8.date_requested as dt_requested, t8.assigned_to as pickup_by, t8.date_assigned as dt_pick, t9.nm_en as task_status, 'rms_otc_rc' as origin_table, t8.otc_rc_id as pk, t8.task_id as task_key, t9.role_name as user_role
+	            select t32.nm_en as task_desc, t30.nm as requested_by, t8.date_requested as dt_requested, t31.nm as pickup_by, t8.date_assigned as dt_pick, t9.nm_en as task_status, 'rms_otc_rc' as origin_table, t8.otc_rc_id as pk, t8.task_id as task_key, t9.role_name as user_role
+	            	from rms_otc_rc t8 left outer join rms_param t9 on t8.rc_status = t9.param_cd and t9.param_grp_nm = 'OTC-RC'
+	            left join rms_otc_counter t8a on t8a.otc_counter_id = t8.otc_counter_id
+                left join rms_user t30 on t8.requested_by = t30.ssm4uuserrefno
+                left join rms_user t31 on t8.assigned_to = t31.ssm4uuserrefno
+			    left join rms_param t32 on t32.param_grp_nm = 'OTC-RC-Type' and t32.param_cd = 
+			    	(case when t8.rc_type > 1 then (case when t8.rc_status == 'PS' then 2 
+			    		when  t8.rc_status == 'PEMV' or t8.rc_status == 'PPC' or t8.rc_status == 'PCR' then 3 
+			    		else t8.rc_type end) else t8.rc_type end)
+	            where t8.status = 'A'
+	            and t8.rc_status like '%PS%'
+	            and t8.date_requested is not null
+	            and (i_task_id is null or (t8.task_id) like '%' || i_task_id || '%')
+				and (i_task_desc is null or t9.nm_en like '%' || i_task_desc || '%')
+				and (i_requested_by is null or t30.nm like '%' || i_requested_by || '%')
+				and (i_dt_requested is null or i_dt_requested = date(t8.date_requested))
+				and (i_status is null or t9.param_cd = i_status)
+                and t8a.branch_cd in s_user_branch_cd
+				and t9.role_name in s_userrole
+				
+				union
+				
+				select t10.invoice_desc as task_desc, t10u2.nm as requested_by, t10.dt_modified as dt_requested, 
+				       t10u1.nm as pickup_by, t10.dt_pickup as dt_pick, t11.nm_en as task_status, 'rms_cc_case' as origin_table, 
+				       t10.cc_case_id as pk, t10.task_no as task_key, t11.role_name as user_role
+				from rms_cc_case t10 
+				left outer join rms_param t11 on t10.task_status = t11.param_cd and t11.param_grp_nm = 'cc-case' 
+				left outer join rms_cc_cust t12 on t10.cc_cust_id = t12.cc_cust_id
+				left join rms_user t10u1 on t10u1.ssm4uuserrefno = t10.pick_up
+				left join (select cc_case_id, modified_by, row_number() over (partition by cc_case_id order by dt_created desc) as rn,
+				           count(*) over (partition by cc_case_id) as tc from rms_cc_case_a) t13 on t10.cc_case_id = t13.cc_case_id and (t13.rn = 2 or t13.tc = 1)
+				inner join rms_user t10u2 ON t10u2.ssm4uuserrefno = t13.modified_by
+				where t10.status = 'A'
+				and (t10.task_status in ('IP', 'PFSM', 'PFH', 'PSSS', 'PL', 'PCO', 'O', 'PD'))
+				and t11.param_grp_nm = 'cc-case'
+				and (i_task_id is null or (t10.task_no) like '%' || i_task_id || '%')
+				and (i_task_desc is null or t11.nm_en like '%' || i_task_desc || '%')
+				and (i_requested_by is null or t10u2.nm like '%' || i_requested_by || '%')
+				and (i_dt_requested is null or i_dt_requested = date(t10.dt_created))
+				and (i_status is null or t10.task_status = i_status)
+				and t11.role_name in s_userrole
+		
+		)
+	        order by dt_requested desc
+			return o_task_key, o_task_desc, o_requested_by, o_dt_requested, o_pickup_by, o_dt_pick, o_task_status, o_origin_table, o_pk, total with resume;
+		
+		end foreach
+		drop table tt_realroles;
+		
+end procedure;
+
+GO;
+
+DROP PROCEDURE sp_insfmsari_h(nvarchar(20), nvarchar(30), nvarchar(100), lvarchar(256), lvarchar(256), nvarchar(25), int, decimal(16,2));
+
+GO;
+
+create or replace procedure sp_insfmsari_h(i_type nvarchar(20), i_link_branch nvarchar(30), i_customer nvarchar(100)
+											, i_desc lvarchar(256), i_attr_ext_sys lvarchar(256), i_user nvarchar(25),
+											i_genpdf int, i_amt decimal(16,2), i_inv_dt datetime year to fraction(3))
+returning int8 as hid;
+
+define o_batch_no       nvarchar(30);
+define o_hid            int8;
+define o_result         int;
+define runno            nvarchar(30);
+define i_branch nvarchar(30);
+
+on exception
+	rollback work;
+end exception;
+
+    -- check got overnight anot
+    execute procedure sp_getrunno('ARIV') into o_result;
+
+    begin work;
+    set lock mode to wait 30;
+
+    /* UPDATE last running no */
+    UPDATE rms_runno
+    SET last_runno = last_runno +1
+    WHERE runno_cd = 'ARIV';
+
+    -- get running number
+	SELECT last_runno
+	INTO o_result
+	FROM rms_runno
+	WHERE runno_cd = 'ARIV';
+
+	-- Generate unique receipt number
+	LET o_batch_no = 'ARIV' || TO_CHAR(TODAY, '%Y%m%d') || LPAD(o_result, 6, '0');
+	
+	let i_branch = i_link_branch;
+	if i_link_branch is null or i_link_branch != '' then
+    	select limit 1 config_value into i_branch from rms_config where config_cd = 'FMSBranch';
+    end if;
+   
+    -- insert rms_fms_ari_h
+    -- geo: dt_sent = current
+    INSERT INTO rms_fms_ari_h(type, link_branch, amt, cust, rms_batch_no, 
+                                dt_sent, desc, attr_ext_sys, resp_attr_ext_sys, fms_ref_no, 
+                                resp_co, resp_status, resp_msg, resp_dt, 
+                                dt_created, dt_modified, created_by, modified_by, 
+                                status, retry, genpdf, inv_dt) 
+        VALUES(i_type, i_branch, i_amt, i_customer, o_batch_no 
+                , current, i_desc, i_attr_ext_sys, null, null
+                , null, null, null, null, current, current, i_user, i_user
+                , 'A', 0, i_genpdf, i_inv_dt);
+
+    let o_hid = dbinfo('serial8');
+
+    commit work;
+
+return o_hid;
+
+end procedure;
+
+GO;
+
+create or replace procedure sp_getfmsari()
+returning nvarchar(100) as type,nvarchar(100) as link_branch,decimal(16,2) as amt,nvarchar(100) as cust,nvarchar(100) as rms_batch_no, date as dt_sent,nvarchar(255) as desc,
+            nvarchar(100) as attr_ext_sys, nvarchar(100) as coa1,nvarchar(100) as coa2,nvarchar(100) as branch,int as qty,nvarchar(100) as sub_acct,nvarchar(100) as txn_desc,
+            decimal(16,2) as unit_price, nvarchar(30) as rcpt_no,nvarchar(100) as payee_info,nvarchar(100) as ent_nm,nvarchar(100) as ent_no,nvarchar(100) as ent_ty,
+            decimal(16,2) as item_amt,nvarchar(100) as pymt_mode,decimal(16,2) as item_tax_amt, 
+            integer as line_nbr, decimal(16,2) as disc_amt, nvarchar(10) as deposit_id, nvarchar(30) as deposit_task, int as pdf, datetime year to fraction(3) as inv_dt;
+
+define o_type           nvarchar(100);
+define o_link_branch    nvarchar(100);
+define o_amt            decimal(16,2);
+define o_cust           nvarchar(100);
+define o_rms_batch_no   nvarchar(100);
+define o_dt_sent        date;
+define o_desc           nvarchar(255);
+define o_attr_ext_sys   nvarchar(100);
+define o_coa1           nvarchar(100);
+define o_coa2           nvarchar(100);
+define o_branch         nvarchar(100);
+define o_qty            int;
+define o_sub_acct       nvarchar(100);
+define o_txn_desc       nvarchar(100);
+define o_unit_price     decimal(16,2);
+define o_rcpt_no        nvarchar(30);
+define o_payee_info     nvarchar(100);
+define o_ent_nm         nvarchar(100);
+define o_ent_no         nvarchar(100);
+define o_ent_ty         nvarchar(100);
+define o_item_amt       decimal(16,2);
+define o_pymt_mode      nvarchar(100);
+define o_item_tax_amt   decimal(16,2);
+define o_pdf            int;
+define o_inv_dt         datetime year to fraction(3);
+
+-- new added 4 fields
+define o_line_nbr integer;
+define o_disc_amt decimal(16,2);
+define o_deposit_id nvarchar(10);
+define o_deposit_task nvarchar(30);
+--
+
+foreach c_ari for
+    select t1.type,t1.link_branch,t1.amt,t1.cust,t1.rms_batch_no,t1.dt_sent,t1.desc,t1.attr_ext_sys,
+            t2.coa1,t2.coa2,t2.branch,t2.qty,t2.sub_acct,t2.txn_desc,t2.unit_price,t2.rcpt_no,
+            t2.payee_info,t2.ent_nm,t2.ent_no,t2.ent_ty,t2.item_amt,t2.pymt_mode,t2.item_tax_amt,
+            t2.line_nbr,t2.disc_amt,t2.dps_id,t2.dps_task,t1.genpdf,t1.inv_dt -- added 4 new fields
+    into o_type,o_link_branch,o_amt,o_cust,o_rms_batch_no,o_dt_sent,o_desc,o_attr_ext_sys,
+            o_coa1,o_coa2,o_branch,o_qty,o_sub_acct,o_txn_desc,o_unit_price,o_rcpt_no,
+            o_payee_info,o_ent_nm,o_ent_no,o_ent_ty,o_item_amt,o_pymt_mode,o_item_tax_amt,
+            o_line_nbr,o_disc_amt,o_deposit_id,o_deposit_task,o_pdf,o_inv_dt
+    from rms_fms_ari_h t1
+    inner join rms_fms_ari_b t2 on t1.ari_hid = t2.ari_hid
+    where (t1.fms_ref_no is null
+    or t1.resp_status <> 200) and t1.status = 'A'
+
+    return o_type,o_link_branch,o_amt,o_cust,o_rms_batch_no,o_dt_sent,o_desc,o_attr_ext_sys,
+            o_coa1,o_coa2,o_branch,o_qty,o_sub_acct,o_txn_desc,o_unit_price,o_rcpt_no,
+            o_payee_info,o_ent_nm,o_ent_no,o_ent_ty,o_item_amt,o_pymt_mode,o_item_tax_amt,
+            o_line_nbr,o_disc_amt,o_deposit_id,o_deposit_task,o_pdf,o_inv_dt with resume;
+    
+end foreach;
+
+end procedure;           
+
+GO;
+
+create or replace procedure sp_getfmsaribyarihid(i_ari_hid integer)
+returning nvarchar(100) as type,nvarchar(100) as link_branch,decimal(16,2) as amt,nvarchar(100) as cust,nvarchar(100) as rms_batch_no, date as dt_sent,nvarchar(255) as desc,
+            nvarchar(100) as attr_ext_sys, nvarchar(100) as coa1,nvarchar(100) as coa2,nvarchar(100) as branch,int as qty,nvarchar(100) as sub_acct,nvarchar(100) as txn_desc,
+            decimal(16,2) as unit_price, nvarchar(30) as rcpt_no,nvarchar(100) as payee_info,nvarchar(100) as ent_nm,nvarchar(100) as ent_no,nvarchar(100) as ent_ty,
+            decimal(16,2) as item_amt,nvarchar(100) as pymt_mode,decimal(16,2) as item_tax_amt, integer as line_nbr, decimal(16,2) as disc_amt, nvarchar(10) as deposit_id, 
+            nvarchar(30) as deposit_task,int as pdf, datetime year to fraction(3) as inv_dt;
+
+define o_type           nvarchar(100);
+define o_link_branch    nvarchar(100);
+define o_amt            decimal(16,2);
+define o_cust           nvarchar(100);
+define o_rms_batch_no   nvarchar(100);
+define o_dt_sent        date;
+define o_desc           nvarchar(255);
+define o_attr_ext_sys   nvarchar(100);
+define o_coa1           nvarchar(100);
+define o_coa2           nvarchar(100);
+define o_branch         nvarchar(100);
+define o_qty            int;
+define o_sub_acct       nvarchar(100);
+define o_txn_desc       nvarchar(100);
+define o_unit_price     decimal(16,2);
+define o_rcpt_no        nvarchar(30);
+define o_payee_info     nvarchar(100);
+define o_ent_nm         nvarchar(100);
+define o_ent_no         nvarchar(100);
+define o_ent_ty         nvarchar(100);
+define o_item_amt       decimal(16,2);
+define o_pymt_mode      nvarchar(100);
+define o_item_tax_amt   decimal(16,2);
+
+-- new added 4 fields
+define o_line_nbr integer;
+define o_disc_amt decimal(16,2);
+define o_deposit_id nvarchar(10);
+define o_deposit_task nvarchar(30);
+--
+define o_pdf int;
+define o_inv_dt         datetime year to fraction(3);
+
+foreach c_ari for
+    select t1.type,t1.link_branch,t1.amt,t1.cust,t1.rms_batch_no,t1.dt_sent,t1.desc,t1.attr_ext_sys,
+            t2.coa1,t2.coa2,t2.branch,t2.qty,t2.sub_acct,t2.txn_desc,t2.unit_price,t2.rcpt_no,
+            t2.payee_info,t2.ent_nm,t2.ent_no,t2.ent_ty,t2.item_amt,t2.pymt_mode,t2.item_tax_amt,
+            t2.line_nbr,t2.disc_amt,t2.dps_id,t2.dps_task,t1.genpdf, t1.inv_dt
+    into o_type,o_link_branch,o_amt,o_cust,o_rms_batch_no,o_dt_sent,o_desc,o_attr_ext_sys,
+            o_coa1,o_coa2,o_branch,o_qty,o_sub_acct,o_txn_desc,o_unit_price,o_rcpt_no,
+            o_payee_info,o_ent_nm,o_ent_no,o_ent_ty,o_item_amt,o_pymt_mode,o_item_tax_amt,
+            o_line_nbr,o_disc_amt,o_deposit_id,o_deposit_task,o_pdf,o_inv_dt
+    from rms_fms_ari_h t1
+    inner join rms_fms_ari_b t2 on t1.ari_hid = t2.ari_hid and t2.ari_hid = i_ari_hid
+    where t1.ari_hid = i_ari_hid
+
+    return o_type,o_link_branch,o_amt,o_cust,o_rms_batch_no,o_dt_sent,o_desc,o_attr_ext_sys,
+            o_coa1,o_coa2,o_branch,o_qty,o_sub_acct,o_txn_desc,o_unit_price,o_rcpt_no,
+            o_payee_info,o_ent_nm,o_ent_no,o_ent_ty,o_item_amt,o_pymt_mode,o_item_tax_amt,
+            o_line_nbr,o_disc_amt,o_deposit_id,o_deposit_task,o_pdf,o_inv_dt with resume;
+    
+end foreach;
+
+end procedure;
+
+GO;
+
+create or replace procedure sp_getfmsaribybilchildid(i_bil_child_id int)
+returning nvarchar(100) as type,nvarchar(100) as link_branch,decimal(16,2) as amt,nvarchar(100) as cust,nvarchar(100) as rms_batch_no, date as dt_sent,nvarchar(255) as desc,
+            nvarchar(100) as attr_ext_sys, nvarchar(100) as coa1,nvarchar(100) as coa2,nvarchar(100) as branch,int as qty,nvarchar(100) as sub_acct,nvarchar(100) as txn_desc,
+            decimal(16,2) as unit_price, nvarchar(30) as rcpt_no,nvarchar(100) as payee_info,nvarchar(100) as ent_nm,nvarchar(100) as ent_no,nvarchar(100) as ent_ty,
+            decimal(16,2) as item_amt,nvarchar(100) as pymt_mode,decimal(16,2) as item_tax_amt, integer as line_nbr, decimal(16,2) as disc_amt, nvarchar(10) as deposit_id, 
+            nvarchar(30) as deposit_task, nvarchar(50) as fms_ref_no,int as pdf, datetime year to fraction(3) as inv_dt;
+
+define o_type           nvarchar(100);
+define o_link_branch    nvarchar(100);
+define o_amt            decimal(16,2);
+define o_cust           nvarchar(100);
+define o_rms_batch_no   nvarchar(100);
+define o_dt_sent        date;
+define o_desc           nvarchar(255);
+define o_attr_ext_sys   nvarchar(100);
+define o_coa1           nvarchar(100);
+define o_coa2           nvarchar(100);
+define o_branch         nvarchar(100);
+define o_qty            int;
+define o_sub_acct       nvarchar(100);
+define o_txn_desc       nvarchar(100);
+define o_unit_price     decimal(16,2);
+define o_rcpt_no        nvarchar(30);
+define o_payee_info     nvarchar(100);
+define o_ent_nm         nvarchar(100);
+define o_ent_no         nvarchar(100);
+define o_ent_ty         nvarchar(100);
+define o_item_amt       decimal(16,2);
+define o_pymt_mode      nvarchar(100);
+define o_item_tax_amt   decimal(16,2);
+define o_line_nbr integer;
+define o_disc_amt decimal(16,2);
+define o_deposit_id nvarchar(10);
+define o_deposit_task nvarchar(30);
+define o_fms_ref_no      nvarchar(50);
+define o_pdf            int;
+define o_inv_dt         datetime year to fraction(3);
+
+foreach c_ari for
+    select t1.type,t1.link_branch,t1.amt,t1.cust,t1.rms_batch_no,t1.dt_sent,t1.desc,t1.attr_ext_sys,
+            t2.coa1,t2.coa2,t2.branch,t2.qty,t2.sub_acct,t2.txn_desc,t2.unit_price,t2.rcpt_no,
+            t2.payee_info,t2.ent_nm,t2.ent_no,t2.ent_ty,t2.item_amt,t2.pymt_mode,t2.item_tax_amt,
+            t2.line_nbr,t2.disc_amt,t2.dps_id,t2.dps_task,t1.fms_ref_no,t1.genpdf,t1.inv_dt
+    into o_type,o_link_branch,o_amt,o_cust,o_rms_batch_no,o_dt_sent,o_desc,o_attr_ext_sys,
+            o_coa1,o_coa2,o_branch,o_qty,o_sub_acct,o_txn_desc,o_unit_price,o_rcpt_no,
+            o_payee_info,o_ent_nm,o_ent_no,o_ent_ty,o_item_amt,o_pymt_mode,o_item_tax_amt,
+            o_line_nbr,o_disc_amt,o_deposit_id,o_deposit_task,o_fms_ref_no,o_pdf,o_inv_dt
+    from rms_fms_ari_h t1
+    inner join rms_fms_ari_b t2 on t1.ari_hid = t2.ari_hid
+    where t2.bil_child_id = i_bil_child_id
+
+    return o_type,o_link_branch,o_amt,o_cust,o_rms_batch_no,o_dt_sent,o_desc,o_attr_ext_sys,
+            o_coa1,o_coa2,o_branch,o_qty,o_sub_acct,o_txn_desc,o_unit_price,o_rcpt_no,
+            o_payee_info,o_ent_nm,o_ent_no,o_ent_ty,o_item_amt,o_pymt_mode,o_item_tax_amt,
+            o_line_nbr,o_disc_amt,o_deposit_id,o_deposit_task,o_fms_ref_no,o_pdf,o_inv_dt with resume;
+    
+end foreach;
+
+end procedure;
+
+GO;
+
+create or replace procedure sp_getfmsariimmediate(
+                i_rms_batch_no nvarchar(40), 
+                i_otc_cash_s_id integer, 
+                i_otc_mo_s_id integer, 
+                i_otc_emv_s_id integer, 
+                i_otc_che_id integer, 
+                i_otc_bd_id integer, 
+                i_non_bil_id integer)
+
+returning nvarchar(100) as type,nvarchar(100) as link_branch,decimal(16,2) as amt,nvarchar(100) as cust,nvarchar(100) as rms_batch_no, date as dt_sent,nvarchar(255) as desc,
+            nvarchar(100) as attr_ext_sys, nvarchar(100) as coa1,nvarchar(100) as coa2,nvarchar(100) as branch,int as qty,nvarchar(100) as sub_acct,nvarchar(100) as txn_desc,
+            decimal(16,2) as unit_price, nvarchar(30) as rcpt_no,nvarchar(100) as payee_info,nvarchar(100) as ent_nm,nvarchar(100) as ent_no,nvarchar(100) as ent_ty,
+            decimal(16,2) as item_amt,nvarchar(100) as pymt_mode,decimal(16,2) as item_tax_amt, 
+            integer as line_nbr, decimal(16,2) as disc_amt, nvarchar(10) as deposit_id, nvarchar(30) as deposit_task, datetime year to fraction(3) as inv_dt;
+
+define o_type           nvarchar(100);
+define o_link_branch    nvarchar(100);
+define o_amt            decimal(16,2);
+define o_cust           nvarchar(100);
+define o_rms_batch_no   nvarchar(100);
+define o_dt_sent        date;
+define o_desc           nvarchar(255);
+define o_attr_ext_sys   nvarchar(100);
+define o_coa1           nvarchar(100);
+define o_coa2           nvarchar(100);
+define o_branch         nvarchar(100);
+define o_qty            int;
+define o_sub_acct       nvarchar(100);
+define o_txn_desc       nvarchar(100);
+define o_unit_price     decimal(16,2);
+define o_rcpt_no        nvarchar(30);
+define o_payee_info     nvarchar(100);
+define o_ent_nm         nvarchar(100);
+define o_ent_no         nvarchar(100);
+define o_ent_ty         nvarchar(100);
+define o_item_amt       decimal(16,2);
+define o_pymt_mode      nvarchar(100);
+define o_item_tax_amt   decimal(16,2);
+
+-- new added 4 fields
+define o_line_nbr integer;
+define o_disc_amt decimal(16,2);
+define o_deposit_id nvarchar(10);
+define o_deposit_task nvarchar(30);
+--
+define o_inv_dt         datetime year to fraction(3);
+
+foreach c_ari for
+    select t1.type,t1.link_branch,t1.amt,t1.cust,t1.rms_batch_no,t1.dt_sent,t1.desc,t1.attr_ext_sys,
+            t2.coa1,t2.coa2,t2.branch,t2.qty,t2.sub_acct,t2.txn_desc,t2.unit_price,t2.rcpt_no,
+            t2.payee_info,t2.ent_nm,t2.ent_no,t2.ent_ty,t2.item_amt,t2.pymt_mode,t2.item_tax_amt,
+            t2.line_nbr,t2.disc_amt,t2.dps_id,t2.dps_task,t1.inv_dt -- added 4 new fields
+    into o_type,o_link_branch,o_amt,o_cust,o_rms_batch_no,o_dt_sent,o_desc,o_attr_ext_sys,
+            o_coa1,o_coa2,o_branch,o_qty,o_sub_acct,o_txn_desc,o_unit_price,o_rcpt_no,
+            o_payee_info,o_ent_nm,o_ent_no,o_ent_ty,o_item_amt,o_pymt_mode,o_item_tax_amt,
+            o_line_nbr,o_disc_amt,o_deposit_id,o_deposit_task,o_inv_dt
+    from rms_fms_ari_h t1
+    inner join rms_fms_ari_b t2 on t1.ari_hid = t2.ari_hid
+    where t1.rms_batch_no = i_rms_batch_no 
+    or t2.otc_cash_s_id = i_otc_cash_s_id
+    or t2.otc_mo_s_id  = i_otc_mo_s_id 
+    or t2.otc_emv_s_id = i_otc_emv_s_id
+    or t2.otc_che_id = i_otc_che_id
+    or t2.otc_bd_id = i_otc_bd_id
+    or t2.non_bil_id = i_non_bil_id
+
+    return o_type,o_link_branch,o_amt,o_cust,o_rms_batch_no,o_dt_sent,o_desc,o_attr_ext_sys,
+            o_coa1,o_coa2,o_branch,o_qty,o_sub_acct,o_txn_desc,o_unit_price,o_rcpt_no,
+            o_payee_info,o_ent_nm,o_ent_no,o_ent_ty,o_item_amt,o_pymt_mode,o_item_tax_amt,
+            o_line_nbr,o_disc_amt,o_deposit_id,o_deposit_task,o_inv_dt with resume;
+    
+end foreach;
+
+end procedure;
+
+GO;
+
+create or replace procedure sp_getfmsarijson(i_rms_batch_no nvarchar(100))
+returning nvarchar(100) as type,nvarchar(100) as link_branch,decimal(16,2) as amt,nvarchar(100) as cust,nvarchar(100) as rms_batch_no, date as dt_sent,nvarchar(255) as desc,
+            nvarchar(100) as attr_ext_sys, nvarchar(100) as coa1,nvarchar(100) as coa2,nvarchar(100) as branch,int as qty,nvarchar(100) as sub_acct,nvarchar(100) as txn_desc,
+            decimal(16,2) as unit_price, nvarchar(30) as rcpt_no,nvarchar(100) as payee_info,nvarchar(100) as ent_nm,nvarchar(100) as ent_no,nvarchar(100) as ent_ty,
+            decimal(16,2) as item_amt,nvarchar(100) as pymt_mode,decimal(16,2) as item_tax_amt, 
+            integer as line_nbr, decimal(16,2) as disc_amt, nvarchar(10) as deposit_id, nvarchar(30) as deposit_task, int as pdf, datetime year to fraction(3) as inv_dt;
+
+define o_type           nvarchar(100);
+define o_link_branch    nvarchar(100);
+define o_amt            decimal(16,2);
+define o_cust           nvarchar(100);
+define o_rms_batch_no   nvarchar(100);
+define o_dt_sent        date;
+define o_desc           nvarchar(255);
+define o_attr_ext_sys   nvarchar(100);
+define o_coa1           nvarchar(100);
+define o_coa2           nvarchar(100);
+define o_branch         nvarchar(100);
+define o_qty            int;
+define o_sub_acct       nvarchar(100);
+define o_txn_desc       nvarchar(100);
+define o_unit_price     decimal(16,2);
+define o_rcpt_no        nvarchar(30);
+define o_payee_info     nvarchar(100);
+define o_ent_nm         nvarchar(100);
+define o_ent_no         nvarchar(100);
+define o_ent_ty         nvarchar(100);
+define o_item_amt       decimal(16,2);
+define o_pymt_mode      nvarchar(100);
+define o_item_tax_amt   decimal(16,2);
+define o_pdf            int;
+
+-- new added 4 fields
+define o_line_nbr integer;
+define o_disc_amt decimal(16,2);
+define o_deposit_id nvarchar(10);
+define o_deposit_task nvarchar(30);
+--
+define o_inv_dt         datetime year to fraction(3);
+
+foreach c_ari for
+    select t1.type,t1.link_branch,t1.amt,t1.cust,t1.rms_batch_no,t1.dt_sent,t1.desc,t1.attr_ext_sys,
+            t2.coa1,t2.coa2,t2.branch,t2.qty,t2.sub_acct,t2.txn_desc,t2.unit_price,t2.rcpt_no,
+            t2.payee_info,t2.ent_nm,t2.ent_no,t2.ent_ty,t2.item_amt,t2.pymt_mode,t2.item_tax_amt,
+            t2.line_nbr,t2.disc_amt,t2.dps_id,t2.dps_task,t1.genpdf,t1.inv_dt -- added 4 new fields
+    into o_type,o_link_branch,o_amt,o_cust,o_rms_batch_no,o_dt_sent,o_desc,o_attr_ext_sys,
+            o_coa1,o_coa2,o_branch,o_qty,o_sub_acct,o_txn_desc,o_unit_price,o_rcpt_no,
+            o_payee_info,o_ent_nm,o_ent_no,o_ent_ty,o_item_amt,o_pymt_mode,o_item_tax_amt,
+            o_line_nbr,o_disc_amt,o_deposit_id,o_deposit_task,o_pdf,o_inv_dt
+    from rms_fms_ari_h t1
+    inner join rms_fms_ari_b t2 on t1.ari_hid = t2.ari_hid
+    where rms_batch_no = i_rms_batch_no
+
+    return o_type,o_link_branch,o_amt,o_cust,o_rms_batch_no,o_dt_sent,o_desc,o_attr_ext_sys,
+            o_coa1,o_coa2,o_branch,o_qty,o_sub_acct,o_txn_desc,o_unit_price,o_rcpt_no,
+            o_payee_info,o_ent_nm,o_ent_no,o_ent_ty,o_item_amt,o_pymt_mode,o_item_tax_amt,
+            o_line_nbr,o_disc_amt,o_deposit_id,o_deposit_task,o_pdf,o_inv_dt with resume;
+    
+end foreach;
+
+end procedure;
+
+go;
+
+create or REPLACE PROCEDURE sp_getntcnts(i_assign_to nvarchar(25))
+returning nvarchar(255);
+
+	define o_mft_a_count integer;
+	define o_mft_c_count integer;
+	define o_otc_rc_a_count integer;
+	define o_otc_rc_c_count integer;
+	define o_rtt_a_count integer;
+	define o_rtt_c_count integer;
+	define o_bil_a_count integer;
+	define o_bil_c_count integer;
+	define o_ccc_a_count integer;
+	define o_ccc_c_count integer;
+	define counter_1 integer;
+	define counter_2 integer;
+
+	select sum(CASE WHEN assign_to == i_assign_to THEN 1 ELSE 0 end),
+		sum(CASE WHEN created_by == i_assign_to THEN 1 ELSE 0 end) 
+	into o_mft_a_count, o_mft_c_count from rms_mft_wf
+		where status not in ('EFT','APV','C','RJ-RHOD','RJ-FA','RJ-FHOD');
+    if o_mft_a_count is null then let o_mft_a_count = 0; end if;
+    if o_mft_c_count is null then let o_mft_c_count = 0; end if;
+
+	select sum(CASE WHEN assigned_to == i_assign_to THEN 1 ELSE 0 end),
+		sum(CASE WHEN created_by == i_assign_to THEN 1 ELSE 0 end) 
+	into o_otc_rc_a_count, o_otc_rc_c_count from rms_otc_rc
+		where rc_status not in ('A','R','VS','Y','N') and status = 'A';
+    if o_otc_rc_a_count is null then let o_otc_rc_a_count = 0; end if;
+    if o_otc_rc_c_count is null then let o_otc_rc_c_count = 0; end if;
+
+	select sum(CASE WHEN pickup_by == i_assign_to THEN 1 ELSE 0 end),
+		sum(CASE WHEN created_by == i_assign_to and rtt_app_no is not null THEN 1 ELSE 0 end) 
+	into o_rtt_a_count, o_rtt_c_count from rms_rtt_wf
+		where rtt_status not in ('RS','RR','BE','RE','AE','RG','R','REG','RBIS','PRS') and status = 'A';
+    if o_rtt_a_count is null then let o_rtt_a_count = 0; end if;
+    if o_rtt_c_count is null then let o_rtt_c_count = 0; end if;
+
+	select sum(CASE WHEN pickup_by == i_assign_to THEN 1 ELSE 0 end),
+		sum(CASE WHEN created_by == i_assign_to THEN 1 ELSE 0 end) 
+	into o_bil_a_count, o_bil_c_count from rms_bil_wf 
+		where bil_wf_status = 'WF-N' and status = 'A';
+    if o_bil_a_count is null then let o_bil_a_count = 0; end if;
+    if o_bil_c_count is null then let o_bil_c_count = 0; end if;
+	
+    select sum(CASE WHEN pickup_by == i_assign_to THEN 1 ELSE 0 end),
+		sum(CASE WHEN created_by == i_assign_to THEN 1 ELSE 0 end) 
+	into counter_1, counter_2 from rms_bil
+		where bil_wf_status in ('U','WF-CN','WF-AN') and status = 'A';
+    if counter_1 is null then let counter_1 = 0; end if;
+    if counter_2 is null then let counter_2 = 0; end if;
+
+	let o_bil_a_count = o_bil_a_count + counter_1;
+    let o_bil_c_count = o_bil_c_count + counter_2;
+   
+   	select sum(CASE WHEN pick_up == i_assign_to THEN 1 ELSE 0 end),
+		sum(CASE WHEN created_by == i_assign_to THEN 1 ELSE 0 end) 
+	into o_ccc_a_count, o_ccc_c_count from rms_cc_case 
+		where task_status in ('IP', 'PFSM', 'PFH', 'PSSS', 'PL', 'RQ', 'PCO', 'CMI', 'DMI', 'I') and status = 'A';
+    if o_ccc_a_count is null then let o_ccc_a_count = 0; end if;
+    if o_ccc_c_count is null then let o_ccc_c_count = 0; end if;
+	
+	return o_mft_a_count || ',' || o_mft_c_count || ',' || o_otc_rc_a_count || ',' || o_otc_rc_c_count || ',' || 
+			o_rtt_a_count || ',' || o_rtt_c_count || ',' || o_bil_a_count || ',' || o_bil_c_count || ',' || 
+			o_ccc_a_count || ',' || o_ccc_c_count WITH RESUME;
+
+END PROCEDURE;

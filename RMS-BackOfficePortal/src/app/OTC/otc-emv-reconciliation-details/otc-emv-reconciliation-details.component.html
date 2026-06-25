@@ -1,0 +1,398 @@
+<body class="BodyCointaner" *ngIf="permViewAllow == 1">
+
+    <div class="PAContainer73">
+        <div class="left-section73">
+
+            <h2 style="margin-bottom: 0%; padding-bottom: 0;">{{"labels.sectionA" | translate}}</h2>
+            <div class="top-header">
+
+                <div>
+                    <h2 style="margin-top: 0%; padding-top: 0; padding-bottom: 0;">{{"labels.otcemvreconciliationsummary" | translate}}</h2>
+                </div>
+
+                <div class="right-part">
+                    <button
+                            (click)="downloadReport()"
+                            class="btn btnAdd extramarginright"
+                            *ngIf="rcEmvStatusStatus == 'C'"> 
+                                {{"buttons.downloadreport" | translate}}
+                    </button>
+                    <div class="left-section">
+                        <h2 class="bold">{{"labels.STATUS" | translate}}:</h2>
+                    </div>
+                    <h2 class="bold" [ngStyle]="{
+                                                    'color'
+                                                    : rcEmvStatusStatus == 'P' ? 'brown'
+                                                    : rcEmvStatusStatus == 'IP' ? '#ffc107'
+                                                    : rcEmvStatusStatus == 'C' ? '#21ba45'
+                                                    : 'black'
+                                                }">
+                        {{
+                        rcEmvStatusStatus == 'P'
+                        ? ('labels.PENDING' | translate)
+
+                        : rcEmvStatusStatus == 'IP'
+                        ? ('labels.INPROGRESS' | translate)
+
+                        : rcEmvStatusStatus == 'C'
+                        ? ('labels.COMPLETE' | translate)
+
+                        : rcEmvStatusStatus
+                        }}
+
+                    </h2>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="PAContainer73">
+        <div class="left-section73">
+            <table>
+                <tr>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.nobranches" | translate}}</label>
+                            <input class="form-control" type="text" [(ngModel)]="summaryBranchCount" disabled />
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.balancingdateperiod" | translate}}</label>
+                            <input class="form-control" type="text" [value]="getFormattedDate()" disabled />
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.nosettlements" | translate}}</label>
+                            <input class="form-control" type="text" [(ngModel)]="summaryEmvSettlementCount" disabled />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.noemvtransactions" | translate}}</label>
+                            <input class="form-control" type="text" [(ngModel)]="summaryEmvTransactionCount" disabled />
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.totalemv" | translate}}</label>
+                            <input class="form-control" type="text" [value]="summaryEmvAmount | number: '1.2-2'" disabled />
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.noreceiptscancelled" | translate}}</label>
+                            <input class="form-control" type="text" [(ngModel)]="summaryReceiptsCancelledCount" disabled />
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="MarginSeparator"></div>
+
+    <div>
+        <h2 style="margin-left: 3%;">{{"labels.receiptcancellationtable" | translate}}</h2>
+    </div>
+
+    <!-- <div>
+        <h2 style="margin-left: 3%;" *ngIf="rcModel.length > 0">{{"labels.receiptcancellationtable" | translate}}</h2>
+    </div> -->
+    
+    <div class="MALoadingContainer">
+    <!-- <div class="MALoadingContainer" *ngIf="rcModel.length > 0"> -->
+        <div class="tableWrapper">
+            <table class="MATable" *ngIf="!isLoading">
+                <thead>
+                    <tr class="MATableHeader">
+                        <th class="thWidth">No.</th>
+                        <th>{{"labels.branchcode" | translate}}</th>
+                        <th>{{"labels.collectionslipno" | translate}}</th>
+                        <th>{{"labels.orderreferenceno" | translate}}</th>
+                        <th>{{"labels.receiptno" | translate}}</th>
+                        <th>{{"labels.totalamount" | translate}} (RM)</th>
+                        <th>{{"labels.paymentmode" | translate}}</th>
+                        <th>{{"labels.requestedby" | translate}}</th>
+                        <th>{{"labels.approvedby" | translate}}</th>
+                        <th>{{"labels.receiptcancellationreason" | translate}}</th>
+                        <th>{{"labels.action" | translate}}</th>
+                    </tr>
+                </thead>
+                <tbody *ngIf="rcModel.length > 0">
+                    <tr *ngFor="let item of rcModel; let i = index">
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ item.branch_cd }}</td>
+                        <td>{{ item.coll_slip_no }}</td>
+                        <td>{{ item.orn_no }}</td>
+                        <td>{{ item.rcpt_no }}</td>
+                        <td>{{ item.amount | number: '1.2-2' }}</td>
+                        <td>{{ item.payment_mode }}</td>
+                        <td>{{ item.requested_by }}</td>
+                        <td>{{ item.approved_by }}</td>
+                        <td>{{ item.reason }}</td>
+                        <td>
+                            <button
+                            (click)="navigateToIndividual(item)"
+                            class="btn btnAdd"
+                            style="margin-top: 0;"> 
+                                {{"buttons.view" | translate}}
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+                <tbody *ngIf="rcModel.length === 0">
+                    <tr>
+                        <td colspan="11">
+                            <div>
+                                <div>
+                                    <div class="alert alert-warning" role="alert">
+                                        {{"showResultAlert" | translate}}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+                
+            </table>
+        </div>
+    </div>
+
+    <div class="MarginSeparator"></div>
+
+    <div>
+        <h2 style="margin-left: 3%;">{{"labels.emvsettlementinformation" | translate}}</h2>
+    </div>
+    
+    <div class="MALoadingContainer">
+        <div class="tableWrapper">
+            <table class="MATable" *ngIf="!isLoading">
+                <thead>
+                    <tr class="MATableHeader">
+                        <th class="thWidth">No.</th>
+                        <th>{{"labels.branchcode" | translate}}</th>
+                        <th class="thFileName">{{"labels.fileupload" | translate}}</th>
+                        <th>{{"labels.terminalid" | translate}}</th>
+                        <th>{{"labels.settlementdatetime" | translate}}</th>
+                        <th>{{"labels.batchnumber" | translate}}</th>
+                        <th>{{"labels.batchcount" | translate}}</th>
+                        <th>{{"labels.batchamount" | translate}} (RM)</th>
+                    </tr>
+                </thead>
+                <tbody *ngIf="settlementModel.length > 0">
+                    <tr *ngFor="let item of settlementModel; let i = index">
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ item.branch_cd }}</td>
+                        <td> <a href="javascript:void(0)"
+                            (click)="downloadFile(item.otc_bal_doc_id, item.file_nm)">
+                                {{ item.file_nm }}
+                            </a>
+                        </td>
+                        <td>{{ item.terminal_id }}</td>
+                        <td>{{ item.date }}</td>
+                        <td>{{ item.batch_no }}</td>
+                        <td>{{ item.batch_count }}</td>
+                        <td>{{ item.batch_amt | number: '1.2-2' }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="7" style="text-align: right; font-weight: bold;">{{"labels.TOTAL" | translate}}</td>
+                        <td>{{ total | number: '1.2-2' }}</td>  
+                    </tr>
+                </tbody>
+                <tbody *ngIf="settlementModel.length === 0">
+                    <tr>
+                        <td colspan="8">
+                            <div>
+                                <div>
+                                    <div class="alert alert-warning" role="alert">
+                                        {{"showResultAlert" | translate}}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <hr class="full-width-line" />
+
+    <div>
+        <h2 style="margin-left: 3%; margin-bottom: 1%; padding-bottom: 0;">{{"labels.sectionB" | translate}}</h2>
+        <h2 style="margin-left: 3%; margin-top: 1%; padding-top: 0;">{{"labels.mastersettlementinformation" | translate}}</h2>
+    </div>
+
+    <div class="tableWrapper" *ngIf="rcEmvStatusStatus !== 'C'">
+        <table class="MATable">
+            <thead>
+                <tr class="MATableHeader">
+                    <th class="thWidth">No.</th>
+                    <th>{{"labels.fileupload" | translate}}</th>
+                    <th>{{"labels.debitcardlinesextracted" | translate}}</th>
+                    <th>{{"labels.debitcardamount" | translate}} (RM)</th>
+                    <th>{{"labels.creditcardlinesextracted" | translate}}</th>
+                    <th>{{"labels.creditcardamount" | translate}} (RM)</th>
+                    <th>{{"labels.totalamount" | translate}} (RM)</th>
+                    <th>{{"labels.action" | translate}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of settlementModel2; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>
+                        <input type="text" [(ngModel)]="item.file_nm"
+                        [disabled]="true" style="height: 40px;"
+                        [placeholder]="'labels.fileupload' | translate"/>
+                        <button class="btn btnAdd" (click)="selectFile(i)">
+                            {{"buttons.selectfile" | translate}}
+                        </button>
+                    </td>
+                    <td>{{ item.debit_card_lines }}</td>
+                    <td>
+                        <input type="number" [(ngModel)]="item.debit_card_amount"
+                        [disabled]="false" style="height: 40px;"
+                        (blur)="onAmountChange(i)"
+                        [placeholder]="'labels.debitcardamount' | translate" />
+                    </td>                    
+                    <td>{{ item.credit_card_lines }}</td>
+                    <td>
+                        <input type="number" [(ngModel)]="item.credit_card_amount"
+                        [disabled]="false" style="height: 40px;"
+                        (blur)="onAmountChange(i)"
+                        [placeholder]="'labels.creditcardamount' | translate" />
+                    </td>
+                    <td>{{ item.total_amt | number: '1.2-2' }}</td>
+                    <td>
+                        <button 
+                            class="btn btn-danger" (click)="deleteItem(i)">
+                                {{"buttons.delete" | translate}}
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="1"></td>
+                    <td colspan="1">
+                        <button class="btn btnAdd" (click)="addItem()">
+                            + {{"buttons.addfile" | translate}}
+                        </button>
+                    </td>
+                    <td colspan="1"></td>
+                    <td colspan="1"></td>
+                    <td colspan="1"></td>
+                    <td colspan="1"></td>
+                    <td colspan="1"></td>
+                    <td colspan="1"></td>
+                </tr>
+                <tr>
+                    <td colspan="6" style="text-align: right; font-weight: bold;">{{"labels.TOTAL" | translate}}</td>
+                    <td>{{ total2 | number: '1.2-2' }}</td>  
+                    <td colspan="1"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="tableWrapper" *ngIf="rcEmvStatusStatus == 'C'">
+        <table class="MATable">
+            <thead>
+                <tr class="MATableHeader">
+                    <th class="thWidth">No.</th>
+                    <th>{{"labels.fileupload" | translate}}</th>
+                    <th>{{"labels.debitcardlinesextracted" | translate}}</th>
+                    <th>{{"labels.debitcardamount" | translate}} (RM)</th>
+                    <th>{{"labels.creditcardlinesextracted" | translate}}</th>
+                    <th>{{"labels.creditcardamount" | translate}} (RM)</th>
+                    <th>{{"labels.totalamount" | translate}} (RM)</th>
+                </tr>
+            </thead>
+            <tbody *ngIf="settlementModel3.length > 0">
+                <tr *ngFor="let item of settlementModel3; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td> <a href="javascript:void(0)"
+                        (click)="downloadFile2(item.rc_emv_doc_id, item.file_nm)">
+                            {{ item.file_nm }}
+                        </a>
+                    </td>
+                    <td>{{ item.dr_count }}</td>
+                    <td>{{ item.dr_amt | number: '1.2-2' }}</td>                    
+                    <td>{{ item.cr_count }}</td>
+                    <td>{{ item.cr_amt | number: '1.2-2' }}</td>
+                    <td>{{ item.total | number: '1.2-2' }}</td>
+                </tr>
+                <tr>
+                    <td colspan="6" style="text-align: right; font-weight: bold;">{{"labels.TOTAL" | translate}}</td>
+                    <td>{{ total3 | number: '1.2-2' }}</td>
+                </tr>
+            </tbody>
+            <tbody *ngIf="settlementModel3.length == 0">
+                <tr>
+                    <td colspan="8">
+                        <div>
+                            <div>
+                                <div class="alert alert-warning" role="alert">
+                                    {{"showResultAlert" | translate}}
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <hr class="full-width-line" />
+
+    <div>
+        <h2 style="margin-left: 3%; margin-bottom: 1%; padding-bottom: 0;">{{"labels.sectionC" | translate}}</h2>
+        <h2 style="margin-left: 3%; margin-top: 1%; padding-top: 0;">{{"labels.comparisonsummary" | translate}}</h2>
+    </div>
+    
+    <div class="box">
+        <div class="boxdetails">
+            <p class="bold">{{"labels.emvsettlementtotalvsmastersettlementtotal" | translate}}</p>
+                <div class="marginTop">
+                    <div class="marginTop">
+                        <div class="table-container">
+                            <table class="MATable">
+                                <thead>
+                                    <tr class="MATableHeader">
+                                        <th></th>
+                                        <th colspan="4">{{"labels.totalcollectedamount" | translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="MATableHeader" style="font-weight: bold;">{{"labels.emvsettlementtotal" | translate}}</td>
+                                        <td colspan="4">{{ total | number: '1.2-2' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="MATableHeader" style="font-weight: bold;">{{"labels.mastersettlementtotal" | translate}}</td>
+                                        <td *ngIf="rcEmvStatusStatus !== 'C'" colspan="4">{{ total2 | number: '1.2-2' }}</td>
+                                        <td *ngIf="rcEmvStatusStatus == 'C'" colspan="4">{{ total3 | number: '1.2-2' }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="MarginSeparator"></div>
+                            <div class="mb-2" style="text-align: right;">
+                                <button *ngIf="rcEmvStatusStatus !== 'C'" type="button" class="btn btn-secondary mr-2" [disabled]="isLoading" (click)="cancel()">{{"labels.cancel" | translate}}</button>
+                                <button *ngIf="rcEmvStatusStatus !== 'C'" type="button" class="btn btnApply" [disabled]="checkSubmit() || permActionAllow == 0 || rcEmvStatusStatus == null || isLoading" (click)="submit()">{{"labels.submit" | translate}}</button>
+                                <button *ngIf="rcEmvStatusStatus == 'C'" type="button" class="btn btn-secondary mr-2" (click)="back()">{{"labels.back" | translate}}</button>
+                            </div>
+                            <p class="note" *ngIf="rcEmvStatusStatus !== 'C'">{{"labels.thesubmitbuttonwillbedisabledifthetotalamountincomparisondoesnotmatch" | translate}}</p>
+                        </div>
+                    </div>
+                <div class="MarginSeparator"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="MarginSeparator"></div>
+
+</body>

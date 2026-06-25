@@ -1,0 +1,1568 @@
+<body class="BodyCointaner" id="mainBodyContainer">
+    <!--<div id="f_overlay"><div class="loader"></div></div>-->
+    <div *ngIf="showInsertAlert" style="margin-left: 2%;">
+        <div class="alert alert-success PA-alert-box bold" role="alert">
+            {{ "labels.successfulBilApp" | translate }}
+        </div>
+    </div>
+        <!-- Error Box -->
+    <div *ngIf="isLoading ? false : isBillUnauth" class="alert alert-danger" style="margin-top: 1%;margin-left: 3%;margin-right: 3%;margin-bottom: 0%;">
+        <i class="bi bi-x-circle-fill error-icon"></i>
+        <strong>{{ 'labels.noperm' | translate }}</strong>
+        <p class="indented-text">{{ 'labels.noauthbill' | translate }}</p>
+    </div>
+    <div class="MALoadingContainer">
+      <!-- <div id="loading-overlay" *ngIf="isLoading" class="loading-overlay" >
+          <div class="white-box">
+              <div class="spinner-container">
+                  <div class="loader"></div>
+                  <img src="assets/logo/logo-ssm.png" alt="Loading..." />
+              </div>
+          </div>
+        </div> -->
+        <loading-overlay
+            *ngIf="isLoading"
+            [prefixText]="''"
+            [loadingText]="''"
+            [suffixText]="''"
+        >
+        </loading-overlay>
+    </div>    
+    <div class="PAContainer73">
+        <div class="left-section73">
+            <!-- file upload error message -->
+            <div *ngIf="errorFile" class="error-box">
+                <i class="bi bi-x-circle-fill error-icon"></i>
+                <div>
+                    <strong>{{"uploaderror"| translate}}</strong>
+                    <ul>
+                        <ul>
+                            <li *ngFor="let errorFileMsg of errorFileMessages">{{"labels.theselectedfile" |
+                                translate}} {{
+                                errorFileMsg }}
+                                {{"labels.isinaninvalidfileformatortemplate" | translate}}
+                            </li>
+                        </ul>
+                    </ul>
+                </div>
+            </div>
+
+            <div *ngIf="errorFileSizeLimit" class="error-box">
+                <i class="bi bi-x-circle-fill error-icon"></i>
+                <div>
+                    <strong>{{"filelimit"| translate}}</strong>
+                    <ul>
+                        <ul>
+                            <li *ngFor="let errorFileSizeLimitMsg of errorFileSizeLimitMessages">
+                                {{"labels.filesize10MBlimitmessage" | translate}}
+                            </li>
+                        </ul>
+                    </ul>
+                </div>
+            </div>
+
+            <div *ngIf="errorFileDuplicate" class="error-box">
+                <i class="bi bi-x-circle-fill error-icon"></i>
+                <div>
+                    <strong>{{"duplicate"| translate}}</strong>
+                    <ul>
+                        <ul>
+                            <li *ngFor="let errorDuplicateMsg of errorFileDuplicateMessages">
+                                {{errorDuplicateMsg}} {{"labels.alreadyselected.pleasechooseadifferentfile" |
+                                translate}}
+                            </li>
+                        </ul>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="padding-left: 3%;">
+        <h1>{{ "menu.bilregapproval" | translate }}</h1>
+        <h2>{{ "labels.billingdetails" | translate }}</h2>
+    </div>
+    <div class="PAContainer73">
+        <div class="two-thirds" [style.width] = "hideActions ? '100%' : '80%'">
+            <div class="MALoadingContainer">
+              <div *ngIf="isLoading"
+                  class="TableLoading-overlay d-flex align-items-center justify-content-center" style= "z-index: auto;">
+                  <div class="spinner-border" role="status">
+                      <span class="sr-only"></span>
+                  </div>
+              </div>
+              <table [ngClass]="{ TableDimmed: isLoading }">
+                <tr>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.customerid" | translate}}</label>
+                            <input
+                              class="form-control"
+                              type="text"
+                              [(ngModel)]="cust_id"
+                              placeholder="-" 
+                              disabled
+                            />
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.customername" | translate}}</label>
+                            <input
+                              class="form-control"
+                              type="text"
+                              [(ngModel)]="cust_nm"
+                              placeholder="-" 
+                              [disabled] = "!canEdit"
+                              minlength="4" required maxlength="255" #cus_nameRef="ngModel"
+                            />
+                            <div *ngIf="cus_nameRef.errors && cus_nameRef.errors['required'] && cus_nameRef.touched" class="error-text">{{"labels.customernameisrequired" | translate}}</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.customeremail" | translate}}</label>
+                            <input class="form-control" 
+                              type="email" 
+                              [(ngModel)]="cust_email" 
+                              name="cust_email"
+                              [disabled] = "!canEdit" 
+                              pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
+                              placeholder="-" 
+                              #emailRef="ngModel" required maxlength="255"
+                            />
+
+                          <div *ngIf="emailRef.errors && emailRef.errors['required'] && emailRef.touched"
+                              class="error-text">
+                              {{"labels.emailisrequired" | translate}}
+                          </div>
+
+                          <div *ngIf="emailRef.errors && emailRef.errors['pattern'] && emailRef.touched"
+                              class="error-text">
+                              {{"labels.pleaseenteravalidemailaddress" | translate}}
+                          </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.customerphonenumber" | translate}}</label>
+                            <input
+                              class="form-control"
+                              type="text"
+                              [(ngModel)]="cust_phone"
+                              placeholder="-" 
+                              [disabled] = "!canEdit"
+                              oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1'); " 
+                              #cus_phnoRef="ngModel" required maxlength="15" minlength="10"
+                            />
+                            <div *ngIf="cus_phnoRef.errors && (cus_phnoRef.errors['minlength'] || cus_phnoRef.errors['maxlength'] || cus_phnoRef.errors['required']) && cus_phnoRef.touched" class="error-text">{{"Phone number must be between 10 to 15 digits." | translate}}</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.addressline1" | translate}}</label>
+                            <input
+                              class="form-control uppercase"
+                              type="text"
+                              [(ngModel)]="cust_addr1"
+                              placeholder="-" 
+                              [disabled] = "!canEdit"
+                              required maxlength="150" #cus_add1Ref="ngModel"
+                            />
+                            <div *ngIf="cus_add1Ref.errors && cus_add1Ref.errors['required'] && cus_add1Ref.touched" class="error-text">{{"labels.customeraddress1isrequired" | translate}}</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.addressline2" | translate}}</label>
+                            <input
+                              class="form-control uppercase"
+                              type="text"
+                              [(ngModel)]="cust_addr2"
+                              placeholder="-" 
+                              [disabled] = "!canEdit"
+                              required maxlength="150" #cus_add2Ref="ngModel" 
+                              />
+                            <div *ngIf="cus_add2Ref.errors && cus_add2Ref.errors['required'] && cus_add2Ref.touched" class="error-text">{{"labels.customeraddress2isrequired" | translate}}</div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.addressline3" | translate}}</label>
+                            <input
+                              class="form-control uppercase"
+                              type="text"
+                              [(ngModel)]="cust_addr3"
+                              placeholder="-" 
+                              [disabled] = "!canEdit" maxlength="150"
+                            />
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.postcode" | translate}}</label>
+                            <div *ngIf = "!canEdit">
+                              <input
+                                class="form-control" #postcodeRef="ngModel" 
+                                type="text"
+                                [(ngModel)]="postcode"
+                                placeholder="-" 
+                                [disabled] = "!canEdit" 
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1'); "
+                                maxlength="5" minlength="5"
+                              />
+                            </div>
+                            <div *ngIf = "canEdit">
+                              <ng-select name="postcode" [(ngModel)]="postcode" required
+                                  dropdownPosition="bottom" class="form-control"
+                                  placeholder="{{'labels.pleasetypehere' | translate}}"
+                                  (ngModelChange)="onPostcodeChange($event)" 
+                                  [addTag]="checkTag" #postcodeRef="ngModel" (keypress)="allow5Numbers($event)" minlength="5">
+                                  <ng-option *ngFor="let item of postCodes" [value]="item.postcode">{{item.postcode}}</ng-option>
+                              </ng-select>                         
+                              <div *ngIf="postcodeRef.errors && (postcodeRef.errors['required'] || postcodeRef.errors['minlength'] || postcodeRef.errors['maxlength']) && postcodeRef.touched" class="error-text">{{"Postcode must be exactly 5 digits." | translate}}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.city" | translate}}</label>
+                            <div *ngIf = "!canEdit">
+                              <input
+                                class="form-control"
+                                type="text"
+                                [(ngModel)]="city"
+                                placeholder="-" 
+                                [disabled] = "!canEdit"
+                              />
+                            </div>
+                            <div *ngIf = "canEdit">
+                              <ng-select name="city" [(ngModel)]="city" required maxlength="50"
+                                  #cityRef="ngModel" dropdownPosition="bottom" class="form-control uppercase"
+                                  placeholder="{{'labels.pleasetypehere' | translate}}"
+                                  [addTag]="upperCity">
+                                  <ng-option *ngFor="let cityItem of uniqueCities" [value]="cityItem">{{ cityItem }}</ng-option>
+                              </ng-select>
+                              <div *ngIf="cityRef.errors && cityRef.errors['required'] && cityRef.touched" class="error-text">{{"labels.cityisrequired" | translate}}</div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.state" | translate}}</label>
+                            <div *ngIf = "!canEdit">
+                              <input
+                                class="form-control"
+                                type="text"
+                                [(ngModel)]="cust_state_string"
+                                placeholder="-" 
+                                [disabled] = "!canEdit" #stateRef="ngModel"
+                              />
+                            </div>
+                            <div *ngIf = "canEdit">
+                              <ng-select name="state" [(ngModel)]="cust_state_string" required maxlength="50"
+                                  #stateRef="ngModel" dropdownPosition="bottom" class="form-control uppercase"
+                                  placeholder="-" *ngIf = "canEdit">
+                                  <ng-option *ngFor="let stateItem of uniqueStates" [value]="stateItem">{{ stateItem }}</ng-option>
+                              </ng-select>
+                              <div *ngIf="stateRef.errors && stateRef.errors['required'] && stateRef.touched" class="error-text">{{"labels.stateisrequired" | translate}}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.entityname" | translate}}</label>
+                            <input
+                              class="form-control"
+                              type="text"
+                              [(ngModel)]="ent_nm"
+                              placeholder="-" 
+                              [disabled] = "!canEdit"
+                              required maxlength="400" #entity_nameRef="ngModel"
+                            />
+                            <div *ngIf="entity_nameRef.errors && entity_nameRef.errors['required'] && entity_nameRef.touched" class="error-text"> {{"labels.entitynameisrequired" | translate}}</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.entitytype" | translate}}</label>
+                            <input
+                              class="form-control"
+                              type="text"
+                              [(ngModel)]="ent_ty_string"
+                              placeholder="-" 
+                              disabled
+                            />
+                        </div>
+                    </td>
+                </tr>
+
+                <!--different start here between one time and loa/agmt-->
+                <!--one time-->
+                <ng-container *ngIf="b_mthd === 'O'">
+                    <tr>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.entitynumber" | translate}}</label>
+                                <input
+                                  class="form-control"
+                                  type="text"
+                                  [(ngModel)]="ent_no"
+                                  placeholder="-" 
+                                  disabled
+                                />
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.sourcesystem" | translate}}</label>
+                                <input
+                                  class="form-control"
+                                  type="text"
+                                  [(ngModel)]="ss_cd"
+                                  placeholder="-" 
+                                  disabled
+                                />
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.billingno" | translate}}</label>
+                                <input
+                                  class="form-control"
+                                  type="text"
+                                  [(ngModel)]="billing_no"
+                                  placeholder="-" 
+                                  disabled
+                                />
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.billingmethod" | translate}}</label>
+                                <input
+                                  class="form-control"
+                                  type="text"
+                                  [(ngModel)]="billing_mthd_string"
+                                  placeholder="-" 
+                                  disabled
+                                />
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.billingdescription" | translate}}</label>
+                                <input
+                                  class="form-control"
+                                  type="text"
+                                  [(ngModel)]="billing_desc"
+                                  placeholder="-" 
+                                  [disabled] = "!canEdit"
+                                  #billing_desc_o_Ref="ngModel" required maxlength="255" 
+                                />
+                                <div *ngIf="billing_desc_o_Ref.errors && billing_desc_o_Ref.errors['required'] && billing_desc_o_Ref.touched" class="error-text">{{"labels.billingdescriptionisrequired" | translate}}</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.requestorname" | translate}}</label>
+                                <input
+                                  class="form-control"
+                                  type="text"
+                                  [(ngModel)]="req_name"
+                                  placeholder="-" 
+                                  [disabled] = "!canEdit"
+                                  #requester_nameRef="ngModel"required maxlength="255" 
+                                />
+                                <div *ngIf="requester_nameRef.errors && requester_nameRef.errors['required'] && requester_nameRef.touched" class="error-text" style="color: red; margin-top: 5px;">{{"labels.requesternameisrequired" | translate}}</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.requestoremail" | translate}}</label>
+                                <input
+                                  class="form-control"
+                                  type="email"
+                                  [(ngModel)]="req_email"
+                                  placeholder="-" 
+                                  [disabled] = "!canEdit"
+                                  required maxlength="255" #requester_emailRef="ngModel" 
+                                  pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
+                                />
+                                <div *ngIf="requester_emailRef.errors && requester_emailRef.errors['required'] && requester_emailRef.touched" class="error-text">{{"labels.requesteremailisrequired" | translate}}</div>
+
+                                <div *ngIf="requester_emailRef.errors && requester_emailRef.errors['pattern'] && requester_emailRef.touched" class="error-text">{{"labels.pleaseenteravalidrequesteremailaddress" | translate}}</div>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-container>
+                <!--loa/agmt-->
+                <ng-container *ngIf="b_mthd === 'L' || b_mthd === 'A'">
+                    <tr>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.sourcesystem" | translate}}</label>
+                                <input
+                                  class="form-control"
+                                  type="text"
+                                  [(ngModel)]="ss_cd"
+                                  placeholder="-" 
+                                  disabled
+                                />
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.billingno" | translate}}</label>
+                                <input
+                                  class="form-control"
+                                  type="text"
+                                  [(ngModel)]="billing_no"
+                                  placeholder="-" 
+                                  disabled
+                                />
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.entitynumber" | translate}}</label>
+                                <input
+                                  class="form-control"
+                                  type="text"
+                                  [(ngModel)]="ent_no"
+                                  placeholder="-" 
+                                  disabled
+                                />
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.billingmethod" | translate}}</label>
+                                <input
+                                  class="form-control"
+                                  type="text"
+                                  [(ngModel)]="billing_mthd_string"
+                                  placeholder="-" 
+                                  disabled
+                                />
+                            </div>
+                        </td>
+                        <td *ngIf="b_mthd === 'L'">
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.loareferencenumber" | translate}}</label>
+                                <div style="display: flex;">
+                                  <input
+                                    class="form-control"
+                                    type="text"
+                                    [(ngModel)]="loa_id"
+                                    placeholder="LOA Reference No."
+                                    [disabled] = "!canEdit"
+                                    [ngClass]="!canEdit ? '' : !has_checked_loa_exists ? '' : (loa_exists ? 'is-invalid' : 'is-valid')"
+                                    (change)="resetLOAFlag1()"
+                                    autocomplete="off" #loa_ref_no_lRef="ngModel" required maxlength="255"
+                                  />
+                                  <button *ngIf="canEdit" [disabled]="loa_id.length < 1 ? true : checkingLOA" id="loaExisting" class="btn btnSubmit" (click)="checkLOAExists()">
+                                      <div *ngIf="!checkingLOA">{{"buttons.check" | translate}}</div>
+                                      <div *ngIf="checkingLOA" class="spinner-border check-spinner" role="status"><span class="sr-only"></span></div></button>
+                                    </div>
+
+                                  <div *ngIf="loa_ref_no_lRef.errors && loa_ref_no_lRef.errors['required'] && loa_ref_no_lRef.touched" class="error-text" style="color: red; margin-top: 5px;"> {{"labels.loareferencenoisrequired" | translate}}</div>
+                                  <div *ngIf="showLoaAlert && loa_exists && b_mthd == 'L'" class="error-text"style="color: red; margin-top: 5px;">{{"labels.loarefalreadyregistered" | translate}}</div>
+                            </div>
+                        </td>
+                        <td *ngIf="b_mthd === 'A'">
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.loareferencenumber" | translate}}</label>
+                                <div style="display: flex;">
+                                  <input
+                                    class="form-control"
+                                    type="text"
+                                    [(ngModel)]="loa_id"
+                                    placeholder="-" 
+                                    [disabled] = "!canEdit"
+                                    [ngClass]="!canEdit ? '' : !has_checked_loa_registered ? '' : (!loa_registered ? 'is-invalid' : 'is-valid')"
+                                    (change)="resetLOAFlag2()"
+                                    autocomplete="off" #loa_ref_no_aRef="ngModel" required maxlength="255"
+                                  />
+                                  <button *ngIf="canEdit" [disabled]="loa_id.length < 1 ? true : checkingLOA" id="loaRegistered" class="btn btnSubmit" (click)="checkLOARegistered()">
+                                    <div *ngIf="!checkingLOA">{{"buttons.check" | translate}}</div>
+                                    <div *ngIf="checkingLOA" class="spinner-border check-spinner" role="status"><span class="sr-only"></span></div></button>
+                                  </div>
+
+                                  <div *ngIf="loa_ref_no_aRef.errors && loa_ref_no_aRef.errors['required'] && loa_ref_no_aRef.touched"class="error-text" style="color: red; margin-top: 5px;">{{"labels.loareferencenoisrequired" | translate}}</div>
+                                  <div *ngIf="showLoaAlert && !loa_registered && b_mthd == 'A'" class="error-text" style="color: red; margin-top: 5px;">{{"labels.loarefnotregistered" | translate}}</div>
+                            </div>
+                        </td>
+                        <td *ngIf="b_mthd === 'A'">
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.agreementreferencenumber" | translate}}</label>
+                                <input
+                                  class="form-control"
+                                  type="text"
+                                  [(ngModel)]="agm_id"
+                                  placeholder="-" 
+                                  [disabled] = "!canEdit"
+                                  #agmt_ref_no_aRef="ngModel" required maxlength="255" 
+                                />
+                                <div *ngIf="agmt_ref_no_aRef.errors && agmt_ref_no_aRef.errors['required'] && agmt_ref_no_aRef.touched" class="error-text" style="color: red; margin-top: 5px;"> {{"labels.agreementreferencenoisrequired" | translate}}</div>  
+                            </div>
+                        </td>
+                        <td *ngIf="b_mthd === 'L'">
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.loastartendrange" | translate}}</label>
+                                <input
+                                  class="form-control"
+                                  type="text"
+                                  [(ngModel)]="dateRangeString"
+                                  placeholder="-" 
+                                  disabled
+                                />
+                            </div>
+                        </td>
+                    </tr>
+                    <tr *ngIf="b_mthd === 'A'">
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.agreementstartendrange" | translate}}</label>
+                                <input
+                                  class="form-control"
+                                  type="text"
+                                  [(ngModel)]="dateRangeString"
+                                  placeholder="-" 
+                                  disabled
+                                />
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.billingdescription" | translate}}</label>
+                                <input
+                                  class="form-control"
+                                  type="text"
+                                  [(ngModel)]="billing_desc"
+                                  placeholder="-" 
+                                  [disabled] = "!canEdit"
+                                  #billing_desc_o_Ref="ngModel" required maxlength="255" 
+                                />
+                                <div *ngIf="billing_desc_o_Ref.errors && billing_desc_o_Ref.errors['required'] && billing_desc_o_Ref.touched" class="error-text">{{"labels.billingdescriptionisrequired" | translate}}</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.billingcount" | translate}}</label>
+                                <input
+                                  class="form-control"
+                                  type="text"
+                                  [(ngModel)]="billing_cnt"
+                                  placeholder="-" 
+                                  disabled
+                                />
+                            </div>
+                        </td>
+                    </tr>
+                    <tr *ngIf="b_mthd === 'L'">
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.billingdescription" | translate}}</label>
+                                <input
+                                  class="form-control"
+                                  type="text"
+                                  [(ngModel)]="billing_desc"
+                                  placeholder="-" 
+                                  [disabled] = "!canEdit"
+                                  #billing_desc_o_Ref="ngModel" required maxlength="255" 
+                                />
+                                <div *ngIf="billing_desc_o_Ref.errors && billing_desc_o_Ref.errors['required'] && billing_desc_o_Ref.touched" class="error-text">{{"labels.billingdescriptionisrequired" | translate}}</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.billingcount" | translate}}</label>
+                                <input
+                                  class="form-control"
+                                  type="text"
+                                  [(ngModel)]="billing_cnt"
+                                  placeholder="-" 
+                                  disabled
+                                />
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.billingfrequency" | translate}}</label>
+                                <input
+                                  class="form-control"
+                                  type="text"
+                                  [(ngModel)]="billing_freq"
+                                  placeholder="-" 
+                                  disabled
+                                />
+                            </div>
+                        </td>
+                    </tr>
+                    <tr *ngIf="b_mthd === 'A'">
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.billingfrequency" | translate}}</label>
+                                <input
+                                  class="form-control"
+                                  type="text"
+                                  [(ngModel)]="billing_freq"
+                                  placeholder="-" 
+                                  disabled
+                                />
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.dayofthebillingissued" | translate}}</label>
+                                <input
+                                  class="form-control"
+                                  type="text"
+                                  [(ngModel)]="billing_day"
+                                  placeholder="-" 
+                                  disabled
+                                />
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.requestorname" | translate}}</label>
+                                <input
+                                  class="form-control"
+                                  type="text"
+                                  [(ngModel)]="req_name"
+                                  placeholder="-" 
+                                  [disabled] = "!canEdit"
+                                  #requester_nameRef="ngModel"required maxlength="255" 
+                                />
+                                <div *ngIf="requester_nameRef.errors && requester_nameRef.errors['required'] && requester_nameRef.touched" class="error-text" style="color: red; margin-top: 5px;">{{"labels.requesternameisrequired" | translate}}</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr *ngIf="b_mthd === 'A'">
+                      <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.requestoremail" | translate}}</label>
+                                <input
+                                  class="form-control"
+                                  type="email"
+                                  [(ngModel)]="req_email"
+                                  placeholder="-" 
+                                  [disabled] = "!canEdit"
+                                  required maxlength="255" #requester_emailRef="ngModel" 
+                                  pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
+                                />
+                                <div *ngIf="requester_emailRef.errors && requester_emailRef.errors['required'] && requester_emailRef.touched" class="error-text">{{"labels.requesteremailisrequired" | translate}}</div>
+
+                                <div *ngIf="requester_emailRef.errors && requester_emailRef.errors['pattern'] && requester_emailRef.touched" class="error-text">{{"labels.pleaseenteravalidrequesteremailaddress" | translate}}</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr *ngIf="b_mthd === 'L'">
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.dayofthebillingissued" | translate}}</label>
+                                <input
+                                  class="form-control"
+                                  type="text"
+                                  [(ngModel)]="billing_day"
+                                  placeholder="-" 
+                                  disabled
+                                />
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.requestorname" | translate}}</label>
+                                <input
+                                  class="form-control"
+                                  type="text"
+                                  [(ngModel)]="req_name"
+                                  placeholder="-" 
+                                  [disabled] = "!canEdit"
+                                  #requester_nameRef="ngModel"required maxlength="255" 
+                                />
+                                <div *ngIf="requester_nameRef.errors && requester_nameRef.errors['required'] && requester_nameRef.touched" class="error-text" style="color: red; margin-top: 5px;">{{"labels.requesternameisrequired" | translate}}</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.requestoremail" | translate}}</label>
+                                <input
+                                  class="form-control"
+                                  type="email"
+                                  [(ngModel)]="req_email"
+                                  placeholder="-" 
+                                  [disabled] = "!canEdit"
+                                  required maxlength="255" #requester_emailRef="ngModel" 
+                                  pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
+                                />
+                                <div *ngIf="requester_emailRef.errors && requester_emailRef.errors['required'] && requester_emailRef.touched" class="error-text">{{"labels.requesteremailisrequired" | translate}}</div>
+
+                                <div *ngIf="requester_emailRef.errors && requester_emailRef.errors['pattern'] && requester_emailRef.touched" class="error-text">{{"labels.pleaseenteravalidrequesteremailaddress" | translate}}</div>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-container>
+              </table>
+
+            <!--<table style="display: table;" [ngClass]="{ TableDimmed: isLoading }">
+              <thead>
+                  <tr class="MATableHeader">
+                      <th style="width: 15%;"></th>
+                      <th style="width: 20%;"></th>
+                      <th style="width: 5%;"></th>
+                      <th style="width: 15%;"></th>
+                      <th style="width: 20%;"></th>
+                  </tr>
+              </thead>
+                <tr>
+                  <td>
+                      <label class="tableLabel">{{"labels.customerid" | translate}}</label>
+                  </td>
+                  <td>
+                      <input
+                        class="form-control"
+                        type="text"
+                        [(ngModel)]="cust_id"
+                        placeholder="-" 
+                        disabled
+                      />
+                  </td>
+                  <td></td>
+                  <td>
+                      <label class="tableLabel">{{"labels.customername" | translate}}</label>
+                  </td>
+                  <td>
+                      <input
+                        class="form-control"
+                        type="text"
+                        [(ngModel)]="cust_nm"
+                        placeholder="-" 
+                        [disabled] = "!canEdit"
+                        minlength="4" required maxlength="255" #cus_nameRef="ngModel"
+                      />
+                      <div *ngIf="cus_nameRef.errors && cus_nameRef.errors['required'] && cus_nameRef.touched" class="error-text">{{"labels.customernameisrequired" | translate}}</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                      <label class="tableLabel">{{"labels.customeremail" | translate}}</label>
+                  </td>
+                  <td>
+                     <input class="form-control" 
+                        type="email" 
+                        [(ngModel)]="cust_email" 
+                        name="cust_email"
+                        [disabled] = "!canEdit" 
+                        pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
+                        placeholder="-" 
+                        #emailRef="ngModel" required maxlength="255"
+                      />
+
+                    <div *ngIf="emailRef.errors && emailRef.errors['required'] && emailRef.touched"
+                        class="error-text">
+                        {{"labels.emailisrequired" | translate}}
+                    </div>
+
+                    <div *ngIf="emailRef.errors && emailRef.errors['pattern'] && emailRef.touched"
+                        class="error-text">
+                        {{"labels.pleaseenteravalidemailaddress" | translate}}
+                    </div>
+                  </td>
+                  <td></td>
+                  <td>
+                      <label class="tableLabel">{{"labels.customerphonenumber" | translate}}</label>
+                  </td>
+                  <td>
+                      <input
+                        class="form-control"
+                        type="text"
+                        [(ngModel)]="cust_phone"
+                        placeholder="-" 
+                        [disabled] = "!canEdit"
+                        oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1'); " 
+                        #cus_phnoRef="ngModel" required maxlength="15" minlength="10"
+                      />
+                      <div *ngIf="cus_phnoRef.errors && (cus_phnoRef.errors['minlength'] || cus_phnoRef.errors['maxlength'] || cus_phnoRef.errors['required']) && cus_phnoRef.touched" class="error-text">{{"Phone number must be between 10 to 15 digits." | translate}}</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                      <label class="tableLabel">{{"labels.addressline1" | translate}}</label>
+                  </td>
+                  <td>
+                      <input
+                        class="form-control uppercase"
+                        type="text"
+                        [(ngModel)]="cust_addr1"
+                        placeholder="-" 
+                        [disabled] = "!canEdit"
+                        required maxlength="150" #cus_add1Ref="ngModel"
+                      />
+                      <div *ngIf="cus_add1Ref.errors && cus_add1Ref.errors['required'] && cus_add1Ref.touched" class="error-text">{{"labels.customeraddress1isrequired" | translate}}</div>
+                  </td>
+                  <td></td>
+                  <td>
+                      <label class="tableLabel">{{"labels.addressline2" | translate}}</label>
+                  </td>
+                  <td>
+                      <input
+                        class="form-control uppercase"
+                        type="text"
+                        [(ngModel)]="cust_addr2"
+                        placeholder="-" 
+                        [disabled] = "!canEdit"
+                        required maxlength="150" #cus_add2Ref="ngModel" 
+                        />
+                      <div *ngIf="cus_add2Ref.errors && cus_add2Ref.errors['required'] && cus_add2Ref.touched" class="error-text">{{"labels.customeraddress2isrequired" | translate}}</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                      <label class="tableLabel">{{"labels.addressline3" | translate}}</label>
+                  </td>
+                  <td>
+                      <input
+                        class="form-control uppercase"
+                        type="text"
+                        [(ngModel)]="cust_addr3"
+                        placeholder="-" 
+                        [disabled] = "!canEdit" maxlength="150"
+                      />
+                  </td>
+                  <td></td>
+                  <td>
+                      <label class="tableLabel">{{"labels.postcode" | translate}}</label>
+                  </td>
+                  <td *ngIf = "!canEdit">
+                      <input
+                        class="form-control" #postcodeRef="ngModel" 
+                        type="text"
+                        [(ngModel)]="postcode"
+                        placeholder="-" 
+                        [disabled] = "!canEdit" 
+                        oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1'); "
+                        maxlength="5" minlength="5"
+                      />
+                  </td>
+                  <td *ngIf = "canEdit">
+                      <ng-select name="postcode" [(ngModel)]="postcode" required
+                          dropdownPosition="bottom" class="form-control"
+                          placeholder="{{'labels.pleasetypehere' | translate}}"
+                          (ngModelChange)="onPostcodeChange($event)" 
+                          [addTag]="checkTag" #postcodeRef="ngModel" (keypress)="allow5Numbers($event)" minlength="5">
+                          <ng-option *ngFor="let item of postCodes" [value]="item.postcode">{{item.postcode}}</ng-option>
+                      </ng-select>                         
+                      <div *ngIf="postcodeRef.errors && (postcodeRef.errors['required'] || postcodeRef.errors['minlength'] || postcodeRef.errors['maxlength']) && postcodeRef.touched" class="error-text">{{"Postcode must be exactly 5 digits." | translate}}</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                      <label class="tableLabel">{{"labels.city" | translate}}</label>
+                  </td>
+                  <td *ngIf = "!canEdit">
+                      <input
+                        class="form-control"
+                        type="text"
+                        [(ngModel)]="city"
+                        placeholder="-" 
+                        [disabled] = "!canEdit"
+                      />
+                  </td>
+                  <td *ngIf = "canEdit">
+                      <ng-select name="city" [(ngModel)]="city" required maxlength="50"
+                          #cityRef="ngModel" dropdownPosition="bottom" class="form-control uppercase"
+                          placeholder="{{'labels.pleasetypehere' | translate}}"
+                          [addTag]="upperCity">
+                          <ng-option *ngFor="let cityItem of uniqueCities" [value]="cityItem">{{ cityItem }}</ng-option>
+                      </ng-select>
+                      <div *ngIf="cityRef.errors && cityRef.errors['required'] && cityRef.touched" class="error-text">{{"labels.cityisrequired" | translate}}</div>
+                  </td>
+                  <td></td>
+                  <td>
+                      <label class="tableLabel">{{"labels.state" | translate}}</label>
+                  </td>
+                  <td *ngIf = "!canEdit">
+                      <input
+                        class="form-control"
+                        type="text"
+                        [(ngModel)]="cust_state_string"
+                        placeholder="-" 
+                        [disabled] = "!canEdit" #stateRef="ngModel"
+                      />
+                  </td>
+                  <td *ngIf = "canEdit">
+                      <ng-select name="state" [(ngModel)]="cust_state_string" required maxlength="50"
+                          #stateRef="ngModel" dropdownPosition="bottom" class="form-control uppercase"
+                          placeholder="-" *ngIf = "canEdit">
+                          <ng-option *ngFor="let stateItem of uniqueStates" [value]="stateItem">{{ stateItem }}</ng-option>
+                      </ng-select>
+                      <div *ngIf="stateRef.errors && stateRef.errors['required'] && stateRef.touched" class="error-text">{{"labels.stateisrequired" | translate}}</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                      <label class="tableLabel">{{"labels.entityname" | translate}}</label>
+                  </td>
+                  <td>
+                      <input
+                        class="form-control"
+                        type="text"
+                        [(ngModel)]="ent_nm"
+                        placeholder="-" 
+                        [disabled] = "!canEdit"
+                        required maxlength="400" #entity_nameRef="ngModel"
+                      />
+                      <div *ngIf="entity_nameRef.errors && entity_nameRef.errors['required'] && entity_nameRef.touched" class="error-text"> {{"labels.entitynameisrequired" | translate}}</div>
+                  </td>
+                  <td></td>
+                  <td>
+                        <label class="tableLabel">{{"labels.entitytype" | translate}}</label>
+                  </td>
+                  <td>
+                      <input
+                        class="form-control"
+                        type="text"
+                        [(ngModel)]="ent_ty_string"
+                        placeholder="-" 
+                        disabled
+                      />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label class="tableLabel">{{"labels.entitynumber" | translate}}</label>
+                  </td>
+                  <td>
+                      <input
+                        class="form-control"
+                        type="text"
+                        [(ngModel)]="ent_no"
+                        placeholder="-" 
+                        disabled
+                      />
+                    </td>
+                    <td></td>
+                    <td>
+                          <label class="tableLabel">{{"labels.sourcesystem" | translate}}</label>
+                    </td>
+                    <td>
+                        <input
+                          class="form-control"
+                          type="text"
+                          [(ngModel)]="ss_cd"
+                          placeholder="-" 
+                          disabled
+                        />
+                    </td>
+                </tr>
+                <tr>
+                  <td>
+                        <label class="tableLabel">{{"labels.billingno" | translate}}</label>
+                  </td>
+                  <td>
+                        <input
+                          class="form-control"
+                          type="text"
+                          [(ngModel)]="billing_no"
+                          placeholder="-" 
+                          disabled
+                        />
+                    </td>
+                    <td></td>
+                    <td>
+                          <label class="tableLabel">{{"labels.billingmethod" | translate}}</label>
+                    </td>
+                    <td>
+                        <input
+                          class="form-control"
+                          type="text"
+                          [(ngModel)]="billing_mthd_string"
+                          placeholder="-" 
+                          disabled
+                        />
+                    </td>
+                </tr> 
+
+                <tr *ngIf="b_mthd=='O';">
+                    <td>
+                          <label class="tableLabel">{{"labels.billingdescription" | translate}}</label>
+                    </td>
+                    <td>
+                        <input
+                          class="form-control"
+                          type="text"
+                          [(ngModel)]="billing_desc"
+                          placeholder="-" 
+                          [disabled] = "!canEdit"
+                          #billing_desc_o_Ref="ngModel" required maxlength="255" 
+                        />
+                        <div *ngIf="billing_desc_o_Ref.errors && billing_desc_o_Ref.errors['required'] && billing_desc_o_Ref.touched" class="error-text">{{"labels.billingdescriptionisrequired" | translate}}</div>
+                    </td>
+                    <td></td>
+                    <td>
+                          <label class="tableLabel">{{"labels.requestorname" | translate}}</label>
+                    </td>
+                    <td>
+                        <input
+                          class="form-control"
+                          type="text"
+                          [(ngModel)]="req_name"
+                          placeholder="-" 
+                          [disabled] = "!canEdit"
+                          #requester_nameRef="ngModel"required maxlength="255" 
+                        />
+                        <div *ngIf="requester_nameRef.errors && requester_nameRef.errors['required'] && requester_nameRef.touched" class="error-text" style="color: red; margin-top: 5px;">{{"labels.requesternameisrequired" | translate}}</div>
+                    </td>
+                </tr>
+
+                <tr *ngIf="b_mthd=='A';">
+                  <td>
+                          <label class="tableLabel">{{"labels.loareferencenumber" | translate}}</label>
+                  </td>
+                  <td>  <div style="display: flex;">
+                        <input
+                          class="form-control"
+                          type="text"
+                          [(ngModel)]="loa_id"
+                          placeholder="-" 
+                          [disabled] = "!canEdit"
+                          [ngClass]="!canEdit ? '' : !has_checked_loa_registered ? '' : (!loa_registered ? 'is-invalid' : 'is-valid')"
+                          (change)="resetLOAFlag2()"
+                          autocomplete="off" #loa_ref_no_aRef="ngModel" required maxlength="255"
+                        />
+                        <button *ngIf="canEdit" [disabled]="loa_id.length < 1 ? true : checkingLOA" id="loaRegistered" class="btn btnSubmit" (click)="checkLOARegistered()">
+                          <div *ngIf="!checkingLOA">{{"buttons.check" | translate}}</div>
+                          <div *ngIf="checkingLOA" class="spinner-border check-spinner" role="status"><span class="sr-only"></span></div></button>
+                        </div>
+
+                        <div *ngIf="loa_ref_no_aRef.errors && loa_ref_no_aRef.errors['required'] && loa_ref_no_aRef.touched"class="error-text" style="color: red; margin-top: 5px;">{{"labels.loareferencenoisrequired" | translate}}</div>
+                        <div *ngIf="showLoaAlert && !loa_registered && b_mthd == 'A'" class="error-text" style="color: red; margin-top: 5px;">{{"labels.loarefnotregistered" | translate}}</div>
+                  </td>
+                  <td></td>
+                  <td>
+                        <label class="tableLabel">{{"labels.agreementreferencenumber" | translate}}</label>
+                  </td>
+                  <td>
+                      <input
+                        class="form-control"
+                        type="text"
+                        [(ngModel)]="agm_id"
+                        placeholder="-" 
+                        [disabled] = "!canEdit"
+                        #agmt_ref_no_aRef="ngModel" required maxlength="255" 
+                      />
+                      <div *ngIf="agmt_ref_no_aRef.errors && agmt_ref_no_aRef.errors['required'] && agmt_ref_no_aRef.touched" class="error-text" style="color: red; margin-top: 5px;"> {{"labels.agreementreferencenoisrequired" | translate}}</div>  
+                  </td>
+                </tr>
+                <tr *ngIf="b_mthd=='A';">
+                  <td>
+                          <label class="tableLabel">{{"labels.agreementstartendrange" | translate}}</label>
+                  </td>
+                  <td>
+                      <input
+                        class="form-control"
+                        type="text"
+                        [(ngModel)]="dateRangeString"
+                        placeholder="-" 
+                        disabled
+                      />
+                  </td>
+                  <td></td>
+                  <td>
+                        <label class="tableLabel">{{"labels.billingdescription" | translate}}</label>
+                  </td>
+                  <td>
+                      <input
+                        class="form-control"
+                        type="text"
+                        [(ngModel)]="billing_desc"
+                        placeholder="-" 
+                        [disabled] = "!canEdit"
+                        #billing_desc_o_Ref="ngModel" required maxlength="255" 
+                      />
+                      <div *ngIf="billing_desc_o_Ref.errors && billing_desc_o_Ref.errors['required'] && billing_desc_o_Ref.touched" class="error-text">{{"labels.billingdescriptionisrequired" | translate}}</div>
+                  </td>
+                </tr>
+                <tr *ngIf="b_mthd=='A';">
+                  <td>
+                          <label class="tableLabel">{{"labels.billingcount" | translate}}</label>
+                  </td>
+                  <td>
+                      <input
+                        class="form-control"
+                        type="text"
+                        [(ngModel)]="billing_cnt"
+                        placeholder="-" 
+                        disabled
+                      />
+                    </td>
+                    <td></td>
+                    <td>
+                          <label class="tableLabel">{{"labels.billingfrequency" | translate}}</label>
+                    </td>
+                    <td>
+                      <input
+                        class="form-control"
+                        type="text"
+                        [(ngModel)]="billing_freq"
+                        placeholder="-" 
+                        disabled
+                      />
+                    </td>
+                </tr>
+                <tr *ngIf="b_mthd=='A';">
+                  <td>
+                      <label class="tableLabel">{{"labels.dayofthebillingissued" | translate}}</label>
+                  </td>
+                  <td>
+                      <input
+                        class="form-control"
+                        type="text"
+                        [(ngModel)]="billing_day"
+                        placeholder="-" 
+                        disabled
+                      />
+                    </td>
+                    <td></td>
+                    <td>
+                      <label class="tableLabel">{{"labels.requestorname" | translate}}</label>
+                    </td>
+                    <td>
+                      <input
+                        class="form-control"
+                        type="text"
+                        [(ngModel)]="req_name"
+                        placeholder="-" 
+                        [disabled] = "!canEdit"
+                        #requester_nameRef="ngModel"required maxlength="255" 
+                      />
+                      <div *ngIf="requester_nameRef.errors && requester_nameRef.errors['required'] && requester_nameRef.touched" class="error-text" style="color: red; margin-top: 5px;">{{"labels.requesternameisrequired" | translate}}</div>
+                    </td>
+                </tr>
+                <tr *ngIf="b_mthd=='A' || b_mthd=='O';">
+                  <td>
+                          <label class="tableLabel">{{"labels.requestoremail" | translate}}</label>
+                  </td>
+                  <td>
+                      <input
+                        class="form-control"
+                        type="email"
+                        [(ngModel)]="req_email"
+                        placeholder="-" 
+                        [disabled] = "!canEdit"
+                        required maxlength="255" #requester_emailRef="ngModel" 
+                        pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
+                      />
+                      <div *ngIf="requester_emailRef.errors && requester_emailRef.errors['required'] && requester_emailRef.touched" class="error-text">{{"labels.requesteremailisrequired" | translate}}</div>
+
+                      <div *ngIf="requester_emailRef.errors && requester_emailRef.errors['pattern'] && requester_emailRef.touched" class="error-text">{{"labels.pleaseenteravalidrequesteremailaddress" | translate}}</div>
+                  </td>
+                  <td></td>
+                </tr>
+
+                <tr *ngIf="b_mthd=='L';">
+                  <td>
+                      <label class="tableLabel">{{"labels.loareferencenumber" | translate}}</label>
+                  </td>
+                  <td>  <div style="display: flex;">
+                      <input
+                        class="form-control"
+                        type="text"
+                        [(ngModel)]="loa_id"
+                        placeholder="LOA Reference No."
+                        [disabled] = "!canEdit"
+                        [ngClass]="!canEdit ? '' : !has_checked_loa_exists ? '' : (loa_exists ? 'is-invalid' : 'is-valid')"
+                        (change)="resetLOAFlag1()"
+                        autocomplete="off" #loa_ref_no_lRef="ngModel" required maxlength="255"
+                      />
+                      <button *ngIf="canEdit" [disabled]="loa_id.length < 1 ? true : checkingLOA" id="loaExisting" class="btn btnSubmit" (click)="checkLOAExists()">
+                          <div *ngIf="!checkingLOA">{{"buttons.check" | translate}}</div>
+                          <div *ngIf="checkingLOA" class="spinner-border check-spinner" role="status"><span class="sr-only"></span></div></button>
+                        </div>
+
+                      <div *ngIf="loa_ref_no_lRef.errors && loa_ref_no_lRef.errors['required'] && loa_ref_no_lRef.touched" class="error-text" style="color: red; margin-top: 5px;"> {{"labels.loareferencenoisrequired" | translate}}</div>
+                      <div *ngIf="showLoaAlert && loa_exists && b_mthd == 'L'" class="error-text"style="color: red; margin-top: 5px;">{{"labels.loarefalreadyregistered" | translate}}</div>
+                    </td>
+                    <td></td>
+                    <td>
+                          <label class="tableLabel">{{"labels.loastartendrange" | translate}}</label>
+                    </td>
+                    <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="dateRangeString"
+                            placeholder="Start/End Date Range"
+                            disabled
+                          />
+                    </td>
+                </tr>
+                <tr *ngIf="b_mthd=='L';">
+                    <td>
+                          <label class="tableLabel">{{"labels.billingdescription" | translate}}</label>
+                    </td>
+                    <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="billing_desc"
+                            placeholder="Billing Description"
+                            [disabled] = "!canEdit"
+                          />
+                    </td>
+                    <td></td>
+                    <td>
+                          <label class="tableLabel">{{"labels.billingcount" | translate}}</label>
+                  </td>
+                  <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="billing_cnt"
+                            placeholder="Billing Count"
+                            disabled
+                          />
+                    </td>
+                </tr>
+                <tr *ngIf="b_mthd=='L';">
+                    <td>
+                          <label class="tableLabel">{{"labels.billingfrequency" | translate}}</label>
+                    </td>
+                    <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="billing_freq"
+                            placeholder="Billing Frequency"
+                            disabled
+                          />
+                    </td>
+                    <td></td>
+                    <td>
+                          <label class="tableLabel">{{"labels.dayofthebillingissued" | translate}}</label>
+                    </td>
+                    <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="billing_day"
+                            placeholder="Day of the Billing Issued"
+                            disabled
+                          />
+                    </td>
+                </tr>
+                <tr *ngIf="b_mthd=='L';">
+                    <td>
+                          <label class="tableLabel">{{"labels.requestorname" | translate}}</label>
+                    </td>
+                    <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="req_name"
+                            placeholder="Requester Name"
+                            [disabled] = "!canEdit"
+                          />
+                    </td>
+                    <td></td>
+                    <td>
+                          <label class="tableLabel">{{"labels.requestoremail" | translate}}</label>
+                    </td>
+                    <td>
+                          <input
+                            class="form-control"
+                            type="email"
+                            [(ngModel)]="req_email"
+                            placeholder="Requester Email"
+                            [disabled] = "!canEdit"
+                          />
+                    </td>
+                </tr>
+        
+              </table> -->
+            </div>
+            <!-- <div *ngIf="showLoaAlert && loa_exists && b_mthd == 'L'" [@fadeInOut]>
+                <div style="margin-left: 3%;width: 94%;" class="alert alert-warning PA-alert-box" role="alert">{{ "labels.loarefalreadyregistered" | translate }}</div>
+            </div>
+            <div *ngIf="showLoaAlert && !loa_registered && b_mthd == 'A'" [@fadeInOut]>
+                <div style="margin-left: 3%;width: 94%;" class="alert alert-warning PA-alert-box" role="alert">{{ "labels.loarefnotregistered" | translate }}</div>
+            </div> -->
+            <div class="MarginSeparator"></div>
+
+            <div>
+                <h2>{{"labels.listofbillingitem" | translate}}</h2>
+            </div>
+            <div class="MALoadingContainer">
+                  <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center" style= "margin-left: 3%;margin-right: 3%;z-index: auto;">
+                      <div class="spinner-border" role="status">
+                          <span class="sr-only"></span>
+                      </div>
+              </div>
+            <div>
+                <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+                    <thead>
+                        <tr class="MATableHeader">
+                            <th class="thWidth">No.</th>
+                            <th style="width:55%;">{{"labels.billingitem" | translate}}</th>
+                            <th style="width:10%;">{{"labels.unitpricerm" | translate}}</th>
+                            <th style="width:10%;">{{"labels.quantity" | translate}}</th>
+                            <th style="width:10%;">{{"labels.tax%" | translate}}</th>
+                            <th style="width:10%;">{{"labels.totalrm" | translate}}</th>
+                        </tr>
+                    </thead>
+                    <ng-container *ngIf="totalRecordsListOfItem>0; else noResultsItems">
+                    <tbody *ngIf="billing_items.length > 0; else noResultsItems">
+                        <tr *ngFor="let item of billing_items; let i = index">
+                          <td>{{ i + 1 }}</td>
+                          <td>{{ item.mft_desc_en }}</td>
+                          <td *ngIf="!canEdit" style="text-align: right;">{{ item.unit_fee | number: '1.2-2' }}</td>
+                          <td *ngIf="!canEdit" style="text-align: center;">{{ item.qty }}</td>
+                          <td *ngIf="canEdit"><ng-container>
+                              <input type="text" (change)="recalcBICost(item)" [(ngModel)]="item.unit_fee" class="form-control" [disabled]="!canEdit" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1').match(/^-?\d+(?:\.\d{0,2})?/)[0]; " style="text-align: center;" />
+                            </ng-container>
+                          </td>
+                        <td *ngIf="canEdit"><input type="text" (change)="recalcBICost(item)" [(ngModel)]="item.qty" class="form-control" [disabled]="!canEdit" min = "0"  oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1'); " style="text-align: center;" /></td>
+                          <td style="text-align: center;">{{ item.tax_pct }}</td>
+                          <td style="text-align: right;">{{ item.final_amt | number: '1.2-2' }}</td>
+                        </tr>
+                        <tr>
+                            <td style="border-right-color: transparent;"></td>
+                            <td style="border-right-color: transparent;"><h6 style="margin-left:3%;font-weight:bold;text-align:right;">{{"labels.totalrm" | translate}}</h6></td>
+                            <td style="border-right-color: transparent;"></td>
+                            <td style="border-right-color: transparent;"></td>
+                            <td style="border-right-color: transparent;"></td>
+                            <td style="text-align: right;">{{ total_amount | number: '1.2-2' }}</td>
+                        </tr>                        
+                    </tbody>
+                </ng-container>
+                <ng-template #noResultsItems>
+                    <tr style="height: 100px;">
+                        <td colspan="6" class="text-center">{{"nodatafound"| translate}}</td>
+                    </tr>
+                </ng-template>
+                </table>
+              </div>
+            </div>
+            <div class="MarginSeparator"></div>
+            <div>
+                <h2>{{ "labels.listofbillingissuance" | translate }}</h2>
+            </div>    
+            <div class="MALoadingContainer">
+              <div *ngIf="isLoading"
+                  class="TableLoading-overlay d-flex align-items-center justify-content-center" style= "z-index: auto;">
+                  <div class="spinner-border" role="status">
+                      <span class="sr-only"></span>
+                  </div>
+              </div>
+            <div>
+                  <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+                    <thead>
+                        <tr class="MATableHeader">
+                            <th class="thWidth">No.</th>
+                          <th style="width:20%;">{{ "labels.billingdate" | translate }}</th>
+                          <th style="width:55%;">{{ "labels.billingno" | translate }}</th>
+                          <th style="width:20%;">{{ "labels.billingstatus" | translate }}</th>
+                        </tr>
+                    </thead>
+                    <ng-container *ngIf="totalRecordsListOfIssuance>0; else noResultsIss">
+                    <tbody *ngIf="billing_list.length > 0; else noResultsIss">
+                        <tr *ngFor="let item of billing_list; let i = index ">
+                          <td>{{ i + 1 }}</td>
+                          <td>{{ formatDate(item.bil_child_date) }}</td>
+                          <td *ngIf="!hasBilDoc(item.bil_child_date)"><a class="hyperlink" (click)="downloadImg(item)">{{ item.bil_no }}</a></td>
+                          <td *ngIf="hasBilDoc(item.bil_child_date)">{{ item.bil_no }}</td>
+                          <td>{{ getBillingStatusName(item.bil_status) }}</td>
+                        </tr>                     
+                    </tbody>
+                    </ng-container>
+                      <ng-template #noResultsIss>
+                        <tr style="height: 100px;">
+                          <td colspan="4" class="text-center">{{ "nodatafound" | translate }}</td>
+                        </tr>
+                      </ng-template>
+                </table>
+            </div>
+            </div>
+
+            <div class="MarginSeparator"></div>
+            <div>
+                <h2>{{"labels.listofdocument" | translate}}</h2>
+            </div>    
+            <div class="MALoadingContainer">
+              <div *ngIf="isLoading"
+                  class="TableLoading-overlay d-flex align-items-center justify-content-center" style= "z-index: auto;">
+                  <div class="spinner-border" role="status">
+                      <span class="sr-only"></span>
+                  </div>
+              </div>
+            <div>
+                <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+                    <thead>
+                        <tr class="MATableHeader">
+                            <th class="thWidth">No.</th>
+                            <th>{{"labels.supportingdocument" | translate}}</th>
+                            <th>{{"labels.uploadedby" | translate}}</th>
+                            <th>{{"labels.uploadedon" | translate}}</th>
+                            <th>{{"labels.filesize" | translate}}</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="documents_list.length > 0; else noResultsDocs">
+                        <tr *ngFor="let item of documents_list; let i = index ">
+                          <td>{{ i + 1 }}</td>
+                          <td> <a class="hyperlink" (click)="downloadFile(item)"> {{ item.file_nm }}</a>
+                              <div *ngIf="item.isDownloadingFile" class="spinner-border download-spinner" role="status">
+                                  <span class="sr-only"></span>
+                              </div></td>
+                          <td>{{ item.uploader }}</td>
+                          <td>{{ item.timestamp | date: 'dd MMM yyyy HH:MM:ss' }}</td>
+                          <td>{{ item.file_size < 1000 ? item.file_size + ' Bytes' : (item.file_size < 1000000 ?
+                                    (item.file_size / 1000).toFixed(2) + ' KB' : (item.file_size / 1000000).toFixed(2)
+                                    + ' MB' ) }}</td>
+                        </tr>                     
+                    </tbody>
+                </table>
+                <ng-template #noResultsDocs>
+                  <tr style="height: 100px;">
+                    <td colspan="5" class="text-center">{{ "nodatafound" | translate }}</td>
+                  </tr>
+                </ng-template>
+            </div>
+            </div>
+
+            <div class="MarginSeparator"></div>
+            <div>
+                <h2>{{"labels.historicaltable" | translate}}</h2>
+            </div>
+            <div class="MALoadingContainer">
+                <div *ngIf="isLoadingHistory" class="TableLoading-overlay d-flex align-items-center justify-content-center" style= "z-index: auto;">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only"></span>
+                    </div>
+                </div>
+              <div>
+                <table class="MATable" [ngClass]="{ TableDimmed: isLoadingHistory }">
+                  <thead>
+                      <tr class="MATableHeader">
+                          <th class="thWidth">No.</th>
+                          <th>{{"labels.action" | translate}}</th>
+                          <th>{{"labels.actiontimestamp" | translate}}</th>
+                          <th>{{"labels.status" | translate}}</th>
+                          <th>{{"labels.performedby" | translate}}</th>
+                          <th>{{"labels.assignedto" | translate}}</th>
+                          <th style="width:30%">{{"labels.remarks" | translate}}</th>
+                      </tr>
+                  </thead>
+                  <ng-container *ngIf="totalHistoryRecords>0; else noResultsHistory">
+                      <tbody>
+                          <tr *ngFor="let item of history; let i = index">
+                              <td>{{ totalHistoryRecords - i }}</td>
+                              <td>{{ item.action }}</td>
+                              <td>{{ item.action_timestamp | date: 'dd MMM yyyy HH:MM:ss'}}</td>
+                              <td>{{ getParamDescWF(item.bil_wf_status) }}</td>
+                              <td>{{ item.performer ? item.performer : 'N/A' }}</td>
+                              <td>{{ item.assignee ? item.assignee : 'N/A' }}</td>
+                              <td>{{ item.remark ? item.remark : 'N/A' }}</td>
+                          </tr>
+                      </tbody>
+                  </ng-container>
+                  <ng-template #noResultsHistory>
+                      <tr style="height: 100px;">
+                          <td colspan="7" class="text-center">{{"nodatafound"| translate}}</td>
+                      </tr>
+                  </ng-template>
+                </table>
+              </div>
+            </div>
+            <div class="MAPagination" *ngIf="totalHistoryRecords>20" style= "margin-left: 3%;margin-bottom: 1%;">
+              <div class="fgSpacing" style="text-align: right; margin-bottom: 7px">
+                <div *ngIf="page * itemsPerPage < totalHistoryRecords">
+                  {{"showing" | translate}} {{ page * itemsPerPage }} {{"from" | translate }} {{ totalHistoryRecords }}
+                  {{"results" | translate }}
+                </div>
+                <div *ngIf="!(page * itemsPerPage < totalHistoryRecords)">
+                  {{"showing" | translate }} {{ totalHistoryRecords }} {{"from" | translate }} {{ totalHistoryRecords }}
+                  {{"results" | translate }}
+                </div>
+              </div>
+              <div class="pagination-row" style="float: right;">
+                <div class="dropdown">
+                  <button class="btn btn-secondary dropdown-toggle PaginControl" type="button" id="dropdownMenuButton"
+                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{ selectedValue }}
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton">
+                    <button class="dropdown-item" *ngFor="let singleItem of dropdownOptions" (click)="LoadHistory(singleItem)">{{ singleItem }}</button>
+                  </div>
+                </div>
+                <ngb-pagination [(page)]="page" [pageSize]="itemsPerPage" [collectionSize]="totalHistoryRecords"
+                  (pageChange)="loadHistory()"></ngb-pagination>
+              </div>
+            </div>
+            <div class="MarginSeparator"></div>
+        </div>
+
+         <div class="one-third" [hidden]="hideActions">
+
+            <div class="right-approval-side">
+              <h2 *ngIf="!queryOnly" style="text-align:center;">{{"labels.approveraction" | translate}}</h2>
+              <h2 *ngIf="queryOnly" style="text-align:center;">{{"labels.queryaction" | translate}}</h2>
+              <br>
+              <h5>{{"labels.decision" | translate}} *</h5>
+              <ng-select class="form-control" name="selectedDecision" [(ngModel)]="selectedDecision" id="selectedDecision" dropdownPosition="bottom" [clearable]="false" [searchable]="false"  placeholder="Decision">
+                <ng-option *ngIf="!queryOnly" [value]="'query'">{{"buttons.querytorequester" | translate}}</ng-option>
+                <ng-option *ngIf="!queryOnly" [value]="'aprv'">{{"buttons.approve" | translate}}</ng-option>
+                <ng-option *ngIf="!queryOnly" [value]="'rjct'">{{"buttons.reject" | translate}}</ng-option>
+                <ng-option *ngIf="queryOnly" [value]="'query'">{{"buttons.returnquery" | translate}}</ng-option>
+                <ng-option *ngIf="queryOnly" [value]="'cancel'">{{ "buttons.cancel" | translate }}</ng-option>
+              </ng-select>
+              <div *ngIf="queryOnly">   
+                <br><br>           
+                <h5 style="position: relative;text-align: center;">{{"labels.supportingdocument(s)" | translate}}</h5>
+                <div class="file-container">
+                    <ng-container *ngFor="let file of selectedFiles; let last = last">
+                        {{ file.name }}{{ !last ? ', ' : '' }}
+                    </ng-container>
+                </div>
+                <div class="fileSize">
+                    {{ "labels.File Limit" | translate }}: {{ selectedFilesSize / 1000000 | number:'1.2-2' }}/10MB
+                </div>
+                <br>
+                <div class="submissionButtons">
+                    <label for="supportingFilesInput" class="btn btn-primary"
+                        style="background-color: #007bff; color: white;">
+                        {{ "buttons.Choose File" | translate }}
+                    </label>
+                    <input type="file" id="supportingFilesInput" (change)="onSupportingFilesSelected($event)" multiple style="display: none;" accept=".png, .jpeg, .jpg, .pdf, .doc, .docx" />
+                    <button type="button" class="btn btnCancel" (click)="clearSupportingFiles()" style="float: right;">
+                        {{ "buttons.Clear File" | translate }}
+                    </button>
+                </div>
+              </div>
+              <div>
+                  <br><br>
+                  <h5 style="position: relative;bottom: 8%;left: 1%;">{{"labels.remarks" | translate}}</h5>
+                  <textarea class="form-control" type="text" [(ngModel)]="remarks" placeholder="Please type here..." style="width: 99%;height: 301px;position: relative;left: 1%;"></textarea>
+                  <br>
+              </div>
+              <div class="submissionButtons">
+                  <button id="cancel" class="btn btnCancel" (click)="back()" >{{ "buttons.cancel" | translate }}</button>
+                  <button id="submit" class="btn btnSubmit" (click)="submitForm()" [disabled]="submitCheck()">{{ "buttons.submit" | translate }}</button>
+              </div>
+            </div>
+         </div>
+    </div>
+</body>

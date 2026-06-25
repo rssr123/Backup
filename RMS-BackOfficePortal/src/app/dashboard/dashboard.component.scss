@@ -1,0 +1,207 @@
+/* Container and Background Styling */
+.dashboard-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.background-image {
+    width: 100% !important;
+    height: 100vh !important;
+    background-image: url("../../assets/logo/logo-menara-ssm.png");
+    background-repeat:no-repeat;
+    background-size: cover;
+    background-position: top center !important;
+    margin: 0% !important;
+    padding: 0% !important;
+}
+
+/* Loading States */
+.chart-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    
+    .loading-skeleton {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+    }
+    
+    .chart-skeleton {
+        width: 90%;
+        height: 200px;
+    }
+    
+    .pie-skeleton {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+    }
+    
+    .loading-text {
+        color: #666;
+        font-size: 0.9rem;
+        font-style: italic;
+    }
+}
+
+/* Smooth Chart Appearance */
+.chart-content {
+    opacity: 0;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* Grid Layout */
+.charts-grid {
+    display: grid;
+    // grid-template-columns: repeat(3, 1fr);
+    // grid-template-rows: repeat(2, 1fr);
+    grid-template-columns: repeat(3, minmax(450px, 1fr)); /* Limit width */
+    grid-template-rows: repeat(2, minmax(473px, 1fr)); /* Limit height */
+    // gap: 1rem;
+    // padding: 20px;
+    position: absolute;
+    z-index: 1;
+    max-height: 90vh; /* Restrict maximum height */
+    justify-content: center;
+}
+
+
+/* Transparent Section Styling */
+.chart-section {
+    background-color: rgba(255, 255, 255, 0.6); /* Semi-transparent */
+    padding: 15px;
+    // border-radius: 8px;
+    // box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Specific Section Styling */
+.logo-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.logo img {
+    margin-top: 5%;
+    margin-left: -100%;
+    max-width: 80%; 
+    z-index: 2;
+    margin-bottom: 50px; /* Adds space below the logo */
+}
+
+#middle-container {
+    display: flex;
+    flex-direction: column;
+    // justify-content: center; /* Center the content vertically */
+   // align-items: center; /* Center the content horizontally */
+    line-height: 1.0;
+    // margin-top: 7%; /* Set left margin to 30% */
+    // margin-left: 3%;
+  }
+
+#middle-container #revenue {
+    // position: absolute;
+    // top: 43%;
+    // left: 5%;
+    // margin: 0;
+   // font-size: 45px;
+   //font-size: 2.88vmax;
+   font-size: 2.00vmax;
+   font-weight: 700;
+   letter-spacing: -1px; 
+   color: black;
+  //  z-index: 1; 
+  }
+
+#middle-container #backoffice {
+    // position: absolute;
+    // top: 49%;
+    // left: 5%;
+    // margin: 0;
+   // font-size: 45px;
+   margin-top: 1.0%;
+   margin-left: -58%;
+//    font-size: 2.88vmax;
+   font-size: 2.15vmax;
+   font-weight: 700;
+   letter-spacing: -1px; 
+   color: yellow;
+ //   z-index: 1; 
+  }
+
+  #middle-container #top {
+    // position: absolute;
+    // top: 58%;
+    // left: 5%;
+    // margin: 0;
+   // font-size: 45px;
+   margin-top: 8%;
+   margin-left: 0%;
+//    font-size: 1.62vmax;
+   font-size: 1.20vmax;
+   font-weight: 700;
+   letter-spacing: -1px; 
+   color: black;
+   // z-index: 1; 
+   
+  }
+
+#middle-container #top .blueHighlight {
+    color: rgb(47, 47, 138); /* Change color for specific part of the text */
+  }
+
+/* Pie chart canvas styling */
+.pie-chart canvas {
+    width: 100% !important;
+    max-height: 400px !important; /* Adjust the height for pie charts only */
+}
+
+/* Bar chart canvas styling remains the same */
+.bar-chart canvas {
+    width: 100% !important;
+    max-height: none; /* Keeps original height for bar charts */
+}
+
+.dropdown-section {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Spacing between dropdowns */
+    flex-wrap: wrap; /* Ensures the dropdowns wrap if the screen is too narrow */
+  }
+  
+  .dropdown-section label {
+    margin-right: 5px;
+  }
+
+  label[for="reportType"] {
+    font-weight: bold; /* Makes the label bold */
+  }
+
+  label[for="year"] {
+    font-weight: bold; /* Makes the label bold */
+  }
+
+  label[for="month"] {
+    font-weight: bold; /* Makes the label bold */
+  }

@@ -1,0 +1,9 @@
+<div *ngIf="modal.length > 0; else noData">
+    <h3>Response Data:</h3>
+    <pre>{{ modal | json }}</pre>
+  </div>
+  
+  <ng-template #noData>
+    <p>No data available to display.</p>
+  </ng-template>
+  

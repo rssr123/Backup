@@ -1,0 +1,1159 @@
+<ng-container *ngIf="permListAllow === 1">
+
+    <body class="BodyCointaner" id="mainBodyContainer">
+        <div id="f_overlay">
+            <div class="loader"></div>
+        </div>
+
+        <div *ngIf="showInsertAlert" style="margin-left: 2%;">
+            <div class="alert alert-success PA-alert-box bold" role="alert">
+                {{ "labels.successfulBilInsert" | translate }}
+            </div>
+        </div>
+
+        <div class="PAContainer73">
+            <div class="left-section73">
+                <div *ngIf="error" class="error-box">
+                    <i class="bi bi-x-circle-fill error-icon"></i>
+                    <div>
+                        <strong>{{"validationerror" | translate}}</strong>
+                        <ul>
+                            <ul>
+                                <li *ngFor="let errorMsg of errorMessages">{{ errorMsg }}</li>
+                            </ul>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- file upload error message -->
+                <div *ngIf="errorFile" class="error-box">
+                    <i class="bi bi-x-circle-fill error-icon"></i>
+                    <div>
+                        <strong>{{"uploaderror"| translate}}</strong>
+                        <ul>
+                            <ul>
+                                <li *ngFor="let errorFileMsg of errorFileMessages">{{"labels.theselectedfile" |
+                                    translate}} {{
+                                    errorFileMsg }}
+                                    {{"labels.isinaninvalidfileformatortemplate" | translate}}
+                                </li>
+                            </ul>
+                        </ul>
+                    </div>
+                </div>
+
+                <div *ngIf="errorFileSizeLimit" class="error-box">
+                    <i class="bi bi-x-circle-fill error-icon"></i>
+                    <div>
+                        <strong>{{"filelimit"| translate}}</strong>
+                        <ul>
+                            <ul>
+                                <li *ngFor="let errorFileSizeLimitMsg of errorFileSizeLimitMessages">
+                                    {{"labels.filesize10MBlimitmessage" | translate}}
+                                </li>
+                            </ul>
+                        </ul>
+                    </div>
+                </div>
+
+                <div *ngIf="errorFileDuplicate" class="error-box">
+                    <i class="bi bi-x-circle-fill error-icon"></i>
+                    <div>
+                        <strong>{{"duplicate"| translate}}</strong>
+                        <ul>
+                            <ul>
+                                <li *ngFor="let errorDuplicateMsg of errorFileDuplicateMessages">
+                                    {{errorDuplicateMsg}} {{"labels.alreadyselected.pleasechooseadifferentfile" |
+                                    translate}}
+                                </li>
+                            </ul>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <form class="allFormClass" class="form-group" #formRef="ngForm" (ngSubmit)="handleFormSubmit(formRef)">
+            <div class="PAContainer73">
+                <div class="left-section73">
+                    <div>
+                        <h3 class="bold" style="margin-top: 20px;">{{"labels.billingregistration" | translate}}</h3><br>
+                        <h5 class="bold">{{"labels.customeridvalidation" | translate}}</h5>
+                    </div>
+                    <table>
+                        <tr class="trspacing">
+                            <td class="cvtable cvtabletext">
+                                <label class="tableLabel">{{"labels.billingtypecode" | translate}} <span
+                                        style="color: red;">*</span></label>
+                            </td>
+                            <td class="cvtable cvtableoption">
+                                <ng-select class="form-control" name="billingTypeCodeId" [(ngModel)]="billingTypeCodeId"
+                                    (ngModelChange)="updateBillingTypeCode(billingTypeCodeId)" [clearable]="false"
+                                    [searchable]="false" id="billingTypeCodeId" dropdownPosition="bottom" required
+                                    #billingTypeCodeIdRef="ngModel">
+                                    <ng-option *ngFor="let item of uniqueBillingTypeOptions" [value]="item.bltc_id">
+                                        {{ item.bt_cd }} - {{ item.bt_desc }}
+                                    </ng-option>
+                                </ng-select>
+                                <div class="error-message"
+                                    *ngIf="billingTypeCodeIdRef.errors && billingTypeCodeIdRef.errors['required'] && billingTypeCodeIdRef.touched"
+                                    class="error-text">
+                                    {{"labels.billingtypecodeisrequired" | translate}}
+                                </div>
+                            </td>
+                            <td class="cvtable cvtabletext">
+                                <label class="tableLabel">{{"labels.entitytype" | translate}} <span
+                                        style="color: red;">*</span></label>
+                            </td>
+                            <td class="cvtable cvtableoption">
+                                <ng-select [disabled]="entity_types.length < 1" class="form-control" name="entity_type"
+                                    [(ngModel)]="entity_type" id="entity_type" dropdownPosition="bottom"
+                                    [clearable]="false" [searchable]="false" required #entity_typeRef="ngModel">
+                                    <ng-option *ngFor="let item of entity_types;"
+                                        [value]="item.param_cd">{{item.nm_en}}</ng-option>
+                                </ng-select>
+                                <div *ngIf="entity_typeRef.errors && entity_typeRef.errors['required'] && entity_typeRef.touched"
+                                    class="error-text">
+                                    {{"labels.entitytypeisrequired" | translate}}
+                                </div>
+                            </td>
+                            <td class="cvtable cvtabletext">
+                                <label class="tableLabel">{{"labels.entityNo." | translate}} <span
+                                        style="color: red;">*</span></label>
+                            </td>
+                            <td class="cvtable cvtableoption">
+                                <input class="form-control" type="text" [(ngModel)]="entity_no_tmp" name="entity_no_tmp"
+                                    maxlength="30" minlength="5" required #entity_noRef="ngModel" />
+                                <div *ngIf="entity_noRef.errors && entity_noRef.errors['required'] && entity_noRef.touched"
+                                    class="error-text">
+                                    {{"labels.entitynoisrequired" | translate}}
+                                </div>
+                                 <!-- Length Error -->
+                            <div *ngIf="entity_noRef.errors && (entity_noRef.errors['maxlength'] || entity_noRef.errors['minlength']) && entity_noRef.touched" class="error-text">{{"Entity No. must be between 5 to 30 characters." | translate}}</div>
+                            </td>
+                        </tr>
+                        <tr class="trspacing">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <h6 class="custIdNotExists"
+                                    [hidden]="!cust_exist_btn_first_click ? true : !failFindCustId">
+                                    {{"labels.customeriddoesnotexist" | translate}}</h6>
+                                <h6 class="custIdExists" [hidden]="!cust_exist_btn_first_click ? true : failFindCustId">
+                                    {{"labels.customeridexists" | translate}}</h6>
+                                <h6 class="custIdNotExists" [hidden]="!cust_exist_btn_first_click ? true : !custIdUnapproved">{{"labels.customeridnotapproved" | translate}}</h6>
+                            </td>
+                            <td class="cvtable cvtableoption">
+                                <button type="button" id="checkIn" class="btn btnSearchCustId"
+                                    (click)="searchCustomerId(entity_no_tmp, billingTypeCodeIdRef, entity_typeRef, entity_noRef)">{{
+                                    "buttons.searchcustomerid" | translate
+                                    }}</button>
+                            </td>
+
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div [hidden]="!(cust_id.length > 0)">  
+                <div>
+                    <h5 style="margin-left: 3%;font-weight: bold;">{{"labels.customer&entityinformation" | translate}}
+                    </h5>
+                </div>
+
+                <!-- <div> -->
+                <!-- <form class="allFormClass" class="form-group" #formRef="ngForm" (ngSubmit)="handleFormSubmit(formRef)"> -->
+                <div style="display: flex;flex-direction: row;">
+                    <div class="left-section-billing-registration">
+                        <div class="tableWrapper">
+                            <table class="MATable">
+                                <thead>
+                                    <tr class="MATableHeader">
+                                        <th style="width: 50px;">No.</th>
+                                        <th style="width:35%;">{{"labels.parameter" | translate}}</th>
+                                        <th style="width:61%;">{{"labels.value" | translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>{{"labels.customerid" | translate}}</td>
+                                        <td><input class="form-control readonly-input" type="text" name="cust_id"
+                                                [(ngModel)]="cust_id" readonly #cust_idRef="ngModel" required />
+                                            <div *ngIf="cust_idRef.errors && cust_idRef.errors['required']"
+                                                class="error-text">
+                                                {{"labels.customeridisrequired" | translate}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>{{"labels.customername" | translate}} <span style="color: red;">*</span>
+                                        </td>
+                                        <td><input class="form-control" type="text" [(ngModel)]="cus_name"
+                                                name="cus_name" #cus_nameRef="ngModel"
+                                                placeholder="{{'labels.pleasetypehere' | translate}}" required
+                                                maxlength="255" />
+                                            <div *ngIf="cus_nameRef.errors && cus_nameRef.errors['required'] && cus_nameRef.touched"
+                                                class="error-text">
+                                                {{"labels.customernameisrequired" | translate}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>{{"labels.customeremail" | translate}} <span style="color: red;">*</span>
+                                        </td>
+                                        <td>
+                                            <input class="form-control" type="email" [(ngModel)]="cus_email"
+                                                #emailRef="ngModel" name="cus_email" required
+                                                pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
+                                                placeholder="{{'labels.pleasetypehere' | translate}}" maxlength="255" />
+
+                                            <!-- Required validation -->
+                                            <div *ngIf="emailRef.errors && emailRef.errors['required'] && emailRef.touched"
+                                                class="error-text">
+                                                {{"labels.emailisrequired" | translate}}
+                                            </div>
+
+                                            <!-- Pattern validation -->
+                                            <div *ngIf="emailRef.errors && emailRef.errors['pattern'] && emailRef.touched"
+                                                class="error-text">
+                                                {{"labels.pleaseenteravalidemailaddress" | translate}}
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>4</td>
+                                        <td>{{"labels.customerphonenumber" | translate}} <span
+                                                style="color: red;">*</span>
+                                        </td>
+                                        <td><input class="form-control" type="text" [(ngModel)]="cus_phno"
+                                                name="cus_phno" #cus_phnoRef="ngModel"
+                                                placeholder="{{'labels.enterphone' | translate}}" required
+                                                oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');"
+                                                maxlength="15" minlength="10"
+                                                (blur)="cus_phnoRef.control.markAsTouched()" />
+                                                <div *ngIf="cus_phnoRef.errors && (cus_phnoRef.errors['minlength'] || cus_phnoRef.errors['maxlength'] || cus_phnoRef.errors['required']) && cus_phnoRef.touched" class="error-text">{{"Phone number must be between 10 to 15 digits." | translate}}</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>5</td>
+                                        <td>{{"labels.addressline1" | translate}} <span style="color: red;">*</span>
+                                        </td>
+                                        <td><input class="form-control" type="text" [(ngModel)]="cus_add1"
+                                                name="cus_add1" #cus_add1Ref="ngModel"
+                                                placeholder="{{'labels.pleasetypehere' | translate}}" required
+                                                maxlength="150" 
+                                                (ngModelChange)="cus_add1 = $event ? $event.toUpperCase() : null"/>
+                                            <div *ngIf="cus_add1Ref.errors && cus_add1Ref.errors['required'] && cus_add1Ref.touched"
+                                                class="error-text">
+                                                {{"labels.customeraddress1isrequired" | translate}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>6</td>
+                                        <td>{{"labels.addressline2" | translate}} <span style="color: red;">*</span>
+                                        </td>
+                                        <td><input class="form-control" type="text" [(ngModel)]="cus_add2"
+                                                name="cus_add2" #cus_add2Ref="ngModel"
+                                                placeholder="{{'labels.pleasetypehere' | translate}}" required
+                                                maxlength="150" 
+                                                (ngModelChange)="cus_add2 = $event ? $event.toUpperCase() : null"/>
+                                            <div *ngIf="cus_add2Ref.errors && cus_add2Ref.errors['required'] && cus_add2Ref.touched"
+                                                class="error-text">
+                                                {{"labels.customeraddress2isrequired" | translate}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>7</td>
+                                        <td>{{"labels.addressline3" | translate}}
+                                        </td>
+                                        <td><input class="form-control" type="text" [(ngModel)]="cus_add3"
+                                                name="cus_add3" #cus_add3Ref="ngModel"
+                                                placeholder="{{'labels.pleasetypehere' | translate}}" maxlength="150" 
+                                                (ngModelChange)="cus_add3 = $event ? $event.toUpperCase() : null"/>
+                                            <!-- <div *ngIf="cus_add3Ref.errors && cus_add3Ref.errors['required'] && cus_add3Ref.touched"
+                                                class="error-text">
+                                                {{"labels.customeraddress3isrequired" | translate}}
+                                            </div> -->
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>8</td>
+                                        <td>{{"labels.postcode" | translate}} <span style="color: red;">*</span></td>
+                                        <!-- <td><input class="form-control" type="text" [(ngModel)]="postcode"
+                                                name="postcode" #postcodeRef="ngModel" required
+                                                placeholder="{{'labels.pleasetypehere' | translate}}" style="width:25%;"
+                                                oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');"
+                                                maxlength="5" minlength="5" />
+                                            <div *ngIf="postcodeRef.errors && postcodeRef.errors['required'] && postcodeRef.touched"
+                                                class="error-text">
+                                                {{"labels.postcodeisrequired" | translate}}
+                                            </div>
+                                            <div *ngIf="postcodeRef.errors && (postcodeRef.errors['minlength'] || postcodeRef.errors['maxlength']) && postcodeRef.touched" class="error-text">{{"labels.postcodebadcount" | translate}}</div>
+                                        </td> -->
+                                        <td>
+                                            <ng-select name="postcode" [(ngModel)]="postcode" required
+                                                #postcodeRef="ngModel" dropdownPosition="bottom" class="form-control"
+                                                placeholder="{{'labels.pleasetypehere' | translate}}"
+                                                style="border: 1px solid blue;width:35%;"
+                                                (ngModelChange)="onPostcodeChange($event)" 
+                                                [addTag]="checkTag"  (keypress)="allow5Numbers($event)" minlength="5">
+                                                <ng-option *ngFor="let item of postCodes"
+                                                    [value]="item.postcode">{{item.postcode}}</ng-option>
+                                            </ng-select>
+                                            <div *ngIf="postcodeRef.errors && postcodeRef.errors['required'] && postcodeRef.touched"
+                                                class="error-text">
+                                                {{"labels.postcodeisrequired" | translate}}
+                                            </div>
+                                            <div *ngIf="postcodeRef.errors && postcodeRef.errors['minlength'] && postcodeRef.touched"
+                                                class="error-text">{{"labels.postcodebadcount" | translate}}</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>9</td>
+                                        <td>{{"labels.city" | translate}} <span style="color: red;">*</span></td>
+                                        <!-- <td><input class="form-control" type="text" [(ngModel)]="city" name="city"
+                                                #cityRef="ngModel" placeholder="{{'labels.pleasetypehere' | translate}}"
+                                                required maxlength="50" />
+                                            <div *ngIf="cityRef.errors && cityRef.errors['required'] && cityRef.touched"
+                                                class="error-text">
+                                                {{"labels.cityisrequired" | translate}}
+                                            </div>
+                                        </td> -->
+                                        <td><ng-select name="city" [(ngModel)]="city" required 
+                                            #cityRef="ngModel" dropdownPosition="bottom" class="form-control"
+                                            placeholder="{{'labels.pleasetypehere' | translate}}"
+                                            style="border: 1px solid blue;"
+                                            [addTag]="upperCity" 
+                                            >
+                                            <ng-option *ngFor="let cityItem of uniqueCities" [value]="cityItem">{{ cityItem }}</ng-option>
+                                          </ng-select>
+                                        <div *ngIf="cityRef.errors && cityRef.errors['required'] && cityRef.touched"
+                                            class="error-text">
+                                            {{"labels.cityisrequired" | translate}}
+                                        </div>
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                        <td>10</td>
+                                        <td>{{"labels.state" | translate}} <span style="color: red;">*</span></td>
+                                        <td><ng-select name="state" [(ngModel)]="state" required
+                                            #stateRef="ngModel" dropdownPosition="bottom" class="form-control"
+                                            placeholder="{{'labels.pleasetypehere' | translate}}"
+                                            style="border: 1px solid blue;" maxlength="50">
+                                            <ng-option *ngFor="let stateItem of uniqueStates" [value]="stateItem">{{ stateItem }}</ng-option>
+                                          </ng-select>
+                                          
+                                            <!-- <ng-select [disabled]="states.length < 1" class="form-control" name="state"
+                                                #stateRef="ngModel" [(ngModel)]="state" id="state"
+                                                dropdownPosition="bottom" [clearable]="false" [searchable]="false"
+                                                style="border: 1px solid blue;width:57%;"
+                                                placeholder="{{'labels.selecthere' | translate}}" required
+                                                maxlength="50">
+                                                <ng-option *ngFor="let item of states;"
+                                                    [value]="item.param_cd">{{item.nm_en}}</ng-option>
+                                            </ng-select> -->
+                                            <!-- <select [disabled]="states.length < 1" class="form-control" name="state"
+                                                #stateRef="ngModel" [(ngModel)]="state" id="state"
+                                                style="border: 1px solid blue; width: 65%;" required>
+
+                                                <option value="" disabled selected hidden>
+                                                    {{ 'labels.selecthere' | translate }}
+                                                </option>
+
+                                                <option *ngFor="let item of states" [value]="item.param_cd">
+                                                    {{ item.nm_en }}
+                                                </option>
+                                            </select> -->
+
+                                            <div *ngIf="stateRef.errors && stateRef.errors['required'] && stateRef.touched"
+                                                class="error-text">
+                                                {{"labels.stateisrequired" | translate}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>11</td>
+                                        <td>{{"labels.entityname" | translate}} <span style="color: red;">*</span></td>
+                                        <td><input class="form-control" type="text" [(ngModel)]="entity_name"
+                                                #entity_nameRef="ngModel" name="entity_name"
+                                                placeholder="{{'labels.pleasetypehere' | translate}}" required
+                                                maxlength="400" />
+                                            <div *ngIf="entity_nameRef.errors && entity_nameRef.errors['required'] && entity_nameRef.touched"
+                                                class="error-text">
+                                                {{"labels.entitynameisrequired" | translate}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>12</td>
+                                        <td>{{"labels.entitytype" | translate}}</td>
+                                        <td>{{this.getEntity(entity_type)}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>13</td>
+                                        <td>{{"labels.entitynumber" | translate}}</td>
+                                        <td>{{entity_no}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- <div class="MarginSeparator"></div>
+                        <div *ngIf="showLoaAlert" [@fadeInOut]>
+                            <div style="margin-left: 3%;width: 94%;" class="alert alert-warning PA-alert-box" role="alert">
+                                {{ loaAlertString }}</div>
+                        </div> -->
+
+                        <div>
+                            <h5 style="margin-left: 3%;font-weight: bold;">{{"labels.billinginformation" | translate}}
+                            </h5>
+                        </div>
+                        <div class="tableWrapper" [hidden]="billing_method != 'O'">
+                            <table class="MATable">
+                                <thead>
+                                    <tr class="MATableHeader">
+                                        <th style="width: 50px;">No.</th>
+                                        <th style="width:35%;">{{"labels.parameter" | translate}}</th>
+                                        <th style="width:61%;">{{"labels.value" | translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>{{"labels.sourcesystemcode" | translate}}</td>
+                                        <td>
+                                            <input class="form-control readonly-input" type="text" name="combineSSCode"
+                                                [(ngModel)]="combineSSCode" readonly #combineSSCodeRef="ngModel"
+                                                [required]="billing_method === 'O'" />
+                                            <div *ngIf="combineSSCodeRef.errors && combineSSCodeRef.errors['required']"
+                                                class="error-text">
+                                                {{"labels.sourcesystemcoderequired" | translate}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>{{"labels.billingno." | translate}}</td>
+                                        <td><input class="form-control readonly-input-grey" type="text"
+                                                name="billing_no" [(ngModel)]="billing_no" readonly
+                                                #billing_no_lRef="ngModel" [required]="billing_method === 'O'" />
+                                            <div *ngIf="billing_no_lRef.errors && billing_no_lRef.errors['required']"
+                                                class="error-text">
+                                                {{"labels.billingnoisrequired" | translate}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>{{"labels.billingmethod" | translate}} <span style="color: red;">*</span>
+                                        </td>
+                                        <td>
+                                            <ng-select class="form-control" name="billing_method"
+                                                [(ngModel)]="billing_method" id="billing_method"
+                                                dropdownPosition="bottom" [clearable]="false" [searchable]="false"
+                                                style="border: 1px solid blue;width:37%;" placeholder="Select here..."
+                                                (change)="updateIssuanceList()">
+                                                <ng-option *ngFor="let item of billing_methods;"
+                                                    [value]="item.param_cd">{{item.nm_en}}</ng-option>
+                                                <!--<ng-option [value]="'O'">One-Time</ng-option>
+                                        <ng-option [value]="'L'">Register with LOA</ng-option>
+                                        <ng-option [value]="'A'">Register with Agreement</ng-option>-->
+                                            </ng-select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>4</td>
+                                        <td>{{"labels.billingdescription" | translate}} <span
+                                                style="color: red;">*</span>
+                                        </td>
+                                        <td><input class="form-control" type="text" [(ngModel)]="billing_desc"
+                                                #billing_desc_o_Ref="ngModel" name="billing_desc"
+                                                placeholder="{{'labels.pleasetypehere' | translate}}"
+                                                [required]="billing_method === 'O'" maxlength="255" />
+                                            <div *ngIf="billing_desc_o_Ref.errors && billing_desc_o_Ref.errors['required'] && billing_desc_o_Ref.touched"
+                                                class="error-text">
+                                                {{"labels.billingdescriptionisrequired" | translate}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="tableWrapper" [hidden]="billing_method != 'L'">
+                            <table class="MATable">
+                                <thead>
+                                    <tr class="MATableHeader">
+                                        <th style="width: 50px;">No.</th>
+                                        <th style="width:35%;">{{"labels.parameter" | translate}}</th>
+                                        <th style="width:61%;">{{"labels.value" | translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>{{"labels.sourcesystemcode" | translate}}</td>
+                                        <td>
+                                            <input class="form-control readonly-input" type="text" name="combineSSCode"
+                                                [(ngModel)]="combineSSCode" readonly #combineSSCodeRef="ngModel"
+                                                [required]="billing_method === 'L'" />
+                                            <div *ngIf="combineSSCodeRef.errors && combineSSCodeRef.errors['required']"
+                                                class="error-text">
+                                                {{"labels.sourcesystemcoderequired" | translate}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>{{"labels.billingno." | translate}}</td>
+                                        <td><input class="form-control readonly-input-grey" type="text"
+                                                name="billing_no" [(ngModel)]="billing_no" readonly
+                                                #billing_no_lRef="ngModel" [required]="billing_method === 'L'" />
+                                            <div *ngIf="billing_no_lRef.errors && billing_no_lRef.errors['required']"
+                                                class="error-text">
+                                                {{"labels.billingnoisrequired" | translate}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>{{"labels.billingmethod" | translate}} <span style="color: red;">*</span>
+                                        </td>
+                                        <td>
+                                            <ng-select class="form-control" name="billing_method"
+                                                [(ngModel)]="billing_method" id="billing_method"
+                                                dropdownPosition="bottom" [clearable]="false" [searchable]="false"
+                                                style="border: 1px solid blue;width:37%;" placeholder="Select here..."
+                                                (change)="updateIssuanceList()">
+                                                <ng-option *ngFor="let item of billing_methods;"
+                                                    [value]="item.param_cd">{{item.nm_en}}</ng-option>
+                                                <!--<ng-option [value]="'O'">One-Time</ng-option>
+                                        <ng-option [value]="'L'">Register with LOA</ng-option>
+                                        <ng-option [value]="'A'">Register with Agreement</ng-option>-->
+                                            </ng-select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>4</td>
+                                        <td>{{"labels.loareferenceno." | translate}} <span style="color: red;">*</span>
+                                        </td>
+                                        <td style="display: flex; flex-direction: column;">
+                                            <div style="display: flex; align-items: center;">
+                                                <input style="margin-top:0.5%; margin-right:3%;" class="form-control"
+                                                    type="text" [(ngModel)]="loa_ref_no" #loa_ref_no_lRef="ngModel"
+                                                    name="loa_ref_no_l"
+                                                    placeholder="{{'labels.pleasetypehere' | translate}}"
+                                                    [ngClass]="!has_checked_loa_exists ? '' : (loa_exists ? 'is-invalid' : 'is-valid')"
+                                                    [required]="billing_method === 'L'" maxlength="255"
+                                                    (input)="resetCheckLOAExists()" autocomplete="off" />
+
+                                                <button type="button" style="margin-right: 1%;" id="loaExisting"
+                                                    [disabled]="loa_ref_no.length < 1 ? true : checkingLOA"
+                                                    class="btn btnSubmit"
+                                                    (click)="onCheckLOAExists(loa_ref_no_lRef)">{{checkingLOA? '' :
+                                                    'Check'}}<div *ngIf="checkingLOA"
+                                                        class="spinner-border check-spinner" role="status"><span
+                                                            class="sr-only"></span>
+                                                    </div></button>
+                                            </div>
+
+                                            <!-- Error message should be below the input -->
+                                            <div *ngIf="loa_ref_no_lRef.errors && loa_ref_no_lRef.errors['required'] && loa_ref_no_lRef.touched"
+                                                class="error-text" style="color: red; margin-top: 5px;">
+                                                {{"labels.loareferencenoisrequired" | translate}}
+                                            </div>
+
+                                            <div *ngIf="showLoaAlert && billing_method == 'L'" class="error-text"
+                                                style="color: red; margin-top: 5px;">
+                                                {{"labels.loareferencealreadyexists!" | translate}}
+                                            </div>
+
+                                            <div *ngIf="validLOABeforeSubmitMethodLoa" class="error-text"
+                                                style="color: red; margin-top: 5px;">
+                                                {{"labels.loadreferenceneedtovalidbeforesubmit" | translate}}
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>5</td>
+                                        <td>{{"labels.loastart/enddaterange" | translate}} <span
+                                                style="color: red;">*</span></td>
+                                        <td><input type="text" placeholder="Date Range Picker" class="form-control"
+                                                [bsConfig]="{ rangeInputFormat : 'DD MMM YYYY', dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,rangeSeparator:' to ',containerClass:'theme-default',adaptivePosition: true ,maxDate: maxDate}"
+                                                bsDaterangepicker [(ngModel)]="date_range" name="date_range" readonly
+                                                style="width:43%;" (ngModelChange)="updateIssuanceList()"
+                                                onkeydown="return false">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>6</td>
+                                        <td>{{"labels.billingdescription" | translate}} <span
+                                                style="color: red;">*</span>
+                                        </td>
+                                        <td><input class="form-control" type="text" [(ngModel)]="billing_desc"
+                                                #billing_desc_lRef="ngModel" name="billing_desc_l"
+                                                placeholder="{{'labels.pleasetypehere' | translate}}"
+                                                [required]="billing_method === 'L'" maxlength="255" />
+                                            <div *ngIf="billing_desc_lRef.errors && billing_desc_lRef.errors['required'] && billing_desc_lRef.touched"
+                                                class="error-text">
+                                                {{"labels.billingdescriptionisrequired" | translate}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>7</td>
+                                        <td>{{"labels.billingcount" | translate}}</td>
+                                        <td>{{isuance_count}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>8</td>
+                                        <td>{{"labels.billingfrequency" | translate}} <span style="color: red;">*</span>
+                                        </td>
+                                        <td>
+                                            <ng-select class="form-control" name="billing_frequency"
+                                                [(ngModel)]="billing_frequency" id="billing_frequency"
+                                                dropdownPosition="bottom" (change)="updateIssuanceList()"
+                                                [clearable]="false" [searchable]="false"
+                                                style="border: 1px solid blue;width:25%;line-height:1.3"
+                                                placeholder="Select here...">
+                                                <ng-option *ngFor="let item of BFreqT;"
+                                                    [value]="item.value">{{item.nm_en}}</ng-option>
+                                            </ng-select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>9</td>
+                                        <td>{{"labels.day" | translate}} <span style="color: red;">*</span></td>
+                                        <td>
+                                            <input class="form-control" type="number" name="billing_day"
+                                                #billing_day_lRef="ngModel" [(ngModel)]="billing_day" id="billing_day"
+                                                (change)="updateIssuanceList()"
+                                                style="border: 1px solid blue; width: 30%;"
+                                                oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1'); "
+                                                onKeyUp="if(this.value>31){this.value=31;}else if(this.value<0){this.value=1;}else if(this.value=='0'){this.value=1;}"
+                                                style="width: 6%;text-align: right;"
+                                                [required]="billing_method === 'L'" />
+                                            <div *ngIf="billing_day_lRef.errors && billing_day_lRef.errors['required'] && billing_day_lRef.touched"
+                                                class="error-text">
+                                                {{"labels.dayisrequired" | translate}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="tableWrapper" [hidden]="billing_method != 'A'">
+                            <table class="MATable">
+                                <thead>
+                                    <tr class="MATableHeader">
+                                        <th style="width: 50px;">No.</th>
+                                        <th style="width:35%;">{{"labels.parameter" | translate}}</th>
+                                        <th style="width:61%;">{{"labels.value" | translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>{{"labels.sourcesystemcode" | translate}}</td>
+                                        <td>
+                                            <input class="form-control readonly-input" type="text" name="combineSSCode"
+                                                [(ngModel)]="combineSSCode" readonly #combineSSCodeRef="ngModel"
+                                                [required]="billing_method === 'A'" />
+                                            <div *ngIf="combineSSCodeRef.errors && combineSSCodeRef.errors['required']"
+                                                class="error-text">
+                                                {{"labels.sourcesystemcoderequired" | translate}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>{{"labels.billingno." | translate}}</td>
+                                        <td><input class="form-control readonly-input-grey" type="text"
+                                                name="billing_no" [(ngModel)]="billing_no" readonly
+                                                #billing_no_lRef="ngModel" [required]="billing_method === 'A'" />
+                                            <div *ngIf="billing_no_lRef.errors && billing_no_lRef.errors['required']"
+                                                class="error-text">
+                                                {{"labels.billingnoisrequired" | translate}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>{{"labels.billingmethod" | translate}} <span style="color: red;">*</span>
+                                        </td>
+                                        <td>
+                                            <ng-select class="form-control" name="billing_method"
+                                                [(ngModel)]="billing_method" id="billing_method"
+                                                dropdownPosition="bottom" [clearable]="false" [searchable]="false"
+                                                style="border: 1px solid blue;width:37%;" placeholder="Select here..."
+                                                (change)="updateIssuanceList()">
+                                                <ng-option *ngFor="let item of billing_methods;"
+                                                    [value]="item.param_cd">{{item.nm_en}}</ng-option>
+                                                <!--<ng-option [value]="'O'">One-Time</ng-option>
+                                        <ng-option [value]="'L'">Register with LOA</ng-option>
+                                        <ng-option [value]="'A'">Register with Agreement</ng-option>-->
+                                            </ng-select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>4</td>
+                                        <td>{{"labels.loareferenceno." | translate}} <span style="color: red;">*</span>
+                                        </td>
+                                        <td style="display: flex; flex-direction: column;">
+                                            <div style="display: flex; align-items: center;">
+                                                <input style="margin-top:0.5%; margin-right:3%;" class="form-control"
+                                                    type="text" [(ngModel)]="loa_ref_no" #loa_ref_no_aRef="ngModel"
+                                                    name="loa_ref_no_l"
+                                                    placeholder="{{'labels.pleasetypehere' | translate}}"
+                                                    [ngClass]="!has_checked_loa_registered ? '' : (!loa_registered ? 'is-invalid' : 'is-valid')"
+                                                    [required]="billing_method === 'A'" maxlength="255"
+                                                    (input)="resetCheckLOARegistered()" autocomplete="off" />
+                                                <button type="button" style="margin-right: 1%;" id="loaRegistered"
+                                                    [disabled]="loa_ref_no.length < 1 ? true : checkingLOA"
+                                                    class="btn btnSubmit"
+                                                    (click)="oncheckLOARegistered(loa_ref_no_aRef)">
+                                                    {{ checkingLOA ? '' : 'Check' }}
+                                                    <div *ngIf="checkingLOA" class="spinner-border check-spinner"
+                                                        role="status">
+                                                        <span class="sr-only"></span>
+                                                    </div>
+                                                </button>
+                                            </div>
+
+                                            <!-- Error message should be below the input -->
+                                            <div *ngIf="loa_ref_no_aRef.errors && loa_ref_no_aRef.errors['required'] && loa_ref_no_aRef.touched"
+                                                class="error-text" style="color: red; margin-top: 5px;">
+                                                {{"labels.loareferencenoisrequired" | translate}}
+                                            </div>
+
+                                            <div *ngIf="showLoaRegisteredAlert && billing_method == 'A'"
+                                                class="error-text" style="color: red; margin-top: 5px;">
+                                                {{"labels.loareferencenotregistered!" | translate}}
+                                            </div>
+
+                                            <div *ngIf="validLOABeforeSubmitMethodAgr" class="error-text"
+                                                style="color: red; margin-top: 5px;">
+                                                {{"labels.loadreferenceneedtovalidbeforesubmit" | translate}}
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>5</td>
+                                        <td>{{"labels.agreementreferenceno." | translate}} <span
+                                                style="color: red;">*</span></td>
+                                        <td><input class="form-control" type="text" [(ngModel)]="agmt_ref_no"
+                                                #agmt_ref_no_aRef="ngModel" name="agmt_ref_no"
+                                                placeholder="{{'labels.pleasetypehere' | translate}}"
+                                                [required]="billing_method === 'A'" maxlength="255" />
+                                            <div *ngIf="agmt_ref_no_aRef.errors && agmt_ref_no_aRef.errors['required'] && agmt_ref_no_aRef.touched"
+                                                class="error-text" style="color: red; margin-top: 5px;">
+                                                {{"labels.agreementreferencenoisrequired" | translate}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>6</td>
+                                        <td>{{"labels.agreementstart/enddaterange" | translate}} <span
+                                                style="color: red;">*</span></td>
+                                        <td><input type="text" placeholder="Date Range Picker" class="form-control"
+                                                [bsConfig]="{ rangeInputFormat : 'DD MMM YYYY', dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,rangeSeparator:' to ',containerClass:'theme-default',adaptivePosition: true,maxDate: maxDate}"
+                                                bsDaterangepicker [(ngModel)]="date_range" name="date_range" readonly
+                                                style="width:43%;" (ngModelChange)="updateIssuanceList()"
+                                                onkeydown="return false">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>7</td>
+                                        <td>{{"labels.billingdescription" | translate}} <span
+                                                style="color: red;">*</span>
+                                        </td>
+                                        <td><input class="form-control" type="text" [(ngModel)]="billing_desc"
+                                                #billing_desc_aRef="ngModel" name="billing_desc"
+                                                placeholder="{{'labels.pleasetypehere' | translate}}" maxlength="255"
+                                                [required]="billing_method === 'A'" />
+                                            <div *ngIf="billing_desc_aRef.errors && billing_desc_aRef.errors['required'] && billing_desc_aRef.touched"
+                                                class="error-text" style="color: red; margin-top: 5px;">
+                                                {{"labels.billingdescriptionisrequired" | translate}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>8</td>
+                                        <td>{{"labels.billingcount" | translate}}</td>
+                                        <td>{{isuance_count}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>9</td>
+                                        <td>{{"labels.billingfrequency" | translate}} <span style="color: red;">*</span>
+                                        </td>
+                                        <td>
+                                            <ng-select class="form-control" name="billing_frequency"
+                                                [(ngModel)]="billing_frequency" id="billing_frequency"
+                                                dropdownPosition="bottom" (change)="updateIssuanceList()"
+                                                [clearable]="false" [searchable]="false"
+                                                style="border: 1px solid blue;width:25%;line-height:1.3"
+                                                placeholder="Select here...">
+                                                <ng-option *ngFor="let item of BFreqT;"
+                                                    [value]="item.value">{{item.nm_en}}</ng-option>
+                                                <!--<ng-option [value]="1">Monthly</ng-option>
+                                        <ng-option [disabled]="isuance_counter < 3" [value]="3">Quarterly</ng-option>
+                                        <ng-option [disabled]="isuance_counter < 6" [value]="6">Bi-Annually</ng-option>
+                                        <ng-option [disabled]="isuance_counter < 12" [value]="12">Annually</ng-option>-->
+                                            </ng-select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>10</td>
+                                        <td>{{"labels.day" | translate}} <span style="color: red;">*</span></td>
+                                        <td>
+                                            <input class="form-control" type="number" name="billing_day"
+                                                #billing_day_aRef="ngModel" [(ngModel)]="billing_day" id="billing_day"
+                                                (change)="updateIssuanceList()"
+                                                style="border: 1px solid blue; width: 30%;"
+                                                oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1'); "
+                                                onKeyUp="if(this.value>31){this.value=31;}else if(this.value<0){this.value=1;}else if(this.value=='0'){this.value=1;}"
+                                                style="width: 6%;text-align: right;"
+                                                [required]="billing_method === 'A'" />
+                                            <div *ngIf="billing_day_aRef.errors && billing_day_aRef.errors['required'] && billing_day_aRef.touched"
+                                                class="error-text" style="color: red; margin-top: 5px;">
+                                                {{"labels.dayisrequired" | translate}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div>
+                            <h5 style="margin-left: 3%;font-weight: bold;">{{"labels.others" | translate}}</h5>
+                        </div>
+                        <div class="tableWrapper">
+                            <table class="MATable">
+                                <thead>
+                                    <tr class="MATableHeader">
+                                        <th style="width: 50px;">No.</th>
+                                        <th style="width:35%;">{{"labels.parameter" | translate}}</th>
+                                        <th style="width:61%;">{{"labels.value" | translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>{{"labels.requestername" | translate}} <span style="color: red;">*</span>
+                                        </td>
+                                        <td><input class="form-control" type="text" [(ngModel)]="requester_name"
+                                                #requester_nameRef="ngModel" name="requester_name"
+                                                placeholder="{{'labels.pleasetypehere' | translate}}" required
+                                                maxlength="255" />
+                                            <div *ngIf="requester_nameRef.errors && requester_nameRef.errors['required'] && requester_nameRef.touched"
+                                                class="error-text" style="color: red; margin-top: 5px;">
+                                                {{"labels.requesternameisrequired" | translate}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>{{"labels.requesteremail" | translate}} <span style="color: red;">*</span>
+                                        </td>
+                                        <td><input class="form-control" type="email" [(ngModel)]="requester_email"
+                                                #requester_emailRef="ngModel"
+                                                pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
+                                                name="requester_email"
+                                                placeholder="{{'labels.pleasetypehere' | translate}}" required
+                                                maxlength="255" />
+
+                                            <!-- Required validation -->
+                                            <div *ngIf="requester_emailRef.errors && requester_emailRef.errors['required'] && requester_emailRef.touched"
+                                                class="error-text">
+                                                {{"labels.requesteremailisrequired" | translate}}
+                                            </div>
+
+                                            <!-- Pattern validation -->
+                                            <div *ngIf="requester_emailRef.errors && requester_emailRef.errors['pattern'] && requester_emailRef.touched"
+                                                class="error-text">
+                                                {{"labels.pleaseenteravalidrequesteremailaddress" | translate}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div>
+                            <h5 style="margin-left: 3%;font-weight: bold;">{{"labels.listofbillingitems(s)" |
+                                translate}}
+                            </h5>
+                        </div>
+                        <div class="tableWrapper">
+                            <table class="MATable">
+                                <thead>
+                                    <tr class="MATableHeader">
+                                        <th style="width: 50px;">No.</th>
+                                        <th style="width:30%;">{{"labels.billingitem" | translate}}</th>
+                                        <th style="width:15%;">{{"labels.unitprice" | translate}} (RM) <span
+                                                style="color: red;">*</span></th>
+                                        <th style="width:15%;">{{"labels.quantity" | translate}} <span
+                                                style="color: red;">*</span></th>
+                                        <th style="width:8%;">{{"labels.tax" | translate}} (%)</th>
+                                        <th style="width:9%;">{{"labels.tax" | translate}} (RM)</th>
+                                        <th style="width:21%;">{{"labels.total" | translate}} (RM)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <ng-container *ngFor="let item of billingItemsDetailsTemp; let i = index">
+                                        <tr *ngIf="item.mft_id">
+                                            <td>{{ i + 1 }}</td>
+                                            <td>{{ item.desc }}</td>
+                                            <td><input class="form-control" type="number" [(ngModel)]="item.unit_fee"
+                                                    name="item.price{{i}}"
+                                                    placeholder="{{'labels.pleasetypehere' | translate}}"
+                                                    (change)="recalcBICost(item)" [disabled]="item.desc ==='-'"
+                                                    style="text-align: right;" (blur)="formatInputPromoFee(item)" />
+                                            </td>
+                                            <td><input class="form-control" type="number" [(ngModel)]="item.qty"
+                                                    name="item.qty"
+                                                    placeholder="{{'labels.pleasetypehere' | translate}}"
+                                                    (change)="recalcBICost(item)" [disabled]="item.desc ==='-'"
+                                                    style="text-align: right;"
+                                                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')"
+                                                    onkeydown="if(this.value.length >= 16 && event.keyCode != 8 && event.keyCode != 37 && event.keyCode != 39) return false;" />
+                                            </td>
+                                            <td style="text-align: center;">{{ item.tax_pct }}</td>
+                                            <td style="text-align: right;">{{ item.tax_amt.toFixed(2) }}</td>
+                                            <td style="text-align: right;">{{ item.final_amt.toFixed(2)}}</td>
+                                        </tr>
+                                    </ng-container>
+                                    <tr>
+                                        <td style="border-right-color: transparent;"></td>
+                                        <td style="border-right-color: transparent;">
+                                            <h6 style="margin-left:3%;font-weight:bold;text-align:right;">
+                                                {{"labels.TOTAL" |
+                                                translate}}</h6>
+                                        </td>
+                                        <td style="border-right-color: transparent;"></td>
+                                        <td style="border-right-color: transparent;"></td>
+                                        <td style="border-right-color: transparent;"></td>
+                                        <td style="border-right-color: transparent;"></td>
+                                        <td style="text-align: right;">{{billing_items_total_cost.toFixed(2)}}</td>
+                                    </tr>
+                                    <tr *ngIf=" billing_items_total_cost <= 0 && isBITotalTouched">
+                                        <td style="border-right-color: transparent;"></td>
+                                        <td style="border-right-color: transparent;"></td>
+                                        <td style="border-right-color: transparent;"></td>
+                                        <td colspan="4" style="text-align: right;">
+                                            <div class="error-text" style="color: red; margin-top: 5px;">
+                                                {{"labels.total(RM)mustbegreaterthan0.00" | translate}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div [hidden]="billing_method=='O'">
+                            <h5 style="margin-left: 3%;font-weight: bold;">{{"labels.listofbillingissuance" |
+                                translate}}
+                            </h5>
+                        </div>
+                        <div class="tableWrapper" [hidden]="billing_method=='O'">
+                            <table class="MATable">
+                                <thead>
+                                    <tr class="MATableHeader">
+                                        <th style="width: 50px;">No.</th>
+                                        <th style="width:20%">{{"labels.billingdate" | translate}}</th>
+                                        <th style="width:31%">{{"labels.billingno." | translate}}</th>
+                                        <th style="width:26%">{{"labels.remarks" | translate}}</th>
+                                        <th style="width:19%">{{"labels.status" | translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of bllingChildDetailsTemp; let i = index">
+                                        <td>{{ i + 1 }}</td>
+                                        <td>{{ item.billing_date.getDate() + nthNumber(item.billing_date.getDate()) + '
+                                            ' +
+                                            item.billing_date.toLocaleString('default', { month: 'long' }) + ' ' +
+                                            item.billing_date.getFullYear() }}</td>
+                                        <td>{{ item.billing_no }}</td>
+                                        <td><label [hidden]="item.valid" style="color:red;">{{"labels.invalid" |
+                                                translate}}</label><label [hidden]="!item.valid"
+                                                style="color:green;">{{"labels.valid" | translate}}</label></td>
+                                        <td>
+                                            <label class="switch" style="height:23px; width:50px;">
+                                                <input type="checkbox" [checked]="item.issuance"
+                                                    (change)="unissueBillingItem(item)" style="height:17px"
+                                                    [disabled]="!item.valid">
+                                                <span class="slider round"></span>
+                                            </label>
+                                            <label> </label>
+                                            <label [hidden]="!item.issuance"
+                                                style="position: relative;left: 5%;">{{"labels.issuance" |
+                                                translate}}</label>
+                                            <label [hidden]="item.issuance"
+                                                style="position: relative;left: 5%;">{{"labels.notissuance" |
+                                                translate}}</label>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf=" isuance_count <= 0 ">
+                                        <td style="border-right-color: transparent;"></td>
+                                        <td style="border-right-color: transparent;"></td>
+                                        <td style="border-right-color: transparent;"></td>
+                                        <td colspan="2" style="text-align: right;">
+                                            <div class="error-text" style="color: red; margin-top: 5px;">
+                                                {{"labels.atleastonebillingissuanceisrequired" | translate}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div>
+                            <h5 style="margin-left: 3%;font-weight: bold;">{{"labels.historicaltable" | translate}}</h5>
+                        </div>
+                        <div class="MALoadingContainer">
+                            <div *ngIf="isLoadingHistory"
+                                class="TableLoading-overlay d-flex align-items-center justify-content-center">
+                                <div class="spinner-border" role="status">
+                                    <span class="sr-only"></span>
+                                </div>
+                            </div>
+                            <div class="tableWrapper">
+                                <table class="MATable">
+                                    <thead>
+                                        <tr class="MATableHeader">
+                                            <th style="width: 50px;">No.</th>
+                                            <th>{{"labels.action" | translate}}</th>
+                                            <th>{{"labels.actiontimestamp" | translate}}</th>
+                                            <th>{{"Performed By" | translate}}</th>
+                                            <th>{{"labels.assignedto" | translate}}</th>
+                                            <th>{{"labels.remarks" | translate}}</th>
+                                        </tr>
+                                    </thead>
+                                    <ng-container *ngIf="totalHistoryRecords>0; else noResultsHistory">
+                                        <tbody>
+                                            <!-- <tr *ngFor="let item of histModel; let i = index">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ item.action }}</td>
+                            <td>{{ item.dt_action | date: 'dd MMM yyyy HH:MM:ss'}}</td>
+                            <td>{{ item.performed_by}}</td>
+                            <td>{{ item.assigned_to }}</td>
+                            <td>{{ item.remark}}</td>
+                        </tr> -->
+                                        </tbody>
+                                    </ng-container>
+                                    <ng-template #noResultsHistory>
+                                        <tr style="height: 100px;">
+                                            <td colspan="6" class="text-center">{{"searchcriteriadoesnotmatch"|
+                                                translate}}
+                                            </td>
+                                        </tr>
+                                    </ng-template>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="right-side-billing-registration">
+                        <br><br>
+                        <h4 style="font-weight: bold;text-align: center;">{{"labels.documentsubmission" | translate}}
+                        </h4>
+                        <br><br>
+                        <h5 style="position: relative;bottom: 8%;left: 12%;">{{"labels.supportingdocument(s)" |
+                            translate}}
+                        </h5>
+                        <div class="file-container">
+                            <ng-container *ngFor="let file of selectedSupportingFiles; let last = last">
+                                {{ file.name }}{{ !last ? ', ' : '' }}
+                            </ng-container>
+                        </div>
+                        <div class="fileSize">
+                            {{"File Limit" | translate}}File Limit: {{ selectedSupportingFilesSize / 1000000 |
+                            number:'1.2-2' }}/10MB
+                        </div>
+                        <br>
+                        <div style="display: inline-flex; gap: 10px; position: relative; left:-5%;float:right;">
+                            <label for="supportingFilesInput" class="btn btn-primary"
+                                style="background-color: #007bff; color: white;">
+                                {{ "Choose File" | translate }}
+                            </label>
+                            <input type="file" id="supportingFilesInput" (change)="onSupportingFileSelected($event)"
+                                multiple style="display: none;" accept=".png, .jpeg, .jpg, .pdf, .doc, .docx" />
+                            <button type="button" class="btn btnCancel" (click)="clearSupportingFiles()">
+                                {{"buttons.clearfiles" | translate}}
+                            </button>
+                        </div>
+                        <br><br>
+
+                        <div [hidden]="billing_method=='O'">
+                            <h5 *ngIf="billing_method === 'L'" style="position: relative; bottom: 8%; left: 12%;">
+                                {{"labels.loafileattachement" | translate}} <span style="color: red;">*</span>
+                            </h5>
+
+                            <h5 *ngIf="billing_method === 'A'" style="position: relative; bottom: 8%; left: 12%;">
+                                {{"labels.agreementfileattachement" | translate}} <span style="color: red;">*</span>
+                            </h5>
+
+                            <div class="file-container">
+                                {{ selectedLoaFile?.name }}
+                            </div>
+                            <div class="fileSize">
+                                {{ "File Limit" | translate }}: {{ selectedLoaFileSize / 1000000 | number:'1.2-2'
+                                }}/10MB
+                            </div>
+                            <div *ngIf="(isDisplayFileRequired && (billing_method != 'O'))" class="error-text"
+                                style="position: relative; left: 12%;">
+                                {{"labels.fileisrequired" | translate}}
+                            </div>
+
+                            <br>
+                            <div style="display: flex; gap: 10px; position: relative; left:-5%;float:right;">
+                                <label for="loaFileInput" class="btn btn-primary"
+                                    style="background-color: #007bff; color: white;">
+                                    {{ "Choose File" | translate }}
+                                </label>
+                                <input type="file" id="loaFileInput" (change)="onLoaFileSelected($event)"
+                                    style="display: none;" accept=".png, .jpeg, .jpg, .pdf, .doc, .docx" />
+                                <button type="button" class="btn btnCancel" (click)="clearLoaFile()">
+                                    {{ "Clear File" | translate }}
+                                </button>
+                            </div>
+                            <br><br>
+                        </div>
+
+
+                        <div>
+                            <h5 style="position: relative;bottom: 8%;left: 12%;">{{"labels.remarks(Limit255characters)" | translate}}</h5>
+                            <textarea class="form-control" type="text" [(ngModel)]="remarks" name="remarks"
+                                placeholder="{{'labels.pleasetypehere' | translate}}"
+                                style="width: 84%;height: 301px;position: relative;left: 12%;"
+                                maxlength="255"></textarea>
+                            <br>
+                        </div>
+                        <div class="submissionButtons">
+                            <!-- <button id="cancel" class="btn btnCancel" (click)="cancel()">{{"buttons.cancel" |
+                            translate}}</button>
+                        <button id="submit" class="btn btnSubmit" (click)="submitForm()"
+                            [disabled]="submitCheck()">{{"buttons.submit" | translate}}</button> -->
+                            <button type="button" class="btn btnCancel" (click)="cancel()">{{"buttons.back" |
+                                translate}}</button>
+                            <button type="submit" class="btn btnSubmit">{{"buttons.submit" |
+                                translate}}</button>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+                <div class="MarginSeparator"></div>
+                <!-- </form> -->
+                <!-- </div> -->
+            </div>
+        </form>
+    </body>
+</ng-container>

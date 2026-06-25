@@ -1,0 +1,33 @@
+<div class="spinner-container">
+  <div class="loader"></div>
+  <img src="assets/logo/logo-ssm.png" alt="Loading Image">
+</div>
+
+<!-- <div *ngIf="ghlrequest"> -->
+<div>
+<form #form name="frmPayment" method="post" [attr.action]="eghl" hidden>
+  <input name="TransactionType"  [(ngModel)]="ghlrequest.transaction_type">
+  <input name="PymtMethod" [(ngModel)]="ghlrequest.pymt_method">
+  <input name="ServiceID" [(ngModel)]="ghlrequest.service_id">
+  <input name="PaymentID" [(ngModel)]="ghlrequest.pymt_id">
+  <input name="OrderNumber" [(ngModel)]="ghlrequest.ord_no">
+  <input name="PaymentDesc" [(ngModel)]="ghlrequest.pymt_desc">
+  <input name="MerchantReturnURL" [(ngModel)]="ghlrequest.return_url"> <!-- frontend -->
+  <!-- <input name="MerchantApprovalURL" [(ngModel)]="ghlrequest.return_url">
+  <input name="MerchantUnApprovalURL" [(ngModel)]="ghlrequest.return_url"> -->
+  <input name="MerchantCallbackURL" [(ngModel)]="ghlrequest.callback_url">
+  <input type="text" name="Amount" [(ngModel)]="ghlrequest.amt" step="0.01">
+  <input name="CurrencyCode" [(ngModel)]="ghlrequest.curr_cd">
+  <input name="CustIP" [(ngModel)]="ghlrequest.cust_ip">
+  <input name="CustName" [(ngModel)]="ghlrequest.cust_nm">
+  <input name="CustEmail" [(ngModel)]="ghlrequest.cust_email">
+  <input name="CustPhone" [(ngModel)]="ghlrequest.cust_ph">
+  <input name="HashValue" [(ngModel)]="ghlrequest.hash_value">
+  <input name="PageTimeout" [(ngModel)]="ghlrequest.page_timeout">
+  <input name="Param6" [(ngModel)]="ghlrequest.ss_return_url">
+  <input name="Param7" [(ngModel)]="combinedCustInfo">
+  
+  <button #submitBtn type="submit" (click)="form.submit()">Submit</button>
+</form>
+</div>
+

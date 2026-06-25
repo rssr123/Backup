@@ -1,0 +1,499 @@
+ALTER TABLE "informix".rms_fms_jn_b
+	DROP CONSTRAINT ( u219_22 ) 
+GO
+ALTER TABLE "informix".rms_fms_drmemo_f
+	DROP CONSTRAINT ( u218_32 ) 
+GO
+ALTER TABLE "informix".rms_fms_drmemo_b
+	DROP CONSTRAINT ( u218_22 ) 
+GO
+ALTER TABLE "informix".rms_fms_crmemo_f
+	DROP CONSTRAINT ( u217_32 ) 
+GO
+ALTER TABLE "informix".rms_fms_arr_b
+	DROP CONSTRAINT ( u216_2 ) 
+GO
+ALTER TABLE "informix".rms_fms_ari_b
+	DROP CONSTRAINT ( u215_2 ) 
+GO
+DROP TABLE "informix".rms_unmatch_txn
+GO
+DROP TABLE "informix".rms_rpt_um_age
+GO
+DROP TABLE "informix".rms_rpt_ripl_age
+GO
+DROP TABLE "informix".rms_rpt_ricp_age
+GO
+DROP TABLE "informix".rms_rpt_di_age
+GO
+DROP TABLE "informix".rms_fms_jn_h
+GO
+DROP TABLE "informix".rms_fms_jn_b
+GO
+DROP TABLE "informix".rms_fms_drmemo_h
+GO
+DROP TABLE "informix".rms_fms_drmemo_f
+GO
+DROP TABLE "informix".rms_fms_drmemo_b
+GO
+DROP TABLE "informix".rms_fms_crmemo_h
+GO
+DROP TABLE "informix".rms_fms_crmemo_f
+GO
+DROP TABLE "informix".rms_fms_crmemo_b
+GO
+DROP TABLE "informix".rms_fms_arr_h
+GO
+DROP TABLE "informix".rms_fms_arr_b
+GO
+DROP TABLE "informix".rms_fms_ari_h
+GO
+DROP TABLE "informix".rms_fms_ari_b
+GO
+DROP TABLE "informix".rms_fms_acct
+GO
+
+CREATE TABLE "informix".rms_fms_acct  ( 
+	fms_acct_id	SERIAL NOT NULL,
+	acct_nm    	NVARCHAR(50),
+	acct_type  	NVARCHAR(25),
+	acct_cd    	NVARCHAR(10),
+	dt_created 	DATETIME YEAR to FRACTION(5) NOT NULL,
+	dt_modified	DATETIME YEAR to FRACTION(5) NOT NULL,
+	created_by 	NVARCHAR(25) NOT NULL,
+	modified_by	NVARCHAR(25) NOT NULL,
+	status     	NVARCHAR(10) 
+	)
+LOCK MODE ROW
+GO
+CREATE TABLE "informix".rms_fms_ari_b  ( 
+	ari_bid    	SERIAL8 NOT NULL,
+	ari_hid    	INT8 NOT NULL,
+	acct       	NVARCHAR(10) NOT NULL,
+	branch     	NVARCHAR(30) NOT NULL,
+	qty        	INTEGER NOT NULL,
+	sub_acct   	NVARCHAR(30) NOT NULL,
+	txn_desc   	LVARCHAR(256) NOT NULL,
+	unit_price 	DECIMAL(15,5) NOT NULL,
+	rcpt_no    	NVARCHAR(30) NOT NULL,
+	payee_info 	NVARCHAR(70) NOT NULL,
+	ent_nm     	NVARCHAR(30) NOT NULL,
+	ent_no     	NVARCHAR(30) NOT NULL,
+	ent_ty     	NVARCHAR(20) NOT NULL,
+	item_amt   	DECIMAL(15,5) NOT NULL,
+	coa1       	NVARCHAR(30) NOT NULL,
+	pymt_mode  	NVARCHAR(30) NOT NULL,
+	item_tax_amt	NVARCHAR(30) NOT NULL,
+	dt_created 	DATETIME YEAR to FRACTION(5) NOT NULL,
+	dt_modified	DATETIME YEAR to FRACTION(5) NOT NULL,
+	created_by 	NVARCHAR(25) NOT NULL,
+	modified_by	NVARCHAR(25) NOT NULL,
+	status     	NVARCHAR(10) NOT NULL,
+	coa2       	NVARCHAR(30) NOT NULL,
+	mtt_pg_id  	INT8 NOT NULL,
+	PRIMARY KEY(ari_bid)
+	ENABLED
+)
+LOCK MODE ROW
+GO
+CREATE TABLE "informix".rms_fms_ari_h  ( 
+	ari_hid          	SERIAL8 NOT NULL,
+	type             	NVARCHAR(20) NOT NULL,
+	link_branch      	NVARCHAR(30) NOT NULL,
+	amt              	DECIMAL(15,5) NOT NULL,
+	cust             	NVARCHAR(30) NOT NULL,
+	rms_batch_no     	NVARCHAR(40) NOT NULL,
+	dt_sent          	DATETIME YEAR to FRACTION(5) NOT NULL,
+	desc             	LVARCHAR(256) NOT NULL,
+	attr_ext_sys     	LVARCHAR(256) NOT NULL,
+	resp_attr_ext_sys	NVARCHAR(10) NOT NULL,
+	fms_ref_no       	NVARCHAR(25) NOT NULL,
+	resp_co          	NVARCHAR(25) NOT NULL,
+	resp_status      	NVARCHAR(10) NOT NULL,
+	resp_msg         	NVARCHAR(255) NOT NULL,
+	resp_dt          	DATETIME YEAR to FRACTION(5) NOT NULL,
+	dt_created       	DATETIME YEAR to FRACTION(5) NOT NULL,
+	dt_modified      	DATETIME YEAR to FRACTION(5) NOT NULL,
+	created_by       	NVARCHAR(25) NOT NULL,
+	modified_by      	NVARCHAR(25) NOT NULL,
+	status           	NVARCHAR(10) NOT NULL,
+	retry            	INTEGER,
+	PRIMARY KEY(ari_hid)
+	ENABLED
+)
+LOCK MODE ROW
+GO
+CREATE TABLE "informix".rms_fms_arr_b  ( 
+	arr_bid    	SERIAL8 NOT NULL,
+	arr_hid    	INT8 NOT NULL,
+	fms_ref_no 	NVARCHAR(15) NOT NULL,
+	doc_type   	NVARCHAR(20) NOT NULL,
+	dt_created 	DATETIME YEAR to FRACTION(5) NOT NULL,
+	dt_modified	DATETIME YEAR to FRACTION(5) NOT NULL,
+	created_by 	NVARCHAR(25) NOT NULL,
+	modified_by	NVARCHAR(25) NOT NULL,
+	status     	NVARCHAR(10) NOT NULL,
+	mtt_pg_id  	INT8 NOT NULL,
+	PRIMARY KEY(arr_bid)
+	ENABLED
+)
+LOCK MODE ROW
+GO
+CREATE TABLE "informix".rms_fms_arr_h  ( 
+	arr_hid          	SERIAL8 NOT NULL,
+	type             	NVARCHAR(20) NOT NULL,
+	branch           	NVARCHAR(30) NOT NULL,
+	dt_sent          	DATETIME YEAR to FRACTION(5) NOT NULL,
+	cash_acct        	NVARCHAR(10) NOT NULL,
+	pymt_method      	NVARCHAR(10) NOT NULL,
+	cust             	NVARCHAR(30) NOT NULL,
+	rms_batch_no     	NVARCHAR(40) NOT NULL,
+	pymt_amt         	DECIMAL(15,5) NOT NULL,
+	attr_ext_sys     	NVARCHAR(255) NOT NULL,
+	resp_attr_ext_sys	NVARCHAR(10) NOT NULL,
+	fms_ref_no       	NVARCHAR(25) NOT NULL,
+	resp_co          	NVARCHAR(25) NOT NULL,
+	resp_status      	NVARCHAR(10) NOT NULL,
+	resp_msg         	NVARCHAR(255) NOT NULL,
+	resp_dt          	DATETIME YEAR to FRACTION(5) NOT NULL,
+	dt_created       	DATETIME YEAR to FRACTION(5) NOT NULL,
+	dt_modified      	DATETIME YEAR to FRACTION(5) NOT NULL,
+	created_by       	NVARCHAR(25) NOT NULL,
+	modified_by      	NVARCHAR(25) NOT NULL,
+	status           	NVARCHAR(10) NOT NULL,
+	retry            	INTEGER,
+	PRIMARY KEY(arr_hid)
+	ENABLED
+)
+LOCK MODE ROW
+GO
+CREATE TABLE "informix".rms_fms_crmemo_b  ( 
+	crmemo_bid 	SERIAL8 NOT NULL,
+	crmemo_hid 	INT8 NOT NULL,
+	acct       	NVARCHAR(10) NOT NULL,
+	branch     	NVARCHAR(30) NOT NULL,
+	qty        	INTEGER NOT NULL,
+	sub_acct   	NVARCHAR(30) NOT NULL,
+	txn_desc   	LVARCHAR(256) NOT NULL,
+	unit_price 	DECIMAL(15,5) NOT NULL,
+	rcpt_no    	NVARCHAR(30) NOT NULL,
+	payee_info 	NVARCHAR(70) NOT NULL,
+	ent_nm     	NVARCHAR(30) NOT NULL,
+	ent_no     	NVARCHAR(30) NOT NULL,
+	ent_ty     	NVARCHAR(20) NOT NULL,
+	item_amt   	DECIMAL(15,5) NOT NULL,
+	chart_acct 	NVARCHAR(30) NOT NULL,
+	pymt       	NVARCHAR(30) NOT NULL,
+	item_tax_amt	DECIMAL(15,5) NOT NULL,
+	dt_created 	DATETIME YEAR to FRACTION(5) NOT NULL,
+	dt_modified	DATETIME YEAR to FRACTION(5) NOT NULL,
+	created_by 	NVARCHAR(25) NOT NULL,
+	modified_by	NVARCHAR(25) NOT NULL,
+	status     	NVARCHAR(10) NOT NULL,
+	mtt_pg_id  	INT8 NOT NULL,
+	PRIMARY KEY(crmemo_bid)
+	ENABLED
+)
+LOCK MODE ROW
+GO
+CREATE TABLE "informix".rms_fms_crmemo_f  ( 
+	crmemo_fid 	SERIAL8 NOT NULL,
+	crmemo_hid 	INT8 NOT NULL,
+	fms_ref_no 	NVARCHAR(15) NOT NULL,
+	doc_ty     	NVARCHAR(20) NOT NULL,
+	dt_created 	DATETIME YEAR to FRACTION(5) NOT NULL,
+	dt_modified	DATETIME YEAR to FRACTION(5) NOT NULL,
+	created_by 	NVARCHAR(25) NOT NULL,
+	modified_by	NVARCHAR(25) NOT NULL,
+	status     	NVARCHAR(10) NOT NULL,
+	PRIMARY KEY(crmemo_fid)
+	ENABLED
+)
+LOCK MODE ROW
+GO
+CREATE TABLE "informix".rms_fms_crmemo_h  ( 
+	crmemo_hid       	SERIAL8 NOT NULL,
+	type             	NVARCHAR(20) NOT NULL,
+	link_branch      	NVARCHAR(30) NOT NULL,
+	amt              	DECIMAL(15,5) NOT NULL,
+	cust             	NVARCHAR(30) NOT NULL,
+	rms_batch_no     	NVARCHAR(40) NOT NULL,
+	dt_sent          	DATETIME YEAR to FRACTION(5) NOT NULL,
+	desc             	LVARCHAR(256) NOT NULL,
+	attr_ext_sys     	NVARCHAR(255) NOT NULL,
+	resp_attr_ext_sys	NVARCHAR(10) NOT NULL,
+	fms_ref_no       	NVARCHAR(25) NOT NULL,
+	resp_co          	NVARCHAR(25) NOT NULL,
+	resp_status      	NVARCHAR(10) NOT NULL,
+	resp_msg         	NVARCHAR(255) NOT NULL,
+	resp_dt          	DATETIME YEAR to FRACTION(5) NOT NULL,
+	dt_created       	DATETIME YEAR to FRACTION(5) NOT NULL,
+	dt_modified      	DATETIME YEAR to FRACTION(5) NOT NULL,
+	created_by       	NVARCHAR(25) NOT NULL,
+	modified_by      	NVARCHAR(25) NOT NULL,
+	status           	NVARCHAR(10) NOT NULL,
+	retry            	INTEGER,
+	PRIMARY KEY(crmemo_hid)
+	ENABLED
+)
+LOCK MODE ROW
+GO
+CREATE TABLE "informix".rms_fms_drmemo_b  ( 
+	drmemo_bid 	SERIAL8 NOT NULL,
+	drmemo_hid 	INT8 NOT NULL,
+	acct       	NVARCHAR(10) NOT NULL,
+	branch     	NVARCHAR(30) NOT NULL,
+	qty        	INTEGER NOT NULL,
+	sub_acct   	NVARCHAR(30) NOT NULL,
+	txn_desc   	LVARCHAR(256) NOT NULL,
+	unit_price 	DECIMAL(15,5) NOT NULL,
+	rcpt_no    	NVARCHAR(30) NOT NULL,
+	payee_info 	NVARCHAR(70) NOT NULL,
+	ent_nm     	NVARCHAR(30) NOT NULL,
+	ent_no     	NVARCHAR(30) NOT NULL,
+	ent_ty     	NVARCHAR(20) NOT NULL,
+	item_amt   	DECIMAL(15,5) NOT NULL,
+	chart_acct 	NVARCHAR(30) NOT NULL,
+	pymt       	NVARCHAR(30) NOT NULL,
+	item_tax_amt	DECIMAL(15,5) NOT NULL,
+	dt_created 	DATETIME YEAR to FRACTION(5) NOT NULL,
+	dt_modified	DATETIME YEAR to FRACTION(5) NOT NULL,
+	created_by 	NVARCHAR(25) NOT NULL,
+	modified_by	NVARCHAR(25) NOT NULL,
+	status     	NVARCHAR(10) NOT NULL,
+	mtt_pg_id  	INT8 NOT NULL,
+	PRIMARY KEY(drmemo_bid)
+	ENABLED
+)
+LOCK MODE ROW
+GO
+CREATE TABLE "informix".rms_fms_drmemo_f  ( 
+	drmemo_fid 	SERIAL8 NOT NULL,
+	drmemo_hid 	INT8 NOT NULL,
+	fms_ref_no 	NVARCHAR(15) NOT NULL,
+	doc_ty     	NVARCHAR(20) NOT NULL,
+	dt_created 	DATETIME YEAR to FRACTION(5) NOT NULL,
+	dt_modified	DATETIME YEAR to FRACTION(5) NOT NULL,
+	created_by 	NVARCHAR(25) NOT NULL,
+	modified_by	NVARCHAR(25) NOT NULL,
+	status     	NVARCHAR(10) NOT NULL,
+	PRIMARY KEY(drmemo_fid)
+	ENABLED
+)
+LOCK MODE ROW
+GO
+CREATE TABLE "informix".rms_fms_drmemo_h  ( 
+	drmemo_hid       	SERIAL8 NOT NULL,
+	type             	NVARCHAR(20) NOT NULL,
+	link_branch      	NVARCHAR(30) NOT NULL,
+	amt              	DECIMAL(15,5) NOT NULL,
+	cust             	NVARCHAR(30) NOT NULL,
+	rms_batch_no     	NVARCHAR(40) NOT NULL,
+	dt_sent          	DATETIME YEAR to FRACTION(5) NOT NULL,
+	desc             	LVARCHAR(256) NOT NULL,
+	attr_ext_sys     	NVARCHAR(255) NOT NULL,
+	resp_attr_ext_sys	NVARCHAR(10) NOT NULL,
+	fms_ref_no       	NVARCHAR(25) NOT NULL,
+	resp_co          	NVARCHAR(25) NOT NULL,
+	resp_status      	NVARCHAR(10) NOT NULL,
+	resp_msg         	NVARCHAR(255) NOT NULL,
+	resp_dt          	DATETIME YEAR to FRACTION(5) NOT NULL,
+	dt_created       	DATETIME YEAR to FRACTION(5) NOT NULL,
+	dt_modified      	DATETIME YEAR to FRACTION(5) NOT NULL,
+	created_by       	NVARCHAR(25) NOT NULL,
+	modified_by      	NVARCHAR(25) NOT NULL,
+	status           	NVARCHAR(10) NOT NULL,
+	retry            	INTEGER,
+	PRIMARY KEY(drmemo_hid)
+	ENABLED
+)
+LOCK MODE ROW
+GO
+CREATE TABLE "informix".rms_fms_jn_b  ( 
+	jn_bid     	SERIAL8 NOT NULL,
+	jn_hid     	INT8 NOT NULL,
+	branch     	NVARCHAR(30) NOT NULL,
+	acct       	NVARCHAR(10) NOT NULL,
+	sub_acct   	NVARCHAR(30) NOT NULL,
+	debit      	DECIMAL(15,5) NOT NULL,
+	credit     	DECIMAL(15,5) NOT NULL,
+	txn_desc   	LVARCHAR(256) NOT NULL,
+	dt_created 	DATETIME YEAR to FRACTION(5) NOT NULL,
+	dt_modified	DATETIME YEAR to FRACTION(5) NOT NULL,
+	created_by 	NVARCHAR(25) NOT NULL,
+	modified_by	NVARCHAR(25) NOT NULL,
+	status     	NVARCHAR(10) NOT NULL,
+	PRIMARY KEY(jn_bid)
+	ENABLED
+)
+LOCK MODE ROW
+GO
+CREATE TABLE "informix".rms_fms_jn_h  ( 
+	jn_hid           	SERIAL8 NOT NULL,
+	batch_no         	NVARCHAR(30) NOT NULL,
+	branch_id        	NVARCHAR(30) NOT NULL,
+	desc             	LVARCHAR(256) NOT NULL,
+	ledger_id        	NVARCHAR(10) NOT NULL,
+	module           	NVARCHAR(2) NOT NULL,
+	dt_txn           	DATE NOT NULL,
+	attr_ext_ref_no  	LVARCHAR(256) NOT NULL,
+	attr_ext_sys     	LVARCHAR(256) NOT NULL,
+	resp_attr_ext_sys	NVARCHAR(10),
+	fms_ref_no       	NVARCHAR(25),
+	resp_ext_ref_no  	NVARCHAR(25),
+	resp_status      	NVARCHAR(10),
+	resp_msg         	NVARCHAR(255),
+	resp_dt          	DATETIME YEAR to FRACTION(5),
+	dt_created       	DATETIME YEAR to FRACTION(5) NOT NULL,
+	dt_modified      	DATETIME YEAR to FRACTION(5) NOT NULL,
+	created_by       	NVARCHAR(25) NOT NULL,
+	modified_by      	NVARCHAR(25) NOT NULL,
+	status           	NVARCHAR(10) NOT NULL,
+	retry            	INTEGER,
+	PRIMARY KEY(jn_hid)
+	ENABLED
+)
+LOCK MODE ROW
+GO
+CREATE TABLE "informix".rms_rpt_di_age  ( 
+	rpt_di_age_id	SERIAL8 NOT NULL,
+	p_dt_req   	DATETIME YEAR to FRACTION(5) NOT NULL,
+	p_tmn_status	INTEGER NOT NULL,
+	p_ent_ty   	NVARCHAR(1) NOT NULL,
+	p_ent_nm   	LVARCHAR(2000) NOT NULL,
+	p_txn_ty   	NVARCHAR(10) NOT NULL,
+	p_status   	NVARCHAR(10) NOT NULL,
+	p_dt_exp_fr	DATETIME YEAR to FRACTION(5) NOT NULL,
+	p_dt_exp_to	DATETIME YEAR to FRACTION(5) NOT NULL,
+	p_dt_eff_fr	DATETIME YEAR to FRACTION(5) NOT NULL,
+	p_dt_eff_to	DATETIME YEAR to FRACTION(5) NOT NULL,
+	p_dt_app_fr	DATETIME YEAR to FRACTION(5) NOT NULL,
+	p_dt_app_to	DATETIME YEAR to FRACTION(5) NOT NULL,
+	p_dt_tmn_fr	DATETIME YEAR to FRACTION(5) NOT NULL,
+	p_dt_tmn_to	DATETIME YEAR to FRACTION(5) NOT NULL,
+	dt_created 	DATETIME YEAR to FRACTION(5) NOT NULL,
+	dt_modified	DATETIME YEAR to FRACTION(5) NOT NULL,
+	created_by 	NVARCHAR(25) NOT NULL,
+	modified_by	NVARCHAR(25) NOT NULL,
+	status     	NVARCHAR(10) NOT NULL,
+	PRIMARY KEY(rpt_di_age_id)
+	ENABLED
+)
+LOCK MODE ROW
+GO
+CREATE TABLE "informix".rms_rpt_ricp_age  ( 
+	rpt_ricp_age_id	SERIAL8 NOT NULL,
+	p_dt_req      	DATETIME YEAR to FRACTION(5) NOT NULL,
+	p_exp_status  	INTEGER NOT NULL,
+	p_can_v_status	INTEGER NOT NULL,
+	p_ent_ty      	NVARCHAR(1) NOT NULL,
+	p_ent_nm      	LVARCHAR(400) NOT NULL,
+	p_dt_ins_fr   	DATETIME YEAR to FRACTION(5) NOT NULL,
+	p_dt_ins_to   	DATETIME YEAR to FRACTION(5) NOT NULL,
+	p_dt_pymt_fr  	DATETIME YEAR to FRACTION(5) NOT NULL,
+	p_dt_pymt_to  	DATETIME YEAR to FRACTION(5) NOT NULL,
+	p_dt_exp_fr   	DATETIME YEAR to FRACTION(5) NOT NULL,
+	p_dt_exp_to   	DATETIME YEAR to FRACTION(5) NOT NULL,
+	p_dt_wo_fr    	DATETIME YEAR to FRACTION(5) NOT NULL,
+	p_dt_wo_to    	DATETIME YEAR to FRACTION(5) NOT NULL,
+	p_dt_can_fr   	DATETIME YEAR to FRACTION(5) NOT NULL,
+	p_dt_can_to   	DATETIME YEAR to FRACTION(5) NOT NULL,
+	p_dt_void_fr  	DATETIME YEAR to FRACTION(5) NOT NULL,
+	p_dt_void_to  	DATETIME YEAR to FRACTION(5) NOT NULL,
+	dt_created    	DATETIME YEAR to FRACTION(5) NOT NULL,
+	dt_modified   	DATETIME YEAR to FRACTION(5) NOT NULL,
+	created_by    	NVARCHAR(25) NOT NULL,
+	modified_by   	NVARCHAR(25) NOT NULL,
+	status        	NVARCHAR(10) NOT NULL,
+	PRIMARY KEY(rpt_ricp_age_id)
+	ENABLED
+)
+LOCK MODE ROW
+GO
+CREATE TABLE "informix".rms_rpt_ripl_age  ( 
+	rpt_ripl_age_id	SERIAL8 NOT NULL,
+	p_dt_req       	DATETIME YEAR to FRACTION(5) NOT NULL,
+	p_imp_status   	INTEGER NOT NULL,
+	p_exp_status   	INTEGER NOT NULL,
+	p_ent_ty       	NVARCHAR(1) NOT NULL,
+	p_ent_nm       	LVARCHAR(400) NOT NULL,
+	p_dt_due_fr    	DATETIME YEAR to FRACTION(5) NOT NULL,
+	p_dt_due_to    	DATETIME YEAR to FRACTION(5) NOT NULL,
+	p_dt_rcpt_fr   	DATETIME YEAR to FRACTION(5) NOT NULL,
+	p_dt_rcpt_to   	DATETIME YEAR to FRACTION(5) NOT NULL,
+	p_dt_imp_fr    	DATETIME YEAR to FRACTION(5) NOT NULL,
+	p_dt_imp_to    	DATETIME YEAR to FRACTION(5) NOT NULL,
+	p_dt_wo_fr     	DATETIME YEAR to FRACTION(5) NOT NULL,
+	p_dt_wo_to     	DATETIME YEAR to FRACTION(5) NOT NULL,
+	dt_created     	DATETIME YEAR to FRACTION(5) NOT NULL,
+	dt_modified    	DATETIME YEAR to FRACTION(5) NOT NULL,
+	created_by     	NVARCHAR(25) NOT NULL,
+	modified_by    	NVARCHAR(25) NOT NULL,
+	status         	NVARCHAR(10) NOT NULL,
+	PRIMARY KEY(rpt_ripl_age_id)
+	ENABLED
+)
+LOCK MODE ROW
+GO
+CREATE TABLE "informix".rms_rpt_um_age  ( 
+	rpt_um_age_id	SERIAL8 NOT NULL,
+	p_dt_req     	DATETIME YEAR to FRACTION(5) NOT NULL,
+	p_txn_id     	NVARCHAR(30) NOT NULL,
+	dt_created   	DATETIME YEAR to FRACTION(5) NOT NULL,
+	dt_modified  	DATETIME YEAR to FRACTION(5) NOT NULL,
+	created_by   	NVARCHAR(25) NOT NULL,
+	modified_by  	NVARCHAR(25) NOT NULL,
+	status       	NVARCHAR(10) NOT NULL,
+	PRIMARY KEY(rpt_um_age_id)
+	ENABLED
+)
+LOCK MODE ROW
+GO
+CREATE TABLE "informix".rms_unmatch_txn  ( 
+	period_key    	DATE NOT NULL,
+	debit_amt     	DECIMAL(15,5),
+	credit_amt    	DECIMAL(15,5),
+	is_month_end  	INTEGER,
+	variance      	DECIMAL(15,5),
+	accumulate_amt	DECIMAL(15,5),
+	total_debit   	DECIMAL(15,5),
+	total_credit  	DECIMAL(15,5),
+	dt_created    	DATETIME YEAR to FRACTION(5) NOT NULL,
+	dt_modified   	DATETIME YEAR to FRACTION(5) NOT NULL,
+	created_by    	NVARCHAR(25) NOT NULL,
+	modified_by   	NVARCHAR(25) NOT NULL,
+	status        	NVARCHAR(10) 
+	)
+LOCK MODE ROW
+GO
+
+ALTER TABLE "informix".rms_fms_ari_b
+	ADD CONSTRAINT ( FOREIGN KEY(ari_hid)
+	REFERENCES "informix".rms_fms_ari_h(ari_hid) CONSTRAINT u215_2
+	ENABLED )
+GO
+ALTER TABLE "informix".rms_fms_arr_b
+	ADD CONSTRAINT ( FOREIGN KEY(arr_hid)
+	REFERENCES "informix".rms_fms_arr_h(arr_hid) CONSTRAINT u216_2
+	ENABLED )
+GO
+ALTER TABLE "informix".rms_fms_crmemo_f
+	ADD CONSTRAINT ( FOREIGN KEY(crmemo_hid)
+	REFERENCES "informix".rms_fms_crmemo_h(crmemo_hid) CONSTRAINT u217_32
+	ENABLED )
+GO
+ALTER TABLE "informix".rms_fms_drmemo_b
+	ADD CONSTRAINT ( FOREIGN KEY(drmemo_hid)
+	REFERENCES "informix".rms_fms_drmemo_h(drmemo_hid) CONSTRAINT u218_22
+	ENABLED )
+GO
+ALTER TABLE "informix".rms_fms_drmemo_f
+	ADD CONSTRAINT ( FOREIGN KEY(drmemo_hid)
+	REFERENCES "informix".rms_fms_drmemo_h(drmemo_hid) CONSTRAINT u218_32
+	ENABLED )
+GO
+ALTER TABLE "informix".rms_fms_jn_b
+	ADD CONSTRAINT ( FOREIGN KEY(jn_hid)
+	REFERENCES "informix".rms_fms_jn_h(jn_hid) CONSTRAINT u219_22
+	ENABLED )
+GO

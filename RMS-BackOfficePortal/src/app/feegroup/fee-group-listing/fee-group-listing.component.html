@@ -1,0 +1,382 @@
+<ng-container *ngIf="permListAllow === 1">
+
+  <body class="BodyCointaner">
+    <!-- mainContainer start-->
+    <div [class.right-section-collapsed]="rightSectionCollapsed" class="PAContainer73">
+
+      <!-- <duplicate section -->
+      <div class="right-section73-mobile collapse" [class.show]="!rightSectionCollapsed && permListAllow">
+        <div class="SingleContainer">
+          <!-- Header -->
+          <div class="SingleContainerHeader">
+            <h2 class="text-center">{{ "search filter" | translate }}</h2>
+          </div>
+
+          <!-- Fee Group ID -->
+          <!-- <div class="form-group">
+            <label for="feeGroupId">{{"labels.feegroupid" | translate}}</label>
+            <input type="text" class="form-control" id="feeGroupId" [(ngModel)]="feeGroupId" />
+          </div> -->
+
+          <div class="form-group">
+            <label for="ssCd">{{"labels.sourcesystem" | translate}}</label>
+            <input type="text" class="form-control" id="ssCd" [(ngModel)]="ssCd" />
+          </div>  
+
+          <!--SS Fee Group ID -->
+          <div class="form-group">
+            <label for="ssFeeGroupId">{{"labels.ssFeeGroupId" | translate}}</label>
+            <input type="text" class="form-control" id="ssFeeGroupId" [(ngModel)]="ssFeeGroupId" />
+          </div>
+
+          <!-- Fee Group Name EN-->
+          <div class="form-group">
+            <label for="feeGroupNameEN">{{"labels.feegroupnameen" | translate}}</label>
+            <input type="text" class="form-control" id="feeGroupNameEn" [(ngModel)]="feeGroupNameEN" />
+          </div>
+
+          <!-- Fee Group Name BM-->
+          <div class="form-group">
+            <label for="feeGroupNameBM">{{"labels.feegroupnamebm" | translate}}</label>
+            <input type="text" class="form-control" id="feeGroupNameBM" [(ngModel)]="feeGroupNameBM" />
+          </div>
+
+          <!-- Modified By -->
+          <div class="form-group">
+            <label for="modifiedBy">{{"modified by" | translate}}</label>
+            <input type="text" class="form-control" id="modifiedBy" [(ngModel)]="modifiedBy" />
+          </div>
+
+          <!-- Date Modified Range -->
+          <!-- <div class="form-group">
+          <label>Date Modified Range</label>
+          <input
+            type="text"
+            class="form-control"
+            matInput
+            ngxDaterangepickerMd
+            [locale]="{ applyLabel: 'ok', format: 'DD-MM-YYYY' }"
+            startKey="start"
+            endKey="end"
+            [(ngModel)]="selected"
+            name="daterange"
+            readonly
+          />
+        </div> -->
+          <div class="form-group">
+            <label>{{"date modified range" | translate}}</label>
+            <input type="text" [placeholder]="'labels.daterangepicker'| translate" class="form-control"
+              [bsConfig]="{ rangeInputFormat : 'DD MMM YYYY', dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,rangeSeparator:' to ',containerClass:'theme-default',adaptivePosition: true}"
+              bsDaterangepicker [(ngModel)]="selected" name="daterange" readonly onkeydown="return false"/>
+          </div>
+
+          <div class="form-group">
+            <label>Status</label>
+            <select class="form-control" [(ngModel)]="selectedState">
+              <option *ngFor="let state of states" [value]="state.param_cd">
+                {{ state.nm_en}}
+              </option>
+            </select>
+          </div>
+
+          <!-- Buttons -->
+          <div class="button-group">
+            <button class="btn btnApply" (click)="apply()">{{"buttons.apply" |translate}}</button>
+            <button class="btn btnReset" (click)="reset()">{{"buttons.reset" |translate}}</button>
+          </div>
+
+          <br /><br />
+        </div>
+      </div>
+   
+      <!-- left section -->
+      <div class="left-section73">
+        <div>
+          <!-- alert box -->
+          <div *ngIf="showInsertAlert" [@fadeInOut]>
+            <div class="alert alert-success PA-alert-box" role="alert">
+              {{"added successfully" | translate}}
+            </div>
+          </div>
+
+          <div *ngIf="showUpdateAlert" [@fadeInOut]>
+            <div class="alert alert-info PA-alert-box" role="alert">
+              {{"updated successfully" | translate}}
+            </div>
+          </div>
+
+          <div *ngIf="showDeleteAlert" [@fadeInOut]>
+            <div class="alert alert-danger PA-alert-box" role="alert">
+              {{"deleted successfully" | translate}}
+            </div>
+          </div>
+
+          <div *ngIf="showResultAlert" [@fadeInOut]>
+            <div class="alert alert-warning PA-alert-box" role="alert">
+              {{"showResultAlert" | translate}}
+            </div>
+          </div>
+
+          <div *ngIf="showDeactiveAlert" [@fadeInOut]>
+            <div class="alert alert-warning PA-alert-box" role="alert">
+              {{"The record cannot be deactivated because it is in use by another module." | translate }}
+            </div>
+          </div>
+
+          <div *ngIf="showGenericAlert" [@fadeInOut]>
+            <div class="alert alert-warning PA-alert-box" role="alert">
+              Sorry for the trouble. Please try again later or contact support if the issue continues.
+            </div>
+          </div>
+          <!--alert box -->
+
+          <!-- <div class="LeftSectionPosition"> -->
+            <!-- <app-ng-dynamic-breadcrumb></app-ng-dynamic-breadcrumb> -->
+            <!-- {{"labels.Home / Setup & Maintenance / Fee Group" | translate}} -->
+          <!-- </div> -->
+
+          <h2>{{"labels.feegrouplisting"| translate}}</h2>
+
+          <div class="LeftSectionPosition">
+            <button type="button" class="btn btnAdd" (click)="addSelected()" [disabled]="!permAddAllow">
+            {{"add" |translate}}
+            </button>
+          </div>
+
+        </div>
+
+        <div class="MATableContainer TablePosition-relative" *ngIf="isDisplay">
+          <div class="MALoadingContainer">
+            <!-- Loading spinner overlay -->
+            <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+              <div class="spinner-border" role="status">
+                <span class="sr-only"></span>
+              </div>
+            </div>
+
+            <!-- Your table structure -->
+
+            <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+              <thead>
+                <tr class="MATableHeader">
+                  <!-- <th>{{"labels.feegroupid" | translate}}</th> -->
+                  <th>{{"labels.sourcesystem" | translate}}</th>
+                  <th>{{"labels.ssFeeGroupId" | translate}}</th>
+                  <th>{{"labels.feegroupnameen" | translate}}</th>
+                  <th>{{"labels.feegroupnamebm" | translate}}</th>
+                  <th>{{"modified by" | translate}}</th>
+                  <th>{{"date modified" | translate}}</th>
+                  <th>{{"edit" | translate}}</th>
+                  <!-- <th>Delete</th> -->
+                  <th>{{"action" | translate}}</th>
+                </tr>
+              </thead>
+              <ng-container *ngIf="model.length > 0; else noResults">
+              <tbody>
+                <tr *ngFor="let item of model">
+                  <!-- <td>{{ item.fee_grp_id }}</td> -->
+                  <td>{{item.ss_cd}}</td>
+                  <td>{{item.ss_fee_grp_id}}</td>
+                  <td>{{ item.fee_grp_nm_en }}</td>
+                  <td>{{ item.fee_grp_nm_bm }}</td>
+                  <td>{{ item.modifiedBy }}</td>
+                  <td>{{ item.dtModified | date : "dd MMM yyyy HH:mm:ss" }}</td>
+                  <td>
+                    <button type="button" class="btn btnEdit" (click)="editSelected(item)" [disabled]="!permEditAllow">
+                    {{"edit" | translate}}
+                    </button>
+                  </td>
+                  <!-- <td>
+                  <button
+                    type="button"
+                    class="btn btnDelete"
+                    (click)="deleteSelected(item)"
+                  >
+                    <i class="bi bi-trash-fill"></i> Delete
+                  </button>
+                </td> -->
+                  <td>
+                    <div class="form-check form-switch custom-switch d-flex align-items-center">
+                      <!-- <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="activationSwitch{{ item.fee_grp_id }}"
+                      [checked]="item.status === 'A'"
+                      (change)="toggleActivation(item)"                     
+                    /> -->
+                      <input class="form-check-input" type="checkbox" id="activationSwitch{{ item.fee_grp_id }}"
+                        [checked]="item.status_en === 'Active' || item.status_bm === 'Active'"
+                        (change)="toggleActivation(item)" [disabled]="!permEditAllow" />
+                      <label class="form-check-label ms-2" for="activationSwitch{{ item.fee_grp_id }}">
+                        <!-- {{ item.status === "A" ? "Active" : "Deactivate" }} -->
+                        {{ item.status_en}}
+                      </label>
+                    </div>
+
+                  </td>
+                </tr>
+              </tbody>
+            </ng-container>
+            <ng-template #noResults>
+              <tr style="height: 100px;">
+                <td colspan="20" class="text-center">{{"searchcriteriadoesnotmatch"| translate}}</td>
+              </tr>
+            </ng-template>
+            </table>
+          </div>
+
+          <div class="MAPagination" *ngIf="isDisplay">
+            <div class="fgSpacing">
+              <div *ngIf="page * itemsPerPage < totalRecords">
+                {{"showing" | translate}} {{ page * itemsPerPage }} {{"from" | translate}} {{ totalRecords }}
+                {{"results"
+                | translate}}
+              </div>
+              <div *ngIf="!(page * itemsPerPage < totalRecords)">
+                {{"showing" | translate}} {{ totalRecords }} {{"from" | translate}} {{ totalRecords }} {{"results" |
+                translate}}
+              </div>
+            </div>
+            <div class="pagination-row">
+              <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle PaginControl" type="button" id="dropdownMenuButton"
+                  data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {{ selectedValue }}
+                </button>
+                <div class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton">
+                  <button class="dropdown-item" *ngFor="let singleItem of dropdownOptions"
+                    (click)="LoadData(singleItem)">
+                    {{ singleItem }}
+                  </button>
+                </div>
+              </div>
+
+              <ngb-pagination [(page)]="page" [pageSize]="itemsPerPage" [collectionSize]="totalRecords"
+                (pageChange)="loadData()"></ngb-pagination>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <!-- right section -->
+    <div class="middle-section73">
+      <button
+      class="btn btn-primary"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#rightSection"
+      [attr.aria-expanded]="!rightSectionCollapsed"
+      (click)="toggleRightSection()"
+    >
+    <ng-container *ngIf="rightSectionCollapsed; else arrowIcon">
+      <i class="bi bi-search"></i>
+    </ng-container>
+    <ng-template #arrowIcon>
+      <i
+        class="bi"
+        [class.bi-chevron-double-right]="!rightSectionCollapsed"
+        [class.bi-chevron-double-left]="rightSectionCollapsed"
+      ></i>
+    </ng-template>
+    </button>
+  </div>
+
+ 
+
+
+      <div class="right-section73 collapse" [class.show]="!rightSectionCollapsed && permListAllow">
+        <div class="SingleContainer">
+          <!-- Header -->
+          <div class="SingleContainerHeader">
+            <h2 class="text-center">{{ "search filter" | translate }}</h2>
+          </div>
+
+          <!-- Fee Group ID -->
+          <!-- <div class="form-group">
+            <label for="feeGroupId">{{"labels.feegroupid" | translate}}</label>
+            <input type="text" class="form-control" id="feeGroupId" [(ngModel)]="feeGroupId" />
+          </div> -->
+
+          <!--SS Code -->
+          <div class="form-group">
+            <label for="ssCd">{{"labels.sourcesystem" | translate}}</label>
+            <ng-select class="form-control" name="sourceSystemCode" [(ngModel)]="ssCd" id="ssCd"  dropdownPosition="bottom" [multiple]="true" >
+              <ng-option *ngFor="let item of sourceSystemCodeOptions" [value]="item.ss_cd">{{item.ss_cd}}</ng-option>
+           </ng-select>
+          </div>  
+          <!--SS Fee Group ID -->
+          <div class="form-group">
+            <label for="ssFeeGroupId">{{"labels.ssFeeGroupId" | translate}}</label>
+            <input type="text" class="form-control" id="ssFeeGroupId" [(ngModel)]="ssFeeGroupId" />
+          </div>
+
+          <!-- Fee Group Name EN-->
+          <div class="form-group">
+            <label for="feeGroupNameEN">{{"labels.feegroupnameen" | translate}}</label>
+            <input type="text" class="form-control" id="feeGroupNameEn" [(ngModel)]="feeGroupNameEN" />
+          </div>
+
+          <!-- Fee Group Name BM-->
+          <div class="form-group">
+            <label for="feeGroupNameBM">{{"labels.feegroupnamebm" | translate}}</label>
+            <input type="text" class="form-control" id="feeGroupNameBM" [(ngModel)]="feeGroupNameBM" />
+          </div>
+
+          <!-- Modified By -->
+          <div class="form-group">
+            <label for="modifiedBy">{{"modified by" | translate}}</label>
+            <input type="text" class="form-control" id="modifiedBy" [(ngModel)]="modifiedBy" />
+          </div>
+
+          <!-- Date Modified Range -->
+          <!-- <div class="form-group">
+          <label>Date Modified Range</label>
+          <input
+            type="text"
+            class="form-control"
+            matInput
+            ngxDaterangepickerMd
+            [locale]="{ applyLabel: 'ok', format: 'DD-MM-YYYY' }"
+            startKey="start"
+            endKey="end"
+            [(ngModel)]="selected"
+            name="daterange"
+            readonly
+          />
+        </div> -->
+          <div class="form-group">
+            <label>{{"date modified range" | translate}}</label>
+            <input type="text" [placeholder]="'datepicker' | translate" class="form-control"
+              [bsConfig]="{ rangeInputFormat : 'DD MMM YYYY', dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,rangeSeparator:' to ',containerClass:'theme-default',adaptivePosition: true}"
+              bsDaterangepicker [(ngModel)]="selected" name="daterange" readonly onkeydown="return false"/>
+          </div>
+
+          <div class="form-group">
+            <label>Status</label>
+            <select class="form-control" [(ngModel)]="selectedState">
+              <option *ngFor="let state of states" [value]="state.param_cd">
+                {{ state.nm_en}}
+              </option>
+            </select>
+          </div>
+
+          <!-- Buttons -->
+          <div class="button-group">
+            <button class="btn btnApply" (click)="apply()">{{"buttons.apply" |translate}}</button>
+            <button class="btn btnReset" (click)="reset()">{{"buttons.reset" |translate}}</button>
+          </div>
+
+          <br /><br />
+        </div>
+      </div>
+      </div>
+    <!-- mainContainer end-->
+
+    <!-- <div class="PAContainer73">
+    <div class="left-section73">
+      <div class="MainContainerFooter"></div>
+    </div>
+    <div class="right-section73"></div>
+  </div> -->
+  </body>
+</ng-container>

@@ -1,0 +1,29 @@
+<div *ngIf="isAppInitialized" class="app-container">
+  <!-- Always show header -->
+  <app-header></app-header>
+
+  <div class="main-content MainBackgroundColor">
+    <!-- Breadcrumb navigation - only when logged in and not on special pages -->
+    <nav *ngIf="!isHomePage && isLoggedIn && !isDashboard && !isOTCCollectionandReceipting && !isOTCReturnedCheque  
+    && !isOtcCheckIn && !isOtcCheckOut && !isBillingCancellationSearch && !isBillingAdjustmentSearch && !isOTCReceiptScreen 
+    && !isAccessDenied && !isOTCEmvReconciliation && !isReceiptReprint && !isOTCReceiptCancellation && !isPgreconlisting
+    && !isOTCDBal && !isOTCDSBal && !isOTCMBal && !isBankReconListing && !isReprintReceiptJustification">
+      <ul class="breadcrumb">
+        <li *ngFor="let breadcrumb of breadcrumbs">
+          <a [routerLink]="breadcrumb.url">{{ breadcrumb.label | translate }}</a>
+          <span *ngIf="!isLastBreadcrumb(breadcrumb)" class="breadcrumb-separator"> / </span>
+        </li>
+      </ul>
+    </nav>
+
+    <main>
+      <app-timeout-warning></app-timeout-warning>
+      
+      <!-- Regular router outlet for all content -->
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+
+  <!-- Always show footer -->
+  <app-footer></app-footer>
+</div>

@@ -1,0 +1,273 @@
+<body class="BodyCointaner">
+    <div class="PAContainer">
+        <!-- <div class="LeftSectionPosition">
+            Home / Reconciliation / Payment Gateway Reconciliation / Payment Gateway VS Renevue Management System Collection Reconcilliation
+        </div>       -->
+
+        <h2>{{"Payment Gateway Settlement VS RMS Collection"| translate}}</h2>
+
+    </div>
+
+    <div class="parent-div">
+    
+        <div class="left-div">
+            <h3>{{"PAYMENT GATEWAY SETTLEMENT SUMMARY"| translate}}</h3>
+            <table>
+                <tr>
+                    <td>{{"Number of Transaction in \"Settlement\""| translate}}</td> 
+                    <td><a (click)="permViewPGListAllow === 0 ? null : PGDetailsSelected('pgTxnSettlementNo')" [class.disabled] = "permViewPGListAllow === 0" style="color: blue; text-decoration: underline;">{{model.pg_txn_settlement_no}}</a></td> 
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>{{"Total \"Settlement\" Transaction Amount"| translate}}</td> 
+                    <td></td> 
+                    <td >{{model.pg_total_txn_settlement_amt | number:'1.2-2'}}</td></tr>
+                <tr>
+                    <td>{{"Number of Transaction in \"Txn Adjustment\""|translate}}</td> 
+                    <td><a (click)="PGDetailsSelected('pgTxnAdjNo')" style="color: blue; text-decoration: underline;">{{model.pg_txn_adj_no}}</a></td> 
+                    <td></td></tr>
+                <tr>
+                    <td>{{"Total \"Txn Adjustment\" Transaction Amount"|translate}}</td> 
+                    <td></td> 
+                    <td >{{model.pg_total_txn_adj_amt | number:'1.2-2'}}</td>
+                </tr>
+                <tr>
+                    <td>{{"Other Non \"Settlement\" Transaction (TBD W/eGHL)"|translate}}</td> 
+                    <td></td> 
+                    <td>{{model.pg_total_txn_other | number:'1.2-2'}}</td>
+                </tr>
+            </table>
+        </div>
+    
+        <div class="right-div">
+            <h3>{{"RMS SOURCE SYSTEM SUMMARY"|translate}}</h3>
+            <table>
+                <tr>
+                    <td>{{"Number of Transactions"|translate}}</td> 
+                    <td><a (click)="permViewRMSListAllow === 0 ? null : RMSDetailsSelected('rmsTxnNo')" [class.disabled]="permViewRMSListAllow === 0" style="color: blue; text-decoration: underline;">{{model.rms_txn_no}}</a></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>{{"Number of \"Paid\" Transactions"|translate}}</td> 
+                    <td><a (click)="RMSDetailsSelected('rmsPaidNo')" style="color: blue; text-decoration: underline;">{{model.rms_paid_no}}</a></td> 
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>{{"Total \"Paid\" Amount"|translate}}</td> 
+                    <td></td> 
+                    <td >{{model.rms_paid_total | number:'1.2-2'}}</td>
+                </tr>
+                <!-- <tr>
+                    <td>{{"Number of \"Failed\" Transactions"|translate}}</td>
+                    <td><a (click)="RMSDetailsSelected('rmsFaiedNo')" style="color: blue; text-decoration: underline;">{{model.rms_failed_no}}</a></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>{{"Total \"Failed\" Amount"|translate}}</td> 
+                    <td></td> 
+                    <td>{{model.rms_failed_total | number:'1.2-2'}}</td>
+                </tr>  -->
+            </table>
+        </div>
+    </div>
+    
+    <div class="second-parent">
+        <div class="left-div">
+            <h3>{{"DISCREPANCY CHECK BASED ON PAYMENT GATEWAY SETTLEMENT"|translate}}</h3>
+            <table class="table_discrepancy_pg MATableHeader">
+                <thead>
+                    <tr>
+                        <th>{{"Criteria"|translate}}</th>
+                        <th>{{"No. of Txn"|translate}}</th>
+                        <th>{{"labels.totalamount"|translate}}</th>
+                        <th>{{"Result"|translate}}</th>
+                        <th>{{"No. of Txn"|translate}}</th>
+                        <th>{{"labels.totalamount"|translate}}</th>
+                        <th>{{"Sub-Criteria"|translate}}</th>
+                        <th>{{"No. of Txn"|translate}}</th>
+                        <th>{{"labels.totalamount"|translate}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr>
+                <td rowspan="6">{{"Successful PG Records (with TxnID)"|translate}}</td>
+                <td rowspan="6" class="alignCenterCol"><a (click)="PGDetailsSelected('pgTxnMatchedNo')">{{model.pg_matched_no}}</a></td>
+                <td rowspan="6" class="alignRightCol">{{model.pg_matched_total | number:'1.2-2'}}</td>
+                <td rowspan="2">
+                    {{"Found in RMS"|translate}} ({{model.dt_settlement_char}})
+                </td>
+                <td rowspan="2" class="alignCenterCol">
+                    <a (click)="PGDetailsSelected('pgTxnFoundNo')">{{model.pg_found_no}}</a>
+                </td>
+                <td rowspan="2" class="alignRightCol">
+                    {{model.pg_found_total | number:'1.2-2'}}
+                </td>
+                <td>
+                    {{"RMS Txn Status"|translate}} = {{"Success & Amount Matched"|translate}}
+                </td>
+                <td class="alignCenterCol">
+                    <a (click)="PGDetailsSelected('pgTxnSAMNo')">{{model.pg_sam_no}}</a>
+                </td>
+                <td class="alignRightCol">
+                    {{model.pg_sam_total | number:'1.2-2'}}
+                </td>
+                </tr>
+                
+                <tr>
+                <td class="errorColumn">{{"RMS Txn Status"|translate}} = {{"Success & Amount Not Matched"|translate}}</td>
+                <td class="errorColumn alignCenterCol"><a (click)="PGDetailsSelected('pgTxnSNMNo')">{{model.pg_snm_no}}</a></td>
+                <td class="errorColumn alignRightCol">{{model.pg_snm_total | number:'1.2-2'}}</td>
+                </tr>
+                
+                <!-- <tr>
+                <td class="errorColumn">{{"RMS Txn Status"|translate}} = {{"Failed"|translate}}</td>
+                <td class="errorColumn alignCenterCol"><a (click)="PGDetailsSelected('pgTxnTXFNo')">{{model.pg_txf_no}}</a></td>
+                <td class="errorColumn alignRightCol">{{model.pg_txf_total | number:'1.2-2'}}</td>
+                </tr> -->
+                
+                <tr>
+                <td class="errorColumn">{{"Not Found in RMS"|translate}} ({{model.dt_settlement_char}})</td>
+                <td class="errorColumn alignCenterCol"><a (click)="PGDetailsSelected('pgTxnNotFoundNo')">{{model.pg_not_found_no}}</a></td>
+                <td class="alignRightCol">{{model.pg_not_found_total | number:'1.2-2'}}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                </tr>
+                
+                </tbody>
+                </table>
+        </div>
+    
+        <div class="right-div">
+            <h3>{{"DISCREPANCY CHECK BASED ON RMS SOURCE SYSTEM"|translate}}</h3>
+            <table class="table_discrepancy_rms MATableHeader">
+                <thead>
+                <tr>
+                    <th>{{"Criteria"|translate}}</th>
+                    <th>{{"No. of Txn"|translate}}</th>
+                    <th>{{"labels.totalamount"|translate}}</th>
+                    <th>{{"Result"|translate}}</th>
+                    <th>{{"Sub-Criteria"|translate}}</th>
+                    <th>{{"No. of Txn"|translate}}</th>
+                    <th>{{"labels.totalamount"|translate}}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                <td rowspan="6">{{"Successful RMS Transaction (with Receipt No.)"|translate}}</td>
+                <td rowspan="6" class="alignCenterCol"><a (click)="RMSDetailsSelected('rmsRcptNo')">{{model.rms_rcpt_no}}</a></td>
+                <td rowspan="6" class="alignRightCol">{{model.rms_rcpt_total | number:'1.2-2'}}</td>
+                <td rowspan="2">
+                    {{"Found in this PG Settlement"|translate}}
+                </td>
+                <td>
+                    PG Txn Status = {{"Success & Amount Matched"|translate}}
+                </td>
+                <td class="alignCenterCol">
+                    <a (click)="RMSDetailsSelected('rmsSAMNo')">{{model.rms_sam_no}}</a>
+                </td>
+                <td class="alignRightCol">
+                    {{model.rms_sam_total | number:'1.2-2'}}
+                </td>
+                </tr>
+                
+                
+                <tr>
+                <td class="errorColumn">PG Txn Status = {{"Success & Amount Not Matched"|translate}}</td>
+                <td class="errorColumn alignCenterCol"><a (click)="RMSDetailsSelected('rmsSNMNo')">{{model.rms_snm_no}}</a></td>
+                <td class="errorColumn alignRightCol">{{model.rms_snm_total | number:'1.2-2'}}</td>
+                </tr>
+                
+                <!-- <tr>
+                <td class="errorColumn">RMS Txn Status = '{{"Failed"|translate}}'</td>
+                <td class="errorColumn alignCenterCol"><a (click)="RMSDetailsSelected('rmsTXFNo')">{{model.rms_txf_no}}</a></td>
+                <td class="errorColumn alignRightCol">{{model.rms_txf_total | number:'1.2-2'}}</td>
+                </tr> -->
+                
+                <tr>
+                <td rowspan="2"  class="errorColumn">{{"Not Found in this PG Settlement"|translate}}</td>
+                <td>{{"Found in Previous PG Settlement Recon."|translate}}</td>
+                <td class="alignCenterCol"><a (click)="RMSDetailsSelected('rmsFIPNo')">{{model.rms_cip_no}}</a></td>
+                <td class="alignRightCol">{{model.rms_cip_total| number:'1.2-2'}}</td>
+                <!-- <td>{{"Closed in Previous PG Settlement Recon."|translate}}</td>
+                <td class="alignCenterCol"><a (click)="RMSDetailsSelected('rmsCIPNo')">{{model.rms_cip_no}}</a></td>
+                <td class="alignRightCol">{{model.rms_cip_total | number:'1.2-2'}}</td>-->
+                </tr>
+                
+                <!-- <tr>
+                <td class="errorColumn">{{"Not Closed in Previous PG Settlement Recon."|translate}}</td>
+                <td class="errorColumn alignCenterCol"><a (click)="RMSDetailsSelected('rmsNCPNo')">{{model.rms_ncp_no}}</a></td>
+                <td class="errorColumn alignRightCol">{{model.rms_ncp_total | number:'1.2-2'}}</td>
+                </tr> -->
+                
+                <tr>
+                <td class="errorColumn">{{"Not Found in Previous PG Settlement Recon."|translate}}</td>
+                <td class="errorColumn alignCenterCol"><a (click)="RMSDetailsSelected('rmsNFPNo')">{{model.rms_nfp_no}}</a></td>
+                <td class="errorColumn alignRightCol">{{model.rms_nfp_total | number:'1.2-2'}}</td>
+                </tr>
+                </tbody>
+                </table>
+        </div>
+    </div>
+
+    <div class="third-parent">
+        <h3 style="margin-left:0.5% !important">{{"Reconciliation Task"|translate}}</h3>
+        <div class="content">
+            <table>
+                <tr>
+                    <td>{{"Task ID"|translate}}</td>
+                    <td>:</td>
+                    <td>{{model.task_id}}</td>
+                    <td></td> <!-- Empty cell with 20% width -->
+                    <td>{{"Remarks"|translate}}<span style="color: red;display:initial;margin-left: 4px">*</span></td>
+                    <td>:</td>
+                    <td rowspan="2">
+                        <textarea rows="1" [(ngModel)]="remarks" name="remark"  maxlength="255" [disabled]="readOnly||permOpenCloseCancel === 0"></textarea>
+                        <div *ngIf="remarksError" class="error-text">
+                            {{"labels.remarksisrequired" | translate}}
+                        </div>
+                        <!-- <input type="text" class="form-control" [(ngModel)]="remarks" name="remark" maxlength="25"> -->
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{"PG Settlement Status"|translate}}</td>
+                    <td>:</td>
+                    <td colspan="3">{{model.recon_status}}</td>
+                </tr>
+                <tr>
+                    <td>{{"PG Statement"|translate}}</td>
+                    <td>:</td>
+                    <td>{{model.dt_statement}}</td>
+                    <td></td> <!-- Empty cell with 20% width -->
+    
+                    <td>{{"labels.taskstatus"|translate}}</td>
+                    <td>:</td>
+                    <td style="display: flex;">
+                        <div style="margin-right: 20px;" *ngFor="let choice of choices">
+                            <input type="radio"
+                            id="taskStatus"
+                            name="taskStatus"
+                            [value]="choice"
+                            [(ngModel)]="taskStatus" [disabled]="readOnly||permOpenCloseCancel === 0"/>
+                            <label class="toggle-button"for="taskStatus">{{ choice }}</label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{"labels.settlementdate"|translate}}</td>
+                    <td>:</td>
+                    <td>{{model.dt_settlement_char}}</td>
+                    <td></td> <!-- Empty cell with 20% width -->
+                    <td></td>
+                    <td></td> 
+                    <td style="display: flex;justify-content: end;">
+                        <button class="btn btnSubmit" (click)="apply()" [disabled]="readOnly||permOpenCloseCancel === 0">{{"buttons.apply"|translate}}</button>
+                        <button class="btn btnCancel" (click)="cancel()">{{"buttons.cancel"|translate}}</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    
+</body>
+

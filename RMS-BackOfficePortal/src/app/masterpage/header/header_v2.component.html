@@ -1,0 +1,314 @@
+<!-- Header Container -->
+<div class="container-fluid header-container" style="position: relative;">
+  <nav class="navbar navbar-expand-xl navbar-dark marginRL">
+    <div class="container-fluid d-flex justify-content-between zeroPaddingRL">
+
+      <!-- Logo -->
+      <div id="logo" class="d-flex align-items-center">
+        <a id="jata-logo" href="https://www.kpdn.gov.my/ms/" target="_blank" rel="noopener noreferrer">
+          <img alt="Malaysia" src="/rmsbo/assets/logo/logo-jata-malaysia.png" onerror="this.onerror=null; this.src='/assets/logo/logo-jata-malaysia.png';" />
+        </a>
+        <a id="ssm-logo" href="https://www.ssm.com.my/Pages/Home.aspx" target="_blank" rel="noopener noreferrer">
+          <img alt="SSM" src="assets/logo/logo-ssm-new.png" onerror="this.onerror=null; this.src='/assets/logo/logo-ssm-new.png';" />
+        </a>
+      </div>
+
+      <!-- Burger (Mobile) -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Main Menu -->
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav ms-auto">
+
+          <!-- Home -->
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/home" (click)="collapseMobileMenu()">{{ 'menu.home' | translate }}</a>
+          </li>
+		  
+		  <!-- My Tasks Dropdown -->
+          <li class="nav-item dropdown" *ngIf="((username$ | async) !== undefined && (username$ | async) !== null) &&
+            (permAssignedTaskListAllow === 1 || permCreatedTaskListAllow === 1)">
+
+            <a class="nav-link dropdown-toggle position-relative d-inline-block" href="#"
+               data-bs-toggle="dropdown">
+               {{ "menu.mytasks" | translate }}
+               <span class="notificationHeader" role="status"
+                  *ngIf="(totalNotificationCount$ | async) as totalCount">
+                  <ng-container *ngIf="totalCount > 0">
+                     {{ totalCount }}
+                  </ng-container>
+               </span>
+            </a>
+            <ul class="dropdown-menu">
+               <ng-container *ngIf="permAssignedTaskListAllow === 1">
+                 <li>
+                   <a class="dropdown-item" routerLink="/my-task-assigned-tasks" (click)="collapseMobileMenu()">
+                     <span class="menu-text">{{ "labels.assignedtasks" | translate }}</span>
+                     <div class="notificationMytask" role="status"
+                          *ngIf="(totalNotificationCountForAssignedTasks$ | async) as myTaskCount">
+                       <ng-container *ngIf="myTaskCount > 0">
+                         {{ myTaskCount }}
+                       </ng-container>
+                     </div>
+                   </a>
+                 </li>
+               </ng-container>
+               <ng-container *ngIf="permCreatedTaskListAllow === 1">
+                 <li>
+                   <a class="dropdown-item" routerLink="/my-task-created-task" (click)="collapseMobileMenu()">
+                     <span class="menu-text">{{ "labels.createdtasks" | translate }}</span>
+                     <div class="notificationCreatedtask" role="status"
+                          *ngIf="(totalNotificationCountForCreatedTasks$ | async) as createdTaskCount">
+                       <ng-container *ngIf="createdTaskCount > 0">
+                         {{ createdTaskCount }}
+                       </ng-container>
+                     </div>
+                   </a>
+                 </li>
+               </ng-container>
+               <ng-container *ngIf="permFATaskListAllow === 1">
+                  <li>
+                     <a class="dropdown-item" routerLink="/my-task-public-task/fa" (click)="collapseMobileMenu()">{{"labels.financeadmintasks" | translate}}</a>
+                  </li>
+               </ng-container>
+               <ng-container *ngIf="permBYMTaskListAllow === 1">
+                  <li>
+                     <a class="dropdown-item" routerLink="/my-task-public-task/bym" (click)="collapseMobileMenu()">{{"labels.bymtasks" | translate}}</a>
+                  </li>
+               </ng-container>
+               <ng-container *ngIf="permPGTaskListAllow === 1">
+                  <li>
+                     <a class="dropdown-item" routerLink="/my-task-public-task/pg" (click)="collapseMobileMenu()">{{"labels.pgtasks" | translate}}</a>
+                  </li>
+               </ng-container>
+               <ng-container *ngIf="permOTCStaffTaskListAllow === 1">
+                  <li>
+                     <a class="dropdown-item" routerLink="/my-task-public-task/os" (click)="collapseMobileMenu()">{{"labels.otcstafftasks" | translate}}</a>
+                  </li>
+               </ng-container>
+               <ng-container *ngIf="permOTCSupervisorTaskListAllow === 1">
+                  <li>
+                     <a class="dropdown-item" routerLink="/my-task-public-task/osp" (click)="collapseMobileMenu()">{{"labels.otcsupervisortasks" | translate}}</a>
+                  </li>
+               </ng-container>
+               <ng-container *ngIf="permOTCBranchManagerTaskListAllow === 1">
+                  <li>
+                     <a class="dropdown-item" routerLink="/my-task-public-task/obm" (click)="collapseMobileMenu()">{{"labels.otcbranchmanagertasks" | translate}}</a>
+                  </li>
+               </ng-container>
+               <ng-container *ngIf="permSMETaskListAllow === 1">
+                  <li>
+                     <a class="dropdown-item" routerLink="/my-task-public-task/sme" (click)="collapseMobileMenu()">{{"labels.smetasks" | translate}}</a>
+                  </li>
+               </ng-container>
+               <ng-container *ngIf="permLGLTaskListAllow === 1">
+                  <li>
+                     <a class="dropdown-item" routerLink="/my-task-public-task/lgl" (click)="collapseMobileMenu()">{{"labels.lgltasks" | translate}}</a>
+                  </li>
+               </ng-container>
+            </ul>
+          </li>
+
+          <!-- Operational Area Menu -->
+          <li class="nav-item dropdown" *ngIf="((username$ | async) !== undefined && (username$ | async) !== null) && hasOperationalAreaPermissions()">
+            <a class="nav-link dropdown-toggle mega-menu-toggle" 
+               href="javascript:void(0);" 
+               (click)="toggleMegaMenu($event)"
+               [class.active]="isMenuOpen"
+               [attr.aria-expanded]="isMenuOpen">
+              {{ 'Module' | translate }}
+            </a>
+          </li>
+		  
+		   <!-- MFT Dropdown -->
+          <li class="nav-item dropdown"
+             *ngIf="((username$ | async) !== undefined && (username$ | async) !== null) && (permRequestAddMFT === 1 || permRequestEditMFT === 1)">
+             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                {{ 'menu.mft' | translate }}
+             </a>
+             <ul class="dropdown-menu">
+                <ng-container *ngIf="permRequestAddMFT === 1">
+                   <li>
+                      <a class="dropdown-item" routerLink="/mft-req-form-add" (click)="collapseMobileMenu()">{{"labels.requestaddmft" | translate}}</a>
+                   </li>
+                </ng-container>
+                <ng-container *ngIf="permRequestEditMFT === 1">
+                   <li>
+                      <a class="dropdown-item" routerLink="/mft-req-form-edit" (click)="collapseMobileMenu()">{{"labels.requesteditmft" | translate}}</a>
+                   </li>
+                </ng-container>
+                <ng-container *ngIf="(permRequestAddMFT === 1 || permRequestEditMFT === 1)">
+                   <li>
+                      <a class="dropdown-item" routerLink="/master-fee-table" (click)="collapseMobileMenu()">{{"labels.viewmftinfo" | translate}}</a>
+                   </li>
+                </ng-container>
+             </ul>
+          </li>
+          
+          <!-- Maintenance Dropdown -->
+          <li class="nav-item dropdown"
+             *ngIf="((username$ | async) !== undefined && (username$ | async) !== null)
+             && (permMFTListAllow === 1 || permMTLListAllow === 1 || permFGListAllow === 1 || permTCDListAllow === 1 || permFMSListAllow === 1 || permURListAllow === 1
+             || permRPCListAllow === 1 || permMTTListAllow === 1 || permRACListAllow === 1 || permBCCListAllow === 1|| permBCDListAllow === 1)">
+             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                {{"menu.setup" | translate}}
+             </a>
+             <ul class="dropdown-menu">
+                <ng-container *ngIf="permBCListAllow === 1">
+                   <li>
+                      <a class="dropdown-item" routerLink="/billing-class-listing" (click)="collapseMobileMenu()">{{"labels.billingclasslisting"|
+                         translate}}</a>
+                   </li>
+                </ng-container>
+                <ng-container *ngIf="permBTListAllow === 1">
+                   <li>
+                      <a class="dropdown-item" routerLink="/billing-type-listing" (click)="collapseMobileMenu()">{{"labels.billingtypelisting"|
+                         translate}}</a>
+                   </li>
+                </ng-container>
+                <ng-container *ngIf="permBCDListAllow === 1">
+                   <li>
+                      <a class="dropdown-item" routerLink="/branch-code-listing" (click)="collapseMobileMenu()">{{"labels.branchcodelisting"|
+                         translate}}</a>
+                   </li>
+                </ng-container>
+                <ng-container *ngIf="permBCCListAllow === 1">
+                   <li>
+                      <a class="dropdown-item"
+                         routerLink="/branch-code-counter-listing" (click)="collapseMobileMenu()">{{"labels.branchcodecountermapping"|
+                         translate}}</a>
+                   </li>
+                </ng-container>
+                <ng-container *ngIf="permFGListAllow === 1">
+                   <li>
+                      <a class="dropdown-item" routerLink="/fee-group-listing" (click)="collapseMobileMenu()">{{"labels.feegrouplisting" |
+                         translate}}</a>
+                   </li>
+                </ng-container>
+                <!-- <ng-container *ngIf="permFPAListAllow === 1">
+                   <li>
+                      <a class="dropdown-item" routerLink="/fpa-scheduler" (click)="collapseMobileMenu()">{{"labels.fpascheduler" |
+                         translate}}</a>
+                   </li>
+                </ng-container> -->
+                <ng-container *ngIf="permFMSListAllow === 1">
+                   <li>
+                      <a class="dropdown-item" routerLink="/fms-listing" (click)="collapseMobileMenu()">{{"labels.fmscodelisting" |
+                         translate}}</a>
+                   </li>
+                </ng-container>
+                <ng-container *ngIf="permFMSAccountCodeListAllow === 1">
+                   <li>
+                      <a class="dropdown-item" routerLink="/fms-account-code" (click)="collapseMobileMenu()">{{"labels.fmsaccountcode" |
+                         translate}}</a>
+                   </li>
+                </ng-container>
+                <ng-container *ngIf="permMFTListAllow === 1">
+                   <li>
+                      <a class="dropdown-item" routerLink="/master-fee-table" (click)="collapseMobileMenu()">{{"labels.masterfeetable" |
+                         translate}}</a>
+                   </li>
+                </ng-container>
+                <ng-container *ngIf="permMTLListAllow === 1">
+                   <li>
+                      <a class="dropdown-item" routerLink="/master-task-list" (click)="collapseMobileMenu()">{{"labels.mastertasklist" |
+                         translate}}</a>
+                   </li>
+                </ng-container>
+                <ng-container *ngIf="permMTTListAllow === 1">
+                   <li>
+                      <a class="dropdown-item"
+                         routerLink="/master-transaction-table" (click)="collapseMobileMenu()">{{"labels.mastertransactiontable"|
+                         translate}}</a>
+                   </li>
+                </ng-container>
+                <ng-container *ngIf="permRACListAllow === 1">
+                   <li>
+                      <a class="dropdown-item"
+                         routerLink="/refund-account-code-listing" (click)="collapseMobileMenu()">{{"labels.refundaccountcode"|
+                         translate}}</a>
+                   </li>
+                </ng-container>
+                <ng-container *ngIf="permRPCListAllow === 1">
+                   <li>
+                      <a class="dropdown-item"
+                         routerLink="/role-and-permissions-configurations-details" (click)="collapseMobileMenu()">{{"labels.roleandpermissionsconfigurations"
+                         | translate}}</a>
+                   </li>
+                </ng-container>
+                <ng-container *ngIf="permURListAllow === 1">
+                   <li>
+                      <a class="dropdown-item" routerLink="/userrole" (click)="collapseMobileMenu()">{{"labels.useranduserroles" | translate}}</a>
+                   </li>
+                </ng-container>
+                <ng-container *ngIf="permTCDListAllow === 1">
+                   <li>
+                      <a class="dropdown-item" routerLink="/tax-code-listing" (click)="collapseMobileMenu()">{{"tax code" | translate}}</a>
+                   </li>
+                </ng-container>
+             </ul>
+          </li>
+
+          <!-- Username/Logout -->
+          <li class="nav-item dropdown" *ngIf="name$ | async as name">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ name | uppercase }}</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" routerLink="/logout" (click)="collapseMobileMenu()">{{ 'menu.backtossm4u' | translate }}</a></li>
+            </ul>
+          </li>
+
+          <!-- Login -->
+          <li class="nav-item" *ngIf="!(name$ | async) || (name$ | async) === '' || (name$ | async) === 'Unknown User'">
+            <a class="nav-link" (click)="Login()">{{ "menu.login" | translate }}</a>
+          </li>
+
+          <!-- Language Selector -->
+          <li class="nav-item dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+              {{ selectedLanguage | uppercase }}
+            </button>
+            <ul class="dropdown-menu">
+              <li *ngFor="let lang of languages">
+                <button class="dropdown-item" (click)="useLanguage(lang)">{{ lang | uppercase }}</button>
+              </li>
+            </ul>
+          </li>
+
+        </ul>
+      </div>
+
+    </div>
+  </nav>
+
+</div>
+
+<!-- Header2 -->
+<div id="header2">
+  <div class="container-fluid clearfix noindex zeroPaddingRL">
+    <nav class="navbar marginRL">
+      <h3><b>{{ 'menu.backoffice' | translate }}</b></h3>
+      <span><b>{{ counterTitle }}{{ formattedDatetime }}</b></span>
+    </nav>
+  </div>
+</div>
+
+<!-- Mega Menu Panel - Positioned directly below header2 with no gap -->
+<div *ngIf="isMenuOpen" class="mega-menu-panel" (click)="$event.stopPropagation()">
+  <div class="container-fluid">
+    <div *ngFor="let row of menuRows" class="row mb-3">
+      <div *ngFor="let group of row" class="col-md-3">
+        <h6>{{ group.title | translate }}</h6>
+        <ng-container *ngFor="let item of group.items">
+          <a *ngIf="item.show()" 
+             class="dropdown-item" 
+             [routerLink]="item.link"
+             (click)="closeMegaMenu()">
+            {{ item.label | translate }}
+          </a>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

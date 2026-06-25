@@ -1,0 +1,131 @@
+@import 'src/app/app.component.scss';
+ 
+/* Green color for enabled button */
+.btn-enable {
+    background-color: green;
+    color: white;
+  }
+ 
+ 
+// Define base styles for body and html
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+ 
+  // Create a container using Flexbox to arrange the sections
+  .container {
+    display: flex;
+    height: 100%;
+  }
+ 
+  // One-third section takes up 33.33% width
+  .one-third {
+    width: 33.33%;
+    background-color: white;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+ 
+  // Two-thirds section takes up 66.66% width
+  .two-thirds {
+    width: 66.66%;
+    background-color: rgb(235, 232, 232);
+    padding: 10px;
+    box-sizing: border-box;
+  }
+ 
+  .form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+   
+    label {
+      width: 30%; // Adjust the width of the label
+      margin-right: 10px;
+      text-align: left;
+      font-weight: bold; // Makes the label text bold
+    }
+ 
+    input {
+      width: 70%; // Adjust the width of the input field
+      padding: 8px;
+      box-sizing: border-box;
+    }
+  }
+ 
+  // button {
+  //   margin-top: 20px;
+  // }
+ 
+ 
+  .breadcrumbOTC {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0 0;
+    margin-bottom: 30px;
+    // margin-left: 3%;
+    display: flex;
+    // align-items: center;
+  }
+ 
+  .breadcrumbOTC li {
+    display: inline;
+  }
+ 
+  .breadcrumbOTC a {
+    color: rgb(2, 117, 216);
+    text-decoration: none;
+    font-size: 18px;
+  }
+ 
+  .breadcrumbOTC a:hover {
+    text-decoration: underline;
+  }
+ 
+  .breadcrumbOTC-separator {
+    font-size: inherit; /* Inherit the font size from the breadcrumb label */
+  }
+
+  .btnView {
+    background-color: #2185D0;
+    color: white;
+    min-width: 90px;
+  }
+
+  td {
+    text-align: center; /* Horizontal centering */
+    vertical-align: middle; /* Vertical centering */
+}
+
+.breadcrumb {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.btnSpace {
+  width: 95%;
+  margin-top: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px; /* Add space between buttons */
+}
+
+.MATable{
+  td {
+    word-wrap: break-word;
+    word-break: break-all;
+    }
+}
+
+.button-group {
+  margin-top: 50px;
+  display: flex;
+  justify-content: space-between; /* Pushes buttons to opposite sides */
+  align-items: center; /* Aligns items vertically */
+  width: 100%; /* Ensures it spans full width */
+}
+
+

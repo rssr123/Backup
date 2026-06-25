@@ -1,0 +1,72 @@
+UPDATE rms_param SET role_name = 'SME' WHERE param_cd = 'PSME' AND param_grp_nm = 'RTT-Status';
+
+
+GO;
+
+CREATE OR REPLACE PROCEDURE sp_insfmscrmemo_f(i_crmemo_hid INT8, i_fms_ref_no nvarchar(50), i_doc_type nvarchar(20))
+RETURNING INT AS result;
+
+    define i_running_time datetime year to fraction(3);
+
+    on exception
+        rollback work;
+        return -2;
+    end exception;
+     
+    begin work;
+    set lock mode to wait 30;
+
+    let i_running_time = current;
+   
+    INSERT INTO rms_fms_crmemo_f (crmemo_hid, fms_ref_no, doc_ty, 
+                dt_created, dt_modified, created_by, modified_by, status
+    ) select limit 1 i_crmemo_hid, i_fms_ref_no, i_doc_type, 
+                i_running_time, i_running_time, 'system', 'system', 'A'
+        from systables
+    where not exists(select 1 from rms_fms_crmemo_f 
+        WHERE crmemo_hid = i_crmemo_hid AND fms_ref_no = i_fms_ref_no
+    );
+   
+    IF SQLCODE < 0 THEN
+        ROLLBACK WORK;
+        RETURN -1;
+    END IF;
+   
+    COMMIT WORK;
+    RETURN (SELECT COUNT(1) FROM rms_fms_crmemo_f WHERE crmemo_hid = i_crmemo_hid AND fms_ref_no = i_fms_ref_no);
+END PROCEDURE;
+
+GO;
+
+create or replace procedure sp_insfmsdrmemo_f(i_drmemo_hid INT8,i_fms_ref_no nvarchar(50), i_doc_type nvarchar(20))
+returning int as result;
+
+    define i_running_time datetime year to fraction(5);
+         
+    on exception
+        rollback work;
+        return -2;
+    end exception;
+     
+    begin work;
+    set lock mode to wait 30;
+    
+    let i_running_time = current;
+    
+    INSERT INTO rms_fms_drmemo_f (drmemo_hid, fms_ref_no, doc_ty, 
+                dt_created, dt_modified, created_by, modified_by, status
+    ) select limit 1 i_drmemo_hid, i_fms_ref_no, i_doc_type, 
+                i_running_time, i_running_time, 'system', 'system', 'A'
+        from systables
+    where not exists(select 1 from rms_fms_drmemo_f 
+        WHERE drmemo_hid = i_drmemo_hid AND fms_ref_no = i_fms_ref_no
+    );
+
+    IF SQLCODE < 0 THEN
+        ROLLBACK WORK;
+        RETURN -1;
+    END IF;
+   
+    COMMIT WORK;
+    RETURN (SELECT COUNT(1) FROM rms_fms_drmemo_f WHERE drmemo_hid = i_drmemo_hid AND fms_ref_no = i_fms_ref_no);
+end procedure;

@@ -1,0 +1,108 @@
+<div class="first-parent SingleContainer">
+    <!-- mainContainer start-->
+    <div class="leftPadding">
+        <h2>{{"PG Settlement File Related Transactions" | translate}}</h2>
+    </div>
+    <!-- Loading spinner overlay -->
+    <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+        <div class="spinner-border" role="status">
+            <span class="sr-only"></span>
+        </div>
+    </div>
+
+    <div>
+        <table>
+            <tr class="form-group">
+                <td><label>{{"Transaction Description" | translate}}</label></td>
+                <td>
+                    <input type="text" class="form-control" id="txnType" [(ngModel)]="txnref" />
+                </td>
+                <!-- <td></td>
+                <td><label>{{"Transaction Amount" | translate}}</label></td>
+                <td>
+                    <input type="text" class="form-control" id="txnType" [(ngModel)]="credit" />
+                </td> -->
+                <td></td> <!-- Empty cell-->
+                <td><label>{{"Posting Date" | translate}}</label></td>
+                <td>
+                    <input type="text" placeholder="{{ 'datepicker' | translate }}" class="form-control"
+                        [bsConfig]="{  dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,containerClass:'theme-default',adaptivePosition: true}"
+                        bsDatepicker [(ngModel)]="dtposting" name="date" readonly onkeydown="return false">
+                </td>
+                <td></td><!--Empty cell-->
+                <td><label>{{"Processing Time" | translate}}</label></td>
+                <td>
+                    <input type="text" class="form-control" id="txnType" [(ngModel)]="dtposting" />
+                </td>
+            </tr>
+        </table>
+        <div class="button-group" style="display: flex;justify-content: end; margin-top:8px">
+            <button class="btn btnApply" (click)="apply()">{{"Search" | translate}}</button>
+            <button class="btn btnReset" (click)="reset()">{{"Reset" | translate}}</button>
+        </div>
+        <br>
+    </div>
+
+    <table class="MATable" *ngIf="isEmptyResult">
+        <thead>
+            <tr class="MATableHeader">
+                <th>{{"Transaction Description" | translate}}</th>
+                <th>{{"Transaction Amount" | translate}}</th>
+                <th>{{"Posting Date" | translate}}</th>
+                <th>{{"Processing Time" | translate}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="9" style="text-align: center;">{{"norecordsfound" | translate}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table class="MATable" *ngIf="!isEmptyResult" [ngClass]="{ TableDimmed: isLoading }">
+        <thead>
+            <tr class="MATableHeader">
+                <th>{{"Transaction Description" | translate}}</th>
+                <th>{{"Transaction Amount" | translate}}</th>
+                <th>{{"Posting Date" | translate}}</th>
+                <th>{{"Processing Time" | translate}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of model">
+                <td>{{ item.bank_txn_ref}}</td>
+                <td>{{ item.bank_credit || 0 | number:'.2-2'}}</td>
+
+                <td>{{ item.bank_dt_posting | date : "dd MMM yyyy"}}</td>
+                <td>{{ item.bank_tm_posting | date : "HH:mm:ss"}}</td>
+
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="MAPagination" *ngIf="isDisplay">
+        <div class="fgSpacing">
+            <div>
+                {{
+                page * itemsPerPage < totalRecords ? "Showing " + page * itemsPerPage + " from " + totalRecords
+                    + " results" : "Showing " + totalRecords + " from " + totalRecords + " results" }} </div>
+            </div>
+            <div class="pagination-row">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle PaginControl" type="button" id="dropdownMenuButton"
+                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ selectedValue }}
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton">
+                        <button class="dropdown-item" *ngFor="let singleItem of dropdownOptions"
+                            (click)="LoadData(singleItem)">
+                            {{ singleItem }}
+                        </button>
+                    </div>
+                </div>
+                <ngb-pagination [(page)]="page" [pageSize]="itemsPerPage" [collectionSize]="totalRecords"
+                    (pageChange)="loadData()"></ngb-pagination>
+            </div>
+        </div>
+
+    </div>

@@ -1,0 +1,20 @@
+Steps to Set Up:
+===================
+
+1. Unzip the file
+	a. Locate the hcl.zip file and extract its contents.
+
+2. Replace the folder
+
+	Go to:
+	a. C:\Users\{laptop_account_username}\.m2\repository\com
+	
+	b. Copy the new hcl folder from the unzipped contents and paste it into the com folder.
+
+3. Run Maven commands in VS (Visual Studio Code or IntelliJ)
+
+	a. Open your project in Visual Studio Code (or your preferred IDE).
+
+	b. In the terminal, run:
+		i.  mvn clean
+		ii. mvn install

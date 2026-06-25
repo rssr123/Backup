@@ -1,0 +1,114 @@
+<ng-container *ngIf="true" >
+    <body class="BodyCointaner" *ngIf="permViewAllow === 1">
+        <div class="PAContainer73">
+            <div class="left-section73">
+    
+                <h2>{{"labels.billingreport" | translate}}</h2>
+
+                    <table>
+                        <!--<div class="displayColumn" style="height: 30px; margin-left: 20px;margin-top: 20px;">
+                            <label>{{"labels.reportpre-filters" | translate}}</label>
+                          </div>-->
+                        <tr>
+                            <td>
+                                <div class="displayColumn form-group" id="daterange-container">
+                                    <label for="daterange">{{"labels.daterange" | translate}} <span class='RedAsterisk'>*</span></label>
+                                    <input type="text" id="daterange" placeholder="" class="form-control"
+                                      [bsConfig]="{ rangeInputFormat : 'DD MMM YYYY', dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,rangeSeparator:' to ',containerClass:'theme-default',adaptivePosition: true, maxDateRange: 365}"
+                                      bsDaterangepicker [(ngModel)]="billingDateRange" name="daterange" readonly>
+                                    <div *ngIf="dateCheck()" class="error-text">
+                                        {{"labels.invaliddaterange12months" | translate}}
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="displayColumn">
+                                    <label>{{"labels.billingcategory" | translate}}</label>
+                                    <ng-select class="form-control" dropdownPosition="bottom" [(ngModel)]="billingCategory" name="refundStatus">
+                                        <ng-option *ngFor="let status of billingCategories" [value]="status.value">{{status.label}}</ng-option>
+                                    </ng-select>
+                                </div>
+                            </td>
+                            <!-- <td>
+                                <div class="displayColumn">
+                                    <label>{{"labels.emailstatus" | translate}}</label>
+                                    <ng-select class="form-control" dropdownPosition="bottom" [(ngModel)]="emailStatus" name="refundType">
+                                        <ng-option *ngFor="let type of emailStatuses" [value]="type">{{type}}</ng-option>
+                                    </ng-select>
+                                </div>
+                            </td> -->
+                            <!-- <td>
+                                <div class="displayColumn">
+                                    <label>{{"labels.paymentstatus" | translate}}</label>
+                                    <ng-select
+                                        class="form-control"
+                                        dropdownPosition="bottom"
+                                        [(ngModel)]="paymentStatus"
+                                        name="paymentStatus">
+                                        <ng-option *ngFor="let type of paymentStatuses" [value]="type.param_cd">{{type.nm_en}}</ng-option>
+                                    </ng-select>
+                                </div>
+                            </td> -->
+                            <td>
+                                <div class="displayColumn">
+                                    <label>{{"labels.billingstatus" | translate}}</label>
+                                    <ng-select
+                                        class="form-control"
+                                        dropdownPosition="bottom"
+                                        [(ngModel)]="billingStatus"
+                                        name="billingStatus">
+                                        <ng-option *ngFor="let status of billingStatuses" [value]="status.param_cd">{{status.nm_en}}</ng-option>
+                                    </ng-select>
+                                </div>
+                        </tr>
+                        <tr>
+
+                            <td>
+                                <div class="displayColumn">
+                                    <label>{{"labels.billingno" | translate}}</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        [(ngModel)]="billingNo"
+                                        name="billingNo"
+                                        maxlength="25">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="displayColumn">
+                                    <label>{{"labels.entitycustomerid" | translate}}</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        [(ngModel)]="entityCustomerID"
+                                        name="entityCustomerID"
+                                        maxlength="25">
+                                </div>
+                            </td>
+                        </tr>                        
+                        <tr>
+                            <td></td>
+                            <td colspan="2">
+                                <div class="displayRow">
+                                    <label>{{"labels.downloadreportas:" | translate}}</label>
+                                    <ng-select class="form-control" [(ngModel)]="selectedFileType" name="selectedFileType"
+                                        dropdownPosition="bottom" #selectedFileTypeRef="ngModel" required [clearable]=false>
+                                        <ng-option *ngFor="let item of fileType"
+                                            [value]="item.value">{{item.label}}</ng-option>
+                                    </ng-select>
+                                    <div *ngIf="selectedFileTypeRef.errors && selectedFileTypeRef.errors['required'] && selectedFileTypeRef.touched"
+                                        class="error-text">
+                                        {{"File type is required" | translate}}
+                                    </div>
+                                    <button class="btn btnReset" type="button" (click)="resetWithDefaults()">{{"buttons.reset" | translate}}</button>
+                                    <button id= "submit" class="btn btnAdd" (click)="downloadReport()" [disabled]="dlbuttonPerms()">{{"buttons.generate" | translate}}</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
+            </div>
+        </div>
+    </body>
+    </ng-container>
+    

@@ -1,0 +1,292 @@
+<body class="BodyCointaner">
+    <div class="PAContainer73">
+        <div class="left-section73">
+
+            <div class="order-info">
+                <h2>{{"labels.nonbillingdetails" | translate}}</h2>
+                <div class="order-details">
+                    <div class="left-section">
+                        <h2 class="bold">{{"labels.STATUS" | translate}}:</h2>
+                    </div>
+                    <h2 class="bold" [ngStyle]="{
+                                                    'color': modelData?.bil_status === 'Unpaid' ? '#ffc107' : modelData?.bil_status === 'Paid' ? '#21ba45' : 'black'
+                                                }">
+                        {{
+                        modelData?.bil_status === 'Unpaid'
+                        ? ('labels.UNPAIDCAPS' | translate)
+                        : modelData?.bil_status === 'Paid'
+                        ? ('labels.PAID' | translate)
+                        : modelData?.bil_status
+                        }}
+
+                    </h2>
+                </div>
+            </div>
+
+            <table>
+                <tr>
+
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.customername" | translate}}</label>
+                            <input class="form-control" type="text" [(ngModel)]="modelData.cust_nm" disabled />
+                            <!-- <label class="form-control">{{ modelData?.coll_slip_no || 'N/A' }}</label> -->
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.customeremail" | translate}}</label>
+                            <input class="form-control" type="text" [(ngModel)]="modelData.cust_email" disabled />
+                            <!-- <label class="form-control">{{ modelData?.orn_no || 'N/A' }}</label> -->
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.customerphoneno" | translate}}</label>
+                            <input class="form-control" type="text" [(ngModel)]="modelData.cust_phone" disabled />
+                            <!-- <label class="form-control">{{ modelData?.cust_nm || 'N/A' }}</label> -->
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.addressline1" | translate}}</label>
+                            <input class="form-control" type="text" [(ngModel)]="modelData.cust_addr_1" disabled />
+                            <!-- <label class="form-control">{{ modelData?.cust_phone || 'N/A' }}</label> -->
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.addressline2" | translate}}</label>
+                            <input class="form-control" type="text" [(ngModel)]="modelData.cust_addr_2" disabled />
+                            <!-- <label class="form-control">{{ modelData?.cust_email || 'N/A' }}</label> -->
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.addressline3" | translate}}</label>
+                            <input class="form-control" type="text" [value]="modelData.cust_addr_3 ? modelData.cust_addr_3 : '-'" disabled />
+                            <!-- <label class="form-control">{{ modelData?.cust_addr1 || 'N/A' }}</label> -->
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.postcode" | translate}}</label>
+                            <input class="form-control" type="text" [(ngModel)]="modelData.cust_postcode" disabled />
+                            <!-- <label class="form-control">{{ modelData?.cust_addr2 || 'N/A' }}</label> -->
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.city" | translate}}</label>
+                            <input class="form-control" type="text" [(ngModel)]="modelData.cust_city" disabled />
+                            <!-- <label class="form-control">{{ modelData?.cust_addr3 || 'N/A' }}</label> -->
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.state" | translate}}</label>
+                            <input class="form-control" type="text" [(ngModel)]="modelData.cust_state" disabled />
+                            <!-- <label class="form-control">{{ modelData?.cust_postcode || 'N/A' }}</label> -->
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.entityname" | translate}}</label>
+                            <input class="form-control" type="text" [(ngModel)]="modelData.ent_nm" disabled />
+                            <!-- <label class="form-control">{{ modelData?.cust_city || 'N/A' }}</label> -->
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.entitytype" | translate}}</label>
+                            <input class="form-control" type="text" [(ngModel)]="modelData.ent_ty" disabled />
+                            <!-- <label class="form-control">{{ modelData?.cust_state || 'N/A' }}</label> -->
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.entitynumber" | translate}}</label>
+                            <input class="form-control" type="text" [(ngModel)]="modelData.ent_no" disabled />
+                            <!-- <label class="form-control">{{ modelData?.cust_postcode || 'N/A' }}</label> -->
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.customerid" | translate}}</label>
+                            <input class="form-control" type="text" [(ngModel)]="modelData.cust_id" disabled />
+                            <!-- <label class="form-control">{{ modelData?.ss_cd || 'N/A' }}</label> -->
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.nonbillingno" | translate}}</label>
+                            <input class="form-control" type="text" [(ngModel)]="modelData.non_bil_no" disabled />
+                            <!-- <label class="form-control">{{ modelData?.cust_state || 'N/A' }}</label> -->
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.nonbillingdescription" | translate}}</label>
+                            <input class="form-control" type="text" [(ngModel)]="modelData.non_bil_desc" disabled />
+                            <!-- <label class="form-control">{{ modelData?.cust_city || 'N/A' }}</label> -->
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.requestorname" | translate}}</label>
+                            <input class="form-control" type="text" [(ngModel)]="modelData.req_name" disabled />
+                            <!-- <label class="form-control">{{ modelData?.cust_state || 'N/A' }}</label> -->
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.requestoremail" | translate}}</label>
+                            <input class="form-control" type="text" [(ngModel)]="modelData.req_email" disabled />
+                            <!-- <label class="form-control">{{ modelData?.cust_postcode || 'N/A' }}</label> -->
+                        </div>
+                    </td>
+
+                        <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.chequeid" | translate}}</label>
+                            <input class="form-control" type="text" [(ngModel)]="modelData.che_id" disabled />
+                            <!-- <label class="form-control">{{ modelData?.cust_postcode || 'N/A' }}</label> -->
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.chequeno" | translate}}</label>
+                            <input class="form-control" type="text" [(ngModel)]="modelData.che_no" disabled />
+                            <!-- <label class="form-control">{{ modelData?.cust_postcode || 'N/A' }}</label> -->
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div>
+        <h2 style="margin-left: 3%;">{{"labels.listofnonbillingitem" | translate}}</h2>
+    </div>
+    <div class="MALoadingContainer">
+        <!-- <div class="TableLoading-overlay d-flex align-items-center justify-content-center">
+             <div class="spinner-border" role="status">
+                <span class="sr-only"></span>
+            </div>
+        </div> -->
+        <!-- <div id="loading-overlay"  class="loading-overlay">
+            <div class="white-box">
+                <div class="spinner-container">
+                    <div class="loader"></div>
+                    <img src="assets/logo/logo-ssm.png" alt="Loading..." />
+                    <h2>{{"labels.adjustingbilling" | translate}}</h2>
+                </div>
+            </div>
+        </div> -->
+
+        <div class="tableWrapper">
+            <table class="MATable" *ngIf="!isLoading">
+                <thead>
+                    <tr class="MATableHeader">
+                        <th class="thWidth">No.</th>
+                        <th>{{"labels.nonbillingitem" | translate}}</th>
+                        <th>{{"labels.unitpricerm" | translate}}</th>
+                        <th class="thFileName">{{"labels.quantity" | translate}}</th>
+                        <th class="thAction">{{"labels.tax%" | translate}}</th>
+                        <th class="thAction">{{"labels.taxrm" | translate}}</th>
+                        <th>{{"labels.totalrm" | translate}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of paymentItems; let i = index">
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ item.fee_detail_nm_e }}</td>
+                        <td>{{ item.unit_fee| number: '1.2-2' }}</td>
+                        <td>{{ item.qty }}</td>
+                        <td>{{ item.tax_pct | number: '1.2-2'}}</td>
+                        <td>{{ item.tax_amt | number: '1.2-2' }}</td>
+                        <td>{{ item.item_total_amt | number: '1.2-2' }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="6" style="text-align: right; font-weight: bold; border-top: 2px solid black; border-bottom: 2px solid black;">{{"labels.TOTAL" | translate}}</td>
+                        <td style="font-weight: bold; border-top: 2px solid black; border-bottom: 2px solid black;">RM {{ totalGrossAmount | number: '1.2-2' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    
+    <div>
+        <h2 style="margin-left: 3%;">{{"labels.listofdocument" | translate}}</h2>
+    </div>
+    <div class="tableWrapper">
+        <table class="MATable">
+            <thead>
+                <tr class="MATableHeader">
+                    <th class="thWidth">No.</th>
+                    <th>{{"labels.supportingdocument" | translate}}</th>
+                    <th>{{"labels.filecategory" | translate}}</th>
+                    <th>{{"labels.uploadedby" | translate}}</th>
+                    <th>{{"labels.uploadedon" | translate}}</th>
+                    <th>{{"labels.filesize" | translate}}</th>
+                    <!-- <th>{{"labels.remarks" | translate}}</th> -->
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of supportingDocs; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td> <a href="javascript:void(0)"(click)="downloadFile(item.non_bil_doc_id, item.file_nm)"> {{ item.file_nm }}</a></td>
+                    <td>{{ item.file_category }}</td>
+                    <td>{{ item.created_by}}</td>
+                    <td>{{ item.dt_created | date: 'dd MMM yyyy HH:MM:ss'}}</td>
+                    <td>{{ item.file_size| number: '1.2-2'}} KB</td>
+                    <!-- <td>{{ item.remarks}}</td> -->
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        <h2 style="margin-left: 3%;">{{"labels.historicaltable" | translate}}</h2>
+    </div>
+    <div class="tableWrapper">
+        <table class="MATable">
+            <thead>
+                <tr class="MATableHeader">
+                    <th class="thWidth">No.</th>
+                    <th>{{"labels.action" | translate}}</th>
+                    <th>{{"labels.billingstatus" | translate}}</th>
+                    <th>{{"labels.actiontimestamp" | translate}}</th>
+                    <th>{{"labels.performedby" | translate}}</th>
+                    <!-- <th>{{"labels.assignedto" | translate}}</th> -->
+                    <th>{{"labels.remarks" | translate}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of billHist; let i = index">
+                    <td>{{ billHist.length - i }}</td>
+                    <td>{{ item.bil_action }}</td>
+                    <td>{{ item.bil_status }}</td>
+                    <td>{{ item.dt_created | date: 'dd MMM yyyy HH:MM:ss'}}</td>
+                    <td>{{ item.performed_by ? item.performed_by : 'N/A' }}</td>
+                    <td>{{ item.remark ? item.remark : 'N/A' }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="MarginSeparator"></div>
+</body>

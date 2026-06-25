@@ -1,0 +1,180 @@
+<ng-container *ngIf="permListAllow === 1">
+<body class="BodyCointaner">
+
+	<!-- Mobile Search Section (visible only on mobile) -->
+	<div class="mobile-search-section">
+		<div class="mobile-search-header d-flex justify-content-between align-items-center">
+			<h5 class="mb-0">{{ "labels.dailyCollectionListing" | translate }}</h5>
+			<button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#mobileSearchPanel">
+				<i class="bi bi-search"></i>
+			</button>
+		</div>
+		
+		<div class="collapse" id="mobileSearchPanel">
+			<div class="mobile-search-body">
+				<form class="form-group" #formRefMobile="ngForm" (ngSubmit)="handleFormSubmit(formRefMobile)">
+					<!-- Collection Date Range -->
+					<div class="form-group">
+						<label>{{"labels.collectiondaterange" | translate}} <span class='RedAsterisk'>*</span></label>
+						<input type="text" [placeholder]="'labels.daterangepicker'| translate" class="form-control"
+							[bsConfig]="{ rangeInputFormat : 'DD MMM YYYY', dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,
+							rangeSeparator:' to ',containerClass:'theme-default',adaptivePosition: true, maxDateRange: 5}"
+							bsDaterangepicker [(ngModel)]="pymtSubmitDt" name="pymtSubmitDtMobile" 
+							(ngModelChange)="validatePymtSubmitDt()" readonly #pymtSubmitDtRefMobile="ngModel" required onkeydown="return false">
+					</div>
+
+					<!-- Order Reference No -->
+					<div class="form-group">
+						<label>{{"labels.orderreferenceno." | translate}}</label>
+						<input type="text" class="form-control" [(ngModel)]="ornNo" name="ornNoMobile" maxlength="20">
+					</div>
+
+					<!-- Payment Transaction ID -->
+					<div class="form-group">
+						<label>{{"labels.paymenttransactionid" | translate}}</label>
+						<input type="text" class="form-control" [(ngModel)]="pgTransID" name="pgTransIDMobile" maxlength="30">
+					</div>
+
+					<!-- Receipt No -->
+					<div class="form-group">
+						<label>{{"labels.receiptno." | translate}}</label>
+						<input type="text" class="form-control" [(ngModel)]="receiptNo" name="receiptNoMobile" maxlength="20">
+					</div>
+
+					<!-- PG Settlement Statement No -->
+					<div class="form-group">
+						<label class="tableLabel">{{"labels.pgsettlementstatementno." | translate}}</label>
+						<input type="text" class="form-control" [(ngModel)]="statementNo" name="statementNoMobile" maxlength="25">
+					</div>
+
+					<!-- Download Report As -->
+					<div class="form-group">
+						<label>{{"labels.downloadreportas:" | translate}}</label>
+						<ng-select class="form-control" [(ngModel)]="selectedFileType" name="selectedFileTypeMobile"
+							dropdownPosition="bottom" #selectedFileTypeRefMobile="ngModel" required [clearable]="false">
+							<ng-option *ngFor="let item of fileType" [value]="item.value">{{item.label}}</ng-option>
+						</ng-select>
+					</div>
+
+					<!-- Buttons -->
+					<div class="button-group-mobile">
+						<button class="btn btnReset w-100 mb-2" type="button" (click)="resetWithDefaults()">{{"buttons.reset" | translate}}</button>
+						<button class="btn btnAdd w-100" type="submit" [disabled]="!formRefMobile.valid" data-bs-toggle="collapse"
+							data-bs-target="#mobileSearchPanel">{{"buttons.download" | translate}}</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<div class="PAContainer73">
+		<div class="left-section73">
+
+			<!-- <div class="LeftSectionPosition"> {{"labels.Home / Report / Daily Collection Listing" | translate}} </div> -->
+			<h2>{{"labels.dailyCollectionListing" | translate}}</h2>
+			<form class="allFormClass" class="form-group" #formRef="ngForm" (ngSubmit)="handleFormSubmit(formRef)">
+				<table>
+					<tr>
+						<td>
+							<div class="displayColumn">
+								<label>{{"labels.collectiondaterange" | translate}} <span class='RedAsterisk'>*</span></label>
+								<input type="text" [placeholder]="'labels.daterangepicker'| translate" class="form-control"
+									[bsConfig]="{ rangeInputFormat : 'DD MMM YYYY', dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,
+									rangeSeparator:' to ',containerClass:'theme-default',adaptivePosition: true, maxDateRange: 5}"
+									bsDaterangepicker [(ngModel)]="pymtSubmitDt" name="pymtSubmitDt" 
+									(ngModelChange)="validatePymtSubmitDt()"
+									(keydown)="onKeyDown($event)"
+									readonly
+									#pymtSubmitDtRef="ngModel" required onkeydown="return false">
+								<div *ngIf="pymtSubmitDtRef.errors && pymtSubmitDtRef.errors['required'] && pymtSubmitDtRef.touched"
+									class="error-text">
+									{{"labels.collectiondaterangeisrequired" | translate}}
+								</div>
+								<!-- <div *ngIf="isPaymentSubmmitedDateInvalid()" class="error-text">
+									{{ "Collection Date Range cannot exceed 2 days" | translate }}
+								</div> -->
+							</div>
+						</td>
+						<td>
+							<div class="displayColumn">
+								<label>{{"labels.orderreferenceno." | translate}}</label>
+								<input type="text" class="form-control" [(ngModel)]="ornNo" name="ornNo" maxlength="20">
+							</div>
+						</td>
+						<td>
+							<div class="displayColumn">
+								<label>{{"labels.paymenttransactionid" | translate}}</label>
+								<input type="text" class="form-control" [(ngModel)]="pgTransID" name="pgTransID" maxlength="30">
+							</div>
+						</td>
+						<!-- <td>
+							<div class="displayColumn">
+								<label>{{"labels.rmspaymentid" | translate}}</label>
+								<input type="text" class="form-control" [(ngModel)]="pgPaymentID" name="pgPaymentID" maxlength="20">
+							</div>
+						</td> -->
+					</tr>
+					<tr>
+						<!-- <td>
+							<div class="displayColumn">
+								<label>{{"labels.pgtransactionid" | translate}}</label>
+								<input type="text" class="form-control" [(ngModel)]="pgTransID" name="pgTransID" maxlength="30">
+							</div>
+						</td> -->
+						<!-- <td>
+							<div class="displayColumn">
+								<label>{{"labels.pgtransactionstatus" | translate}}</label>
+								<ng-select class="form-control" dropdownPosition="bottom" [(ngModel)]="pgTransStatus"
+									name="pgTransStatus">
+									<ng-option *ngFor="let item of pgTransactionStatus"
+										[value]="item.value">{{item.label}}</ng-option>
+								</ng-select>
+							</div>
+						</td> -->
+						<td>
+							<div class="displayColumn">
+								<label>{{"labels.receiptno." | translate}}</label>
+								<input type="text" class="form-control" [(ngModel)]="receiptNo" name="receiptNo" maxlength="20">
+							</div>
+						</td>
+						<td>
+							<div class="displayColumn">
+								<label class="tableLabel">{{"labels.pgsettlementstatementno." | translate}}</label>
+								<input type="text" class="form-control" [(ngModel)]="statementNo" name="statementNo" maxlength="25">
+							</div>
+						</td>
+					</tr>
+					<!-- <tr>
+						<td>
+							<div class="displayColumn">
+								<label class="tableLabel">{{"labels.pgsettlementstatementno." | translate}}</label>
+								<input type="text" class="form-control" [(ngModel)]="statementNo" name="statementNo" maxlength="25">
+							</div>
+						</td>
+					</tr> -->
+					<tr>
+						<td></td>
+						<td colspan="2">
+							<div class="displayRow">
+								<label>{{"labels.downloadreportas:" | translate}}</label>
+								<ng-select class="form-control" [(ngModel)]="selectedFileType" name="selectedFileType"
+									dropdownPosition="bottom" #selectedFileTypeRef="ngModel" required [clearable]="false">
+									<ng-option *ngFor="let item of fileType"
+										[value]="item.value">{{item.label}}</ng-option>
+								</ng-select>
+								<div *ngIf="selectedFileTypeRef.errors && selectedFileTypeRef.errors['required'] && selectedFileTypeRef.touched"
+									class="error-text">
+									{{"labels.File type is required" | translate}}
+								</div>
+								<button class="btn btnReset" type="button" (click)="resetWithDefaults()">{{"buttons.reset" | translate}}</button>
+								<button class="btn btnAdd" type="submit" [disabled]="!formRef.valid" >{{"buttons.download" | translate}}</button>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</form>
+		</div>
+
+	</div>
+</body>
+</ng-container>

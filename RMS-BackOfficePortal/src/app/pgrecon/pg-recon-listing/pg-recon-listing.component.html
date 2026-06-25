@@ -1,0 +1,402 @@
+<ng-container *ngIf="permListAllow === 1">
+    <body class="BodyCointaner">
+        <!-- mainContainer start-->
+        <div [class.right-section-collapsed]="rightSectionCollapsed" class="PAContainer73">
+            <div class="left-section me-4">
+                <form #formRef="ngForm">
+                <div class="left-side">
+                    <!-- file upload -->
+                    <div class="file-upload mt-4">
+                        <label class="form-label bsfLabel" for="statementFile">{{"labels.Payment Gateway Settlement File" | translate}}: <span style="color: red;">*</span></label>
+                        <div class="file-container" [style.width.px]="fileContainerWidth">
+                            <ng-container *ngIf="selectedFile">
+                                <div class="file-item">{{ selectedFile.name }}</div>
+                            </ng-container>
+                        </div>
+                        
+                    </div>
+                    <!-- <div *ngIf="!selectedFile && formRef.submitted" class="error-text">
+                        {{"labels.fileisrequired" | translate}}
+                    </div> -->
+                        <!-- <div *ngIf="isDisplayFileRequired && inputDetails" class="error-text">
+                            File is required
+                        </div> -->
+                    <div class="button-container">
+                        <div class="fileSize">{{"filelimit"| translate}}: {{ selectedFilesSize / 1000000 | number:'1.2-2'
+                            }}/5MB</div>
+                        <div class="input-container">
+                            <button type="button" class="btn btnCancel" (click)="clearFiles()">{{"buttons.clearfiles" | translate}}</button>
+                            <label for="fileInput" class="btn btnSelectFile" >{{"buttons.Choose File" | translate}}</label>
+                            <input  class = "input-left-side" type="file"  [(ngModel)]="fileInput" id = "fileInput" #fileInputModel (change)="onFileSelected($event)" accept=".xlsx,.xls" required />
+                            
+                    <!-- <input type="file" id="fileInput" name="selectedFiles"  required (change)="onFileSelected($event)" accept=".png,.jpeg,.pdf,.jpg" multiple  (click)="onFileButtonClicked()" > -->
+                        </div>
+                    </div>
+                    
+                    <!-- Settlement date dropdown -->
+                    <div class="form-group-upload mb-4 mt-5">
+                        <label class="dtSettlement" for="settlementDate">
+                            {{"labels.settlementdate" | translate}} <span style="color: red;">*</span>
+                            <!-- <i class="bi bi-info-square-fill info-icon" [ngbTooltip]="tooltipContent"></i> -->
+                            <!-- <ng-template #tooltipContent>
+                                <div style="width: 100%; text-align: left;">
+                                    <strong>{{"Settlement Date(s) Display Condition" | translate}}</strong>
+                                    <br />
+                                    {{"Settlement Date(s) displayed in the dropdown only consists of dates that" |
+                                    translate}}<br>
+                                    {{"have completed Payment Gateway vs. RMS Collection reconciliation." | translate}}
+                                </div>
+                            </ng-template> -->
+                        </label>
+                        <input  type="text"
+                            class="dropdown-upload form-control"
+                            [placeholder]="'datepicker' | translate"
+                            bsDatepicker onkeydown="return false"
+                            #dtSettlementModel="ngModel"
+                            [(ngModel)]="dt_settlement" name="dt_settlement"
+                            [bsConfig]="{ dateInputFormat: 'DD MMM YYYY' }" required>
+                        <!-- <select class="input-left-side dropdown-upload form-control form-select" name="settlementDate"
+                            [(ngModel)]="settlementDate" required>
+                            <option *ngFor="let dt of dt_settle" [value]="dt">
+                                {{ dt }}
+                            </option>
+                        </select> -->
+                        <!-- <div *ngIf="dtSettlementModel.errors&&dtSettlementModel.errors['required'] && dtSettlementModel.touched" class="error-text">
+                            {{"labels.settlementdateisrequired" | translate}}
+                        </div> -->
+                    </div>
+    
+                    <!-- file upload success -->
+                    <!-- <div *ngIf="showUploadAlert">
+                        <div class="alert alert-success PA-alert-box" role="alert">
+                          {{"upload successfully" | translate}}
+                        </div>
+                    </div> -->
+                    <div class="success-message-container mt-5 msgPosition" *ngIf="showUploadAlert">
+                        <div class="success-message-box">
+                            <div>
+                                {{"upload successfully" | translate}}
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!-- file upload error message -->
+                    <div class="error-message-container mt-5 msgPosition" *ngIf="errorMessage">
+                        <div class="error-message-box">
+                            <i class="bi bi-x-circle-fill error-icon"></i>
+                            <div>
+                                <strong>{{"uploaderror" | translate}}</strong>
+                                <div class="error-content">
+                                    <p>{{ errorMessage }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div *ngIf="formatError" class="error-box mt-4">
+                        <i class="bi bi-x-circle-fill error-icon"></i>
+                        <div>
+                           <strong>{{"uploaderror" | translate}}</strong>
+                              <ul>{{"labels.The selected Payment Gateway Settlement File is in an invalid file format or template." | translate}}
+                              </ul>
+                        </div>
+                     </div> 
+        
+                     <div *ngIf="duplicateError" class="error-box">
+                        <i class="bi bi-x-circle-fill error-icon"></i>
+                        <div>
+                           <strong>{{"uploaderror" | translate}}</strong>
+                           <ul>{{"labels.The selected Settlement Date has an Open or Closed task to be completed." | translate}}<br>
+                               {{"labels.Only Settlement Dates with Canceled task status are allowed to have its Payment Gateway Settlement File reuploaded." | translate}}
+                           </ul>
+                        </div>
+                     </div>
+        
+                     <div *ngIf="serverError" class="error-box">
+                        <i class="bi bi-x-circle-fill error-icon"></i>
+                        <div>
+                           <strong>{{"uploaderror" | translate}}</strong>
+                           <ul>
+                              <ul>
+                                 <li>{{"labels.Server Error. Kindly retry later." | translate}}</li>
+                              </ul>
+                           </ul>
+                        </div>
+                     </div>
+        
+                </div>
+                <!-- Buttons -->
+                <div class="button-group btnSpace ">
+                    <button class="btn btnClear" (click)="clear()">{{"buttons.reset" | translate}}</button>
+                    <button class="btn btnUpload" (click)="upload()"  [disabled]="isUploadDisabled || permUploadAllow === 0">{{"buttons.upload" | translate}}</button>
+                </div>
+
+            
+    
+                <div>
+                    <div class="leftSectionBtnSpace"></div>
+                </div>
+
+            </form>
+            </div>
+    
+            <!-- middle section -->
+            <div class="middle-section">
+                <div>
+    
+                    <ul class="breadcrumbOTC">
+                        <li>
+                          <a [routerLink]="'/home'">{{"menu.home" | translate}}</a>
+                          <span class="breadcrumb-separator"> / </span>
+                        </li>
+                        <li>
+                          <a [routerLink]="'/pgrecon-listing'">{{"menu.paymentgatewayfileupload" | translate}}</a>
+                        </li>
+                      </ul>
+                    <div class="error-box" *ngIf="errorBox === true">
+                        <i class="bi bi-x-circle-fill error-icon"></i>
+                        <div>
+                            <strong>{{"unablerecon" | translate}}</strong>
+                            <p>
+                                {{"unablereconmsg1" | translate}}
+                            </p>
+                            <p>
+                                {{"unablereconmsg2" | translate}}
+                            </p>
+                        </div>
+                     </div>
+                    <h2>{{"menu.Payment Gateway Settlement File Record(s)" | translate}}</h2>
+    
+                </div>
+    
+                <div class="MATableContainer TablePosition-relative" *ngIf="isDisplay">
+                    <div class="MALoadingContainer">
+                        <!-- Loading spinner overlay -->
+                        <div *ngIf="isLoading"
+                            class="TableLoading-overlay d-flex align-items-center justify-content-center">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only"></span>
+                            </div>
+                        </div>
+    
+                        <!-- No results found -->
+                        <table class="MATable" *ngIf="isEmptyResult">
+                            <thead>
+                                <tr class="MATableHeader">
+                                    <th>No.</th>
+                                    <th>{{"labels.taskid"| translate}}</th>
+                                    <th>{{"labels.filename"| translate}}</th>
+                                    <th>{{"labels.settlementdate"| translate}}</th>
+                                    <th>{{"labels.dateuploaded"| translate}}</th>
+                                    <th>{{"labels.uploadedby"|translate}}</th>
+                                    <th>{{"labels.merchantid"| translate}}</th>
+                                    <th>{{"labels.taskstatus"| translate}}</th>
+                                    <th>{{"labels.pgsettlementstatus"| translate}}</th>
+                                    <th>{{"labels.action"| translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="10" style="text-align: center;">{{"searchcriteriadoesnotmatch"| translate}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+    
+    
+                        <!-- Your table structure -->
+                        <table class="MATable" *ngIf="!isEmptyResult">
+                            <thead>
+                                <tr class="MATableHeader">
+                                    <th>No.</th>
+                                    <th>{{"labels.taskid"| translate}}</th>
+                                    <th>{{"labels.filename"| translate}}</th>
+                                    <th>{{"labels.settlementdate"| translate}}</th>
+                                    <th>{{"labels.dateuploaded"| translate}}</th>
+                                    <th>{{"labels.uploadedby"|translate}}</th>
+                                    <th>{{"labels.merchantid"| translate}}</th>
+                                    <th>{{"labels.taskstatus"| translate}}</th>
+                                    <th>{{"labels.pgsettlementstatus"| translate}}</th>
+                                    <th>{{"labels.action"| translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of model; let i = index">
+                                    <td>{{ (page - 1) * itemsPerPage + i + 1 }}</td>
+                                    <td>{{ item.i_task_id }}</td>
+                                    <td><a style="cursor: pointer ; color: blue; text-decoration: underline;" (click)="permDownloadAllow === 0 ? null : downloadFile(item.i_task_id, item.i_file_nm)" [class.disabled]="permDownloadAllow === 0">{{ item.i_file_nm }}</a></td>
+                                    <td>{{ item.i_dt_settlement }}</td>
+                                    <td>{{ item.i_dt_uploaded }}</td>
+                                    <td>{{ item.i_uploadedby }}</td>
+                                    <td>{{ item.i_merchant_id }}</td>
+                                    <td>{{ item.i_task_status }}</td>
+                                    <td>{{ item.i_recon_status }}</td>
+                                    <td>
+                                        <button
+                                        *ngIf="item.i_recon_status === 'Pending Extraction'"
+                                        type="button" class="btn btnView" (click)="cancel(item)">{{"buttons.cancel" | translate}}
+                                        </button>
+                                        <button *ngIf="item.i_recon_status === 'Pending SS Collection Reconciliation'"
+                                            type="button" class="btn btnReconcile" (click)="viewSelected(item) " [disabled]="permReconViewAllow === 0">{{"buttons.reconcile" | translate}}
+                                        </button>
+                                        <button
+                                            *ngIf="item.i_recon_status === 'Successful SS Collection Reconciliation'"
+                                            type="button" class="btn btnView" (click)="viewSelected(item)" [disabled]="permCancelViewAllow === 0">{{"buttons.view" | translate}}
+                                        </button>
+                                        <button
+                                        *ngIf="item.i_recon_status === 'Extraction In Progress' || item.i_recon_status === 'Extraction Failed'"
+                                        type="button" class="btn btnView" (click)="viewSelected(item)" disabled="disable">{{"buttons.view" | translate}}
+                                        </button>
+                                        <button
+                                            *ngIf="item.i_recon_status === 'Failed SS Collection Reconciliation'"
+                                            type="button" class="btn btnView" (click)="viewSelected(item)" [disabled]="permCancelViewAllow === 0">{{"buttons.view" | translate}}
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+    
+                        </table>
+                    </div>
+    
+                    <div class="MAPagination" *ngIf="isDisplay">
+                        <div class="fgSpacing">
+                            <div *ngIf="page * itemsPerPage < totalRecords">
+                                {{"showing" | translate}} {{ page * itemsPerPage }} {{"from" | translate}} {{ totalRecords }} {{"results"
+                                | translate}}
+                              </div>
+                              <div *ngIf="!(page * itemsPerPage < totalRecords)">
+                                {{"showing" | translate}} {{ totalRecords }} {{"from" | translate}} {{ totalRecords }} {{"results" |
+                                translate}}
+                              </div>
+                            </div>
+                            <div class="pagination-row">
+                                <div class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle PaginControl" type="button"
+                                        id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
+                                        {{ selectedValue }}
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton">
+                                        <button class="dropdown-item" *ngFor="let singleItem of dropdownOptions"
+                                            (click)="LoadData(singleItem)">
+                                            {{ singleItem }}
+                                        </button>
+                                    </div>
+                                </div>
+    
+                                <ngb-pagination [(page)]="page" [pageSize]="itemsPerPage" [collectionSize]="totalRecords"
+                                    (pageChange)="loadData()"></ngb-pagination>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- right section -->
+                <div class="middle-section73">
+                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#rightSection"
+                        [attr.aria-expanded]="!rightSectionCollapsed" (click)="toggleRightSection()">
+                        <ng-container *ngIf="rightSectionCollapsed; else arrowIcon">
+                            <i class="bi bi-search"></i>
+                        </ng-container>
+                        <ng-template #arrowIcon>
+                            <i class="bi" [class.bi-chevron-double-right]="!rightSectionCollapsed"
+                                [class.bi-chevron-double-left]="rightSectionCollapsed"></i>
+                        </ng-template>
+                    </button>
+                </div>
+    
+                <div class="right-section73 collapse" [class.show]="!rightSectionCollapsed">
+                    <div class="SingleContainer">
+                        <!-- Header -->
+                        <div class="SingleContainerHeader">
+                            <h2 class="text-center">{{ "search filter" | translate }}</h2>
+                        </div>
+    
+                        <!-- Task ID -->
+                        <div class="form-group">
+                            <label for="task_id">{{ "labels.taskid" | translate }}</label>
+                            <input type="text" class="form-control" id="task_id" [(ngModel)]="taskId" />
+                        </div>
+    
+                        <!-- File Name -->
+                        <div class="form-group">
+                            <label for="task_id">{{ "labels.filename" | translate }}</label>
+                            <input type="text" class="form-control" id="file_name" [(ngModel)]="fileName" />
+                        </div>
+    
+                        <!-- Setlement Date-->
+                        <div class="form-group">
+                            <label for="settlement_date">{{ "labels.settlementdate" | translate }}</label>
+                            <input type="text"
+                            [placeholder]="'datepicker'| translate"
+                            class="form-control" [bsConfig]="{ rangeInputFormat : 'DD MMM YYYY', dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,rangeSeparator:' to ',containerClass:'theme-default',adaptivePosition: true}"
+                            bsDaterangepicker 
+                            [(ngModel)]="dateSettlement"
+                            name="daterange" 
+                            readonly onkeydown="return false"/>
+                            <!-- <select class="dropdown" name="settlement_date" class="form-control form-select"
+                                [(ngModel)]="settlementDate" [required]="!isReadOnly">
+                                <option *ngFor="let item of dt_settle" [value]="item.param_cd">
+                                    {{ item.nm_en}}
+                                </option>
+                            </select> -->
+                        </div>
+    
+                        <!-- Date Uploaded-->
+                        <div class="form-group">
+                            <label for="date_uploaded">{{ "labels.dateuploaded" | translate }}</label>
+                            <input type="text"
+                            [placeholder]="'datepicker'| translate"
+                            class="form-control" [bsConfig]="{ rangeInputFormat : 'DD MMM YYYY', dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,rangeSeparator:' to ',containerClass:'theme-default',adaptivePosition: true}"
+                            bsDaterangepicker 
+                            [(ngModel)]="dateUploaded"
+                            name="daterange" 
+                            readonly onkeydown="return false"/>
+                        </div>
+    
+                        <!-- Merchant ID -->
+                        <div class="form-group">
+                            <label for="merchant_id">{{ "labels.merchantid" | translate }}</label>
+                            <input type="text" class="form-control" id="merchant_id" [(ngModel)]="merchantId" />
+                        </div>
+    
+                        <!-- Task Status-->
+                        <div class="form-group">
+                            <label for="task_status">{{ "labels.taskstatus" | translate }}</label>
+                            <select class="dropdown" name="task_status" class="form-control form-select "
+                                [(ngModel)]="taskStatus" [required]="!isReadOnly">
+                                <option *ngFor="let item of task_status" [value]="item.param_cd">
+                                    {{ item.nm_en }}
+                                </option>
+                            </select>
+                        </div>
+    
+                        <!-- PG Settlement Status-->
+                        <div class="form-group">
+                            <label for="pg_settlement_status">{{ "labels.pgsettlementstatus" | translate }}</label>
+                            <select class="dropdown" name="pg_settlement_status" class="form-control form-select"
+                                [(ngModel)]="reconStatus" [required]="!isReadOnly">
+                                <option *ngFor="let item of recon_status" [value]="item.param_cd">
+                                    {{ item.nm_en }}
+                                </option>
+                            </select>
+                        </div>
+    
+                        <!-- Buttons -->
+                        <div class="button-group">
+                            <button class="btn btnApply" (click)="apply()">{{ "buttons.apply" | translate }}</button>
+                            <button class="btn btnReset" (click)="reset()">{{ "buttons.reset" | translate }}</button>
+                        </div>
+    
+                        <br /><br />
+                    </div>
+                </div>
+            
+            <!-- mainContainer end-->
+    
+            <!-- <div class="PAContainer73">
+          <div class="left-section73">
+            <div class="MainContainerFooter"></div>
+          </div>
+          <div class="right-section73"></div>-->
+        </div> 
+    </body>
+    </ng-container>

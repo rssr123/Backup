@@ -1,0 +1,3846 @@
+
+CREATE OR REPLACE PROCEDURE sp_checkuserperm(
+    i_username NVARCHAR(25),
+    i_perm_cd_list VARCHAR(255)
+) 
+RETURNING LVARCHAR(500) AS o_has_access;
+
+    DEFINE o_has_access LVARCHAR(500);
+    DEFINE t_user_role_id INT;
+
+    SELECT sp_group_concat(t4.perm_cd) into o_has_access
+    FROM rms_user_role t5
+    LEFT OUTER JOIN rms_user t1 ON t1.ssm4uuserrefno = t5.ssm4uuserrefno
+    LEFT OUTER JOIN rms_role t2 ON t5.role_id = t2.role_id
+    LEFT OUTER JOIN rms_role_perm t3 ON t3.role_id = t2.role_id
+    LEFT OUTER JOIN rms_perm t4 ON t3.perm_id = t4.perm_id
+    WHERE i_username = t5.ssm4uuserrefno
+    AND t4.perm_cd IN (SELECT * FROM TABLE (regex_split(i_perm_cd_list, ','))) AND is_allow = 1;
+
+    RETURN o_has_access;
+
+END PROCEDURE;
+GO
+CREATE OR REPLACE PROCEDURE sp_generateAgingReport(asOfDate nvarchar(10), rcptNo nvarchar(20), pgTxnId nvarchar(30), stmtNo nvarchar(25),
+		matchRec nvarchar(10), pgDtStmtFr date, pgDtStmtTo date, showDupTrans boolean)
+	returning datetime year to fraction(5), nvarchar(255), nvarchar(255), nvarchar(255), decimal(16,2),
+			datetime year to fraction(5), nvarchar(255), nvarchar(255), nvarchar(255), decimal(16,2),
+			integer;
+		 
+			DEFINE o_dn_dt datetime year to fraction(5);
+			DEFINE o_dn_txn_id nvarchar(255);
+			DEFINE o_dn_rms_bn nvarchar(255);
+			DEFINE o_dn_fms_ref nvarchar(255);
+			DEFINE o_dn_amt decimal(16,2);
+			DEFINE o_cn_dt datetime year to fraction(5);
+			DEFINE o_cn_txn_id nvarchar(255);
+			DEFINE o_cn_rms_bn nvarchar(255);
+			DEFINE o_cn_fms_ref nvarchar(255);
+			DEFINE o_cn_amt decimal(16,2);
+			DEFINE o_status integer;
+			
+			define o_statement lvarchar(2000);
+			let o_statement = "select drb.dt_created as dn_dt, pg.pg_txn_id as dn_txn_id, drh.rms_batch_no as dn_rms_bn, drh.fms_ref_no as dn_fms_ref, drh.amt as dn_amt, crb.dt_created as cn_dt, case when (crb.mtt_pg_id is null or crb.mtt_pg_id = '') then null else pg.pg_txn_id end as cn_txn_id, case when (crb.mtt_pg_id is null or crb.mtt_pg_id = '') then null else crh.rms_batch_no end as cn_rms_bn, case when (crb.mtt_pg_id is null or crb.mtt_pg_id = '') then null else crh.fms_ref_no end as cn_fms_ref, case when (crb.mtt_pg_id is null or crb.mtt_pg_id = '') then null else crh.amt end as cn_amt, case when (crb.mtt_pg_id is null or crb.mtt_pg_id = '') then date('" || asOfDate || "') - cast(drb.dt_created as date) else cast(crb.dt_created as date) - cast(drb.dt_created as date) end as status from rms_fms_drmemo_b drb left join rms_fms_crmemo_b crb on crb.mtt_pg_id = drb.mtt_pg_id left join rms_mtt_pg pg on drb.mtt_pg_id = pg.mtt_pg_id left join rms_fms_drmemo_h drh on drb.drmemo_hid = drh.drmemo_hid left join rms_fms_crmemo_h crh on crb.crmemo_hid = crh.crmemo_hid left join rms_mtt_rcpt rcpt on drb.mtt_pg_id = rcpt.mtt_pg_id left join rms_rc_pgmtt rcpgmtt on drb.mtt_pg_id = rcpgmtt.mtt_pg_id left join rms_rc_pg rcpg on rcpgmtt.rc_pg_id = rcpg.rc_pg_id  where drb.dt_created <= date('" || asOfDate || "') and rcpg.dt_settlement <= date('" || asOfDate || "')";
+			if (rcptNo is not null and rcptNo != '') then
+				let o_statement = o_statement || " and rcpt.rcpt_no like '%" || rcptNo || "'";
+			end if
+			if (pgTxnId is not null and pgTxnId != '') then
+				let o_statement = o_statement || " and pg.pg_txn_id like '%" || pgTxnId || "'";
+			end if
+			if (stmtNo is not null and stmtNo != '') then
+				let o_statement = o_statement || " and rcpg.stmt_no like '%" || stmtNo || "'";
+			end if
+			if (pgDtStmtFr is not null and pgDtStmtTo is not null) then
+				let o_statement = o_statement || " and cast(rcpg.dt_settlement as date) >= " || pgDtStmtFr || " and cast(rcpg.dt_settlement as date) <= " || pgDtStmtTo;
+			end if
+			if lower(matchRec) = 'matched' then
+				let o_statement = o_statement || " and crb.dt_created is not null";
+			elif lower(matchRec) = 'unmatched' then
+				let o_statement = o_statement || " and crb.dt_created is null";
+			end if
+			if (showDupTrans = 't') then
+				let o_statement = o_statement || " and (rcpt.rcpt_no is null or rcpt.rcpt_no = '')";
+			end if
+			let o_statement = o_statement || ";";
+			
+			prepare s from o_statement;
+			declare c cursor for s;
+			open c;
+			while(1 = 1)
+				fetch c into o_dn_dt, o_dn_txn_id, o_dn_rms_bn, o_dn_fms_ref, o_dn_amt, o_cn_dt, o_cn_txn_id, o_cn_rms_bn, o_cn_fms_ref, o_cn_amt, o_status;
+				IF (SQLCODE != 100) THEN
+			    	RETURN o_dn_dt, o_dn_txn_id, o_dn_rms_bn, o_dn_fms_ref, o_dn_amt, o_cn_dt, o_cn_txn_id, o_cn_rms_bn, o_cn_fms_ref, o_cn_amt, o_status WITH RESUME;
+			  	ELSE
+			    	EXIT;
+			  	END IF
+			END while
+			
+			close c;
+			free c;
+			free s;
+end procedure
+GO
+CREATE OR REPLACE PROCEDURE sp_generatericpagingreport(asOfDate nvarchar(10), issDtFr date, issDtTo date, showExp boolean, showCanVoid boolean, 
+								entityType nvarchar(50), entityNm nvarchar(100), pymtDtFr date, pymtDtTo date,
+								expDtFr date, expDtTo date, woDtFr date, woDtTo date, canDtFr date, canDtTo date,
+								voidDtFr date, voidDtTo date)
+	returning nvarchar(30), nvarchar(25), nvarchar(50), nvarchar(100), nvarchar(50), decimal(16,2),
+			decimal(16,2), date, datetime year to fraction(5), date, date, date, date, integer;
+		 
+			DEFINE o_bat_no nvarchar(30);
+			DEFINE o_fms_ref_no nvarchar(25);
+			DEFINE o_entity_type nvarchar(50);
+			DEFINE o_entity_nm nvarchar(100);
+			DEFINE o_ricp_status nvarchar(50);
+			DEFINE o_cp_amt decimal(16,2);
+			DEFINE o_net_amt decimal(16,2);
+			DEFINE o_dt_issuance date;
+			DEFINE o_pymt_dt datetime year to fraction(5);
+			DEFINE o_dt_expiry date;
+			DEFINE o_dt_wo date;
+			DEFINE o_dt_can date;
+			DEFINE o_dt_void date;
+			DEFINE o_status integer;
+					
+			define o_statement lvarchar(2000);
+			let o_statement = "select fjh.batch_no, fjh.fms_ref_no, fullEntT.nm_en, itm.entity_nm, fullStatusName.nm_en, ricp.cp_amt, itm.net_amt, ricp.dt_issuance, rcp.rcpt_dt, ricp.dt_expiry, ricp.dt_writeoff, ricp.dt_cancel, ricp.dt_void, date('" || asOfDate || "') - ricp.dt_issuance as status from rms_ricp ricp left join (select SUBSTR(SUBSTR(attr_ext_ref_no, CHARINDEX('-', attr_ext_ref_no)+1), 1, CHARINDEX('-', SUBSTR(attr_ext_ref_no, CHARINDEX('-', attr_ext_ref_no)))) as ricp_id, batch_no, fms_ref_no from rms_fms_jn_h) fjh on ricp.ricp_id = fjh.ricp_id left join rms_mtt_item itm on ricp.cp_no = itm.cp_no left join rms_mtt_rcpt rcp on itm.mtt_id = rcp.mtt_id left join (select param_cd, nm_en from rms_param where param_grp_nm = 'RICP-Status') as fullStatusName on ricp.status = fullStatusName.param_cd left join (select param_cd, nm_en from rms_param where param_grp_nm = 'EntityType') as fullEntT on ricp.entity_type = fullEntT.param_cd where ricp.dt_issuance <= date('" || asOfDate || "') and ricp.dt_issuance >= date('" || issDtFr || "') and ricp.dt_issuance <= date('" || issDtTo || "')";
+
+			if (showExp = 'f') then
+				let o_statement = o_statement || " and ricp.status != 'WO'";
+			end if
+			
+			if (showCanVoid = 'f') then
+				let o_statement = o_statement || " and ricp.status != 'C' and ricp.status != 'V'";
+			end if
+			
+			if (entityType is not null and entityType != '') then
+				let o_statement = o_statement || " and ricp.entityType = '" || entityType || "'";
+			end if
+			
+			if (entityNm is not null and entityNm != '') then
+				let o_statement = o_statement || " and itm.entity_nm like '%" || entityNm || "'";
+			end if
+			
+			if (pymtDtFr is not null and pymtDtTo is not null) then
+				let o_statement = o_statement || " and cast(rcp.rcpt_dt as date) >= " || pymtDtFr || " and cast(rcp.rcpt_dt as date) <= " || pymtDtTo;
+			end if
+			
+			if (expDtFr is not null and expDtTo is not null) then
+				let o_statement = o_statement || " and ricp.dt_expiry >= " || expDtFr || " and ricp.dt_expiry <= " || expDtTo;
+			end if
+			
+			if (woDtFr is not null and woDtTo is not null) then
+				let o_statement = o_statement || " and ricp.dt_writeoff >= " || woDtFr || " and ricp.dt_writeoff <= " || woDtTo;
+			end if
+			
+			if (canDtFr is not null and canDtTo is not null) then
+				let o_statement = o_statement || " and ricp.dt_cancel >= " || canDtFr || " and ricp.dt_cancel <= " || canDtTo;
+			end if
+			
+			if (voidDtFr is not null and voidDtTo is not null) then
+				let o_statement = o_statement || " and ricp.dt_void >= " || voidDtFr || " and ricp.dt_void <= " || voidDtTo;
+			end if
+			
+			let o_statement = o_statement || ";";
+			
+			prepare s from o_statement;
+			declare c cursor for s;
+			open c;
+			while(1 = 1)
+				fetch c into o_bat_no,o_fms_ref_no,o_entity_type,o_entity_nm,o_ricp_status,o_cp_amt,o_net_amt,o_dt_issuance,o_pymt_dt,o_dt_expiry,o_dt_wo,o_dt_can,o_dt_void,o_status;
+				IF (SQLCODE != 100) THEN
+			    	RETURN o_bat_no,o_fms_ref_no,o_entity_type,o_entity_nm,o_ricp_status,o_cp_amt,o_net_amt,o_dt_issuance,o_pymt_dt,o_dt_expiry,o_dt_wo,o_dt_can,o_dt_void,o_status WITH RESUME;
+			  	ELSE
+			    	EXIT;
+			  	END IF
+			END while
+			
+			close c;
+			free c;
+			free s;
+end procedure
+GO
+CREATE OR REPLACE PROCEDURE sp_getdiagequeuerpt()
+
+returning integer;
+
+define o_count integer;
+
+	select count(1) into o_count 
+	from rms_rpt_di_age 
+	where status = "P" or status = "I";
+
+	return o_count with resume;
+
+end procedure;
+GO
+CREATE OR REPLACE PROCEDURE sp_getdiaginglistingrpt(i_page int, i_size int, i_rpt_di_age_id int8, i_p_dt_req date, i_p_tmn_status int, i_p_ent_ty nvarchar(1), 
+                               i_p_ent_nm nvarchar(200), i_p_txn_ty nvarchar(10), i_p_status nvarchar(10), 
+							   i_p_dt_exp_fr date, i_p_dt_exp_to date,
+							   i_p_dt_eff_fr date, i_p_dt_eff_to date,
+							   i_p_dt_app_fr date, i_p_dt_app_to date,
+							   i_p_dt_tmn_fr date, i_p_dt_tmn_to date,
+							   i_created_by nvarchar(25), i_modified_by nvarchar(25),
+							   i_status nvarchar(10), i_p_email nvarchar(255), i_p_file_type nvarchar(5),
+							   i_p_file_size int, i_p_file_nm nvarchar(255), i_p_batch_no nvarchar(30), i_p_fms_ref_no nvarchar(25))
+								
+returning	int8 as rpt_di_age_id,
+			datetime year to second as p_dt_req,
+			int as p_tmn_status,
+			nvarchar(1) as p_ent_ty,
+			nvarchar(100) as p_ent_nm,
+			nvarchar(10) as p_txn_ty,
+			nvarchar(10) as p_status,
+			datetime year to second as p_dt_exp_fr,
+			datetime year to second as p_dt_exp_to,
+			datetime year to second as p_dt_eff_fr,
+			datetime year to second as p_dt_eff_to,
+			datetime year to second as p_dt_app_fr,
+			datetime year to second as p_dt_app_to,
+			datetime year to second as p_dt_tmn_fr,
+			datetime year to second as p_dt_tmn_to,
+			datetime year to second as dt_created,
+			datetime year to second as dt_modified,
+			nvarchar(25) as created_by,
+			nvarchar(25) as modified_by,
+			nvarchar(10) as status,
+			nvarchar(50) as p_email,
+			nvarchar(50) as p_file_type,
+			int as p_file_size,
+			nvarchar(255) as p_file_nm,
+			nvarchar(30) as p_batch_no,
+			nvarchar(25) as p_fms_ref_no,
+			nvarchar(10) as task_id,
+			int as total;	
+			
+define o_rpt_di_age_id		int8;
+define o_p_dt_req           datetime year to second;
+define o_p_tmn_status		int;
+define o_p_ent_ty			nvarchar(1);
+define o_p_ent_nm		    nvarchar(100);
+define o_p_txn_ty		    nvarchar(10);
+define o_p_status	        nvarchar(10);
+define o_p_dt_exp_fr	    datetime year to second;
+define o_p_dt_exp_to 	    datetime year to second;
+define o_p_dt_eff_fr		datetime year to second;
+define o_p_dt_eff_to		datetime year to second;
+define o_p_dt_app_fr		datetime year to second;
+define o_p_dt_app_to		datetime year to second;
+define o_p_dt_tmn_fr		datetime year to second;
+define o_p_dt_tmn_to		datetime year to second;
+define o_dt_created			datetime year to second;
+define o_dt_modified		datetime year to second;
+define o_created_by			nvarchar(25);
+define o_modified_by		nvarchar(25);
+define o_status				nvarchar(10);
+define o_p_email			nvarchar(50);
+define o_p_file_type		nvarchar(50);
+define o_p_file_size		int;
+define o_p_file_nm		    nvarchar(255);
+define o_p_batch_no		    nvarchar(30);
+define o_p_fms_ref_no		nvarchar(25);
+define calculatedpage		int;
+define total	 			int;
+
+
+if (i_page is null or i_page < 1) or (i_size is null or i_page < 1) then 
+    raise exception -746, 0, "i_page or i_size is null integer";
+end if
+
+let calculatedpage = (i_page-1)*i_size;
+
+    let total = (select count(1)
+                    from rms_rpt_di_age t1
+                            		where (i_rpt_di_age_id is null or t1.rpt_di_age_id = i_rpt_di_age_id)		
+									and (i_p_dt_req is null or t1.p_dt_req <= i_p_dt_req)
+							        and (i_p_tmn_status is null or t1.p_tmn_status = i_p_tmn_status)
+							        and (i_p_ent_ty is null or t1.p_ent_ty = i_p_ent_ty)
+							        and (i_p_ent_nm is null or t1.p_ent_nm like '%' || i_p_ent_nm ||'%')
+							        and (i_p_status is null or t1.p_status = i_p_status)
+							        and (i_p_dt_exp_fr is null or t1.p_dt_exp_fr >= i_p_dt_exp_fr)
+							        and (i_p_dt_exp_to is null or t1.p_dt_exp_to <= i_p_dt_exp_to)
+							        and (i_p_dt_eff_fr is null or t1.p_dt_eff_fr >= i_p_dt_eff_fr)
+							        and (i_p_dt_eff_to is null or t1.p_dt_eff_to <= i_p_dt_eff_to)
+							        and (i_p_dt_app_fr is null or t1.p_dt_app_fr >= i_p_dt_app_fr)
+							        and (i_p_dt_app_to is null or t1.p_dt_app_to <= i_p_dt_app_to)
+							        and (i_p_dt_tmn_fr is null or t1.p_dt_tmn_fr >= i_p_dt_tmn_fr)
+							        and (i_p_dt_tmn_to is null or t1.p_dt_tmn_to <= i_p_dt_tmn_to)
+							        and (i_created_by is null or t1.created_by = i_created_by)
+							        and (i_modified_by is null or t1.modified_by = i_modified_by)
+							        and (i_status is null or t1.status = i_status)
+							        and (i_p_email is null or t1.p_email = i_p_email)
+							        and (i_p_file_type is null or t1.p_file_type = i_p_file_type)
+							        and (i_p_file_size is null or t1.p_file_size = i_p_file_size)
+							        and (i_p_file_nm is null or t1.p_file_nm like '%' || i_p_file_nm ||'%')
+							        and (i_p_batch_no is null or t1.p_batch_no like '%' || i_p_batch_no ||'%')
+							        and (i_p_fms_ref_no is null or t1.p_fms_ref_no like '%' || i_p_fms_ref_no ||'%')	
+                          );
+                         
+	foreach c_getdiaging for
+		select skip calculatedpage limit i_size t1.rpt_di_age_id, t1.p_dt_req, t1.p_tmn_status, t1.p_ent_ty, t1.p_ent_nm, t1.p_txn_ty, t1.p_status,
+		t1.p_dt_exp_fr, t1.p_dt_exp_to, t1.p_dt_eff_fr, t1.p_dt_eff_to, t1.p_dt_app_fr, t1.p_dt_app_to, t1.p_dt_tmn_fr,t1.p_dt_tmn_to,
+	    t1.dt_created,t1.dt_modified, t1.created_by, t1.modified_by, t1.status, t1.p_email, t1.p_file_type, t1.p_file_size, t1.p_file_nm, 
+	    t1.p_batch_no, t1.p_fms_ref_no
+		into o_rpt_di_age_id, o_p_dt_req, o_p_tmn_status, o_p_ent_ty, o_p_ent_nm, o_p_txn_ty, o_p_status, 
+		o_p_dt_exp_fr, o_p_dt_exp_to, o_p_dt_eff_fr, o_p_dt_eff_to, o_p_dt_app_fr, o_p_dt_app_to, o_p_dt_tmn_fr,o_p_dt_tmn_to,
+	    o_dt_created,o_dt_modified, o_created_by, o_modified_by, o_status, o_p_email, o_p_file_type, o_p_file_size, o_p_file_nm,
+	    o_p_batch_no, o_p_fms_ref_no
+		from rms_rpt_di_age t1
+		where (i_rpt_di_age_id is null or t1.rpt_di_age_id = i_rpt_di_age_id)		
+		and (i_p_dt_req is null or t1.p_dt_req <= i_p_dt_req)
+        and (i_p_tmn_status is null or t1.p_tmn_status = i_p_tmn_status)
+        and (i_p_ent_ty is null or t1.p_ent_ty = i_p_ent_ty)
+        and (i_p_ent_nm is null or t1.p_ent_nm like '%' || i_p_ent_nm ||'%')
+        and (i_p_status is null or t1.p_status = i_p_status)
+        and (i_p_dt_exp_fr is null or t1.p_dt_exp_fr >= i_p_dt_exp_fr)
+        and (i_p_dt_exp_to is null or t1.p_dt_exp_to <= i_p_dt_exp_to)
+        and (i_p_dt_eff_fr is null or t1.p_dt_eff_fr >= i_p_dt_eff_fr)
+        and (i_p_dt_eff_to is null or t1.p_dt_eff_to <= i_p_dt_eff_to)
+        and (i_p_dt_app_fr is null or t1.p_dt_app_fr >= i_p_dt_app_fr)
+        and (i_p_dt_app_to is null or t1.p_dt_app_to <= i_p_dt_app_to)
+        and (i_p_dt_tmn_fr is null or t1.p_dt_tmn_fr >= i_p_dt_tmn_fr)
+        and (i_p_dt_tmn_to is null or t1.p_dt_tmn_to <= i_p_dt_tmn_to)
+        and (i_created_by is null or t1.created_by = i_created_by)
+        and (i_modified_by is null or t1.modified_by = i_modified_by)
+        and (i_status is null or t1.status = i_status)
+        and (i_p_email is null or t1.p_email = i_p_email)
+        and (i_p_file_type is null or t1.p_file_type = i_p_file_type)
+        and (i_p_file_size is null or t1.p_file_size = i_p_file_size)
+        and (i_p_file_nm is null or t1.p_file_nm like '%' || i_p_file_nm ||'%')
+        and (i_p_batch_no is null or t1.p_batch_no like '%' || i_p_batch_no ||'%')
+        and (i_p_fms_ref_no is null or t1.p_fms_ref_no like '%' || i_p_fms_ref_no ||'%')
+		order by t1.dt_modified desc
+		
+		return o_rpt_di_age_id, o_p_dt_req, o_p_tmn_status, o_p_ent_ty, o_p_ent_nm, o_p_txn_ty, o_p_status, 
+		o_p_dt_exp_fr, o_p_dt_exp_to, o_p_dt_eff_fr, o_p_dt_eff_to, o_p_dt_app_fr, o_p_dt_app_to, o_p_dt_tmn_fr,o_p_dt_tmn_to,
+	    o_dt_created,o_dt_modified, o_created_by, o_modified_by, o_status, o_p_email, o_p_file_type, o_p_file_size, o_p_file_nm, 
+	    o_p_batch_no, o_p_fms_ref_no, 'RG'||lpad(o_rpt_di_age_id,6,'0'),total with resume;	
+		
+	end foreach
+
+end procedure
+GO
+CREATE OR REPLACE PROCEDURE sp_getdiagingrpt(i_rpt_di_age_id int8)
+								
+returning	int8 as rpt_di_age_id,
+			datetime year to second as p_dt_req,
+			int as p_tmn_status,
+			nvarchar(1) as p_ent_ty,
+			nvarchar(100) as p_ent_nm,
+			nvarchar(10) as p_txn_ty,
+			nvarchar(10) as p_status,
+			datetime year to second as p_dt_exp_fr,
+			datetime year to second as p_dt_exp_to,
+			datetime year to second as p_dt_eff_fr,
+			datetime year to second as p_dt_eff_to,
+			datetime year to second as p_dt_app_fr,
+			datetime year to second as p_dt_app_to,
+			datetime year to second as p_dt_tmn_fr,
+			datetime year to second as p_dt_tmn_to,
+			datetime year to second as dt_created,
+			datetime year to second as dt_modified,
+			nvarchar(25) as created_by,
+			nvarchar(25) as modified_by,
+			nvarchar(10) as status,
+			nvarchar(50) as p_email,
+			nvarchar(50) as p_file_type,
+			int as p_file_size,
+			nvarchar(255) as p_file_nm,
+			nvarchar(30) as p_batch_no,
+			nvarchar(25) as p_fms_ref_no,
+			nvarchar(10) as task_id;
+			
+define o_rpt_di_age_id		int8;
+define o_p_dt_req           datetime year to second;
+define o_p_tmn_status		int;
+define o_p_ent_ty			nvarchar(1);
+define o_p_ent_nm		    nvarchar(100);
+define o_p_txn_ty		    nvarchar(10);
+define o_p_status	        nvarchar(10);
+define o_p_dt_exp_fr	    datetime year to second;
+define o_p_dt_exp_to 	    datetime year to second;
+define o_p_dt_eff_fr		datetime year to second;
+define o_p_dt_eff_to		datetime year to second;
+define o_p_dt_app_fr		datetime year to second;
+define o_p_dt_app_to		datetime year to second;
+define o_p_dt_tmn_fr		datetime year to second;
+define o_p_dt_tmn_to		datetime year to second;
+define o_dt_created			datetime year to second;
+define o_dt_modified		datetime year to second;
+define o_created_by			nvarchar(25);
+define o_modified_by		nvarchar(25);
+define o_status				nvarchar(10);
+define o_p_email			nvarchar(50);
+define o_p_file_type		nvarchar(50);
+define o_p_file_size		int;
+define o_p_file_nm		    nvarchar(255);
+define o_p_batch_no		    nvarchar(30);
+define o_p_fms_ref_no		nvarchar(25);
+
+	foreach c_getdiaging for
+		select t1.rpt_di_age_id, t1.p_dt_req, t1.p_tmn_status, t1.p_ent_ty, t1.p_ent_nm, t1.p_txn_ty, t1.p_status,
+		t1.p_dt_exp_fr, t1.p_dt_exp_to, t1.p_dt_eff_fr, t1.p_dt_eff_to, t1.p_dt_app_fr, t1.p_dt_app_to, t1.p_dt_tmn_fr,t1.p_dt_tmn_to,
+	    t1.dt_created,t1.dt_modified, t1.created_by, t1.modified_by, t1.status, t1.p_email, t1.p_file_type, t1.p_file_size, t1.p_file_nm, 
+	    t1.p_batch_no, t1.p_fms_ref_no
+		into o_rpt_di_age_id, o_p_dt_req, o_p_tmn_status, o_p_ent_ty, o_p_ent_nm, o_p_txn_ty, o_p_status, 
+		o_p_dt_exp_fr, o_p_dt_exp_to, o_p_dt_eff_fr, o_p_dt_eff_to, o_p_dt_app_fr, o_p_dt_app_to, o_p_dt_tmn_fr,o_p_dt_tmn_to,
+	    o_dt_created,o_dt_modified, o_created_by, o_modified_by, o_status, o_p_email, o_p_file_type, o_p_file_size, o_p_file_nm,
+	    o_p_batch_no, o_p_fms_ref_no
+		from rms_rpt_di_age t1
+		where t1.rpt_di_age_id = i_rpt_di_age_id	
+		
+		return o_rpt_di_age_id, o_p_dt_req, o_p_tmn_status, o_p_ent_ty, o_p_ent_nm, o_p_txn_ty, o_p_status, 
+		o_p_dt_exp_fr, o_p_dt_exp_to, o_p_dt_eff_fr, o_p_dt_eff_to, o_p_dt_app_fr, o_p_dt_app_to, o_p_dt_tmn_fr,o_p_dt_tmn_to,
+	    o_dt_created,o_dt_modified, o_created_by, o_modified_by, o_status, o_p_email, o_p_file_type, o_p_file_size, o_p_file_nm, 
+	    o_p_batch_no, o_p_fms_ref_no, 'RG'||lpad(o_rpt_di_age_id,6,'0') with resume;	
+		
+	end foreach
+
+end procedure
+GO
+create or replace procedure sp_getfmsari()
+
+returning nvarchar(100) as type,nvarchar(100) as link_branch,decimal(16,2) as amt,nvarchar(100) as cust,nvarchar(100) as rms_batch_no, date as dt_sent,nvarchar(255) as desc,
+            nvarchar(100) as attr_ext_sys, nvarchar(100) as coa1,nvarchar(100) as coa2,nvarchar(100) as branch,int as qty,nvarchar(100) as sub_acct,nvarchar(100) as txn_desc,
+            decimal(16,2) as unit_price, nvarchar(30) as rcpt_no,nvarchar(100) as payee_info,nvarchar(100) as ent_nm,nvarchar(100) as ent_no,nvarchar(100) as ent_ty,
+            decimal(16,2) as item_amt,nvarchar(100) as pymt_mode,decimal(16,2) as item_tax_amt;
+
+define o_type           nvarchar(100);
+define o_link_branch    nvarchar(100);
+define o_amt            decimal(16,2);
+define o_cust           nvarchar(100);
+define o_rms_batch_no   nvarchar(100);
+define o_dt_sent        date;
+define o_desc           nvarchar(255);
+define o_attr_ext_sys   nvarchar(100);
+define o_coa1           nvarchar(100);
+define o_coa2           nvarchar(100);
+define o_branch         nvarchar(100);
+define o_qty            int;
+define o_sub_acct       nvarchar(100);
+define o_txn_desc       nvarchar(100);
+define o_unit_price     decimal(16,2);
+define o_rcpt_no        nvarchar(30);
+define o_payee_info     nvarchar(100);
+define o_ent_nm         nvarchar(100);
+define o_ent_no         nvarchar(100);
+define o_ent_ty         nvarchar(100);
+define o_item_amt       decimal(16,2);
+define o_pymt_mode      nvarchar(100);
+define o_item_tax_amt   decimal(16,2);
+
+foreach c_ari for
+    select t1.type,t1.link_branch,t1.amt,t1.cust,t1.rms_batch_no,t1.dt_sent,t1.desc,t1.attr_ext_sys,
+            t2.coa1,t2.coa2,t2.branch,t2.qty,t2.sub_acct,t2.txn_desc,t2.unit_price,t2.rcpt_no,
+            t2.payee_info,t2.ent_nm,t2.ent_no,t2.ent_ty,t2.item_amt,t2.pymt_mode,t2.item_tax_amt
+    into o_type,o_link_branch,o_amt,o_cust,o_rms_batch_no,o_dt_sent,o_desc,o_attr_ext_sys,
+            o_coa1,o_coa2,o_branch,o_qty,o_sub_acct,o_txn_desc,o_unit_price,o_rcpt_no,
+            o_payee_info,o_ent_nm,o_ent_no,o_ent_ty,o_item_amt,o_pymt_mode,o_item_tax_amt
+    from rms_fms_ari_h t1
+    inner join rms_fms_ari_b t2 on t1.ari_hid = t2.ari_hid
+    where t1.fms_ref_no is null
+    or t1.resp_status <> 200
+
+    return o_type,o_link_branch,o_amt,o_cust,o_rms_batch_no,o_dt_sent,o_desc,o_attr_ext_sys,
+            o_coa1,o_coa2,o_branch,o_qty,o_sub_acct,o_txn_desc,o_unit_price,o_rcpt_no,
+            o_payee_info,o_ent_nm,o_ent_no,o_ent_ty,o_item_amt,o_pymt_mode,o_item_tax_amt with resume;
+    
+end foreach;
+
+end procedure;
+GO
+create or replace procedure sp_getfmsarr()
+returning 
+	int8 as arr_hid,
+	nvarchar(20) as type,
+	nvarchar(30) as branch,
+	datetime year to second as dt_sent,
+	nvarchar(10) as cash_acct, 
+	decimal(15,5) as pymt_amt, 
+	nvarchar(10) as pymt_method, 
+	nvarchar(30) as cust, 
+	nvarchar(40) as rms_batch_no,
+	nvarchar(15) as fms_ref_no, 
+	nvarchar(20) as doc_type_b,
+	decimal(15,5) as amt, 
+	nvarchar(20) as doc_type_c, 
+	nvarchar(20) as entity_type, 
+	nvarchar(50) as offset_subacct
+;
+	
+define o_arr_hid int8;
+define o_type nvarchar(20);
+define o_branch nvarchar(30);
+define o_dt_sent datetime year to second;
+define o_cash_acct nvarchar(10);
+define o_pymt_amt decimal(15,5);
+define o_pymt_method nvarchar(10);
+define o_cust nvarchar(30);
+define o_rms_batch_no nvarchar(40);
+define o_fms_ref_no nvarchar(15);
+define o_doc_type_b nvarchar(20);
+define o_amt decimal(15,5);
+define o_doc_type_c nvarchar(20);
+define o_entity_type nvarchar(20);
+define o_offset_subacct nvarchar(50);
+
+foreach c_arr for 
+	select 
+		t1.arr_hid, t1.type, t1.branch, t1.dt_sent, t1.cash_acct, t1.pymt_amt, t1.pymt_method, t1.cust, t1.rms_batch_no,
+		t2.fms_ref_no, t2.doc_type,
+		t3.amt, t3.doc_type, t3.entity_type, t3.offset_subacct
+	into 
+		o_arr_hid,
+		o_type,
+		o_branch,
+		o_dt_sent,
+		o_cash_acct,
+		o_pymt_amt,
+		o_pymt_method,
+		o_cust,
+		o_rms_batch_no,
+		o_fms_ref_no,
+		o_doc_type_b,
+		o_amt,
+		o_doc_type_c,
+		o_entity_type,
+		o_offset_subacct
+	from rms_fms_arr_h t1
+		left join rms_fms_arr_b t2 on t1.arr_hid = t2.arr_hid
+		left join rms_fms_arr_c t3 on t1.arr_hid = t3.arr_hid
+	where t1.fms_ref_no is null 
+		and t1.resp_status <> 200
+	return 
+		o_arr_hid,
+		o_type,
+		o_branch,
+		o_dt_sent,
+		o_cash_acct,
+		o_pymt_amt,
+		o_pymt_method,
+		o_cust,
+		o_rms_batch_no,
+		o_fms_ref_no,
+		o_doc_type_b,
+		o_amt,
+		o_doc_type_c,
+		o_entity_type,
+		o_offset_subacct
+		with resume;
+end foreach;
+
+end procedure;
+GO
+create or replace procedure sp_getfmscrmemo()
+returning 
+    int8 as crmemo_hid,
+    nvarchar(20) as type,
+    nvarchar(30) as link_branch,
+    decimal(15,5) as amt,
+    nvarchar(30) as cust,
+    nvarchar(40) as rms_batch_no,
+    datetime year to second as dt_sent,
+    nvarchar(255) as desc,
+    nvarchar(255) as attr_ext_sys,
+    nvarchar(20) as fms_ref_no,
+    nvarchar(20) as doc_ty,
+    nvarchar(30) as acct,
+    nvarchar(30) as branch,
+    int as qty,
+    nvarchar(50) as sub_acct,
+    nvarchar(255) as txn_desc,
+    decimal(15,5) as unit_price,
+--    nvarchar(30) as rcpt_no,
+--    nvarchar(255) as payee_info,
+    nvarchar(50) as ent_nm,
+    nvarchar(50) as ent_no,
+    nvarchar(20) as ent_ty,
+--    decimal(15,5) as item_amt,
+--    decimal(15,5) as pymt,
+--    decimal(15,5) as item_tax_amt,
+    nvarchar(50) as coa1,
+    nvarchar(50) as coa2
+;
+
+	define o_crmemo_hid int8;
+	define o_type nvarchar(20);
+	define o_link_branch nvarchar(30);
+	define o_amt decimal(15,5);
+	define o_cust nvarchar(30);
+	define o_rms_batch_no nvarchar(40);
+	define o_dt_sent datetime year to second;
+	define o_desc nvarchar(255);
+	define o_attr_ext_sys nvarchar(255);
+	define o_fms_ref_no nvarchar(20);
+	define o_doc_ty nvarchar(20);
+	define o_acct nvarchar(30);
+	define o_branch nvarchar(30);
+	define o_qty int;
+	define o_sub_acct nvarchar(50);
+	define o_txn_desc nvarchar(255);
+	define o_unit_price decimal(15,5);
+--	define o_rcpt_no nvarchar(30);
+--	define o_payee_info nvarchar(255);
+	define o_ent_nm nvarchar(50);
+	define o_ent_no nvarchar(50);
+	define o_ent_ty nvarchar(20);
+--	define o_item_amt decimal(15,5);
+--	define o_pymt decimal(15,5);
+--	define o_item_tax_amt decimal(15,5);
+	define o_coa1 nvarchar(50);
+	define o_coa2 nvarchar(50);
+
+	foreach c_crmemo for 
+	    select 
+	      	t1.crmemo_hid, t1.type, t1.link_branch, t1.amt, t1.cust, t1.rms_batch_no, t1.dt_sent, t1.desc, t1.attr_ext_sys, 
+	      	t2.fms_ref_no, t2.doc_ty,
+	      	t3.acct, t3.branch, t3.qty, t3.sub_acct, t3.txn_desc, t3.unit_price, t3.ent_nm, t3.ent_no, t3.ent_ty, t3.coa1, t3.coa2
+	    into 
+	        o_crmemo_hid, o_type, o_link_branch, o_amt, o_cust, o_rms_batch_no, o_dt_sent, o_desc, o_attr_ext_sys, 
+	        o_fms_ref_no, o_doc_ty,
+	        o_acct, o_branch, o_qty, o_sub_acct, o_txn_desc, o_unit_price, o_ent_nm, o_ent_no, o_ent_ty, o_coa1, o_coa2
+	    from rms_fms_crmemo_h t1
+	    	left join rms_fms_crmemo_f t2 on t1.crmemo_hid = t2.crmemo_hid
+	    	left join rms_fms_crmemo_b t3 on t1.crmemo_hid = t3.crmemo_hid
+		where t1.fms_ref_no is null 
+			and t1.resp_status <> 200
+		return 
+		    o_crmemo_hid, o_type, o_link_branch, o_amt, o_cust, o_rms_batch_no, o_dt_sent, o_desc, o_attr_ext_sys, 
+		    o_fms_ref_no, o_doc_ty,
+		    o_acct, o_branch, o_qty, o_sub_acct, o_txn_desc, o_unit_price, o_ent_nm, o_ent_no, o_ent_ty, o_coa1, o_coa2
+		    with resume;
+	end foreach;
+
+end procedure;
+GO
+create or replace procedure sp_getfmsdia()
+returning int8 as audit_id, int8 as di_id, date as dt_txn, decimal(16,2) as bal_di_amt_af, decimal(16,2) as unit_fee, nvarchar(10) as action_type;
+
+define o_audit_id       int8;
+define o_di_id          int8;
+define o_dt_txn        	date;
+define o_bal_di_amt_af 	decimal(16,2);
+define o_unit_fee       decimal(16,2);
+define o_action_type    nvarchar(10);
+
+    foreach c_dia for
+
+    select t1.audit_id, t1.di_id, t1.dt_txn, t1.bal_di_amt_af, t2.unit_fee, t1.action_type
+    into o_audit_id, o_di_id, o_dt_txn, o_bal_di_amt_af, o_unit_fee, o_action_type
+	from rms_di_a t1
+    left join rms_di t2 on t1.di_id = t2.di_id
+    where t1.in_fms_posting = 0
+    and (t1.action_type like '%T' or t1.action_type like '%A')
+    and t1.dt_txn <= today
+
+    return o_audit_id, o_di_id, o_dt_txn, o_bal_di_amt_af, o_unit_fee, o_action_type with resume;
+
+    end foreach;
+
+end procedure;
+GO
+create or replace procedure sp_getfmsdrmemo()
+returning 
+    int8 as drmemo_hid,
+    nvarchar(20) as type,
+    nvarchar(30) as link_branch,
+    decimal(15,5) as amt,
+    nvarchar(30) as cust,
+    nvarchar(40) as rms_batch_no,
+    datetime year to second as dt_sent,
+    nvarchar(255) as desc,
+    nvarchar(255) as attr_ext_sys,
+    nvarchar(20) as fms_ref_no,
+    nvarchar(20) as doc_ty,
+    nvarchar(30) as acct,
+    nvarchar(30) as branch,
+    int as qty,
+    nvarchar(50) as sub_acct,
+    nvarchar(255) as txn_desc,
+    decimal(15,5) as unit_price,
+--    nvarchar(30) as rcpt_no,
+--    nvarchar(255) as payee_info,
+    nvarchar(50) as ent_nm,
+    nvarchar(50) as ent_no,
+    nvarchar(20) as ent_ty,
+--    decimal(15,5) as item_amt,
+--    decimal(15,5) as pymt,
+--    decimal(15,5) as item_tax_amt,
+    nvarchar(50) as coa1,
+    nvarchar(50) as coa2
+;
+
+	define o_drmemo_hid int8;
+	define o_type nvarchar(20);
+	define o_link_branch nvarchar(30);
+	define o_amt decimal(15,5);
+	define o_cust nvarchar(30);
+	define o_rms_batch_no nvarchar(40);
+	define o_dt_sent datetime year to second;
+	define o_desc nvarchar(255);
+	define o_attr_ext_sys nvarchar(255);
+	define o_fms_ref_no nvarchar(20);
+	define o_doc_ty nvarchar(20);
+	define o_acct nvarchar(30);
+	define o_branch nvarchar(30);
+	define o_qty int;
+	define o_sub_acct nvarchar(50);
+	define o_txn_desc nvarchar(255);
+	define o_unit_price decimal(15,5);
+--	define o_rcpt_no nvarchar(30);
+--	define o_payee_info nvarchar(255);
+	define o_ent_nm nvarchar(50);
+	define o_ent_no nvarchar(50);
+	define o_ent_ty nvarchar(20);
+--	define o_item_amt decimal(15,5);
+--	define o_pymt decimal(15,5);
+--	define o_item_tax_amt decimal(15,5);
+	define o_coa1 nvarchar(50);
+	define o_coa2 nvarchar(50);
+
+	foreach c_drmemo for 
+	    select 
+	      	t1.drmemo_hid, t1.type, t1.link_branch, t1.amt, t1.cust, t1.rms_batch_no, t1.dt_sent, t1.desc, t1.attr_ext_sys, 
+	      	t2.fms_ref_no, t2.doc_ty,
+	      	t3.acct, t3.branch, t3.qty, t3.sub_acct, t3.txn_desc, t3.unit_price, t3.ent_nm, t3.ent_no, t3.ent_ty, t3.coa1, t3.coa2
+	    into 
+	        o_drmemo_hid, o_type, o_link_branch, o_amt, o_cust, o_rms_batch_no, o_dt_sent, o_desc, o_attr_ext_sys, 
+	        o_fms_ref_no, o_doc_ty,
+	        o_acct, o_branch, o_qty, o_sub_acct, o_txn_desc, o_unit_price, o_ent_nm, o_ent_no, o_ent_ty, o_coa1, o_coa2
+	    from rms_fms_drmemo_h t1
+	    	left join rms_fms_drmemo_f t2 on t1.drmemo_hid = t2.drmemo_hid
+	    	left join rms_fms_drmemo_b t3 on t1.drmemo_hid = t3.drmemo_hid
+		where t1.fms_ref_no is null 
+			and t1.resp_status <> 200
+		return 
+		    o_drmemo_hid, o_type, o_link_branch, o_amt, o_cust, o_rms_batch_no, o_dt_sent, o_desc, o_attr_ext_sys, 
+		    o_fms_ref_no, o_doc_ty,
+		    o_acct, o_branch, o_qty, o_sub_acct, o_txn_desc, o_unit_price, o_ent_nm, o_ent_no, o_ent_ty, o_coa1, o_coa2
+		    with resume;
+	end foreach;
+
+end procedure;
+GO
+create or replace procedure sp_getfmsjn()
+returning nvarchar(30) as branch_id, lvarchar(256) as desc,  nvarchar(10) as ledger_id,
+nvarchar(2) as module, DATE as dt_txn, lvarchar(256) as attr_ext_ref_no,lvarchar(256) as attr_ext_sys,
+nvarchar(10) as acct1, nvarchar(30) as branch1, decimal(16,2) as credit1, decimal(16,2) as debit1, nvarchar(30) as sub_acct1, lvarchar(256) as txn_desc1,
+nvarchar(10) as acct2, nvarchar(30) as branch2, decimal(16,2) as credit2, decimal(16,2) as debit2, nvarchar(30) as sub_acct2, lvarchar(256) as txn_desc2;
+
+define o_branch_id nvarchar(30); 
+define o_desc lvarchar(256);
+define o_ledger_id nvarchar(10);
+define o_module nvarchar(2);
+define o_dt_txn DATE;
+define o_attr_ext_ref_no lvarchar(256);
+define o_attr_ext_sys lvarchar(256);
+define o_acct1 nvarchar(10);
+define o_branch1 nvarchar(30);
+define o_credit1 decimal(16,2);
+define o_debit1  decimal(16,2);
+define o_sub_acct1  nvarchar(30);
+define o_txn_desc1  lvarchar(256);
+define o_acct2 nvarchar(10);
+define o_branch2 nvarchar(30);
+define o_credit2 decimal(16,2);
+define o_debit2 decimal(16,2);
+define o_sub_acct2 nvarchar(30);
+define o_txn_desc2 lvarchar(256);
+
+foreach c_getfmsjn for     
+    select 
+        t1.branch_id, t1.desc, t1.ledger_id, t1.module, t1.dt_txn, t1.attr_ext_ref_no, t1.attr_ext_sys,
+        max(case when row_num = 1 then acct end) as acct1,
+        max(case when row_num = 1 then branch end) as branch1,
+        max(case when row_num = 1 then credit end) as credit1,
+        max(case when row_num = 1 then debit end) as debit1,
+        max(case when row_num = 1 then sub_acct end) as sub_acct1,
+        max(case when row_num = 1 then txn_desc end) as txn_desc1,
+        max(case when row_num = 2 then acct end) as acct2,
+        max(case when row_num = 2 then branch end) as branch2,
+        max(case when row_num = 2 then credit end) as credit2,
+        max(case when row_num = 2 then debit end) as debit2,
+        max(case when row_num = 2 then sub_acct end) as sub_acct2,
+        max(case when row_num = 2 then txn_desc end) as txn_desc2
+    into o_branch_id, o_desc, o_ledger_id, o_module, o_dt_txn, o_attr_ext_ref_no, o_attr_ext_sys, 
+         o_acct1, o_branch1, o_credit1, o_debit1, o_sub_acct1, o_txn_desc1,
+         o_acct2, o_branch2, o_credit2, o_debit2, o_sub_acct2, o_txn_desc2
+    from rms_fms_jn_h t1
+    join (
+        select 
+            jn_hid, acct, branch, credit, debit, sub_acct, txn_desc,
+            row_number() over (partition by jn_hid order by acct) as row_num
+        from rms_fms_jn_b
+    ) as t2 on t1.jn_hid = t2.jn_hid
+    where t1.fms_ref_no is null
+    and (resp_status <> 200 or resp_status is null)
+    group by t2.jn_hid, t1.branch_id, t1.desc, t1.ledger_id, t1.module, t1.dt_txn, t1.attr_ext_ref_no, t1.attr_ext_sys
+    order by t2.jn_hid
+    
+    return o_branch_id, o_desc, o_ledger_id, o_module, o_dt_txn, o_attr_ext_ref_no, o_attr_ext_sys, 
+           o_acct1, o_branch1, o_credit1, o_debit1, o_sub_acct1, o_txn_desc1,
+           o_acct2, o_branch2, o_credit2, o_debit2, o_sub_acct2, o_txn_desc2 with resume;
+
+end foreach;
+
+end procedure;
+GO
+create or replace procedure sp_getfmsmtt()
+returning int8 as mtt_pg_id, decimal(16,2) as pg_pymt_amt, int as qty, nvarchar(100) as item_desc,
+            decimal(16,2) as unit_fee, nvarchar(100) as rcpt_no, nvarchar(100) as cust_nm, nvarchar(100) as entity_nm, nvarchar(100) as entity_no,
+            nvarchar(100) as entity_type, decimal(16,2) as gross_amt, nvarchar(100) as fee_detail_id, nvarchar(100) as pg_pymt_method,
+            decimal(16,2) as tax_amt,nvarchar(100) as customer,nvarchar(100) as item_ref_no, nvarchar(100) as cp_no;
+
+define o_mtt_pg_id int8;
+define o_pg_pymt_amt decimal(16,2);
+define o_qty int;
+define o_item_desc nvarchar(250);
+define o_unit_fee decimal(16,2);
+define o_rcpt_no nvarchar(30);
+define o_cust_nm nvarchar(250);
+define o_entity_nm nvarchar(100);
+define o_entity_no nvarchar(100);
+define o_entity_type nvarchar(1);
+define o_gross_amt decimal(16,2);
+define o_fee_detail_id nvarchar(100);
+define o_pg_pymt_method nvarchar(50);
+define o_tax_amt decimal(16,2);
+
+define o_product nvarchar(100);
+define o_coa1 nvarchar(100);
+define o_customer nvarchar(100);
+define o_item_ref_no nvarchar(100);
+define o_cp_no nvarchar(100);
+
+define ari_limit nvarchar(100);
+define temp_date date;
+
+    -- get limit per payment
+    select config_value
+    into ari_limit
+    from rms_config
+    where config_cd = 'FMS_ARI_Details';
+
+    -- filter in rms_fms_arrb's mtt record
+    -- get the most earliest date
+    select min(date(pg_resp_time)) as resp_time
+    into temp_date
+    from rms_mtt_pg
+    where (in_fms_posting = 0 or in_fms_posting is null)
+    and pg_txn_status=0
+    and date(pg_resp_time) <= today-1;
+
+    -- customer field
+    select acct_cd
+    into o_customer
+    from rms_fms_acct
+    where acct_nm ="AR Invoice's RMS PG MID Account ID";
+
+foreach c_ari for
+    -- filter out the limit
+    SELECT t1.mtt_pg_id,
+       t1.pg_pymt_amt,
+       t2.qty,
+       t2.item_desc,
+       t2.unit_fee,
+       t4.rcpt_no,
+       t3.cust_nm,
+       t2.entity_nm,
+       t2.entity_no,
+       t2.entity_type,
+       t2.gross_amt,
+       t2.fee_detail_id,
+       t1.pg_pymt_method,
+       t2.tax_amt,
+       t2.item_ref_no,
+       t2.cp_no
+    into o_mtt_pg_id,o_pg_pymt_amt,o_qty,o_item_desc,o_unit_fee,o_rcpt_no,o_cust_nm,o_entity_nm,o_entity_no,o_entity_type
+        ,o_gross_amt,o_fee_detail_id,o_pg_pymt_method,o_tax_amt,o_item_ref_no,o_cp_no
+    FROM (
+        SELECT FIRST ari_limit
+            mtt_pg_id,
+            mtt_id,
+            pg_pymt_amt,
+            pg_pymt_method,
+            pg_resp_time
+        FROM rms_mtt_pg
+        WHERE DATE(pg_resp_time) = temp_date
+          AND (in_fms_posting = 0 OR in_fms_posting IS NULL)
+          AND pg_txn_status = 0
+        ORDER BY pg_resp_time
+    ) t1
+    INNER JOIN rms_mtt_item t2 ON t1.mtt_id = t2.mtt_id
+    INNER JOIN rms_mtt t3 ON t1.mtt_id = t3.mtt_id
+    LEFT JOIN rms_mtt_rcpt t4 ON t1.mtt_pg_id = t4.mtt_pg_id
+    ORDER BY t1.pg_resp_time
+
+    return o_mtt_pg_id,o_pg_pymt_amt,o_qty,o_item_desc,o_unit_fee,o_rcpt_no,o_cust_nm,o_entity_nm,o_entity_no,o_entity_type
+    ,o_gross_amt,o_fee_detail_id,o_pg_pymt_method,o_tax_amt,o_customer,o_item_ref_no,o_cp_no with resume;
+
+end foreach;
+
+end procedure;
+GO
+create or replace procedure sp_getfmsrcbank()
+returning 
+    int8 as rc_bank_id,
+    int8 as rc_pg_id,
+    decimal(16,2) as credit,
+    decimal(16,2) as mdr_amt,
+    int8 as mtt_pg_id,
+    nvarchar(10) as acct_cd,
+    nvarchar(10) as cust;
+
+define o_rc_bank_id int8;
+define o_rc_pg_id int8;
+define o_credit decimal(16,2);
+define o_mdr_amt decimal(16,2);
+define o_mtt_pg_id int8;
+define o_acct_cd nvarchar(10);
+define o_cust nvarchar(10);
+
+let o_acct_cd = (select first 1 acct_cd from rms_fms_acct where acct_nm = 'AR Receipt''s Cash Account');
+let o_cust = (select first 1 acct_cd from rms_fms_acct where acct_nm = 'AR Invoice''s RMS PG MID Account ID');
+
+foreach c_arr for
+
+    select t1.rc_bank_id, t1.rc_pg_id, 
+    case 
+        when sum(t2.credit) is null 
+        then 0
+    else sum(t2.credit) end as credit, 
+    sum(t3.mdr_amt)as mdr_amt, t4.mtt_pg_id
+    into o_rc_bank_id, o_rc_pg_id, o_credit, o_mdr_amt, o_mtt_pg_id
+    from rms_rc_bank t1
+    left join rms_rc_banktxn t2 on t1.rc_bank_id = t2.rc_bank_id
+    left join rms_rc_pgtxn t3 on t3.rc_pg_id = t1.rc_pg_id
+    left join rms_mtt_pg t4 on t3.rc_pg_id = t4.mtt_pg_id
+    where (t1.in_fms_posting = 0 or t1.in_fms_posting is null)
+    and t1.dt_created < today
+    and t1.recon_status = 'SBSR'
+    group by t1.rc_bank_id, t1.rc_pg_id, t4.mtt_pg_id
+    order by t1.rc_bank_id
+
+    return o_rc_bank_id, o_rc_pg_id, o_credit, o_mdr_amt, o_mtt_pg_id, o_acct_cd, o_cust with resume;
+end foreach;
+
+end procedure;
+GO
+CREATE OR REPLACE PROCEDURE sp_getfmsrcpgmtt()
+RETURNING  
+    int8 AS rc_pg_id,
+    nvarchar(3) as pg_pymt_method,
+    int8 as mtt_pg_id,
+    int as qty,
+    nvarchar(150) as item_desc,
+    decimal(16,2) as unit_fee,
+    nvarchar(100) as entity_nm,
+    nvarchar(20) as entity_no,
+    nvarchar(1) as entity_type,
+    decimal(16,2) as gross_amt,
+    nvarchar(10) as fee_detail_id,
+    decimal(16,2) as tax_amt,
+    nvarchar(20) as rcpt_no,
+    nvarchar(255) as cust_nm,
+    decimal(16,2) as pg_pymt_amt;
+
+   	define o_mtt_pg_id int8;
+    define o_rc_pg_id INT8;
+	define o_pg_pymt_method nvarchar(3);
+	define o_qty int;
+	define o_item_desc nvarchar(150);
+	define o_unit_fee decimal(16,2);
+	define o_entity_nm nvarchar(100);
+	define o_entity_no nvarchar(20);
+	define o_entity_type nvarchar(1);
+	define o_gross_amt decimal(16,2);
+	define o_fee_detail_id nvarchar(10);
+	define o_tax_amt decimal(16,2);
+	define o_rcpt_no nvarchar(20);
+	define o_cust_nm nvarchar(255);
+	define o_pg_pymt_amt decimal(16,2);
+   
+    FOREACH c_arr for
+        SELECT 
+		    t1.rc_pg_id,
+		    t3.pg_pymt_method,
+		    t3.mtt_pg_id,
+		    t4.qty, 
+		    t4.item_desc, 
+		    t4.unit_fee, 
+		    t4.entity_nm, 
+		    t4.entity_no,
+		    t4.entity_type, 
+		    t4.gross_amt, 
+		    t4.fee_detail_id, 
+		    t4.tax_amt,
+		    t5.rcpt_no, 
+		    t6.cust_nm,
+		    SUM(t3.pg_pymt_amt) AS pg_pymt_amt
+        INTO 
+            o_rc_pg_id, 
+            o_pg_pymt_method, 
+            o_mtt_pg_id,
+            o_qty,
+            o_item_desc,
+            o_unit_fee,
+            o_entity_nm,
+            o_entity_no,
+            o_entity_type,
+            o_gross_amt,
+            o_fee_detail_id,
+            o_tax_amt,
+            o_rcpt_no,
+            o_cust_nm,
+            o_pg_pymt_amt
+        FROM 
+            rms_rc_pg t1
+        INNER JOIN 
+            rms_rc_pgmtt t2 ON t1.rc_pg_id = t2.rc_pg_id
+        INNER JOIN 
+            rms_mtt_pg t3 ON t2.mtt_pg_id = t3.mtt_pg_id
+        INNER JOIN 
+        	rms_mtt_item t4 on t3.mtt_id = t4.mtt_id
+        INNER JOIN 
+        	rms_mtt_rcpt t5 on t3.mtt_id = t5.mtt_id
+        INNER JOIN 
+        	rms_mtt t6 on t3.mtt_id = t6.mtt_id
+        WHERE 
+            t1.dt_created < TODAY
+            AND t1.recon_status = 'SSSCR'
+            AND t2.found_in_pg = 0
+            and (t2.in_fms_posting = 0 or t2.in_fms_posting is null)
+        GROUP BY 
+		    t1.rc_pg_id,
+		    t3.pg_pymt_method,
+		    t3.mtt_pg_id,
+		    t4.qty, 
+		    t4.item_desc, 
+		    t4.unit_fee, 
+		    t4.entity_nm, 
+		    t4.entity_no,
+		    t4.entity_type, 
+		    t4.gross_amt, 
+		    t4.fee_detail_id, 
+		    t4.tax_amt,
+		    t5.rcpt_no, 
+		    t6.cust_nm
+        ORDER BY 
+            t1.rc_pg_id
+           
+        RETURN 
+            o_rc_pg_id, 
+            o_pg_pymt_method, 
+            o_mtt_pg_id,
+            o_qty,
+            o_item_desc,
+            o_unit_fee,
+            o_entity_nm,
+            o_entity_no,
+            o_entity_type,
+            o_gross_amt,
+            o_fee_detail_id,
+            o_tax_amt,
+            o_rcpt_no,
+            o_cust_nm,
+            o_pg_pymt_amt
+			WITH RESUME;
+    END FOREACH;
+
+END PROCEDURE;
+GO
+CREATE OR REPLACE PROCEDURE sp_getfmsrcpgtxn()
+RETURNING  
+    int8 AS rc_pg_id,
+    nvarchar(3) as pg_pymt_method,
+    int8 as mtt_pg_id,
+    int as qty,
+    nvarchar(150) as item_desc,
+    decimal(16,2) as unit_fee,
+    nvarchar(100) as entity_nm,
+    nvarchar(20) as entity_no,
+    nvarchar(1) as entity_type,
+    decimal(16,2) as gross_amt,
+    nvarchar(10) as fee_detail_id,
+    decimal(16,2) as tax_amt,
+    nvarchar(20) as rcpt_no,
+    nvarchar(255) as cust_nm,
+    decimal(16,2) as pg_pymt_amt;
+
+   	define o_mtt_pg_id int8;
+    define o_rc_pg_id INT8;
+	define o_pg_pymt_method nvarchar(3);
+	define o_qty int;
+	define o_item_desc nvarchar(150);
+	define o_unit_fee decimal(16,2);
+	define o_entity_nm nvarchar(100);
+	define o_entity_no nvarchar(20);
+	define o_entity_type nvarchar(1);
+	define o_gross_amt decimal(16,2);
+	define o_fee_detail_id nvarchar(10);
+	define o_tax_amt decimal(16,2);
+	define o_rcpt_no nvarchar(20);
+	define o_cust_nm nvarchar(255);
+	define o_pg_pymt_amt decimal(16,2);
+   
+    FOREACH c_arr for
+        SELECT 
+		    t1.rc_pg_id,
+		    t3.pg_pymt_method,
+		    t3.mtt_pg_id,
+		    t4.qty, 
+		    t4.item_desc, 
+		    t4.unit_fee, 
+		    t4.entity_nm, 
+		    t4.entity_no,
+		    t4.entity_type, 
+		    t4.gross_amt, 
+		    t4.fee_detail_id, 
+		    t4.tax_amt,
+		    t5.rcpt_no, 
+		    t6.cust_nm,
+		    SUM(t3.pg_pymt_amt) AS pg_pymt_amt
+        INTO 
+            o_rc_pg_id, 
+            o_pg_pymt_method, 
+            o_mtt_pg_id,
+            o_qty,
+            o_item_desc,
+            o_unit_fee,
+            o_entity_nm,
+            o_entity_no,
+            o_entity_type,
+            o_gross_amt,
+            o_fee_detail_id,
+            o_tax_amt,
+            o_rcpt_no,
+            o_cust_nm,
+            o_pg_pymt_amt
+        FROM 
+            rms_rc_pg t1
+        INNER JOIN 
+            rms_rc_pgtxn t2 ON t1.rc_pg_id = t2.rc_pg_id
+        INNER JOIN 
+            rms_mtt_pg t3 ON t2.mtt_pg_id = t3.mtt_pg_id
+        INNER JOIN 
+        	rms_mtt_item t4 on t3.mtt_id = t4.mtt_id
+        INNER JOIN 
+        	rms_mtt_rcpt t5 on t3.mtt_id = t5.mtt_id
+        INNER JOIN 
+        	rms_mtt t6 on t3.mtt_id = t6.mtt_id
+        WHERE 
+            t1.dt_created < TODAY
+            AND t1.recon_status = 'SSSCR'
+            AND (t2.in_fms_posting = 0 or t2.in_fms_posting is null)
+        GROUP BY 
+		    t1.rc_pg_id,
+		    t3.pg_pymt_method,
+		    t3.mtt_pg_id,
+		    t4.qty, 
+		    t4.item_desc, 
+		    t4.unit_fee, 
+		    t4.entity_nm, 
+		    t4.entity_no,
+		    t4.entity_type, 
+		    t4.gross_amt, 
+		    t4.fee_detail_id, 
+		    t4.tax_amt,
+		    t5.rcpt_no, 
+		    t6.cust_nm
+        ORDER BY 
+            t1.rc_pg_id
+           
+        RETURN 
+            o_rc_pg_id, 
+            o_pg_pymt_method, 
+            o_mtt_pg_id,
+            o_qty,
+            o_item_desc,
+            o_unit_fee,
+            o_entity_nm,
+            o_entity_no,
+            o_entity_type,
+            o_gross_amt,
+            o_fee_detail_id,
+            o_tax_amt,
+            o_rcpt_no,
+            o_cust_nm,
+            o_pg_pymt_amt
+			WITH RESUME;
+    END FOREACH;
+
+END PROCEDURE;
+GO
+create or replace procedure sp_getfmsricpa()
+returning int8 as audit_id,
+int8 as ricp_id,
+date as dt_txn,
+decimal(16,2) as accr_amt_af,
+nvarchar(10) as action_type;
+
+define o_audit_id int8;
+
+define o_ricp_id int8;
+
+define o_dt_txn date;
+
+define o_accr_amt_af decimal(16,2);
+
+define o_action_type nvarchar(10);
+
+foreach c_dia for
+    select
+	t1.audit_id,
+	t1.ricp_id,
+	t1.dt_txn,
+	t1.accr_amt_af,
+	t1.action_type
+    into
+	o_audit_id,
+	o_ricp_id,
+	o_dt_txn,
+	o_accr_amt_af,
+	o_action_type
+from
+	rms_ricp_a t1
+where
+	(t1.in_fms_posting = 0
+		or t1.in_fms_posting is null)
+	and t1.dt_txn <= today
+	and ( t1.action_type like '%I'
+		or t1.action_type like '%WO'
+		or t1.action_type like '%C'
+		or t1.action_type like '%V')
+
+    return o_audit_id,
+	o_ricp_id,
+	o_dt_txn,
+	o_accr_amt_af,
+	o_action_type with resume;
+end foreach;
+end procedure;
+GO
+create or replace procedure sp_getfmsripla()
+returning int8 as audit_id,
+int8 as ripl_id,
+date as dt_txn,
+decimal(16,2) as accr_amt_af,
+nvarchar(10) as action_type;
+
+define o_audit_id int8;
+
+define o_ripl_id int8;
+
+define o_dt_txn date;
+
+define o_accr_amt_af decimal(16,2);
+
+define o_action_type nvarchar(10);
+
+foreach c_dia for
+    select
+	t1.audit_id,
+	t1.ripl_id,
+	t1.dt_txn,
+	t1.accr_amt_af,
+	t1.action_type
+    into
+	o_audit_id,
+	o_ripl_id,
+	o_dt_txn,
+	o_accr_amt_af,
+	o_action_type
+from
+	rms_ripl_a t1
+where
+	(t1.in_fms_posting = 0
+		or t1.in_fms_posting is null)
+	and t1.dt_txn <= today
+	and ( t1.action_type like '%R'
+		or t1.action_type like '%RP'
+		or t1.action_type like '%I'
+		or t1.action_type like '%WO')
+
+    return o_audit_id,
+	o_ripl_id,
+	o_dt_txn,
+	o_accr_amt_af,
+	o_action_type with resume;
+end foreach;
+end procedure;
+GO
+
+
+CREATE OR REPLACE PROCEDURE sp_getpendingdiagingrpt()
+								
+returning	int8 as rpt_di_age_id,
+			datetime year to second as p_dt_req,
+			int as p_tmn_status,
+			nvarchar(1) as p_ent_ty,
+			nvarchar(100) as p_ent_nm,
+			nvarchar(10) as p_txn_ty,
+			nvarchar(10) as p_status,
+			datetime year to second as p_dt_exp_fr,
+			datetime year to second as p_dt_exp_to,
+			datetime year to second as p_dt_eff_fr,
+			datetime year to second as p_dt_eff_to,
+			datetime year to second as p_dt_app_fr,
+			datetime year to second as p_dt_app_to,
+			datetime year to second as p_dt_tmn_fr,
+			datetime year to second as p_dt_tmn_to,
+			datetime year to second as dt_created,
+			datetime year to second as dt_modified,
+			nvarchar(25) as created_by,
+			nvarchar(25) as modified_by,
+			nvarchar(10) as status,
+			nvarchar(50) as p_email,
+			nvarchar(50) as p_file_type,
+			int as p_file_size,
+			nvarchar(255) as p_file_nm,
+			nvarchar(30) as p_batch_no,
+			nvarchar(25) as p_fms_ref_no,
+			nvarchar(10) as task_id;
+			
+define o_rpt_di_age_id		int8;
+define o_p_dt_req           datetime year to second;
+define o_p_tmn_status		int;
+define o_p_ent_ty			nvarchar(1);
+define o_p_ent_nm		    nvarchar(100);
+define o_p_txn_ty		    nvarchar(10);
+define o_p_status	        nvarchar(10);
+define o_p_dt_exp_fr	    datetime year to second;
+define o_p_dt_exp_to 	    datetime year to second;
+define o_p_dt_eff_fr		datetime year to second;
+define o_p_dt_eff_to		datetime year to second;
+define o_p_dt_app_fr		datetime year to second;
+define o_p_dt_app_to		datetime year to second;
+define o_p_dt_tmn_fr		datetime year to second;
+define o_p_dt_tmn_to		datetime year to second;
+define o_dt_created			datetime year to second;
+define o_dt_modified		datetime year to second;
+define o_created_by			nvarchar(25);
+define o_modified_by		nvarchar(25);
+define o_status				nvarchar(10);
+define o_p_email			nvarchar(50);
+define o_p_file_type		nvarchar(50);
+define o_p_file_size		int;
+define o_p_file_nm		    nvarchar(255);
+define o_p_batch_no		    nvarchar(30);
+define o_p_fms_ref_no		nvarchar(25);
+
+	foreach c_getpendingdiagingrpt for
+		select t1.rpt_di_age_id, t1.p_dt_req, t1.p_tmn_status, t1.p_ent_ty, t1.p_ent_nm, t1.p_txn_ty, t1.p_status,
+		t1.p_dt_exp_fr, t1.p_dt_exp_to, t1.p_dt_eff_fr, t1.p_dt_eff_to, t1.p_dt_app_fr, t1.p_dt_app_to, t1.p_dt_tmn_fr,t1.p_dt_tmn_to,
+	    t1.dt_created,t1.dt_modified, t1.created_by, t1.modified_by, t1.status, t1.p_email, t1.p_file_type, t1.p_file_size, t1.p_file_nm, 
+	    t1.p_batch_no, t1.p_fms_ref_no
+		into o_rpt_di_age_id, o_p_dt_req, o_p_tmn_status, o_p_ent_ty, o_p_ent_nm, o_p_txn_ty, o_p_status, 
+		o_p_dt_exp_fr, o_p_dt_exp_to, o_p_dt_eff_fr, o_p_dt_eff_to, o_p_dt_app_fr, o_p_dt_app_to, o_p_dt_tmn_fr,o_p_dt_tmn_to,
+	    o_dt_created,o_dt_modified, o_created_by, o_modified_by, o_status, o_p_email, o_p_file_type, o_p_file_size, o_p_file_nm,
+	    o_p_batch_no, o_p_fms_ref_no
+		from rms_rpt_di_age t1
+		where t1.status = 'P' or t1.status = 'I'	
+		
+		return o_rpt_di_age_id, o_p_dt_req, o_p_tmn_status, o_p_ent_ty, o_p_ent_nm, o_p_txn_ty, o_p_status, 
+		o_p_dt_exp_fr, o_p_dt_exp_to, o_p_dt_eff_fr, o_p_dt_eff_to, o_p_dt_app_fr, o_p_dt_app_to, o_p_dt_tmn_fr,o_p_dt_tmn_to,
+	    o_dt_created,o_dt_modified, o_created_by, o_modified_by, o_status, o_p_email, o_p_file_type, o_p_file_size, o_p_file_nm, 
+	    o_p_batch_no, o_p_fms_ref_no, 'RG'||lpad(o_rpt_di_age_id,6,'0') with resume;	
+		
+	end foreach
+
+end procedure
+GO
+CREATE OR REPLACE PROCEDURE sp_getpendingdiagingrptbyid(i_rpt_di_age_id INT8)
+
+returning integer;
+
+define o_count integer;
+
+	select count(1) into o_count 
+	from rms_rpt_di_age 
+	where status = "P"
+	and rpt_di_age_id = i_rpt_di_age_id;
+
+	return o_count with resume;
+
+end procedure;
+GO
+CREATE OR REPLACE PROCEDURE sp_getpendingriplagingrpt ()
+RETURNING
+    INT8 AS rpt_ripl_age_id,
+    DATETIME YEAR TO SECOND AS p_dt_req,
+    INT AS p_imp_status,
+    INT AS p_exp_status,
+    NVARCHAR(1) AS p_ent_ty,
+    NVARCHAR(100) AS p_ent_nm,
+    DATETIME YEAR TO SECOND AS p_dt_due_fr,
+    DATETIME YEAR TO SECOND AS p_dt_due_to,
+    DATETIME YEAR TO SECOND AS p_dt_rcpt_fr,
+    DATETIME YEAR TO SECOND AS p_dt_rcpt_to,
+    DATETIME YEAR TO SECOND AS p_dt_imp_fr,
+    DATETIME YEAR TO SECOND AS p_dt_imp_to,
+    DATETIME YEAR TO SECOND AS p_dt_wo_fr,
+    DATETIME YEAR TO SECOND AS p_dt_wo_to,
+    DATETIME YEAR TO SECOND AS dt_created,
+    DATETIME YEAR TO SECOND AS dt_modified,
+    NVARCHAR(25) AS created_by,
+    NVARCHAR(25) AS modified_by,
+    NVARCHAR(10) AS status,
+    nvarchar(50) as p_email,
+	nvarchar(50) as p_file_type,
+	int as p_file_size,
+	nvarchar(255) as p_file_nm,
+	nvarchar(30) as p_batch_no,
+	nvarchar(25) as p_fms_ref_no,
+	nvarchar(10) as task_id;
+
+DEFINE o_rpt_ripl_age_id INT8;
+DEFINE o_p_dt_req DATETIME YEAR TO SECOND;
+DEFINE o_p_imp_status INT;
+DEFINE o_p_exp_status INT;
+DEFINE o_p_ent_ty NVARCHAR(1);
+DEFINE o_p_ent_nm NVARCHAR(100);
+DEFINE o_p_dt_due_fr DATETIME YEAR TO SECOND;
+DEFINE o_p_dt_due_to DATETIME YEAR TO SECOND;
+DEFINE o_p_dt_rcpt_fr DATETIME YEAR TO SECOND;
+DEFINE o_p_dt_rcpt_to DATETIME YEAR TO SECOND;
+DEFINE o_p_dt_imp_fr DATETIME YEAR TO SECOND;
+DEFINE o_p_dt_imp_to DATETIME YEAR TO SECOND;
+DEFINE o_p_dt_wo_fr DATETIME YEAR TO SECOND;
+DEFINE o_p_dt_wo_to DATETIME YEAR TO SECOND;
+DEFINE o_dt_created DATETIME YEAR TO SECOND;
+DEFINE o_dt_modified DATETIME YEAR TO SECOND;
+DEFINE o_created_by NVARCHAR(25);
+DEFINE o_modified_by NVARCHAR(25);
+DEFINE o_status NVARCHAR(10);
+define o_p_email nvarchar(50);
+define o_p_file_type nvarchar(50);
+define o_p_file_size int;
+define o_p_file_nm nvarchar(255);
+define o_p_batch_no	nvarchar(30);
+define o_p_fms_ref_no nvarchar(25);
+
+
+
+
+FOREACH c_getriplaging FOR
+    select t1.rpt_ripl_age_id, t1.p_dt_req, t1.p_imp_status, t1.p_exp_status, t1.p_ent_ty, t1.p_ent_nm,
+           t1.p_dt_due_fr, t1.p_dt_due_to, t1.p_dt_rcpt_fr, t1.p_dt_rcpt_to, t1.p_dt_imp_fr, t1.p_dt_imp_to,
+           t1.p_dt_wo_fr, t1.p_dt_wo_to, t1.dt_created, t1.dt_modified, t1.created_by, t1.modified_by,
+           t1.status, t1.p_email, t1.p_file_type, t1.p_file_size, t1.p_file_nm, 
+	       t1.p_batch_no, t1.p_fms_ref_no
+    INTO o_rpt_ripl_age_id, o_p_dt_req, o_p_imp_status, o_p_exp_status, o_p_ent_ty, o_p_ent_nm,
+         o_p_dt_due_fr, o_p_dt_due_to, o_p_dt_rcpt_fr, o_p_dt_rcpt_to, o_p_dt_imp_fr, o_p_dt_imp_to,
+         o_p_dt_wo_fr, o_p_dt_wo_to, o_dt_created, o_dt_modified, o_created_by, o_modified_by,
+         o_status, o_p_email, o_p_file_type, o_p_file_size, o_p_file_nm,
+	    o_p_batch_no, o_p_fms_ref_no
+    FROM rms_rpt_ripl_age t1
+    
+    where t1.status = 'P' or t1.status = 'I'
+      
+
+    RETURN o_rpt_ripl_age_id, o_p_dt_req, o_p_imp_status, o_p_exp_status, o_p_ent_ty, o_p_ent_nm,
+           o_p_dt_due_fr, o_p_dt_due_to, o_p_dt_rcpt_fr, o_p_dt_rcpt_to, o_p_dt_imp_fr, o_p_dt_imp_to,
+           o_p_dt_wo_fr, o_p_dt_wo_to, o_dt_created, o_dt_modified, o_created_by, o_modified_by,
+           o_status, o_p_email, o_p_file_type, o_p_file_size, o_p_file_nm, 
+	       o_p_batch_no, o_p_fms_ref_no, 'RG'||lpad(o_rpt_ripl_age_id,6,'0') with resume;
+END FOREACH
+
+
+	
+END PROCEDURE
+GO
+CREATE OR REPLACE PROCEDURE sp_getpendingriplagingrptbyid(i_rpt_ripl_age_id INT8)
+
+returning integer;
+
+define o_count integer;
+
+	select count(1) into o_count 
+	from rms_rpt_ripl_age 
+	where status = "P"
+	and rpt_ripl_age_id = i_rpt_ripl_age_id;
+
+	return o_count with resume;
+
+end procedure;
+GO
+CREATE OR REPLACE PROCEDURE sp_getpendingrptricpagerq() returning  
+integer as rpt_ricp_age_id, datetime year to fraction(5) as p_dt_req, integer as p_exp_status, integer as p_can_v_status, nvarchar(1) as p_ent_ty, 
+nvarchar(100) as p_ent_nm, datetime year to fraction(5) as p_dt_iss_fr, datetime year to fraction(5) as p_dt_iss_to, 
+datetime year to fraction(5) as p_dt_exp_fr, datetime year to fraction(5) as p_dt_exp_to, datetime year to fraction(5) as p_dt_wo_fr, 
+datetime year to fraction(5) as p_dt_wo_to, datetime year to fraction(5) as p_dt_can_fr, datetime year to fraction(5) as p_dt_can_to, 
+datetime year to fraction(5) as p_dt_void_fr, datetime year to fraction(5) as p_dt_void_to, datetime year to fraction(5) as dt_created, 
+datetime year to fraction(5) as dt_modified, nvarchar(25) as created_by, nvarchar(25) as modified_by, nvarchar(10) as status, nvarchar(255) as p_email, 
+datetime year to fraction(5) as p_dt_rcpt_fr, datetime year to fraction(5) as p_dt_rcpt_to, nvarchar(5) as file_type, integer as p_file_size,
+nvarchar(255) as p_file_nm, nvarchar(30) as p_batch_no, nvarchar(25) as p_fms_ref_no, nvarchar(8) as task_id;
+
+	DEFINE o_rpt_ricp_age_id integer;
+	DEFINE o_p_dt_req datetime year to fraction(5);
+	DEFINE o_p_exp_status integer;
+	DEFINE o_p_can_v_status integer;
+	DEFINE o_p_ent_ty nvarchar(1);
+	DEFINE o_p_ent_nm nvarchar(100);
+	DEFINE o_p_dt_iss_fr datetime year to fraction(5);
+	DEFINE o_p_dt_iss_to datetime year to fraction(5);
+	DEFINE o_p_dt_exp_fr datetime year to fraction(5);
+	DEFINE o_p_dt_exp_to datetime year to fraction(5);
+	DEFINE o_p_dt_wo_fr datetime year to fraction(5);
+	DEFINE o_p_dt_wo_to datetime year to fraction(5);
+	DEFINE o_p_dt_can_fr datetime year to fraction(5);
+	DEFINE o_p_dt_can_to datetime year to fraction(5);
+	DEFINE o_p_dt_void_fr datetime year to fraction(5);
+	DEFINE o_p_dt_void_to datetime year to fraction(5);
+	DEFINE o_dt_created datetime year to fraction(5);
+	DEFINE o_dt_modified datetime year to fraction(5);
+	DEFINE o_created_by nvarchar(25);
+	DEFINE o_modified_by nvarchar(25);
+	DEFINE o_status nvarchar(10);
+	DEFINE o_p_email nvarchar(255);
+	DEFINE o_p_dt_rcpt_fr datetime year to fraction(5);
+	DEFINE o_p_dt_rcpt_to datetime year to fraction(5);
+	DEFINE o_p_file_type nvarchar(5);
+	DEFINE o_p_file_size integer;
+	DEFINE o_p_file_nm nvarchar(255);
+	DEFINE o_p_batch_no nvarchar(30);
+	DEFINE o_p_fms_ref_no nvarchar(25);
+	define o_task_id nvarchar(8);
+
+	FOREACH c_getpendingrptricpagerq FOR
+        select rpt_ricp_age_id,p_dt_req,p_exp_status,p_can_v_status,p_ent_ty,p_ent_nm,p_dt_iss_fr,p_dt_iss_to,
+				p_dt_exp_fr,p_dt_exp_to,p_dt_wo_fr,p_dt_wo_to,p_dt_can_fr,p_dt_can_to,p_dt_void_fr,
+				p_dt_void_to,dt_created,dt_modified,created_by,modified_by,status,p_email,p_dt_rcpt_fr,
+				p_dt_rcpt_to,p_file_type,p_file_size,p_file_nm,p_batch_no,p_fms_ref_no,'RG' || lpad(rpt_ricp_age_id,6,'0')
+        INTO o_rpt_ricp_age_id,o_p_dt_req,o_p_exp_status,o_p_can_v_status,o_p_ent_ty,o_p_ent_nm,o_p_dt_iss_fr,o_p_dt_iss_to,
+				o_p_dt_exp_fr,o_p_dt_exp_to,o_p_dt_wo_fr,o_p_dt_wo_to,o_p_dt_can_fr,o_p_dt_can_to,o_p_dt_void_fr,
+				o_p_dt_void_to,o_dt_created,o_dt_modified,o_created_by,o_modified_by,o_status,o_p_email,o_p_dt_rcpt_fr,
+				o_p_dt_rcpt_to,o_p_file_type,o_p_file_size,o_p_file_nm,o_p_batch_no,o_p_fms_ref_no,o_task_id
+        FROM rms_rpt_ricp_age where status = 'P' or status = 'I'
+		
+		RETURN o_rpt_ricp_age_id,o_p_dt_req,o_p_exp_status,o_p_can_v_status,o_p_ent_ty,o_p_ent_nm,o_p_dt_iss_fr,o_p_dt_iss_to,
+				o_p_dt_exp_fr,o_p_dt_exp_to,o_p_dt_wo_fr,o_p_dt_wo_to,o_p_dt_can_fr,o_p_dt_can_to,o_p_dt_void_fr,
+				o_p_dt_void_to,o_dt_created,o_dt_modified,o_created_by,o_modified_by,o_status,o_p_email,o_p_dt_rcpt_fr,
+				o_p_dt_rcpt_to,o_p_file_type,o_p_file_size,o_p_file_nm,o_p_batch_no,o_p_fms_ref_no,o_task_id WITH RESUME;
+	END FOREACH
+end procedure
+GO
+CREATE OR REPLACE PROCEDURE sp_getpendingrptumage() returning 
+integer as rpt_um_age_id,datetime year to fraction(5) as p_dt_req,nvarchar(30) as p_txn_id
+,datetime year to fraction(5) as dt_created,datetime year to fraction(5) as dt_modified
+,nvarchar(25) as created_by,nvarchar(25) as modified_by,nvarchar(10) as status
+,nvarchar(50) as p_rcpt_no,nvarchar(50) as p_stmt_no,nvarchar(10) as p_recon_status
+,datetime year to fraction(5) as p_dt_stmt_fr,datetime year to fraction(5) as p_dt_stmt_to
+,integer as p_dup,nvarchar(255) as p_email,nvarchar(5) as p_file_type,integer as p_file_size
+,nvarchar(255) as p_file_nm, nvarchar(8) as task_id, nvarchar(30) as p_batch_no, nvarchar(25) as p_fms_ref_no;
+
+	DEFINE o_rpt_um_age_id integer;
+	DEFINE o_p_dt_req datetime year to fraction(5);
+	DEFINE o_p_txn_id nvarchar(30);
+	DEFINE o_dt_created datetime year to fraction(5);
+	DEFINE o_dt_modified datetime year to fraction(5);
+	DEFINE o_created_by nvarchar(25);
+	DEFINE o_modified_by nvarchar(25);
+	DEFINE o_status nvarchar(10);
+	DEFINE o_p_rcpt_no nvarchar(50);
+	DEFINE o_p_stmt_no nvarchar(50);
+	DEFINE o_p_recon_status nvarchar(10);
+	DEFINE o_p_dt_stmt_fr datetime year to fraction(5);
+	DEFINE o_p_dt_stmt_to datetime year to fraction(5);
+	DEFINE o_p_dup integer;
+	DEFINE o_p_email nvarchar(255);
+	DEFINE o_p_file_type nvarchar(5);
+	DEFINE o_p_file_size integer;
+	DEFINE o_p_file_nm nvarchar(255);
+	define o_task_id nvarchar(8);
+	define o_batch_no nvarchar(30);
+	define o_fms_ref_no nvarchar(25);
+
+	FOREACH c_getpendingrptumage FOR
+        SELECT rpt_um_age_id,p_dt_req,p_txn_id,dt_created,dt_modified,created_by,modified_by,status,
+				p_rcpt_no,p_stmt_no,p_recon_status,p_dt_stmt_fr,p_dt_stmt_to,p_dup,p_email,p_file_type,p_file_size,p_file_nm,
+				'RG' || lpad(rpt_um_age_id,6,'0'), p_batch_no, p_fms_ref_no
+        INTO o_rpt_um_age_id,o_p_dt_req,o_p_txn_id,o_dt_created,o_dt_modified,o_created_by,o_modified_by,o_status,
+			o_p_rcpt_no,o_p_stmt_no,o_p_recon_status,o_p_dt_stmt_fr,o_p_dt_stmt_to,o_p_dup,o_p_email,o_p_file_type,o_p_file_size,
+			o_p_file_nm, o_task_id, o_batch_no, o_fms_ref_no
+        FROM rms_rpt_um_age where status = 'P' or status = 'I'
+		
+		RETURN o_rpt_um_age_id,o_p_dt_req,o_p_txn_id,o_dt_created,o_dt_modified,o_created_by,o_modified_by,o_status,
+			o_p_rcpt_no,o_p_stmt_no,o_p_recon_status,o_p_dt_stmt_fr,o_p_dt_stmt_to,o_p_dup,o_p_email,o_p_file_type,
+			o_p_file_size,o_p_file_nm, o_task_id, o_batch_no, o_fms_ref_no WITH RESUME;
+	END FOREACH
+end procedure
+GO
+CREATE OR REPLACE PROCEDURE sp_getriplagequeuerpt()
+
+returning integer;
+
+define o_count integer;
+
+	select count(1) into o_count 
+	from rms_rpt_ripl_age 
+	where status = "P" or status = "I";
+
+	return o_count with resume;
+
+end procedure;
+GO
+CREATE OR REPLACE PROCEDURE sp_getriplaging (
+	i_page int, 
+	i_size int,
+    i_rpt_ripl_age_id INT8,
+    i_p_dt_req DATE,
+    i_p_imp_status INT,
+    i_p_exp_status INT,
+    i_p_ent_ty NVARCHAR(1),
+    i_p_ent_nm NVARCHAR(200),
+    i_p_dt_due_fr DATE,
+    i_p_dt_due_to DATE,
+    i_p_dt_rcpt_fr DATE,
+    i_p_dt_rcpt_to DATE,
+    i_p_dt_imp_fr DATE,
+    i_p_dt_imp_to DATE,
+    i_p_dt_wo_fr DATE,
+    i_p_dt_wo_to DATE,
+    i_created_by NVARCHAR(25),
+    i_modified_by NVARCHAR(25),
+    i_status NVARCHAR(10),
+    i_p_email NVARCHAR(255),
+    i_p_file_type NVARCHAR(5)
+)
+RETURNING
+    INT8 AS rpt_ripl_age_id,
+    DATETIME YEAR TO SECOND AS p_dt_req,
+    INT AS p_imp_status,
+    INT AS p_exp_status,
+    NVARCHAR(1) AS p_ent_ty,
+    NVARCHAR(100) AS p_ent_nm,
+    DATETIME YEAR TO SECOND AS p_dt_due_fr,
+    DATETIME YEAR TO SECOND AS p_dt_due_to,
+    DATETIME YEAR TO SECOND AS p_dt_rcpt_fr,
+    DATETIME YEAR TO SECOND AS p_dt_rcpt_to,
+    DATETIME YEAR TO SECOND AS p_dt_imp_fr,
+    DATETIME YEAR TO SECOND AS p_dt_imp_to,
+    DATETIME YEAR TO SECOND AS p_dt_wo_fr,
+    DATETIME YEAR TO SECOND AS p_dt_wo_to,
+    DATETIME YEAR TO SECOND AS dt_created,
+    DATETIME YEAR TO SECOND AS dt_modified,
+    NVARCHAR(25) AS created_by,
+    NVARCHAR(25) AS modified_by,
+    NVARCHAR(10) AS status,
+    NVARCHAR(50) AS p_email,
+    NVARCHAR(50) AS p_file_type,
+    NVARCHAR(10) AS task_id,
+    INT AS total;
+
+DEFINE o_rpt_ripl_age_id INT8;
+DEFINE o_p_dt_req DATETIME YEAR TO SECOND;
+DEFINE o_p_imp_status INT;
+DEFINE o_p_exp_status INT;
+DEFINE o_p_ent_ty NVARCHAR(1);
+DEFINE o_p_ent_nm NVARCHAR(100);
+DEFINE o_p_dt_due_fr DATETIME YEAR TO SECOND;
+DEFINE o_p_dt_due_to DATETIME YEAR TO SECOND;
+DEFINE o_p_dt_rcpt_fr DATETIME YEAR TO SECOND;
+DEFINE o_p_dt_rcpt_to DATETIME YEAR TO SECOND;
+DEFINE o_p_dt_imp_fr DATETIME YEAR TO SECOND;
+DEFINE o_p_dt_imp_to DATETIME YEAR TO SECOND;
+DEFINE o_p_dt_wo_fr DATETIME YEAR TO SECOND;
+DEFINE o_p_dt_wo_to DATETIME YEAR TO SECOND;
+DEFINE o_dt_created DATETIME YEAR TO SECOND;
+DEFINE o_dt_modified DATETIME YEAR TO SECOND;
+DEFINE o_created_by NVARCHAR(25);
+DEFINE o_modified_by NVARCHAR(25);
+DEFINE o_status NVARCHAR(10);
+DEFINE o_p_email NVARCHAR(50);
+DEFINE o_p_file_type NVARCHAR(50);
+define calculatedpage int;
+DEFINE total INT;
+
+let calculatedpage = (i_page-1)*i_size;
+
+LET total = (SELECT COUNT(1)
+             FROM rms_rpt_ripl_age t1
+             WHERE (i_rpt_ripl_age_id IS NULL OR t1.rpt_ripl_age_id = i_rpt_ripl_age_id)
+               AND (i_p_dt_req IS NULL OR t1.p_dt_req = i_p_dt_req)
+               AND (i_p_imp_status IS NULL OR t1.p_imp_status = i_p_imp_status)
+               AND (i_p_exp_status IS NULL OR t1.p_exp_status = i_p_exp_status)
+               AND (i_p_ent_ty IS NULL OR t1.p_ent_ty like '%' || i_p_ent_nm ||'%')
+               AND (i_p_ent_nm IS NULL OR t1.p_ent_nm = i_p_ent_nm)
+               AND (i_p_dt_due_fr IS NULL OR t1.p_dt_due_fr >= i_p_dt_due_fr)
+               AND (i_p_dt_due_to IS NULL OR t1.p_dt_due_to <= i_p_dt_due_to)
+               AND (i_p_dt_rcpt_fr IS NULL OR t1.p_dt_rcpt_fr >= i_p_dt_rcpt_fr)
+               AND (i_p_dt_rcpt_to IS NULL OR t1.p_dt_rcpt_to <= i_p_dt_rcpt_to)
+               AND (i_p_dt_imp_fr IS NULL OR t1.p_dt_imp_fr >= i_p_dt_imp_fr)
+               AND (i_p_dt_imp_to IS NULL OR t1.p_dt_imp_to <= i_p_dt_imp_to)
+               AND (i_p_dt_wo_fr IS NULL OR t1.p_dt_wo_fr >= i_p_dt_wo_fr)
+               AND (i_p_dt_wo_to IS NULL OR t1.p_dt_wo_to <= i_p_dt_wo_to)
+               AND (i_created_by IS NULL OR t1.created_by = i_created_by)
+               AND (i_modified_by IS NULL OR t1.modified_by = i_modified_by)
+               AND (i_status IS NULL OR t1.status = i_status)
+               AND (i_p_email IS NULL OR t1.p_email = i_p_email)
+               AND (i_p_file_type IS NULL OR t1.p_file_type = i_p_file_type));
+			   
+if i_size is not null then  
+
+FOREACH c_getriplaging FOR
+    select skip calculatedpage limit i_size t1.rpt_ripl_age_id, t1.p_dt_req, t1.p_imp_status, t1.p_exp_status, t1.p_ent_ty, t1.p_ent_nm,
+           t1.p_dt_due_fr, t1.p_dt_due_to, t1.p_dt_rcpt_fr, t1.p_dt_rcpt_to, t1.p_dt_imp_fr, t1.p_dt_imp_to,
+           t1.p_dt_wo_fr, t1.p_dt_wo_to, t1.dt_created, t1.dt_modified, t1.created_by, t1.modified_by,
+           t1.status, t1.p_email, t1.p_file_type
+    INTO o_rpt_ripl_age_id, o_p_dt_req, o_p_imp_status, o_p_exp_status, o_p_ent_ty, o_p_ent_nm,
+         o_p_dt_due_fr, o_p_dt_due_to, o_p_dt_rcpt_fr, o_p_dt_rcpt_to, o_p_dt_imp_fr, o_p_dt_imp_to,
+         o_p_dt_wo_fr, o_p_dt_wo_to, o_dt_created, o_dt_modified, o_created_by, o_modified_by,
+         o_status, o_p_email, o_p_file_type
+    FROM rms_rpt_ripl_age t1
+    WHERE (i_rpt_ripl_age_id IS NULL OR t1.rpt_ripl_age_id = i_rpt_ripl_age_id)
+      AND (i_p_dt_req IS NULL OR t1.p_dt_req <= i_p_dt_req)
+      AND (i_p_imp_status IS NULL OR t1.p_imp_status = i_p_imp_status)
+      AND (i_p_exp_status IS NULL OR t1.p_exp_status = i_p_exp_status)
+      AND (i_p_ent_ty IS NULL OR t1.p_ent_ty = i_p_ent_ty)
+      AND (i_p_ent_nm IS NULL OR t1.p_ent_nm = i_p_ent_nm)
+      AND (i_p_dt_due_fr IS NULL OR t1.p_dt_due_fr = i_p_dt_due_fr)
+      AND (i_p_dt_due_to IS NULL OR t1.p_dt_due_to = i_p_dt_due_to)
+      AND (i_p_dt_rcpt_fr IS NULL OR t1.p_dt_rcpt_fr = i_p_dt_rcpt_fr)
+      AND (i_p_dt_rcpt_to IS NULL OR t1.p_dt_rcpt_to = i_p_dt_rcpt_to)
+      AND (i_p_dt_imp_fr IS NULL OR t1.p_dt_imp_fr = i_p_dt_imp_fr)
+      AND (i_p_dt_imp_to IS NULL OR t1.p_dt_imp_to = i_p_dt_imp_to)
+      AND (i_p_dt_wo_fr IS NULL OR t1.p_dt_wo_fr = i_p_dt_wo_fr)
+      AND (i_p_dt_wo_to IS NULL OR t1.p_dt_wo_to = i_p_dt_wo_to)
+      AND (i_created_by IS NULL OR t1.created_by = i_created_by)
+      AND (i_modified_by IS NULL OR t1.modified_by = i_modified_by)
+      AND (i_status IS NULL OR t1.status = i_status)
+      AND (i_p_email IS NULL OR t1.p_email = i_p_email)
+      AND (i_p_file_type IS NULL OR t1.p_file_type = i_p_file_type)
+    ORDER BY t1.dt_modified DESC
+
+    RETURN o_rpt_ripl_age_id, o_p_dt_req, o_p_imp_status, o_p_exp_status, o_p_ent_ty, o_p_ent_nm,
+           o_p_dt_due_fr, o_p_dt_due_to, o_p_dt_rcpt_fr, o_p_dt_rcpt_to, o_p_dt_imp_fr, o_p_dt_imp_to,
+           o_p_dt_wo_fr, o_p_dt_wo_to, o_dt_created, o_dt_modified, o_created_by, o_modified_by,
+           o_status, o_p_email, o_p_file_type, 'RG'||lpad(o_rpt_ripl_age_id,6,'0'), total WITH RESUME;
+END FOREACH
+
+ELSE
+foreach c_getriplaging for
+	SELECT t1.rpt_ripl_age_id, t1.p_dt_req, t1.p_imp_status, t1.p_exp_status, t1.p_ent_ty, t1.p_ent_nm,
+           t1.p_dt_due_fr, t1.p_dt_due_to, t1.p_dt_rcpt_fr, t1.p_dt_rcpt_to, t1.p_dt_imp_fr, t1.p_dt_imp_to,
+           t1.p_dt_wo_fr, t1.p_dt_wo_to, t1.dt_created, t1.dt_modified, t1.created_by, t1.modified_by,
+           t1.status, t1.p_email, t1.p_file_type
+    INTO o_rpt_ripl_age_id, o_p_dt_req, o_p_imp_status, o_p_exp_status, o_p_ent_ty, o_p_ent_nm,
+         o_p_dt_due_fr, o_p_dt_due_to, o_p_dt_rcpt_fr, o_p_dt_rcpt_to, o_p_dt_imp_fr, o_p_dt_imp_to,
+         o_p_dt_wo_fr, o_p_dt_wo_to, o_dt_created, o_dt_modified, o_created_by, o_modified_by,
+         o_status, o_p_email, o_p_file_type
+    FROM rms_rpt_ripl_age t1
+    WHERE (i_rpt_ripl_age_id IS NULL OR t1.rpt_ripl_age_id = i_rpt_ripl_age_id)
+      AND (i_p_dt_req IS NULL OR t1.p_dt_req <= i_p_dt_req)
+      AND (i_p_imp_status IS NULL OR t1.p_imp_status = i_p_imp_status)
+      AND (i_p_exp_status IS NULL OR t1.p_exp_status = i_p_exp_status)
+      AND (i_p_ent_ty IS NULL OR t1.p_ent_ty = i_p_ent_ty)
+      AND (i_p_ent_nm IS NULL OR t1.p_ent_nm = i_p_ent_nm)
+      AND (i_p_dt_due_fr IS NULL OR t1.p_dt_due_fr = i_p_dt_due_fr)
+      AND (i_p_dt_due_to IS NULL OR t1.p_dt_due_to = i_p_dt_due_to)
+      AND (i_p_dt_rcpt_fr IS NULL OR t1.p_dt_rcpt_fr = i_p_dt_rcpt_fr)
+      AND (i_p_dt_rcpt_to IS NULL OR t1.p_dt_rcpt_to = i_p_dt_rcpt_to)
+      AND (i_p_dt_imp_fr IS NULL OR t1.p_dt_imp_fr = i_p_dt_imp_fr)
+      AND (i_p_dt_imp_to IS NULL OR t1.p_dt_imp_to = i_p_dt_imp_to)
+      AND (i_p_dt_wo_fr IS NULL OR t1.p_dt_wo_fr = i_p_dt_wo_fr)
+      AND (i_p_dt_wo_to IS NULL OR t1.p_dt_wo_to = i_p_dt_wo_to)
+      AND (i_created_by IS NULL OR t1.created_by = i_created_by)
+      AND (i_modified_by IS NULL OR t1.modified_by = i_modified_by)
+      AND (i_status IS NULL OR t1.status = i_status)
+      AND (i_p_email IS NULL OR t1.p_email = i_p_email)
+      AND (i_p_file_type IS NULL OR t1.p_file_type = i_p_file_type)
+    ORDER BY t1.dt_modified DESC
+	
+	RETURN o_rpt_ripl_age_id, o_p_dt_req, o_p_imp_status, o_p_exp_status, o_p_ent_ty, o_p_ent_nm,
+           o_p_dt_due_fr, o_p_dt_due_to, o_p_dt_rcpt_fr, o_p_dt_rcpt_to, o_p_dt_imp_fr, o_p_dt_imp_to,
+           o_p_dt_wo_fr, o_p_dt_wo_to, o_dt_created, o_dt_modified, o_created_by, o_modified_by,
+           o_status, o_p_email, o_p_file_type, 'RG'||lpad(o_rpt_ripl_age_id,6,'0'), total WITH RESUME;
+
+	end foreach
+end if
+	
+END PROCEDURE
+GO
+CREATE OR REPLACE PROCEDURE sp_getriplaginglistingrpt (
+	i_page int, 
+	i_size int,
+    i_rpt_ripl_age_id INT8,
+    i_p_dt_req DATE,
+    i_p_imp_status INT,
+    i_p_exp_status INT,
+    i_p_ent_ty NVARCHAR(1),
+    i_p_ent_nm NVARCHAR(200),
+    i_p_dt_due_fr DATE,
+    i_p_dt_due_to DATE,
+    i_p_dt_rcpt_fr DATE,
+    i_p_dt_rcpt_to DATE,
+    i_p_dt_imp_fr DATE,
+    i_p_dt_imp_to DATE,
+    i_p_dt_wo_fr DATE,
+    i_p_dt_wo_to DATE,
+    i_created_by NVARCHAR(25),
+    i_modified_by NVARCHAR(25),
+    i_status NVARCHAR(10),
+    i_p_email NVARCHAR(255),
+    i_p_file_type NVARCHAR(5)
+)
+RETURNING
+    INT8 AS rpt_ripl_age_id,
+    DATETIME YEAR TO SECOND AS p_dt_req,
+    INT AS p_imp_status,
+    INT AS p_exp_status,
+    NVARCHAR(1) AS p_ent_ty,
+    NVARCHAR(100) AS p_ent_nm,
+    DATETIME YEAR TO SECOND AS p_dt_due_fr,
+    DATETIME YEAR TO SECOND AS p_dt_due_to,
+    DATETIME YEAR TO SECOND AS p_dt_rcpt_fr,
+    DATETIME YEAR TO SECOND AS p_dt_rcpt_to,
+    DATETIME YEAR TO SECOND AS p_dt_imp_fr,
+    DATETIME YEAR TO SECOND AS p_dt_imp_to,
+    DATETIME YEAR TO SECOND AS p_dt_wo_fr,
+    DATETIME YEAR TO SECOND AS p_dt_wo_to,
+    DATETIME YEAR TO SECOND AS dt_created,
+    DATETIME YEAR TO SECOND AS dt_modified,
+    NVARCHAR(25) AS created_by,
+    NVARCHAR(25) AS modified_by,
+    NVARCHAR(10) AS status,
+    NVARCHAR(50) AS p_email,
+    NVARCHAR(50) AS p_file_type,
+    NVARCHAR(10) AS task_id,
+    INT AS total;
+
+DEFINE o_rpt_ripl_age_id INT8;
+DEFINE o_p_dt_req DATETIME YEAR TO SECOND;
+DEFINE o_p_imp_status INT;
+DEFINE o_p_exp_status INT;
+DEFINE o_p_ent_ty NVARCHAR(1);
+DEFINE o_p_ent_nm NVARCHAR(100);
+DEFINE o_p_dt_due_fr DATETIME YEAR TO SECOND;
+DEFINE o_p_dt_due_to DATETIME YEAR TO SECOND;
+DEFINE o_p_dt_rcpt_fr DATETIME YEAR TO SECOND;
+DEFINE o_p_dt_rcpt_to DATETIME YEAR TO SECOND;
+DEFINE o_p_dt_imp_fr DATETIME YEAR TO SECOND;
+DEFINE o_p_dt_imp_to DATETIME YEAR TO SECOND;
+DEFINE o_p_dt_wo_fr DATETIME YEAR TO SECOND;
+DEFINE o_p_dt_wo_to DATETIME YEAR TO SECOND;
+DEFINE o_dt_created DATETIME YEAR TO SECOND;
+DEFINE o_dt_modified DATETIME YEAR TO SECOND;
+DEFINE o_created_by NVARCHAR(25);
+DEFINE o_modified_by NVARCHAR(25);
+DEFINE o_status NVARCHAR(10);
+DEFINE o_p_email NVARCHAR(50);
+DEFINE o_p_file_type NVARCHAR(50);
+define calculatedpage int;
+DEFINE total INT;
+
+let calculatedpage = (i_page-1)*i_size;
+
+LET total = (SELECT COUNT(1)
+             FROM rms_rpt_ripl_age t1
+             WHERE (i_rpt_ripl_age_id IS NULL OR t1.rpt_ripl_age_id = i_rpt_ripl_age_id)
+               AND (i_p_dt_req IS NULL OR t1.p_dt_req = i_p_dt_req)
+               AND (i_p_imp_status IS NULL OR t1.p_imp_status = i_p_imp_status)
+               AND (i_p_exp_status IS NULL OR t1.p_exp_status = i_p_exp_status)
+               AND (i_p_ent_ty IS NULL OR t1.p_ent_ty like '%' || i_p_ent_nm ||'%')
+               AND (i_p_ent_nm IS NULL OR t1.p_ent_nm = i_p_ent_nm)
+               AND (i_p_dt_due_fr IS NULL OR t1.p_dt_due_fr >= i_p_dt_due_fr)
+               AND (i_p_dt_due_to IS NULL OR t1.p_dt_due_to <= i_p_dt_due_to)
+               AND (i_p_dt_rcpt_fr IS NULL OR t1.p_dt_rcpt_fr >= i_p_dt_rcpt_fr)
+               AND (i_p_dt_rcpt_to IS NULL OR t1.p_dt_rcpt_to <= i_p_dt_rcpt_to)
+               AND (i_p_dt_imp_fr IS NULL OR t1.p_dt_imp_fr >= i_p_dt_imp_fr)
+               AND (i_p_dt_imp_to IS NULL OR t1.p_dt_imp_to <= i_p_dt_imp_to)
+               AND (i_p_dt_wo_fr IS NULL OR t1.p_dt_wo_fr >= i_p_dt_wo_fr)
+               AND (i_p_dt_wo_to IS NULL OR t1.p_dt_wo_to <= i_p_dt_wo_to)
+               AND (i_created_by IS NULL OR t1.created_by = i_created_by)
+               AND (i_modified_by IS NULL OR t1.modified_by = i_modified_by)
+               AND (i_status IS NULL OR t1.status = i_status)
+               AND (i_p_email IS NULL OR t1.p_email = i_p_email)
+               AND (i_p_file_type IS NULL OR t1.p_file_type = i_p_file_type));
+			   
+if i_size is not null then  
+
+FOREACH c_getriplaging FOR
+    select skip calculatedpage limit i_size t1.rpt_ripl_age_id, t1.p_dt_req, t1.p_imp_status, t1.p_exp_status, t1.p_ent_ty, t1.p_ent_nm,
+           t1.p_dt_due_fr, t1.p_dt_due_to, t1.p_dt_rcpt_fr, t1.p_dt_rcpt_to, t1.p_dt_imp_fr, t1.p_dt_imp_to,
+           t1.p_dt_wo_fr, t1.p_dt_wo_to, t1.dt_created, t1.dt_modified, t1.created_by, t1.modified_by,
+           t1.status, t1.p_email, t1.p_file_type
+    INTO o_rpt_ripl_age_id, o_p_dt_req, o_p_imp_status, o_p_exp_status, o_p_ent_ty, o_p_ent_nm,
+         o_p_dt_due_fr, o_p_dt_due_to, o_p_dt_rcpt_fr, o_p_dt_rcpt_to, o_p_dt_imp_fr, o_p_dt_imp_to,
+         o_p_dt_wo_fr, o_p_dt_wo_to, o_dt_created, o_dt_modified, o_created_by, o_modified_by,
+         o_status, o_p_email, o_p_file_type
+    FROM rms_rpt_ripl_age t1
+    WHERE (i_rpt_ripl_age_id IS NULL OR t1.rpt_ripl_age_id = i_rpt_ripl_age_id)
+      AND (i_p_dt_req IS NULL OR t1.p_dt_req <= i_p_dt_req)
+      AND (i_p_imp_status IS NULL OR t1.p_imp_status = i_p_imp_status)
+      AND (i_p_exp_status IS NULL OR t1.p_exp_status = i_p_exp_status)
+      AND (i_p_ent_ty IS NULL OR t1.p_ent_ty = i_p_ent_ty)
+      AND (i_p_ent_nm IS NULL OR t1.p_ent_nm = i_p_ent_nm)
+      AND (i_p_dt_due_fr IS NULL OR t1.p_dt_due_fr = i_p_dt_due_fr)
+      AND (i_p_dt_due_to IS NULL OR t1.p_dt_due_to = i_p_dt_due_to)
+      AND (i_p_dt_rcpt_fr IS NULL OR t1.p_dt_rcpt_fr = i_p_dt_rcpt_fr)
+      AND (i_p_dt_rcpt_to IS NULL OR t1.p_dt_rcpt_to = i_p_dt_rcpt_to)
+      AND (i_p_dt_imp_fr IS NULL OR t1.p_dt_imp_fr = i_p_dt_imp_fr)
+      AND (i_p_dt_imp_to IS NULL OR t1.p_dt_imp_to = i_p_dt_imp_to)
+      AND (i_p_dt_wo_fr IS NULL OR t1.p_dt_wo_fr = i_p_dt_wo_fr)
+      AND (i_p_dt_wo_to IS NULL OR t1.p_dt_wo_to = i_p_dt_wo_to)
+      AND (i_created_by IS NULL OR t1.created_by = i_created_by)
+      AND (i_modified_by IS NULL OR t1.modified_by = i_modified_by)
+      AND (i_status IS NULL OR t1.status = i_status)
+      AND (i_p_email IS NULL OR t1.p_email = i_p_email)
+      AND (i_p_file_type IS NULL OR t1.p_file_type = i_p_file_type)
+    ORDER BY t1.dt_modified DESC
+
+    RETURN o_rpt_ripl_age_id, o_p_dt_req, o_p_imp_status, o_p_exp_status, o_p_ent_ty, o_p_ent_nm,
+           o_p_dt_due_fr, o_p_dt_due_to, o_p_dt_rcpt_fr, o_p_dt_rcpt_to, o_p_dt_imp_fr, o_p_dt_imp_to,
+           o_p_dt_wo_fr, o_p_dt_wo_to, o_dt_created, o_dt_modified, o_created_by, o_modified_by,
+           o_status, o_p_email, o_p_file_type, 'RG'||lpad(o_rpt_ripl_age_id,6,'0'), total WITH RESUME;
+END FOREACH
+
+ELSE
+foreach c_getriplaging for
+	SELECT t1.rpt_ripl_age_id, t1.p_dt_req, t1.p_imp_status, t1.p_exp_status, t1.p_ent_ty, t1.p_ent_nm,
+           t1.p_dt_due_fr, t1.p_dt_due_to, t1.p_dt_rcpt_fr, t1.p_dt_rcpt_to, t1.p_dt_imp_fr, t1.p_dt_imp_to,
+           t1.p_dt_wo_fr, t1.p_dt_wo_to, t1.dt_created, t1.dt_modified, t1.created_by, t1.modified_by,
+           t1.status, t1.p_email, t1.p_file_type
+    INTO o_rpt_ripl_age_id, o_p_dt_req, o_p_imp_status, o_p_exp_status, o_p_ent_ty, o_p_ent_nm,
+         o_p_dt_due_fr, o_p_dt_due_to, o_p_dt_rcpt_fr, o_p_dt_rcpt_to, o_p_dt_imp_fr, o_p_dt_imp_to,
+         o_p_dt_wo_fr, o_p_dt_wo_to, o_dt_created, o_dt_modified, o_created_by, o_modified_by,
+         o_status, o_p_email, o_p_file_type
+    FROM rms_rpt_ripl_age t1
+    WHERE (i_rpt_ripl_age_id IS NULL OR t1.rpt_ripl_age_id = i_rpt_ripl_age_id)
+      AND (i_p_dt_req IS NULL OR t1.p_dt_req <= i_p_dt_req)
+      AND (i_p_imp_status IS NULL OR t1.p_imp_status = i_p_imp_status)
+      AND (i_p_exp_status IS NULL OR t1.p_exp_status = i_p_exp_status)
+      AND (i_p_ent_ty IS NULL OR t1.p_ent_ty = i_p_ent_ty)
+      AND (i_p_ent_nm IS NULL OR t1.p_ent_nm = i_p_ent_nm)
+      AND (i_p_dt_due_fr IS NULL OR t1.p_dt_due_fr = i_p_dt_due_fr)
+      AND (i_p_dt_due_to IS NULL OR t1.p_dt_due_to = i_p_dt_due_to)
+      AND (i_p_dt_rcpt_fr IS NULL OR t1.p_dt_rcpt_fr = i_p_dt_rcpt_fr)
+      AND (i_p_dt_rcpt_to IS NULL OR t1.p_dt_rcpt_to = i_p_dt_rcpt_to)
+      AND (i_p_dt_imp_fr IS NULL OR t1.p_dt_imp_fr = i_p_dt_imp_fr)
+      AND (i_p_dt_imp_to IS NULL OR t1.p_dt_imp_to = i_p_dt_imp_to)
+      AND (i_p_dt_wo_fr IS NULL OR t1.p_dt_wo_fr = i_p_dt_wo_fr)
+      AND (i_p_dt_wo_to IS NULL OR t1.p_dt_wo_to = i_p_dt_wo_to)
+      AND (i_created_by IS NULL OR t1.created_by = i_created_by)
+      AND (i_modified_by IS NULL OR t1.modified_by = i_modified_by)
+      AND (i_status IS NULL OR t1.status = i_status)
+      AND (i_p_email IS NULL OR t1.p_email = i_p_email)
+      AND (i_p_file_type IS NULL OR t1.p_file_type = i_p_file_type)
+    ORDER BY t1.dt_modified DESC
+	
+	RETURN o_rpt_ripl_age_id, o_p_dt_req, o_p_imp_status, o_p_exp_status, o_p_ent_ty, o_p_ent_nm,
+           o_p_dt_due_fr, o_p_dt_due_to, o_p_dt_rcpt_fr, o_p_dt_rcpt_to, o_p_dt_imp_fr, o_p_dt_imp_to,
+           o_p_dt_wo_fr, o_p_dt_wo_to, o_dt_created, o_dt_modified, o_created_by, o_modified_by,
+           o_status, o_p_email, o_p_file_type, 'RG'||lpad(o_rpt_ripl_age_id,6,'0'), total WITH RESUME;
+
+	end foreach
+end if
+	
+END PROCEDURE
+GO
+CREATE OR REPLACE PROCEDURE sp_getriplagingrpt (
+	i_rpt_ripl_age_id INT8
+)
+RETURNING
+    INT8 AS rpt_ripl_age_id,
+    DATETIME YEAR TO SECOND AS p_dt_req,
+    INT AS p_imp_status,
+    INT AS p_exp_status,
+    NVARCHAR(1) AS p_ent_ty,
+    NVARCHAR(100) AS p_ent_nm,
+    DATETIME YEAR TO SECOND AS p_dt_due_fr,
+    DATETIME YEAR TO SECOND AS p_dt_due_to,
+    DATETIME YEAR TO SECOND AS p_dt_rcpt_fr,
+    DATETIME YEAR TO SECOND AS p_dt_rcpt_to,
+    DATETIME YEAR TO SECOND AS p_dt_imp_fr,
+    DATETIME YEAR TO SECOND AS p_dt_imp_to,
+    DATETIME YEAR TO SECOND AS p_dt_wo_fr,
+    DATETIME YEAR TO SECOND AS p_dt_wo_to,
+    DATETIME YEAR TO SECOND AS dt_created,
+    DATETIME YEAR TO SECOND AS dt_modified,
+    NVARCHAR(25) AS created_by,
+    NVARCHAR(25) AS modified_by,
+    NVARCHAR(10) AS status,
+    nvarchar(50) as p_email,
+	nvarchar(50) as p_file_type,
+	int as p_file_size,
+	nvarchar(255) as p_file_nm,
+	nvarchar(30) as p_batch_no,
+	nvarchar(25) as p_fms_ref_no,
+	nvarchar(10) as task_id;
+
+DEFINE o_rpt_ripl_age_id INT8;
+DEFINE o_p_dt_req DATETIME YEAR TO SECOND;
+DEFINE o_p_imp_status INT;
+DEFINE o_p_exp_status INT;
+DEFINE o_p_ent_ty NVARCHAR(1);
+DEFINE o_p_ent_nm NVARCHAR(100);
+DEFINE o_p_dt_due_fr DATETIME YEAR TO SECOND;
+DEFINE o_p_dt_due_to DATETIME YEAR TO SECOND;
+DEFINE o_p_dt_rcpt_fr DATETIME YEAR TO SECOND;
+DEFINE o_p_dt_rcpt_to DATETIME YEAR TO SECOND;
+DEFINE o_p_dt_imp_fr DATETIME YEAR TO SECOND;
+DEFINE o_p_dt_imp_to DATETIME YEAR TO SECOND;
+DEFINE o_p_dt_wo_fr DATETIME YEAR TO SECOND;
+DEFINE o_p_dt_wo_to DATETIME YEAR TO SECOND;
+DEFINE o_dt_created DATETIME YEAR TO SECOND;
+DEFINE o_dt_modified DATETIME YEAR TO SECOND;
+DEFINE o_created_by NVARCHAR(25);
+DEFINE o_modified_by NVARCHAR(25);
+DEFINE o_status NVARCHAR(10);
+define o_p_email			nvarchar(50);
+define o_p_file_type		nvarchar(50);
+define o_p_file_size		int;
+define o_p_file_nm		    nvarchar(255);
+define o_p_batch_no		    nvarchar(30);
+define o_p_fms_ref_no		nvarchar(25);
+
+
+
+FOREACH c_getriplaging FOR
+    select t1.rpt_ripl_age_id, t1.p_dt_req, t1.p_imp_status, t1.p_exp_status, t1.p_ent_ty, t1.p_ent_nm,
+           t1.p_dt_due_fr, t1.p_dt_due_to, t1.p_dt_rcpt_fr, t1.p_dt_rcpt_to, t1.p_dt_imp_fr, t1.p_dt_imp_to,
+           t1.p_dt_wo_fr, t1.p_dt_wo_to, t1.dt_created, t1.dt_modified, t1.created_by, t1.modified_by,
+           t1.status, t1.p_email, t1.p_file_type, t1.p_file_size, t1.p_file_nm, 
+	    t1.p_batch_no, t1.p_fms_ref_no
+    INTO o_rpt_ripl_age_id, o_p_dt_req, o_p_imp_status, o_p_exp_status, o_p_ent_ty, o_p_ent_nm,
+         o_p_dt_due_fr, o_p_dt_due_to, o_p_dt_rcpt_fr, o_p_dt_rcpt_to, o_p_dt_imp_fr, o_p_dt_imp_to,
+         o_p_dt_wo_fr, o_p_dt_wo_to, o_dt_created, o_dt_modified, o_created_by, o_modified_by,
+         o_status, o_p_email, o_p_file_type, o_p_file_size, o_p_file_nm,
+	    o_p_batch_no, o_p_fms_ref_no
+    FROM rms_rpt_ripl_age t1
+    
+    where t1.rpt_ripl_age_id = i_rpt_ripl_age_id	
+      
+
+    RETURN o_rpt_ripl_age_id, o_p_dt_req, o_p_imp_status, o_p_exp_status, o_p_ent_ty, o_p_ent_nm,
+           o_p_dt_due_fr, o_p_dt_due_to, o_p_dt_rcpt_fr, o_p_dt_rcpt_to, o_p_dt_imp_fr, o_p_dt_imp_to,
+           o_p_dt_wo_fr, o_p_dt_wo_to, o_dt_created, o_dt_modified, o_created_by, o_modified_by,
+           o_status, o_p_email, o_p_file_type, o_p_file_size, o_p_file_nm, 
+	    o_p_batch_no, o_p_fms_ref_no, 'RG'||lpad(o_rpt_ripl_age_id,6,'0') WITH RESUME;
+END FOREACH
+
+
+	
+END PROCEDURE
+GO
+CREATE OR REPLACE PROCEDURE sp_getrptricpagecount()
+returning integer;
+define o_count integer;
+select count(*) into o_count from rms_rpt_ricp_age;
+return o_count with resume;
+END PROCEDURE;
+GO
+CREATE OR REPLACE PROCEDURE sp_getrptricpagelisting(i_page integer, i_size integer) returning 
+integer as rpt_ricp_age_id, datetime year to fraction(5) as p_dt_req, integer as p_exp_status, integer as p_can_v_status, nvarchar(1) as p_ent_ty, 
+nvarchar(100) as p_ent_nm, datetime year to fraction(5) as p_dt_iss_fr, datetime year to fraction(5) as p_dt_iss_to, 
+datetime year to fraction(5) as p_dt_exp_fr, datetime year to fraction(5) as p_dt_exp_to, datetime year to fraction(5) as p_dt_wo_fr, 
+datetime year to fraction(5) as p_dt_wo_to, datetime year to fraction(5) as p_dt_can_fr, datetime year to fraction(5) as p_dt_can_to, 
+datetime year to fraction(5) as p_dt_void_fr, datetime year to fraction(5) as p_dt_void_to, datetime year to fraction(5) as dt_created, 
+datetime year to fraction(5) as dt_modified, nvarchar(25) as created_by, nvarchar(25) as modified_by, nvarchar(10) as status, nvarchar(255) as p_email, 
+datetime year to fraction(5) as p_dt_rcpt_fr, datetime year to fraction(5) as p_dt_rcpt_to, nvarchar(5) as file_type, integer as p_file_size,
+nvarchar(255) as p_file_nm, nvarchar(30) as p_batch_no, nvarchar(25) as p_fms_ref_no, nvarchar(8) as task_id;
+
+	DEFINE o_rpt_ricp_age_id integer;
+	DEFINE o_p_dt_req datetime year to fraction(5);
+	DEFINE o_p_exp_status integer;
+	DEFINE o_p_can_v_status integer;
+	DEFINE o_p_ent_ty nvarchar(1);
+	DEFINE o_p_ent_nm nvarchar(100);
+	DEFINE o_p_dt_iss_fr datetime year to fraction(5);
+	DEFINE o_p_dt_iss_to datetime year to fraction(5);
+	DEFINE o_p_dt_exp_fr datetime year to fraction(5);
+	DEFINE o_p_dt_exp_to datetime year to fraction(5);
+	DEFINE o_p_dt_wo_fr datetime year to fraction(5);
+	DEFINE o_p_dt_wo_to datetime year to fraction(5);
+	DEFINE o_p_dt_can_fr datetime year to fraction(5);
+	DEFINE o_p_dt_can_to datetime year to fraction(5);
+	DEFINE o_p_dt_void_fr datetime year to fraction(5);
+	DEFINE o_p_dt_void_to datetime year to fraction(5);
+	DEFINE o_dt_created datetime year to fraction(5);
+	DEFINE o_dt_modified datetime year to fraction(5);
+	DEFINE o_created_by nvarchar(25);
+	DEFINE o_modified_by nvarchar(25);
+	DEFINE o_status nvarchar(10);
+	DEFINE o_p_email nvarchar(255);
+	DEFINE o_p_dt_rcpt_fr datetime year to fraction(5);
+	DEFINE o_p_dt_rcpt_to datetime year to fraction(5);
+	DEFINE o_p_file_type nvarchar(5);
+	DEFINE o_p_file_size integer;
+	DEFINE o_p_file_nm nvarchar(255);
+	DEFINE o_p_batch_no nvarchar(30);
+	DEFINE o_p_fms_ref_no nvarchar(25);
+	define o_task_id nvarchar(8);
+	define calculatedpage int;
+
+	on exception
+		rollback work;
+	end exception;
+	
+	if (i_page is null or i_page < 1) or (i_size is null or i_page < 1) then 
+	    raise exception -746, 0, "i_page or i_size is null integer";
+	end if;
+	
+	let calculatedpage = (i_page-1)*i_size;
+
+
+	FOREACH c_getrptricpagelisting FOR
+        select skip calculatedpage limit i_size rpt_ricp_age_id,p_dt_req,p_exp_status,p_can_v_status,p_ent_ty,p_ent_nm,p_dt_iss_fr,p_dt_iss_to,
+				p_dt_exp_fr,p_dt_exp_to,p_dt_wo_fr,p_dt_wo_to,p_dt_can_fr,p_dt_can_to,p_dt_void_fr,
+				p_dt_void_to,dt_created,dt_modified,created_by,modified_by,status,p_email,p_dt_rcpt_fr,
+				p_dt_rcpt_to,p_file_type,p_file_size,p_file_nm,p_batch_no,p_fms_ref_no,'RG' || lpad(rpt_ricp_age_id,6,'0')
+        INTO o_rpt_ricp_age_id,o_p_dt_req,o_p_exp_status,o_p_can_v_status,o_p_ent_ty,o_p_ent_nm,o_p_dt_iss_fr,o_p_dt_iss_to,
+				o_p_dt_exp_fr,o_p_dt_exp_to,o_p_dt_wo_fr,o_p_dt_wo_to,o_p_dt_can_fr,o_p_dt_can_to,o_p_dt_void_fr,
+				o_p_dt_void_to,o_dt_created,o_dt_modified,o_created_by,o_modified_by,o_status,o_p_email,o_p_dt_rcpt_fr,
+				o_p_dt_rcpt_to,o_p_file_type,o_p_file_size,o_p_file_nm,o_p_batch_no,o_p_fms_ref_no,o_task_id
+        FROM rms_rpt_ricp_age order by dt_created asc
+		
+		RETURN o_rpt_ricp_age_id,o_p_dt_req,o_p_exp_status,o_p_can_v_status,o_p_ent_ty,o_p_ent_nm,o_p_dt_iss_fr,o_p_dt_iss_to,
+				o_p_dt_exp_fr,o_p_dt_exp_to,o_p_dt_wo_fr,o_p_dt_wo_to,o_p_dt_can_fr,o_p_dt_can_to,o_p_dt_void_fr,
+				o_p_dt_void_to,o_dt_created,o_dt_modified,o_created_by,o_modified_by,o_status,o_p_email,o_p_dt_rcpt_fr,
+				o_p_dt_rcpt_to,o_p_file_type,o_p_file_size,o_p_file_nm,o_p_batch_no,o_p_fms_ref_no,o_task_id WITH RESUME;
+	END FOREACH
+end procedure
+GO
+CREATE OR REPLACE PROCEDURE sp_getrptricpagequeue()
+returning integer;
+define o_count integer;
+select count(*) into o_count from rms_rpt_ricp_age where status = "P" or status = "I";
+return o_count with resume;
+END PROCEDURE;
+GO
+CREATE OR REPLACE PROCEDURE sp_getrptricpagerq(i_rpt_ricp_age_id integer) returning  
+integer as rpt_ricp_age_id, datetime year to fraction(5) as p_dt_req, integer as p_exp_status, integer as p_can_v_status, nvarchar(1) as p_ent_ty, 
+nvarchar(100) as p_ent_nm, datetime year to fraction(5) as p_dt_iss_fr, datetime year to fraction(5) as p_dt_iss_to, 
+datetime year to fraction(5) as p_dt_exp_fr, datetime year to fraction(5) as p_dt_exp_to, datetime year to fraction(5) as p_dt_wo_fr, 
+datetime year to fraction(5) as p_dt_wo_to, datetime year to fraction(5) as p_dt_can_fr, datetime year to fraction(5) as p_dt_can_to, 
+datetime year to fraction(5) as p_dt_void_fr, datetime year to fraction(5) as p_dt_void_to, datetime year to fraction(5) as dt_created, 
+datetime year to fraction(5) as dt_modified, nvarchar(25) as created_by, nvarchar(25) as modified_by, nvarchar(10) as status, nvarchar(255) as p_email, 
+datetime year to fraction(5) as p_dt_rcpt_fr, datetime year to fraction(5) as p_dt_rcpt_to, nvarchar(5) as file_type, integer as p_file_size,
+nvarchar(255) as p_file_nm, nvarchar(30) as p_batch_no, nvarchar(25) as p_fms_ref_no, nvarchar(8) as task_id;
+
+	DEFINE o_rpt_ricp_age_id integer;
+	DEFINE o_p_dt_req datetime year to fraction(5);
+	DEFINE o_p_exp_status integer;
+	DEFINE o_p_can_v_status integer;
+	DEFINE o_p_ent_ty nvarchar(1);
+	DEFINE o_p_ent_nm nvarchar(100);
+	DEFINE o_p_dt_iss_fr datetime year to fraction(5);
+	DEFINE o_p_dt_iss_to datetime year to fraction(5);
+	DEFINE o_p_dt_exp_fr datetime year to fraction(5);
+	DEFINE o_p_dt_exp_to datetime year to fraction(5);
+	DEFINE o_p_dt_wo_fr datetime year to fraction(5);
+	DEFINE o_p_dt_wo_to datetime year to fraction(5);
+	DEFINE o_p_dt_can_fr datetime year to fraction(5);
+	DEFINE o_p_dt_can_to datetime year to fraction(5);
+	DEFINE o_p_dt_void_fr datetime year to fraction(5);
+	DEFINE o_p_dt_void_to datetime year to fraction(5);
+	DEFINE o_dt_created datetime year to fraction(5);
+	DEFINE o_dt_modified datetime year to fraction(5);
+	DEFINE o_created_by nvarchar(25);
+	DEFINE o_modified_by nvarchar(25);
+	DEFINE o_status nvarchar(10);
+	DEFINE o_p_email nvarchar(255);
+	DEFINE o_p_dt_rcpt_fr datetime year to fraction(5);
+	DEFINE o_p_dt_rcpt_to datetime year to fraction(5);
+	DEFINE o_p_file_type nvarchar(5);
+	DEFINE o_p_file_size integer;
+	DEFINE o_p_file_nm nvarchar(255);
+	DEFINE o_p_batch_no nvarchar(30);
+	DEFINE o_p_fms_ref_no nvarchar(25);
+	define o_task_id nvarchar(8);
+
+	FOREACH c_getrptumagerq FOR
+        select rpt_ricp_age_id,p_dt_req,p_exp_status,p_can_v_status,p_ent_ty,p_ent_nm,p_dt_iss_fr,p_dt_iss_to,
+				p_dt_exp_fr,p_dt_exp_to,p_dt_wo_fr,p_dt_wo_to,p_dt_can_fr,p_dt_can_to,p_dt_void_fr,
+				p_dt_void_to,dt_created,dt_modified,created_by,modified_by,status,p_email,p_dt_rcpt_fr,
+				p_dt_rcpt_to,p_file_type,p_file_size,p_file_nm,p_batch_no,p_fms_ref_no,'RG' || lpad(rpt_ricp_age_id,6,'0')
+        INTO o_rpt_ricp_age_id,o_p_dt_req,o_p_exp_status,o_p_can_v_status,o_p_ent_ty,o_p_ent_nm,o_p_dt_iss_fr,o_p_dt_iss_to,
+				o_p_dt_exp_fr,o_p_dt_exp_to,o_p_dt_wo_fr,o_p_dt_wo_to,o_p_dt_can_fr,o_p_dt_can_to,o_p_dt_void_fr,
+				o_p_dt_void_to,o_dt_created,o_dt_modified,o_created_by,o_modified_by,o_status,o_p_email,o_p_dt_rcpt_fr,
+				o_p_dt_rcpt_to,o_p_file_type,o_p_file_size,o_p_file_nm,o_p_batch_no,o_p_fms_ref_no,o_task_id
+        FROM rms_rpt_ricp_age where rpt_ricp_age_id = i_rpt_ricp_age_id
+		
+		RETURN o_rpt_ricp_age_id,o_p_dt_req,o_p_exp_status,o_p_can_v_status,o_p_ent_ty,o_p_ent_nm,o_p_dt_iss_fr,o_p_dt_iss_to,
+				o_p_dt_exp_fr,o_p_dt_exp_to,o_p_dt_wo_fr,o_p_dt_wo_to,o_p_dt_can_fr,o_p_dt_can_to,o_p_dt_void_fr,
+				o_p_dt_void_to,o_dt_created,o_dt_modified,o_created_by,o_modified_by,o_status,o_p_email,o_p_dt_rcpt_fr,
+				o_p_dt_rcpt_to,o_p_file_type,o_p_file_size,o_p_file_nm,o_p_batch_no,o_p_fms_ref_no,o_task_id WITH RESUME;
+	END FOREACH
+end procedure
+GO
+CREATE OR REPLACE PROCEDURE sp_getrptumage(i_rpt_um_age_id integer) returning 
+integer as rpt_um_age_id,datetime year to fraction(5) as p_dt_req,nvarchar(30) as p_txn_id
+,datetime year to fraction(5) as dt_created,datetime year to fraction(5) as dt_modified
+,nvarchar(25) as created_by,nvarchar(25) as modified_by,nvarchar(10) as status
+,nvarchar(50) as p_rcpt_no,nvarchar(50) as p_stmt_no,nvarchar(10) as p_recon_status
+,datetime year to fraction(5) as p_dt_stmt_fr,datetime year to fraction(5) as p_dt_stmt_to
+,integer as p_dup,nvarchar(255) as p_email,nvarchar(5) as p_file_type,integer as p_file_size
+,nvarchar(255) as p_file_nm, nvarchar(8) as task_id, nvarchar(30) as p_batch_no, nvarchar(25) as p_fms_ref_no;
+
+	DEFINE o_rpt_um_age_id integer;
+	DEFINE o_p_dt_req datetime year to fraction(5);
+	DEFINE o_p_txn_id nvarchar(30);
+	DEFINE o_dt_created datetime year to fraction(5);
+	DEFINE o_dt_modified datetime year to fraction(5);
+	DEFINE o_created_by nvarchar(25);
+	DEFINE o_modified_by nvarchar(25);
+	DEFINE o_status nvarchar(10);
+	DEFINE o_p_rcpt_no nvarchar(50);
+	DEFINE o_p_stmt_no nvarchar(50);
+	DEFINE o_p_recon_status nvarchar(10);
+	DEFINE o_p_dt_stmt_fr datetime year to fraction(5);
+	DEFINE o_p_dt_stmt_to datetime year to fraction(5);
+	DEFINE o_p_dup integer;
+	DEFINE o_p_email nvarchar(255);
+	DEFINE o_p_file_type nvarchar(5);
+	DEFINE o_p_file_size integer;
+	DEFINE o_p_file_nm nvarchar(255);
+	define o_task_id nvarchar(8);
+	define o_batch_no nvarchar(30);
+	define o_fms_ref_no nvarchar(25);
+
+	FOREACH c_getrptumage FOR
+        SELECT rpt_um_age_id,p_dt_req,p_txn_id,dt_created,dt_modified,created_by,modified_by,status,
+				p_rcpt_no,p_stmt_no,p_recon_status,p_dt_stmt_fr,p_dt_stmt_to,p_dup,p_email,p_file_type,p_file_size,p_file_nm,
+				'RG' || lpad(rpt_um_age_id,6,'0'),p_batch_no,p_fms_ref_no
+        INTO o_rpt_um_age_id,o_p_dt_req,o_p_txn_id,o_dt_created,o_dt_modified,o_created_by,o_modified_by,o_status,
+			o_p_rcpt_no,o_p_stmt_no,o_p_recon_status,o_p_dt_stmt_fr,o_p_dt_stmt_to,o_p_dup,o_p_email,o_p_file_type,o_p_file_size,
+			o_p_file_nm,o_task_id,o_batch_no,o_fms_ref_no
+        FROM rms_rpt_um_age where rpt_um_age_id = i_rpt_um_age_id
+		
+		RETURN o_rpt_um_age_id,o_p_dt_req,o_p_txn_id,o_dt_created,o_dt_modified,o_created_by,o_modified_by,o_status,
+			o_p_rcpt_no,o_p_stmt_no,o_p_recon_status,o_p_dt_stmt_fr,o_p_dt_stmt_to,o_p_dup,o_p_email,o_p_file_type,
+			o_p_file_size,o_p_file_nm,o_task_id,o_batch_no,o_fms_ref_no WITH RESUME;
+	END FOREACH
+end procedure
+GO
+CREATE OR REPLACE PROCEDURE sp_getrptumagecount()
+returning integer;
+define o_count integer;
+select count(*) into o_count from rms_rpt_um_age;
+return o_count with resume;
+END PROCEDURE;
+GO
+CREATE OR REPLACE PROCEDURE sp_getrptumagelisting(i_page integer, i_size integer) returning 
+integer as rpt_um_age_id,datetime year to fraction(5) as p_dt_req,nvarchar(30) as p_txn_id
+,datetime year to fraction(5) as dt_created,datetime year to fraction(5) as dt_modified
+,nvarchar(25) as created_by,nvarchar(25) as modified_by,nvarchar(10) as status
+,nvarchar(50) as p_rcpt_no,nvarchar(50) as p_stmt_no,nvarchar(10) as p_recon_status
+,datetime year to fraction(5) as p_dt_stmt_fr,datetime year to fraction(5) as p_dt_stmt_to
+,integer as p_dup,nvarchar(255) as p_email,nvarchar(5) as p_file_type,integer as p_file_size
+,nvarchar(255) as p_file_nm,nvarchar(8) as task_id, nvarchar(30) as p_batch_no, nvarchar(25) as p_fms_ref_no;
+
+	DEFINE o_rpt_um_age_id integer;
+	DEFINE o_p_dt_req datetime year to fraction(5);
+	DEFINE o_p_txn_id nvarchar(30);
+	DEFINE o_dt_created datetime year to fraction(5);
+	DEFINE o_dt_modified datetime year to fraction(5);
+	DEFINE o_created_by nvarchar(25);
+	DEFINE o_modified_by nvarchar(25);
+	DEFINE o_status nvarchar(10);
+	DEFINE o_p_rcpt_no nvarchar(50);
+	DEFINE o_p_stmt_no nvarchar(50);
+	DEFINE o_p_recon_status nvarchar(10);
+	DEFINE o_p_dt_stmt_fr datetime year to fraction(5);
+	DEFINE o_p_dt_stmt_to datetime year to fraction(5);
+	DEFINE o_p_dup integer;
+	DEFINE o_p_email nvarchar(255);
+	DEFINE o_p_file_type nvarchar(5);
+	DEFINE o_p_file_size integer;
+	DEFINE o_p_file_nm nvarchar(255);
+	DEFINE o_task_id nvarchar(8);
+	define o_batch_no nvarchar(30);
+	define o_fms_ref_no nvarchar(25);
+	define calculatedpage int;
+
+	on exception
+		rollback work;
+	end exception;
+	
+	if (i_page is null or i_page < 1) or (i_size is null or i_page < 1) then 
+	    raise exception -746, 0, "i_page or i_size is null integer";
+	end if;
+	
+	let calculatedpage = (i_page-1)*i_size;
+
+	FOREACH c_getrptumagelisting FOR
+        select skip calculatedpage limit i_size rpt_um_age_id,p_dt_req,p_txn_id,dt_created,dt_modified,created_by,modified_by,status,
+				p_rcpt_no,p_stmt_no,p_recon_status,p_dt_stmt_fr,p_dt_stmt_to,p_dup,p_email,p_file_type,p_file_size,p_file_nm,
+				'RG' || lpad(rpt_um_age_id,6,'0'), p_batch_no, p_fms_ref_no
+        INTO o_rpt_um_age_id,o_p_dt_req,o_p_txn_id,o_dt_created,o_dt_modified,o_created_by,o_modified_by,o_status,
+			o_p_rcpt_no,o_p_stmt_no,o_p_recon_status,o_p_dt_stmt_fr,o_p_dt_stmt_to,o_p_dup,o_p_email,o_p_file_type,o_p_file_size,
+			o_p_file_nm,o_task_id,o_batch_no,o_fms_ref_no
+        FROM rms_rpt_um_age order by dt_created asc
+		
+		RETURN o_rpt_um_age_id,o_p_dt_req,o_p_txn_id,o_dt_created,o_dt_modified,o_created_by,o_modified_by,o_status,
+			o_p_rcpt_no,o_p_stmt_no,o_p_recon_status,o_p_dt_stmt_fr,o_p_dt_stmt_to,o_p_dup,o_p_email,o_p_file_type,
+			o_p_file_size,o_p_file_nm,o_task_id,o_batch_no,o_fms_ref_no WITH RESUME;
+	END FOREACH
+end procedure
+GO
+CREATE OR REPLACE PROCEDURE sp_getrptumagequeue()
+returning integer;
+define o_count integer;
+select count(*) into o_count from rms_rpt_um_age where status = "P" or status = "I";
+return o_count with resume;
+END PROCEDURE;
+GO
+CREATE OR REPLACE PROCEDURE sp_getrptumagerq(i_rpt_ricp_age_id integer) returning 
+integer, datetime year to fraction(5), integer, integer, nvarchar(1), nvarchar(100), datetime year to fraction(5), datetime year to fraction(5), datetime year to fraction(5), datetime year to fraction(5), datetime year to fraction(5), datetime year to fraction(5), datetime year to fraction(5), datetime year to fraction(5), datetime year to fraction(5), datetime year to fraction(5), datetime year to fraction(5), datetime year to fraction(5), nvarchar(25), nvarchar(25), nvarchar(10), nvarchar(255), datetime year to fraction(5), datetime year to fraction(5), nvarchar(5), nvarchar(10), nvarchar(255), nvarchar(30), nvarchar(25), nvarchar(8);
+
+	DEFINE o_rpt_ricp_age_id integer;
+	DEFINE o_p_dt_req datetime year to fraction(5);
+	DEFINE o_p_exp_status integer;
+	DEFINE o_p_can_v_status integer;
+	DEFINE o_p_ent_ty nvarchar(1);
+	DEFINE o_p_ent_nm nvarchar(100);
+	DEFINE o_p_dt_iss_fr datetime year to fraction(5);
+	DEFINE o_p_dt_iss_to datetime year to fraction(5);
+	DEFINE o_p_dt_exp_fr datetime year to fraction(5);
+	DEFINE o_p_dt_exp_to datetime year to fraction(5);
+	DEFINE o_p_dt_wo_fr datetime year to fraction(5);
+	DEFINE o_p_dt_wo_to datetime year to fraction(5);
+	DEFINE o_p_dt_can_fr datetime year to fraction(5);
+	DEFINE o_p_dt_can_to datetime year to fraction(5);
+	DEFINE o_p_dt_void_fr datetime year to fraction(5);
+	DEFINE o_p_dt_void_to datetime year to fraction(5);
+	DEFINE o_dt_created datetime year to fraction(5);
+	DEFINE o_dt_modified datetime year to fraction(5);
+	DEFINE o_created_by nvarchar(25);
+	DEFINE o_modified_by nvarchar(25);
+	DEFINE o_status nvarchar(10);
+	DEFINE o_p_email nvarchar(255);
+	DEFINE o_p_dt_rcpt_fr datetime year to fraction(5);
+	DEFINE o_p_dt_rcpt_to datetime year to fraction(5);
+	DEFINE o_p_file_type nvarchar(5);
+	DEFINE o_p_file_size integer;
+	DEFINE o_p_file_nm nvarchar(255);
+	DEFINE o_p_batch_no nvarchar(30);
+	DEFINE o_p_fms_ref_no nvarchar(25);
+	define o_task_id nvarchar(8);
+
+	FOREACH c_getrptumagerq FOR
+        select rpt_ricp_age_id,p_dt_req,p_exp_status,p_can_v_status,p_ent_ty,p_ent_nm,p_dt_iss_fr,p_dt_iss_to,
+				p_dt_exp_fr,p_dt_exp_to,p_dt_wo_fr,p_dt_wo_to,p_dt_can_fr,p_dt_can_to,p_dt_void_fr,
+				p_dt_void_to,dt_created,dt_modified,created_by,modified_by,status,p_email,p_dt_rcpt_fr,
+				p_dt_rcpt_to,p_file_type,p_file_size,p_file_nm,p_batch_no,p_fms_ref_no,'RG' || lpad(rpt_ricp_age_id,6,'0')
+        INTO o_rpt_ricp_age_id,o_p_dt_req,o_p_exp_status,o_p_can_v_status,o_p_ent_ty,o_p_ent_nm,o_p_dt_iss_fr,o_p_dt_iss_to,
+				o_p_dt_exp_fr,o_p_dt_exp_to,o_p_dt_wo_fr,o_p_dt_wo_to,o_p_dt_can_fr,o_p_dt_can_to,o_p_dt_void_fr,
+				o_p_dt_void_to,o_dt_created,o_dt_modified,o_created_by,o_modified_by,o_status,o_p_email,o_p_dt_rcpt_fr,
+				o_p_dt_rcpt_to,o_p_file_type,o_p_file_size,o_p_file_nm,o_p_batch_no,o_p_fms_ref_no,o_task_id
+        FROM rms_rpt_ricp_age where rpt_ricp_age_id = i_rpt_ricp_age_id
+		
+		RETURN o_rpt_ricp_age_id,o_p_dt_req,o_p_exp_status,o_p_can_v_status,o_p_ent_ty,o_p_ent_nm,o_p_dt_iss_fr,o_p_dt_iss_to,
+				o_p_dt_exp_fr,o_p_dt_exp_to,o_p_dt_wo_fr,o_p_dt_wo_to,o_p_dt_can_fr,o_p_dt_can_to,o_p_dt_void_fr,
+				o_p_dt_void_to,o_dt_created,o_dt_modified,o_created_by,o_modified_by,o_status,o_p_email,o_p_dt_rcpt_fr,
+				o_p_dt_rcpt_to,o_p_file_type,o_p_file_size,o_p_file_nm,o_p_batch_no,o_p_fms_ref_no,o_task_id WITH RESUME;
+	END FOREACH
+end procedure
+GO
+CREATE OR REPLACE PROCEDURE sp_getutldays(i_period_key DATE)
+RETURNING 
+    nvarchar(20) AS period,
+    DECIMAL(15,5) AS in,
+    DECIMAL(15,5) AS out,
+    DECIMAL(15,5) AS variance,
+    nvarchar(10) AS periodbalance,
+    DATE AS dummydate;
+
+DEFINE o_period nvarchar(20);
+DEFINE o_in DECIMAL(15,5);
+DEFINE o_out DECIMAL(15,5);
+DEFINE o_variance DECIMAL(15,5);
+DEFINE o_period_balance nvarchar(10);
+DEFINE o_dummydate DATE;
+DEFINE total_in DECIMAL(15,5);
+DEFINE total_out DECIMAL(15,5);
+DEFINE total_variance DECIMAL(15,5);
+DEFINE total_period_balance DECIMAL(15,5);
+
+-- Initialize totals
+LET total_in = 0;
+LET total_out = 0;
+LET total_variance = 0;
+LET total_period_balance = 0;
+
+-- Cursor to fetch data
+FOREACH cursor1 FOR
+
+    WITH days_of_month(day_key) AS (
+    SELECT MDY(MONTH(i_period_key), 1, YEAR(i_period_key)) -- First day of the input month
+    UNION ALL
+    SELECT day_key + 1
+    FROM days_of_month
+    WHERE day_key < LAST_DAY(i_period_key)
+    )
+    SELECT 
+        CASE 
+            WHEN d.day_key > TODAY THEN '' 
+            ELSE TO_CHAR(d.day_key, '%d %b %Y')
+        END AS period,
+        CASE 
+            WHEN d.day_key > TODAY THEN NULL 
+            ELSE NVL(SUM(NVL(r.debit_amt, 0)), 0) 
+        END AS in,
+        CASE 
+            WHEN d.day_key > TODAY THEN NULL 
+            ELSE NVL(SUM(NVL(r.credit_amt, 0)), 0) 
+        END AS out,
+        CASE 
+            WHEN d.day_key > TODAY THEN NULL 
+            ELSE NVL(SUM(NVL(r.variance, 0)), 0) 
+        END AS variance,
+        CASE 
+            WHEN d.day_key > TODAY THEN '' 
+            ELSE TO_CHAR(ROUND(NVL(SUM(NVL(r.accumulate_amt, 0)), 0), 2))
+        END AS periodbalance,
+        d.day_key AS dummydate
+    INTO
+        o_period,
+        o_in,
+        o_out,
+        o_variance,
+        o_period_balance,
+        o_dummydate
+    FROM
+        days_of_month d
+    LEFT JOIN
+        rms_unmatch_txn r ON d.day_key = r.period_key
+    GROUP BY
+        d.day_key
+    ORDER BY
+        d.day_key
+	
+    -- Accumulate totals only if the date is not in the future
+    IF o_dummydate <= today THEN
+        LET total_in = total_in + NVL(o_in, 0);
+        LET total_out = total_out + NVL(o_out, 0);
+        LET total_variance = total_variance + NVL(o_variance, 0);
+        LET total_period_balance = total_period_balance + NVL(CAST(o_period_balance AS DECIMAL(15,5)), 0);
+    END IF;
+
+    RETURN o_period, o_in, o_out, o_variance, o_period_balance, o_dummydate WITH RESUME;
+END FOREACH;
+
+-- Add totals as the last row
+RETURN 'Total', total_in, total_out, total_variance, 'N/A', NULL;
+END PROCEDURE;
+GO
+CREATE OR REPLACE PROCEDURE sp_getutlmonths(i_period_key DATE)
+RETURNING 
+    nvarchar(20) AS period,
+    DECIMAL(15,5) AS in,
+    DECIMAL(15,5) AS out,
+    DECIMAL(15,5) AS variance,
+    nvarchar(10) AS periodbalance,
+    DATE AS dummydate;
+
+DEFINE o_period nvarchar(20);
+DEFINE o_in DECIMAL(15,5);
+DEFINE o_out DECIMAL(15,5);
+DEFINE o_variance DECIMAL(15,5);
+DEFINE o_period_balance nvarchar(10);
+DEFINE o_dummydate DATE;
+DEFINE o_month_key INTEGER;
+DEFINE total_previous_year_balance DECIMAL(15,5);
+
+-- Calculate the total amount for the period balance of the previous year
+SELECT COALESCE(SUM(accumulate_amt), 0) 
+INTO total_previous_year_balance 
+FROM rms_unmatch_txn 
+WHERE YEAR(period_key) = YEAR(i_period_key) - 1;
+
+-- Add "Beginning Balance" row at the top
+RETURN 'Beginning Balance', 0.00, 0.00, 0.00, TO_CHAR(ROUND(total_previous_year_balance, 2)), NULL::DATE WITH RESUME;
+
+FOREACH cursor1 FOR
+    SELECT 
+        CASE 
+            WHEN DummyDate > TODAY THEN '' 
+            ELSE Period 
+        END AS Period,
+        CASE 
+            WHEN DummyDate > TODAY THEN NULL 
+            ELSE COALESCE(SUM(In), 0) 
+        END AS In,
+        CASE 
+            WHEN DummyDate > TODAY THEN NULL 
+            ELSE COALESCE(SUM(Out), 0) 
+        END AS Out,
+        CASE 
+            WHEN DummyDate > TODAY THEN NULL 
+            ELSE COALESCE(SUM(Variance), 0) 
+        END AS Variance,
+        CASE 
+            WHEN MonthKey = 13 THEN 'N/A' 
+            WHEN DummyDate > TODAY THEN '' 
+            ELSE TO_CHAR(ROUND(COALESCE(SUM(PeriodBalance), 0), 2))
+        END AS PeriodBalance,
+        DummyDate,
+        MonthKey
+    INTO
+        o_period,
+        o_in,
+        o_out,
+        o_variance,
+        o_period_balance,
+        o_dummydate,
+        o_month_key
+    FROM (
+        SELECT
+            CASE MONTH(period_key)
+                WHEN 1 THEN 'January'
+                WHEN 2 THEN 'February'
+                WHEN 3 THEN 'March'
+                WHEN 4 THEN 'April'
+                WHEN 5 THEN 'May'
+                WHEN 6 THEN 'June'
+                WHEN 7 THEN 'July'
+                WHEN 8 THEN 'August'
+                WHEN 9 THEN 'September'
+                WHEN 10 THEN 'October'
+                WHEN 11 THEN 'November'
+                WHEN 12 THEN 'December'
+            END AS Period,
+            debit_amt AS In, 
+            credit_amt AS Out, 
+            variance AS Variance, 
+            accumulate_amt AS PeriodBalance,
+            MDY(MONTH(period_key), 1, YEAR(i_period_key)) AS DummyDate,
+            MONTH(period_key) AS MonthKey
+        FROM 
+            rms_unmatch_txn
+        WHERE 
+            YEAR(period_key) = YEAR(i_period_key)
+        UNION ALL
+        SELECT
+            CASE n
+                WHEN 1 THEN 'January'
+                WHEN 2 THEN 'February'
+                WHEN 3 THEN 'March'
+                WHEN 4 THEN 'April'
+                WHEN 5 THEN 'May'
+                WHEN 6 THEN 'June'
+                WHEN 7 THEN 'July'
+                WHEN 8 THEN 'August'
+                WHEN 9 THEN 'September'
+                WHEN 10 THEN 'October'
+                WHEN 11 THEN 'November'
+                WHEN 12 THEN 'December'
+            END AS Period,
+            0 AS In, 
+            0 AS Out, 
+            0 AS Variance, 
+            0 AS PeriodBalance,
+            MDY(n, 1, YEAR(i_period_key)) AS DummyDate,
+            n AS MonthKey
+        FROM (SELECT 1 AS n UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9 UNION ALL SELECT 10 UNION ALL SELECT 11 UNION ALL SELECT 12) AS Months
+    ) AS Subquery
+    GROUP BY 
+        Period,
+        DummyDate,
+        MonthKey
+
+    UNION ALL
+
+    SELECT
+        'Total' AS Period,
+        COALESCE(SUM(In), 0) AS In,
+        COALESCE(SUM(Out), 0) AS Out,
+        COALESCE(SUM(Variance), 0) AS Variance,
+        'N/A' AS PeriodBalance,
+        NULL::DATE AS DummyDate,
+        13 AS MonthKey
+    FROM (
+        SELECT
+            debit_amt AS In, 
+            credit_amt AS Out, 
+            variance AS Variance, 
+            accumulate_amt AS PeriodBalance,
+            0 AS MonthKey
+        FROM 
+            rms_unmatch_txn
+        WHERE 
+            YEAR(period_key) = YEAR(i_period_key)
+    ) AS TotalSubquery
+
+    ORDER BY 
+        MonthKey ASC
+    RETURN o_period, o_in, o_out, o_variance, o_period_balance, o_dummydate WITH RESUME;
+END FOREACH;
+
+END PROCEDURE;
+GO
+
+
+create or replace procedure sp_insauditlog (
+    i_actor NVARCHAR(255),
+    i_request_url NVARCHAR(255),
+    i_module NVARCHAR(255),
+    i_request_msg LVARCHAR(5000),
+    i_action NVARCHAR(255),
+    i_page_url NVARCHAR(255),
+    i_remark NVARCHAR(255),
+    i_source NVARCHAR(255),
+    i_response_msg LVARCHAR(5000),
+    i_created_by nvarchar(25),
+    i_modified_by nvarchar(25),
+    i_status NVARCHAR(10)
+)
+RETURNING INT AS row_count;
+
+DEFINE o_row_count INT;
+
+on exception
+	rollback work;
+end exception;
+
+begin work;
+set lock mode to wait 30;
+
+INSERT INTO informix.rms_audit_log(actor, request_url, module, request_msg, action, page_url, remark, source, response_msg, dt_created, dt_modified, created_by, modified_by, status) 
+	VALUES(i_actor, i_request_url, i_module, i_request_msg, i_action, i_page_url, 
+		i_remark, i_source, i_response_msg, current, current, i_created_by, i_modified_by, i_status);
+
+LET o_row_count = DBINFO('sqlca.sqlerrd2');
+
+commit work;
+
+RETURN o_row_count;
+
+END PROCEDURE;
+GO
+CREATE OR REPLACE PROCEDURE sp_insdiagingrpt (i_p_dt_req DATETIME YEAR TO SECOND, i_p_tmn_status INT, i_p_ent_ty NVARCHAR(1), i_p_ent_nm LVARCHAR(2000),
+								i_p_txn_ty NVARCHAR(10), i_p_status nvarchar(10), i_p_dt_exp_fr DATETIME YEAR TO SECOND, i_p_dt_exp_to DATETIME YEAR TO SECOND,
+								i_p_dt_eff_fr DATETIME YEAR TO SECOND, i_p_dt_eff_to DATETIME YEAR TO SECOND, i_p_dt_app_fr DATETIME YEAR TO SECOND, i_p_dt_app_to DATETIME YEAR TO SECOND,
+								i_p_dt_tmn_fr DATETIME YEAR TO SECOND, i_p_dt_tmn_to DATETIME YEAR TO SECOND, i_created_by NVARCHAR(25), i_modified_by NVARCHAR(25),
+								i_status NVARCHAR(10), i_p_email nvarchar(255), i_p_file_type nvarchar(5), i_p_file_size INT, i_p_file_nm nvarchar(255), 
+								i_p_batch_no nvarchar(30), i_p_fms_ref_no nvarchar(25))
+
+RETURNING INT8 as wf_id;
+
+
+	DEFINE o_wf_id INT8;
+	DEFINE o_current_dt DATETIME YEAR TO SECOND;
+    define o_insresult int8;
+
+BEGIN WORK;	
+	
+	/*Set current date time*/
+	let o_current_dt = current;
+	
+	
+	/*Insert data into MFT WF table*/
+	INSERT INTO rms_rpt_di_age
+		(p_dt_req, p_tmn_status, p_ent_ty, p_ent_nm, p_txn_ty, p_status, p_dt_exp_fr, p_dt_exp_to, p_dt_eff_fr, p_dt_eff_to,
+		 p_dt_app_fr, p_dt_app_to, p_dt_tmn_fr, p_dt_tmn_to, dt_created, dt_modified, created_by, modified_by, status, p_email, 
+		 p_file_type, p_file_size, p_file_nm, p_batch_no, p_fms_ref_no)
+	VALUES 
+		(i_p_dt_req, i_p_tmn_status, i_p_ent_ty, i_p_ent_nm, i_p_txn_ty, i_p_status, i_p_dt_exp_fr, i_p_dt_exp_to, i_p_dt_eff_fr, i_p_dt_eff_to,
+		 i_p_dt_app_fr, i_p_dt_app_to, i_p_dt_tmn_fr, i_p_dt_tmn_to, o_current_dt, o_current_dt, i_created_by, i_modified_by, i_status, i_p_email, 
+		 i_p_file_type, i_p_file_size, i_p_file_nm, i_p_batch_no, i_p_fms_ref_no);
+		
+	/*Get latest Serial8 ID number from last inserted records*/
+	LET o_wf_id = DBINFO('Serial8');
+    
+COMMIT WORK;
+	
+RETURN o_wf_id;
+
+END PROCEDURE
+GO
+create or replace procedure sp_insfmsarr(i_rc_bank_id int8, i_rc_pg_id int8, i_credit decimal(15,5), i_mdr_amt decimal(15,5),
+                                    i_mtt_pg_id int8, i_acct_cd nvarchar(10), i_cust nvarchar(10))
+returning int as result;
+ 
+define o_fms_ref_no nvarchar(25);
+define o_batch_no nvarchar(30);
+define o_hid int8;
+define o_result int;
+ 
+on exception
+	rollback work;
+end exception;
+ 
+begin work;
+set lock mode to wait 30;
+
+/*Get latest running no*/
+execute procedure sp_getrunno('arrc') into o_result;
+
+/* update last running no */
+update rms_runno
+set last_runno = last_runno + 1
+where runno_cd = 'arrc';
+
+/* select running no */
+select first 1 ('ARRC' || to_char(today, '%y%m%d') || lpad(last_runno, 6,0)) as run_no
+into o_batch_no
+from rms_runno;
+
+-- insert into rms_fms_arr_h (header)
+insert into rms_fms_arr_h (
+    type, branch, dt_sent, cash_acct, pymt_method,
+    cust, rms_batch_no, pymt_amt, attr_ext_sys, resp_attr_ext_sys,
+    resp_ref_no, resp_co, resp_status, resp_msg, resp_dt,
+    dt_created, dt_modified, created_by, modified_by, status, retry
+) values (
+    'Payment', '000', current, i_acct_cd, 'PG',
+    i_cust, o_batch_no, i_credit, 'RMS', null,
+    null, null, null, null, null,
+    current, current, 'system', 'system', 'A', 0
+);
+ 
+let o_hid = dbinfo('sqlca.sqlerrd1');
+ 
+-- insert into rms_fms_arr_c (charge)
+insert into rms_fms_arr_c (
+    arr_hid, amt, doc_type, entity_type, offset_subacct,
+    dt_created, dt_modified, created_by, modified_by, status
+) values (
+    o_hid, i_mdr_amt, 'PMT', 'PGCHARGES', '000-000-00000-000000000',
+    current, current, 'system', 'system', 'A'
+);
+ 
+-- insert into rms_fms_arr_b (details)
+foreach c_arr for
+	select distinct t3.fms_ref_no
+	into o_fms_ref_no
+	from rms_rc_pgmtt t1
+	left join rms_fms_ari_b t2 on t1.mtt_pg_id = t2.mtt_pg_id
+	left join rms_fms_ari_h t3 on t2.ari_hid = t3.ari_hid
+	where t1.rc_pg_id = i_rc_pg_id
+ 
+	insert into rms_fms_arr_b (
+		arr_hid, fms_ref_no, doc_type, dt_created, dt_modified,
+		created_by, modified_by, status, mtt_pg_id
+	) values (
+		o_hid, o_fms_ref_no, 'Invoice', current, current,
+		'system', 'system', 'A', i_mtt_pg_id
+	);
+end foreach;
+ 
+update rms_rc_bank
+set in_fms_posting = 1, 
+	dt_modified = current
+where rc_bank_id = i_rc_bank_id;
+ 
+let o_result = dbinfo('sqlca.sqlerrd2');
+ 
+if (o_result > 0) then
+    commit work;
+    return o_result;
+else
+    rollback work;
+    return -1;
+end if;
+ 
+end procedure;
+GO
+create or replace procedure sp_insfmsdia(i_audit_id int8, i_di_id int8, i_dt_txn date, i_bal_di_amt_af decimal(16,2), i_unit_fee decimal(16,2), i_action_type nvarchar(10))
+returning int8 as result;
+
+define o_hid            int8;
+define o_batch_no       nvarchar(30);
+define o_result         int8;
+
+on exception
+	rollback work;
+end exception;
+
+    begin work;
+    set lock mode to wait 30;
+
+    execute procedure sp_getrunno('JNDI') into o_result;
+
+    /* UPDATE last running no */
+    UPDATE rms_runno
+    SET last_runno = last_runno +1
+    WHERE runno_cd = 'jndi';
+
+    /* Select running no */
+    SELECT FIRST 1 ('JNDI' || TO_CHAR(TODAY, '%Y%m%d') || LPAD(last_runno, 6,0)) as run_no
+    INTO o_batch_no
+    FROM rms_runno
+    WHERE runno_cd = 'jndi';
+
+    insert into rms_fms_jn_h(batch_no, branch_id, desc, ledger_id, module, dt_txn, attr_ext_ref_no, attr_ext_sys, resp_attr_ext_sys, fms_ref_no, resp_ext_ref_no, resp_status, resp_msg, resp_dt, dt_created, dt_modified, created_by, modified_by, status, retry) 
+    values(o_batch_no, '000000', 'GL RMS', 'ACTUAL', 'GL', DATE(i_dt_txn), 'DI-' || i_di_id || '-' || i_audit_id, 'RMS', null, null, null, null, null, null, current, current, 'system', 'system', 'A', 0);
+
+    let o_hid = dbinfo('serial8');
+
+    if (i_action_type like '%A') then 
+        insert into rms_fms_jn_b(jn_hid, branch, acct, sub_acct, debit, credit, txn_desc, dt_created, dt_modified, created_by, modified_by, status) 
+        values(o_hid, '000', 'Prepayment/DI', '000000000000000', i_unit_fee, 0, 'DI PC Amortize', current, current, 'system', 'system', 'A');
+
+        insert into rms_fms_jn_b(jn_hid, branch, acct, sub_acct, debit, credit, txn_desc, dt_created, dt_modified, created_by, modified_by, status) 
+        values(o_hid, '000', 'Revenue', '000000000000000', 0, i_unit_fee, 'DI PC Amortize', current, current, 'system', 'system', 'A');
+
+    elif (i_action_type like '%T') then
+        insert into rms_fms_jn_b(jn_hid, branch, acct, sub_acct, debit, credit, txn_desc, dt_created, dt_modified, created_by, modified_by, status) 
+        values(o_hid, '000', 'Prepayment/DI', '000000000000000', i_bal_di_amt_af, 0, 'DI PC Terminate', current, current, 'system', 'system', 'A');
+
+        insert into rms_fms_jn_b(jn_hid, branch, acct, sub_acct, debit, credit, txn_desc, dt_created, dt_modified, created_by, modified_by, status) 
+        values(o_hid, '000', 'Revenue', '000000000000000', 0, i_bal_di_amt_af, 'DI PC Terminate', current, current, 'system', 'system', 'A');
+    end if;
+
+    let o_result = dbinfo('sqlca.sqlerrd2');
+
+    if (o_result > 0) then
+        update rms_di_a
+        set in_fms_posting = 1,
+        dt_modified = current
+        where audit_id = i_audit_id;
+    end if;
+
+    commit work;
+
+return o_result;
+
+end procedure;
+GO
+create or replace procedure sp_insfmsmttb(i_mtt_pg_id int8,i_pg_pymt_amt decimal(16,2),i_qty int,i_item_desc nvarchar(100)
+                ,i_unit_fee decimal(16,2),i_rcpt_no nvarchar(100),i_cust_nm nvarchar(100), i_entity_nm nvarchar(100), i_entity_no nvarchar(100)
+                ,i_entity_type nvarchar(100), i_gross_amt decimal(16,2),i_fee_detail_id nvarchar(100), i_pg_pymt_method nvarchar(100)
+                ,i_tax_amt decimal(16,2),i_customer nvarchar(100),i_hid int8,i_item_ref_no nvarchar(100),i_cp_no nvarchar(100))
+
+returning int8 as result;
+
+define o_result         int;
+define di_exist         int;
+define cp_exist         int;
+define coa1             nvarchar(100);
+define coa1_d           nvarchar(100);
+define o_accr_amt         decimal(16,2);
+define temp_amt              decimal(16,2);
+
+on exception
+	rollback work;
+end exception;
+
+    begin work;
+    set lock mode to wait 30;
+
+    -- default coa1 to mft.ledger_cd
+    select ledger_cd
+    into coa1_d
+    from rms_mft
+    where fee_detail_id = i_fee_detail_id;
+
+    -- check if is RICP arrcual    
+    select count(1),accr_amt
+    into cp_exist,o_accr_amt
+    from rms_ricp
+    where cp_no = i_cp_no
+    and entity_no = i_entity_no
+    and entity_type = i_entity_type
+    and cp_tier != '3' -- tony say if tier 3 means direct sales
+    group by accr_amt;
+    
+    if cp_exist > 0 then -- if count>0 means this is not direct sale
+        -- compare amt
+        if o_accr_amt=i_gross_amt then
+            -- find account from fms_acct
+            select acct_cd
+            into coa1
+            from rms_fms_acct
+            where acct_nm = 'RI/CMP';
+
+            -- insert rms_fms_ari_b  
+            INSERT INTO rms_fms_ari_b(ari_hid, acct, branch, qty, sub_acct, 
+                        txn_desc, unit_price, rcpt_no, payee_info, ent_nm, 
+                        ent_no, ent_ty, item_amt, coa1, pymt_mode, 
+                        item_tax_amt, dt_created, dt_modified, created_by, modified_by, 
+                        status, coa2, mtt_pg_id) 
+                VALUES(i_hid, null, '000', i_qty, '000000000000000', 
+                        i_item_desc, i_unit_fee, i_rcpt_no, i_cust_nm, i_entity_nm, 
+                        i_entity_no, i_entity_type, i_gross_amt, coa1, i_pg_pymt_method, 
+                        i_tax_amt, current, current, 'system', 'system', 
+                        'A', i_fee_detail_id, i_mtt_pg_id);
+        end if;
+
+        if o_accr_amt<i_gross_amt then -- need insert 2 rows to body table
+            let temp_amt = i_gross_amt-o_accr_amt;
+            -- find account from fms_acct
+            select acct_cd
+            into coa1
+            from rms_fms_acct
+            where acct_nm = 'RI/CMP';
+            
+            -- 1st row
+            INSERT INTO rms_fms_ari_b(ari_hid, acct, branch, qty, sub_acct, 
+                        txn_desc, unit_price, rcpt_no, payee_info, ent_nm, 
+                        ent_no, ent_ty, item_amt, coa1, pymt_mode, 
+                        item_tax_amt, dt_created, dt_modified, created_by, modified_by, 
+                        status, coa2, mtt_pg_id) 
+                VALUES(i_hid, null, '000', i_qty, '000000000000000', 
+                        i_item_desc, i_unit_fee, i_rcpt_no, i_cust_nm, i_entity_nm, 
+                        i_entity_no, i_entity_type, o_accr_amt, coa1, i_pg_pymt_method, 
+                        i_tax_amt, current, current, 'system', 'system', 
+                        'A', i_fee_detail_id, i_mtt_pg_id);
+            -- 2nd row
+            INSERT INTO rms_fms_ari_b(ari_hid, acct, branch, qty, sub_acct, 
+                        txn_desc, unit_price, rcpt_no, payee_info, ent_nm, 
+                        ent_no, ent_ty, item_amt, coa1, pymt_mode, 
+                        item_tax_amt, dt_created, dt_modified, created_by, modified_by, 
+                        status, coa2, mtt_pg_id) 
+                VALUES(i_hid, null, '000', i_qty, '000000000000000', 
+                        i_item_desc, i_unit_fee, i_rcpt_no, i_cust_nm, i_entity_nm, 
+                        i_entity_no, i_entity_type, temp_amt, coa1_d, i_pg_pymt_method, 
+                        i_tax_amt, current, current, 'system', 'system', 
+                        'A', i_fee_detail_id, i_mtt_pg_id);
+        end if;
+
+            if o_accr_amt>i_gross_amt then -- need insert 2 rows to body table
+                let temp_amt = o_accr_amt-i_gross_amt;
+
+                -- find account from fms_acct
+                select acct_cd
+                into coa1
+                from rms_fms_acct
+                where acct_nm = 'RI/CMP';
+
+                -- 1st row
+                INSERT INTO rms_fms_ari_b(ari_hid, acct, branch, qty, sub_acct, 
+                            txn_desc, unit_price, rcpt_no, payee_info, ent_nm, 
+                            ent_no, ent_ty, item_amt, coa1, pymt_mode, 
+                            item_tax_amt, dt_created, dt_modified, created_by, modified_by, 
+                            status, coa2, mtt_pg_id) 
+                    VALUES(i_hid, null, '000', i_qty, '000000000000000', 
+                            i_item_desc, i_unit_fee, i_rcpt_no, i_cust_nm, i_entity_nm, 
+                            i_entity_no, i_entity_type, o_accr_amt, coa1, i_pg_pymt_method, 
+                            i_tax_amt, current, current, 'system', 'system', 
+                            'A', i_fee_detail_id, i_mtt_pg_id);
+
+                -- find account from fms_acct
+                select acct_cd
+                into coa1
+                from rms_fms_acct
+                where acct_nm = 'Compound Discount';
+                -- 2nd row
+                INSERT INTO rms_fms_ari_b(ari_hid, acct, branch, qty, sub_acct, 
+                            txn_desc, unit_price, rcpt_no, payee_info, ent_nm, 
+                            ent_no, ent_ty, item_amt, coa1, pymt_mode, 
+                            item_tax_amt, dt_created, dt_modified, created_by, modified_by, 
+                            status, coa2, mtt_pg_id) 
+                    VALUES(i_hid, null, '000', i_qty, '000000000000000', 
+                            i_item_desc, i_unit_fee, i_rcpt_no, i_cust_nm, i_entity_nm, 
+                            i_entity_no, i_entity_type, temp_amt, coa1, i_pg_pymt_method, 
+                            i_tax_amt, current, current, 'system', 'system', 
+                            'A', i_fee_detail_id, i_mtt_pg_id);
+        end if;
+            
+    end if;
+
+    -- check if is DI arrcual
+    select count(1)
+    into di_exist
+    from rms_di
+    where item_ref_no = i_item_ref_no
+    and entity_no = i_entity_no
+    and entity_type = i_entity_type
+    and fee_detail_id = i_fee_detail_id
+    and (status = 'R' or status = 'A');
+    
+    if di_exist > 0 then -- if count>0 means this is not direct sale
+        -- find account from fms_acct
+        select acct_cd
+        into coa1
+        from rms_fms_acct
+        where acct_nm = 'Prepayment/DI';
+
+        -- insert rms_fms_ari_b  
+        INSERT INTO rms_fms_ari_b(ari_hid, acct, branch, qty, sub_acct, 
+                    txn_desc, unit_price, rcpt_no, payee_info, ent_nm, 
+                    ent_no, ent_ty, item_amt, coa1, pymt_mode, 
+                    item_tax_amt, dt_created, dt_modified, created_by, modified_by, 
+                    status, coa2, mtt_pg_id) 
+            VALUES(i_hid, null, '000', i_qty, '000000000000000', 
+                    i_item_desc, i_unit_fee, i_rcpt_no, i_cust_nm, i_entity_nm, 
+                    i_entity_no, i_entity_type, i_gross_amt, coa1, i_pg_pymt_method, 
+                    i_tax_amt, current, current, 'system', 'system', 
+                    'A', i_fee_detail_id, i_mtt_pg_id);
+    else
+
+         INSERT INTO rms_fms_ari_b(ari_hid, acct, branch, qty, sub_acct, 
+                txn_desc, unit_price, rcpt_no, payee_info, ent_nm, 
+                ent_no, ent_ty, item_amt, coa1, pymt_mode, 
+                item_tax_amt, dt_created, dt_modified, created_by, modified_by, 
+                status, coa2, mtt_pg_id) 
+        VALUES(i_hid, null, '000', i_qty, '000000000000000', 
+                i_item_desc, i_unit_fee, i_rcpt_no, i_cust_nm, i_entity_nm, 
+                i_entity_no, i_entity_type, i_gross_amt, coa1_d, i_pg_pymt_method, 
+                i_tax_amt, current, current, 'system', 'system', 
+                'A', i_fee_detail_id, i_mtt_pg_id);
+    end if;
+
+    let o_result = dbinfo('serial8');
+
+    -- update rms_fms_ari_h
+    update rms_fms_ari_h
+    set amt=amt+i_gross_amt
+    where ari_hid = i_hid;
+
+    -- update rms_mtt_pg
+    update rms_mtt_pg
+    set in_fms_posting = 1,
+        dt_modified = current
+    where mtt_pg_id=i_mtt_pg_id;
+
+    commit work;
+
+return o_result;
+
+end procedure;
+GO
+create or replace procedure sp_insfmsmtth(i_customer nvarchar(100))
+
+returning int8 as hid;
+
+define o_batch_no       nvarchar(30);
+define o_hid            int8;
+define o_result         int;
+define runno            nvarchar(30);
+
+on exception
+	rollback work;
+end exception;
+
+    -- check got overnight anot
+    execute procedure sp_getrunno('ARIV') into o_result;
+
+    begin work;
+    set lock mode to wait 30;
+
+    /* UPDATE last running no */
+    UPDATE rms_runno
+    SET last_runno = last_runno +1
+    WHERE runno_cd = 'ARIV';
+
+    -- get running number
+    SELECT FIRST 1 ('ARIV' || TO_CHAR(TODAY, '%Y%m%d') || LPAD(last_runno, 6,0)) as run_no
+    INTO o_batch_no
+    FROM rms_runno
+    WHERE runno_cd = 'ARIV';
+
+    -- insert rms_fms_ari_h
+    -- geo: dt_sent = current
+    INSERT INTO rms_fms_ari_h(type, link_branch, amt, cust, rms_batch_no, 
+                                dt_sent, desc, attr_ext_sys, resp_attr_ext_sys, fms_ref_no, 
+                                resp_co, resp_status, resp_msg, resp_dt, 
+                                dt_created, dt_modified, created_by, modified_by, status, retry) 
+        VALUES('Invoice', '000', 0, i_customer, o_batch_no 
+                , current, 'Collection with Receipt', 'RMS', null, null
+                , null, null, null, null, current, current, 'system', 'system', 'A', 0);
+
+    let o_hid = dbinfo('serial8');
+
+    commit work;
+
+return o_hid;
+
+end procedure;
+GO
+create or replace procedure sp_insfmsrcpgmtt(i_rc_pg_id INT8,
+											i_pg_pymt_method NVARCHAR(3),
+											i_mtt_pg_id INT8,
+											i_qty INT,
+											i_item_desc NVARCHAR(150),
+											i_unit_fee DECIMAL(16,2),
+											i_entity_nm NVARCHAR(100),
+											i_entity_no NVARCHAR(20),
+											i_entity_type NVARCHAR(1),
+											i_gross_amt DECIMAL(16,2),
+											i_fee_detail_id NVARCHAR(10),
+											i_tax_amt DECIMAL(16,2),
+											i_rcpt_no NVARCHAR(20),
+											i_cust_nm NVARCHAR(255),
+											i_pg_pymt_amt DECIMAL(16,2))
+returning int as result;
+
+	define o_fms_acct_cd NVARCHAR(10);
+	define o_fms_ref_no NVARCHAR(25); 
+	
+	define o_batch_no nvarchar(30);
+	define o_hid int8;
+	define o_result int;
+	 
+	on exception
+		rollback work;
+	end exception;
+	 
+	begin work;
+	set lock mode to wait 30;
+	
+	execute procedure sp_getrunno('DN');
+	
+	update rms_runno
+	set last_runno = last_runno + 1
+	where runno_cd = 'DN';
+	
+	select first 1 ('DN' || to_char(today, '%y%m%d') || lpad(last_runno, 6,0)) as run_no
+	into o_batch_no
+	from rms_runno;
+	
+	select acct_cd into o_fms_acct_cd from rms_fms_acct where acct_nm = 'AR Invoice''s RMS PG MID Account ID';
+	
+	-- insert into rms_fms_drmemo_h
+	insert into rms_fms_drmemo_h (
+		type, link_branch, amt, cust, rms_batch_no, dt_sent, desc, 
+		attr_ext_sys, resp_attr_ext_sys, fms_ref_no, resp_co, resp_status, 
+		resp_msg, resp_dt, dt_created, dt_modified, created_by, modified_by, 
+		status, retry
+	) values (
+		'Debit Memo', '000', i_pg_pymt_amt, o_fms_acct_cd, o_batch_no, current, 'Debit Note Batch', 
+		'RMS', null, null, null, null, 
+		null, null, current, current, 'system', 'system', 
+		'A', 0
+	);
+	 
+	let o_hid = dbinfo('sqlca.sqlerrd1');
+	
+	foreach c_arr for
+		select distinct t3.fms_ref_no
+		into o_fms_ref_no
+		from rms_rc_pgmtt t1
+		left join rms_fms_ari_b t2 on t1.mtt_pg_id = t2.mtt_pg_id
+		left join rms_fms_ari_h t3 on t2.ari_hid = t3.ari_hid
+		where t1.rc_pg_id = i_rc_pg_id
+		
+		-- insert into rms_fms_drmemo_f
+		insert into rms_fms_drmemo_f (
+			drmemo_hid, fms_ref_no, doc_ty, dt_created, dt_modified, created_by, 
+			modified_by, status
+		) values (
+			o_hid, o_fms_ref_no, 'Invoice', current, current, 'system', 
+			'system', 'A'
+		);
+	 
+		-- insert into rms_fms_drmemo_b
+		insert into rms_fms_drmemo_b (
+			drmemo_hid, acct, branch, qty, sub_acct, txn_desc, unit_price, 
+			rcpt_no, payee_info, ent_nm, ent_no, ent_ty, item_amt, 
+			pymt, item_tax_amt, dt_created, dt_modified, created_by, modified_by, 
+			status, mtt_pg_id, coa1, coa2
+		) values (
+			o_hid, null, '000', i_qty, '000000000000000', i_item_desc, i_unit_fee, 
+			i_rcpt_no, i_cust_nm, i_entity_nm, i_entity_no, i_entity_type, i_gross_amt, 
+			i_pg_pymt_method, i_tax_amt, current, current, 'system', 'system', 
+			'A', i_mtt_pg_id, o_fms_acct_cd, i_fee_detail_id
+		);
+	end foreach;
+	 
+	update rms_mtt_pg
+	set in_fms_posting = 1, 
+		dt_modified = current
+	where mtt_id = i_mtt_id;
+	 
+	let o_result = dbinfo('sqlca.sqlerrd2');
+	 
+	if (o_result > 0) then
+	    commit work;
+	    return o_result;
+	else
+	    rollback work;
+	    return -1;
+	end if;
+ 
+end procedure;
+GO
+create or replace procedure sp_insfmsrcpgtxn(i_rc_pg_id INT8,
+											i_pg_pymt_method NVARCHAR(3),
+											i_mtt_pg_id INT8,
+											i_qty INT,
+											i_item_desc NVARCHAR(150),
+											i_unit_fee DECIMAL(16,2),
+											i_entity_nm NVARCHAR(100),
+											i_entity_no NVARCHAR(20),
+											i_entity_type NVARCHAR(1),
+											i_gross_amt DECIMAL(16,2),
+											i_fee_detail_id NVARCHAR(10),
+											i_tax_amt DECIMAL(16,2),
+											i_rcpt_no NVARCHAR(20),
+											i_cust_nm NVARCHAR(255),
+											i_pg_pymt_amt DECIMAL(16,2))
+returning int as result;
+
+	define o_fms_acct_cd NVARCHAR(10);
+	define o_fms_ref_no NVARCHAR(25); 
+	
+	define o_batch_no nvarchar(30);
+	define o_hid int8;
+	define o_result int;
+	 
+	on exception
+		rollback work;
+	end exception;
+	 
+	begin work;
+	set lock mode to wait 30;
+	
+	execute procedure sp_getrunno('CN');
+	
+	update rms_runno
+	set last_runno = last_runno + 1
+	where runno_cd = 'CN';
+	
+	select first 1 ('CN' || to_char(today, '%y%m%d') || lpad(last_runno, 6,0)) as run_no
+	into o_batch_no
+	from rms_runno;
+	
+	select acct_cd into o_fms_acct_cd from rms_fms_acct where acct_nm = 'AR Invoice''s RMS PG MID Account ID';
+	
+	-- insert into rms_fms_crmemo_h
+	insert into rms_fms_crmemo_h (
+		type, link_branch, amt, cust, rms_batch_no, dt_sent, desc, 
+		attr_ext_sys, resp_attr_ext_sys, fms_ref_no, resp_co, resp_status, 
+		resp_msg, resp_dt, dt_created, dt_modified, created_by, modified_by, 
+		status, retry
+	) values (
+		'Credit Memo', '000', i_pg_pymt_amt, o_fms_acct_cd, o_batch_no, current, 'Credit Note Batch', 
+		'RMS', null, null, null, null, 
+		null, null, current, current, 'system', 'system', 
+		'A', 0
+	);
+	 
+	let o_hid = dbinfo('sqlca.sqlerrd1');
+	
+	foreach c_arr for
+		select distinct t3.fms_ref_no
+		into o_fms_ref_no
+		from rms_rc_pgmtt t1
+		left join rms_fms_ari_b t2 on t1.mtt_pg_id = t2.mtt_pg_id
+		left join rms_fms_ari_h t3 on t2.ari_hid = t3.ari_hid
+		where t1.rc_pg_id = i_rc_pg_id
+		
+		-- insert into rms_fms_crmemo_f
+		insert into rms_fms_crmemo_f (
+			crmemo_hid, fms_ref_no, doc_ty, dt_created, dt_modified, created_by, 
+			modified_by, status
+		) values (
+			o_hid, o_fms_ref_no, 'Invoice', current, current, 'system', 
+			'system', 'A'
+		);
+	 
+		-- insert into rms_fms_crmemo_b
+		insert into rms_fms_crmemo_b (
+			crmemo_hid, acct, branch, qty, sub_acct, txn_desc, unit_price, 
+			rcpt_no, payee_info, ent_nm, ent_no, ent_ty, item_amt, 
+			pymt, item_tax_amt, dt_created, dt_modified, created_by, modified_by, 
+			status, mtt_pg_id, coa1, coa2
+		) values (
+			o_hid, null, '000', i_qty, '000000000000000', i_item_desc, i_unit_fee, 
+			i_rcpt_no, i_cust_nm, i_entity_nm, i_entity_no, i_entity_type, i_gross_amt, 
+			i_pg_pymt_method, i_tax_amt, current, current, 'system', 'system', 
+			'A', i_mtt_pg_id, o_fms_acct_cd, i_fee_detail_id
+		);
+	end foreach;
+	 
+	update rms_mtt_pg
+	set in_fms_posting = 1, 
+		dt_modified = current
+	where mtt_id = i_mtt_id;
+	 
+	let o_result = dbinfo('sqlca.sqlerrd2');
+	 
+	if (o_result > 0) then
+	    commit work;
+	    return o_result;
+	else
+	    rollback work;
+	    return -1;
+	end if;
+ 
+end procedure;
+GO
+create or replace procedure sp_insfmsricpa(i_audit_id int8, i_ricp_id int8, i_dt_txn date, i_accr_amt_af decimal(16,2), i_action_type nvarchar(10))
+returning int8 as result;
+
+define o_hid            int8;
+define o_batch_no       nvarchar(30);
+define o_result         int8;
+
+on exception
+	rollback work;
+end exception;
+
+    begin work;
+    set lock mode to wait 30;
+
+    execute procedure sp_getrunno('JNCP') into o_result;
+
+    /* UPDATE last running no */
+    UPDATE rms_runno
+    SET last_runno = last_runno +1
+    WHERE runno_cd = 'JNCP';
+
+    /* Select running no */
+    SELECT FIRST 1 ('JNCP' || TO_CHAR(TODAY, '%Y%m%d') || LPAD(last_runno, 6,0)) as run_no
+    INTO o_batch_no
+    FROM rms_runno
+    WHERE runno_cd = 'JNCP';
+
+    insert into rms_fms_jn_h(batch_no, branch_id, desc, ledger_id, module, dt_txn, attr_ext_ref_no, attr_ext_sys, resp_attr_ext_sys, fms_ref_no, resp_ext_ref_no, resp_status, resp_msg, resp_dt, dt_created, dt_modified, created_by, modified_by, status, retry) 
+    values(o_batch_no, '000', 'GL RMS', 'ACTUAL', 'GL', DATE(i_dt_txn), 'CP-' || i_ricp_id || '-' || i_audit_id, 'RMS', null, null, null, null, null, null, current, current, 'system', 'system', 'A', 0);
+
+    let o_hid = dbinfo('serial8');
+
+--  debit
+    insert into rms_fms_jn_b(jn_hid, branch, acct, sub_acct, debit, credit, txn_desc, dt_created, dt_modified, created_by, modified_by, status) 
+    values(o_hid, '000', 'Compound Receivable', '000000000000000', i_accr_amt_af, 0, 'RI '||i_action_type, current, current, 'system', 'system', 'A');
+--	credit
+   	insert into rms_fms_jn_b(jn_hid, branch, acct, sub_acct, debit, credit, txn_desc, dt_created, dt_modified, created_by, modified_by, status) 
+    values(o_hid, '000', 'Revenue Compound', '000000000000000', 0, i_accr_amt_af, 'RI '||i_action_type, current, current, 'system', 'system', 'A');
+
+    let o_result = dbinfo('sqlca.sqlerrd2');
+
+    if (o_result > 0) then
+        update rms_ricp_a
+        set in_fms_posting = 1,
+        dt_modified = current
+        where audit_id = i_audit_id;
+    end if;
+
+    commit work;
+
+return o_result;
+
+end procedure;
+GO
+create or replace procedure sp_insfmsripla(i_audit_id int8, i_ripl_id int8, i_dt_txn date, i_accr_amt_af decimal(16,2), i_action_type nvarchar(10))
+returning int8 as result;
+
+define o_hid            int8;
+define o_batch_no       nvarchar(30);
+define o_result         int8;
+
+on exception
+	rollback work;
+end exception;
+
+    begin work;
+    set lock mode to wait 30;
+
+    execute procedure sp_getrunno('JNPL') into o_result;
+
+    /* UPDATE last running no */
+    UPDATE rms_runno
+    SET last_runno = last_runno +1
+    WHERE runno_cd = 'JNPL';
+
+    /* Select running no */
+    SELECT FIRST 1 ('JNPL' || TO_CHAR(TODAY, '%Y%m%d') || LPAD(last_runno, 6,0)) as run_no
+    INTO o_batch_no
+    FROM rms_runno
+    WHERE runno_cd = 'JNPL';
+
+    insert into rms_fms_jn_h(batch_no, branch_id, desc, ledger_id, module, dt_txn, attr_ext_ref_no, attr_ext_sys, resp_attr_ext_sys, fms_ref_no, resp_ext_ref_no, resp_status, resp_msg, resp_dt, dt_created, dt_modified, created_by, modified_by, status, retry) 
+    values(o_batch_no, '000', 'GL RMS', 'ACTUAL', 'GL', DATE(i_dt_txn), 'PL-' || i_ripl_id || '-' || i_audit_id, 'RMS', null, null, null, null, null, null, current, current, 'system', 'system', 'A', 0);
+
+    let o_hid = dbinfo('serial8');
+
+--  debit
+    insert into rms_fms_jn_b(jn_hid, branch, acct, sub_acct, debit, credit, txn_desc, dt_created, dt_modified, created_by, modified_by, status) 
+    values(o_hid, '000', 'Receivable AR', '000000000000000', i_accr_amt_af, 0, 'RI '||i_action_type, current, current, 'system', 'system', 'A');
+--	credit
+   	insert into rms_fms_jn_b(jn_hid, branch, acct, sub_acct, debit, credit, txn_desc, dt_created, dt_modified, created_by, modified_by, status) 
+    values(o_hid, '000', 'Revenue AR', '000000000000000', 0, i_accr_amt_af, 'RI '||i_action_type, current, current, 'system', 'system', 'A');
+
+    let o_result = dbinfo('sqlca.sqlerrd2');
+
+    if (o_result > 0) then
+        update rms_ripl_a
+        set in_fms_posting = 1,
+        dt_modified = current
+        where audit_id = i_audit_id;
+    end if;
+
+    commit work;
+
+return o_result;
+
+end procedure;
+GO
+CREATE or replace PROCEDURE sp_insriplagingrpt (
+    i_p_dt_req DATETIME YEAR TO SECOND,
+    i_p_imp_status INT,
+    i_p_exp_status INT,
+    i_p_ent_ty NVARCHAR(1),
+    i_p_ent_nm LVARCHAR(2000),
+    i_p_dt_due_fr DATETIME YEAR TO SECOND,
+    i_p_dt_due_to DATETIME YEAR TO SECOND,
+    i_p_dt_rcpt_fr DATETIME YEAR TO SECOND,
+    i_p_dt_rcpt_to DATETIME YEAR TO SECOND,
+    i_p_dt_imp_fr DATETIME YEAR TO SECOND,
+    i_p_dt_imp_to DATETIME YEAR TO SECOND,
+    i_p_dt_wo_fr DATETIME YEAR TO SECOND,
+    i_p_dt_wo_to DATETIME YEAR TO SECOND,
+    i_created_by NVARCHAR(25),
+    i_modified_by NVARCHAR(25),
+    i_status NVARCHAR(10),
+    i_p_email NVARCHAR(255),
+    i_p_file_type NVARCHAR(5),
+    i_p_file_size INT, 
+    i_p_file_nm nvarchar(255), 							
+    i_p_batch_no nvarchar(30), 
+    i_p_fms_ref_no nvarchar(25)
+)
+RETURNING INT8 AS wf_id;
+
+DEFINE o_wf_id INT8;
+DEFINE o_current_dt DATETIME YEAR TO SECOND;
+DEFINE o_insresult INT8;
+
+on exception
+	rollback work;
+end exception;
+
+begin work;
+set lock mode to wait 30;
+
+-- Set current date time
+LET o_current_dt = CURRENT;
+
+-- Insert data into rms_rpt_ripl_age table
+INSERT INTO rms_rpt_ripl_age
+    (p_dt_req, p_imp_status, p_exp_status, p_ent_ty, p_ent_nm, p_dt_due_fr, p_dt_due_to,
+     p_dt_rcpt_fr, p_dt_rcpt_to, p_dt_imp_fr, p_dt_imp_to, p_dt_wo_fr, p_dt_wo_to,
+     dt_created, dt_modified, created_by, modified_by, status, p_email, p_file_type, p_file_size, p_file_nm, p_batch_no, p_fms_ref_no)
+VALUES
+    (i_p_dt_req, i_p_imp_status, i_p_exp_status, i_p_ent_ty, i_p_ent_nm, i_p_dt_due_fr, i_p_dt_due_to,
+     i_p_dt_rcpt_fr, i_p_dt_rcpt_to, i_p_dt_imp_fr, i_p_dt_imp_to, i_p_dt_wo_fr, i_p_dt_wo_to,
+     o_current_dt, o_current_dt, i_created_by, i_modified_by, i_status, i_p_email, i_p_file_type, i_p_file_size, i_p_file_nm, i_p_batch_no, i_p_fms_ref_no);
+
+-- Get latest Serial8 ID number from last inserted records
+LET o_wf_id = DBINFO('Serial8');
+
+commit work;
+
+RETURN o_wf_id;
+
+END PROCEDURE;
+GO
+CREATE OR REPLACE PROCEDURE sp_insrptricpar(i_p_dt_req datetime year to fraction(5), i_p_dt_iss_fr datetime year to fraction(5), 
+	i_p_dt_iss_to datetime year to fraction(5), i_p_exp_status integer, i_p_can_v_status integer, 
+	i_p_dt_rcpt_fr datetime year to fraction(5), i_p_dt_rcpt_to datetime year to fraction(5), 
+	i_p_dt_exp_fr datetime year to fraction(5), i_p_dt_exp_to datetime year to fraction(5), 
+	i_p_dt_wo_fr datetime year to fraction(5), i_p_dt_wo_to datetime year to fraction(5), 
+	i_p_dt_can_fr datetime year to fraction(5), i_p_dt_can_to datetime year to fraction(5), 
+	i_p_dt_void_fr datetime year to fraction(5), i_p_dt_void_to datetime year to fraction(5),
+	i_p_ent_ty nvarchar(1), i_p_ent_nm nvarchar(100),
+	i_p_email nvarchar(255), i_p_file_type nvarchar(5), i_status nvarchar(10), i_created_by nvarchar(25), i_modified_by nvarchar(25))
+	returning int as result;
+	define o_result int;
+	on exception
+		rollback work;
+	end exception;
+	begin work;
+	set lock mode to wait 30;
+	let o_result = 0;
+	insert into rms_rpt_ricp_age
+	(p_dt_req,p_dt_iss_fr,p_dt_iss_to,p_exp_status,p_can_v_status,p_dt_rcpt_fr,p_dt_rcpt_to,
+    p_dt_exp_fr,p_dt_exp_to,p_dt_wo_fr,p_dt_wo_to,p_dt_can_fr,p_dt_can_to,p_dt_void_fr,p_dt_void_to,
+    p_ent_ty,p_ent_nm,p_email,p_file_type,status,dt_created,dt_modified,created_by,modified_by)
+	 values
+    (i_p_dt_req,i_p_dt_iss_fr,i_p_dt_iss_to,i_p_exp_status,i_p_can_v_status,i_p_dt_rcpt_fr,i_p_dt_rcpt_to,
+    i_p_dt_exp_fr,i_p_dt_exp_to,i_p_dt_wo_fr,i_p_dt_wo_to,i_p_dt_can_fr,i_p_dt_can_to,i_p_dt_void_fr,i_p_dt_void_to,
+    i_p_ent_ty,i_p_ent_nm,i_p_email,i_p_file_type,i_status,current,current,i_created_by,i_modified_by);
+	let o_result = dbinfo('serial8');
+	commit work;
+	if o_result > 0 then
+	    return o_result;
+	else
+	    return -1;
+	end if;
+end procedure;
+GO
+CREATE OR REPLACE PROCEDURE sp_insrptumage(i_p_dt_req datetime year to fraction(5), i_p_txn_id nvarchar(30), 
+	i_p_rcpt_no nvarchar(50), i_p_stmt_no nvarchar(50), i_p_recon_status nvarchar(10), i_p_dt_stmt_fr datetime year to fraction(5),
+	i_p_dt_stmt_to datetime year to fraction(5), i_p_dup integer, i_p_email nvarchar(255), i_p_file_type nvarchar(5),
+	i_status nvarchar(10), i_created_by nvarchar(25), i_modified_by nvarchar(25)) returning int as result;
+
+	define o_result int;
+
+	on exception
+		rollback work;
+	end exception;
+	
+	begin work;
+	set lock mode to wait 30;
+
+	let o_result = 0;
+	insert into rms_rpt_um_age
+	(p_dt_req,p_txn_id,p_rcpt_no,p_stmt_no,p_recon_status,p_dt_stmt_fr,p_dt_stmt_to,p_dup,p_email,p_file_type,
+	status,dt_created,dt_modified,created_by,modified_by)
+	 values
+    (i_p_dt_req,i_p_txn_id,i_p_rcpt_no,i_p_stmt_no,i_p_recon_status,i_p_dt_stmt_fr,i_p_dt_stmt_to,i_p_dup,
+    i_p_email,i_p_file_type,i_status,current,current,i_created_by,i_modified_by);
+	let o_result = dbinfo('serial8');
+	commit work;
+	if o_result > 0 then
+	    return o_result;
+	else
+	    return -1;
+	end if;
+end procedure;
+GO
+
+
+CREATE OR REPLACE PROCEDURE sp_upddiagingrpt(i_rpt_di_age_id INT8, i_status NVARCHAR(10), i_p_file_size INT, i_p_file_nm NVARCHAR(255),
+                               i_modified_by nvarchar(25))
+RETURNING INT as row_count;
+
+DEFINE o_row_count INT;
+
+BEGIN WORK;
+
+UPDATE rms_rpt_di_age
+SET dt_modified = current,
+	status = i_status,
+	p_file_size = i_p_file_size,
+	p_file_nm = i_p_file_nm,
+	modified_by = i_modified_by
+WHERE rpt_di_age_id = i_rpt_di_age_id;
+	
+LET o_row_count = DBINFO('sqlca.sqlerrd2');
+
+COMMIT WORK;
+
+RETURN o_row_count;
+
+END procedure
+GO
+create or replace procedure sp_updfmsari(i_attr_ext_ref_no lvarchar(256), i_resp_attr_ext_sys nvarchar(10), i_fms_ref_no nvarchar(25), 
+                   i_resp_ext_ref_no nvarchar(25), i_resp_status nvarchar(10), i_resp_msg nvarchar(255), i_resp_dt datetime year to fraction(5))
+returning int as result;
+
+define o_result int;
+
+on exception
+	rollback work;
+end exception;
+
+begin work;
+set lock mode to wait 30;
+
+    update rms_fms_ari_h
+    set 
+    resp_attr_ext_sys= i_resp_attr_ext_sys,
+    fms_ref_no = i_fms_ref_no,
+    resp_co =i_resp_co,
+    resp_status = i_resp_status,
+    resp_msg = i_resp_msg,
+    resp_dt = i_resp_dt,
+    dt_modified = current,
+    retry = retry + 1
+    where rms_batch_no = i_resp_co;
+
+let o_result = DBINFO('sqlca.sqlerrd2');
+
+commit work;
+
+return o_result;
+
+end procedure;
+GO
+create or replace procedure sp_updfmsarr(i_arr_hid int8, i_resp_attr_ext_sys nvarchar(10), i_fms_ref_no nvarchar(25), 
+                   i_resp_co nvarchar(25), i_resp_status nvarchar(10), i_resp_msg nvarchar(255), i_resp_dt datetime year to fraction(5))
+returning int as result;
+
+define o_result int;
+
+on exception
+	rollback work;
+end exception;
+
+begin work;
+set lock mode to wait 30;
+
+    update rms_fms_arr_h 
+	set resp_attr_ext_sys = i_resp_attr_ext_sys, 
+    fms_ref_no = i_fms_ref_no, 
+    resp_co = i_resp_co, 
+    resp_status = i_resp_status, 
+    resp_msg = i_resp_msg, 
+    resp_dt = i_resp_dt,
+    dt_modified = current,
+    retry = retry + 1
+	where arr_hid = i_arr_hid;
+
+    let o_result = dbinfo('sqlca.sqlerrd2');
+
+commit work;
+
+return o_result;
+
+end procedure;
+GO
+create or replace procedure sp_updfmscrmemo(i_crmemo_hid int8, 
+											i_resp_attr_ext_sys nvarchar(10), 
+											i_fms_ref_no nvarchar(25), 
+                   							i_resp_co nvarchar(25), 
+                   							i_resp_status nvarchar(10), 
+                   							i_resp_msg nvarchar(255), 
+                   							i_resp_dt datetime year to fraction(5))
+returning int as result;
+
+define o_result int;
+
+on exception
+	rollback work;
+end exception;
+
+begin work;
+set lock mode to wait 30;
+
+    update rms_fms_crmemo_h
+	set resp_attr_ext_sys = i_resp_attr_ext_sys, 
+	    fms_ref_no = i_fms_ref_no, 
+	    resp_co = i_resp_co, 
+	    resp_status = i_resp_status, 
+	    resp_msg = i_resp_msg, 
+	    resp_dt = i_resp_dt,
+	    dt_modified = current,
+	    retry = retry + 1
+	where crmemo_hid = i_crmemo_hid;
+
+commit work;
+
+return o_result;
+
+end procedure;
+GO
+create or replace procedure sp_updfmsdrmemo(i_drmemo_hid int8, 
+											i_resp_attr_ext_sys nvarchar(10), 
+											i_fms_ref_no nvarchar(25), 
+                   							i_resp_co nvarchar(25), 
+                   							i_resp_status nvarchar(10), 
+                   							i_resp_msg nvarchar(255), 
+                   							i_resp_dt datetime year to fraction(5))
+returning int as result;
+
+define o_result int;
+
+on exception
+	rollback work;
+end exception;
+
+begin work;
+set lock mode to wait 30;
+
+    update rms_fms_drmemo_h
+	set resp_attr_ext_sys = i_resp_attr_ext_sys, 
+	    fms_ref_no = i_fms_ref_no, 
+	    resp_co = i_resp_co, 
+	    resp_status = i_resp_status, 
+	    resp_msg = i_resp_msg, 
+	    resp_dt = i_resp_dt,
+	    dt_modified = current,
+	    retry = retry + 1
+	where drmemo_hid = i_drmemo_hid;
+
+    let o_result = dbinfo('sqlca.sqlerrd2');
+
+commit work;
+
+return o_result;
+
+end procedure;
+GO
+create or replace procedure sp_updfmsjn(i_attr_ext_ref_no lvarchar(256), i_resp_attr_ext_sys nvarchar(10), i_fms_ref_no nvarchar(25), 
+                   i_resp_ext_ref_no nvarchar(25), i_resp_status nvarchar(10), i_resp_msg nvarchar(255), i_resp_dt datetime year to fraction(5))
+returning int as result;
+
+define o_result int;
+
+on exception
+	rollback work;
+end exception;
+
+begin work;
+set lock mode to wait 30;
+
+    update rms_fms_jn_h 
+	set resp_attr_ext_sys = i_resp_attr_ext_sys, 
+    fms_ref_no = i_fms_ref_no, 
+    resp_ext_ref_no = i_resp_ext_ref_no, 
+    resp_status = i_resp_status, 
+    resp_msg = i_resp_msg, 
+    resp_dt = i_resp_dt,
+    dt_modified = current,
+    retry = retry + 1
+	where attr_ext_ref_no = i_attr_ext_ref_no;
+
+    let o_result = dbinfo('sqlca.sqlerrd2');
+
+commit work;
+
+return o_result;
+
+end procedure;
+GO
+CREATE OR REPLACE PROCEDURE sp_updriplagingrpt(i_rpt_ripl_age_id INT8, i_status NVARCHAR(10), i_p_file_size INT, i_p_file_nm NVARCHAR(255),
+                               i_modified_by nvarchar(25))
+RETURNING INT as row_count;
+
+DEFINE o_row_count INT;
+
+BEGIN WORK;
+
+UPDATE rms_rpt_ripl_age
+SET dt_modified = current,
+	status = i_status,
+	p_file_size = i_p_file_size,
+	p_file_nm = i_p_file_nm,
+	modified_by = i_modified_by
+WHERE rpt_ripl_age_id = i_rpt_ripl_age_id;
+	
+LET o_row_count = DBINFO('sqlca.sqlerrd2');
+
+COMMIT WORK;
+
+RETURN o_row_count;
+
+END procedure
+GO
+CREATE OR REPLACE PROCEDURE sp_updrptricpagerq(i_rpt_ricp_age_id integer, i_status nvarchar(10), i_p_file_size integer,
+	i_p_file_nm nvarchar(255), i_modified_by nvarchar(25))
+	returning int as result;
+
+	define o_result int;
+
+	on exception
+		rollback work;
+	end exception;
+	
+	begin work;
+	set lock mode to wait 30;
+
+	let o_result = 0;
+	update rms_rpt_ricp_age
+	set status = i_status, p_file_size = i_p_file_size, p_file_nm = i_p_file_nm,
+		modified_by = i_modified_by, dt_modified = current
+	where rpt_ricp_age_id = i_rpt_ricp_age_id;
+	
+	let o_result = dbinfo('sqlca.sqlerrd2');
+	commit work;
+	if o_result > 0 then
+	    return o_result;
+	else
+	    return -1;
+	end if;
+end procedure;
+GO
+CREATE OR REPLACE PROCEDURE sp_updrptumage(i_rpt_um_age_id integer, i_status nvarchar(10), i_p_file_size integer,
+	i_p_file_nm nvarchar(255), i_modified_by nvarchar(25))
+	returning int as result;
+
+	define o_result int;
+
+	on exception
+		rollback work;
+	end exception;
+	
+	begin work;
+	set lock mode to wait 30;
+
+	let o_result = 0;
+	update rms_rpt_um_age
+	set status = i_status, p_file_size = i_p_file_size, p_file_nm = i_p_file_nm,
+		modified_by = i_modified_by, dt_modified = current
+	where rpt_um_age_id = i_rpt_um_age_id;
+	
+	let o_result = dbinfo('sqlca.sqlerrd2');
+	commit work;
+	if o_result > 0 then
+	    return o_result;
+	else
+	    return -1;
+	end if;
+end procedure;
+GO
+CREATE OR REPLACE PROCEDURE sp_updstatusrptricpagerq(i_rpt_ricp_age_id integer, i_status nvarchar(10), i_modified_by nvarchar(25))
+	returning int as result;
+
+	define o_result int;
+
+	on exception
+		rollback work;
+	end exception;
+	
+	begin work;
+	set lock mode to wait 30;
+
+	let o_result = 0;
+	update rms_rpt_ricp_age
+	set status = i_status, modified_by = i_modified_by, dt_modified = current
+	where rpt_ricp_age_id = i_rpt_ricp_age_id;
+	
+	let o_result = dbinfo('sqlca.sqlerrd2');
+	commit work;
+	if o_result > 0 then
+	    return o_result;
+	else
+	    return -1;
+	end if;
+end procedure;
+GO
+CREATE OR REPLACE PROCEDURE sp_updstatusrptumage(i_rpt_um_age_id integer, i_status nvarchar(10), i_modified_by nvarchar(25))
+	returning int as result;
+
+	define o_result int;
+
+	on exception
+		rollback work;
+	end exception;
+	
+	begin work;
+	set lock mode to wait 30;
+
+	let o_result = 0;
+	update rms_rpt_um_age
+	set status = i_status, modified_by = i_modified_by, dt_modified = current
+	where rpt_um_age_id = i_rpt_um_age_id;
+	
+	let o_result = dbinfo('sqlca.sqlerrd2');
+	commit work;
+	if o_result > 0 then
+	    return o_result;
+	else
+	    return -1;
+	end if;
+end procedure;
+GO
+
+create or replace procedure sp_updfmsari(i_resp_attr_ext_sys nvarchar(10), i_fms_ref_no nvarchar(25), 
+                   i_resp_ext_ref_no nvarchar(25), i_resp_status nvarchar(10), i_resp_msg nvarchar(255), i_resp_dt datetime year to fraction(5))
+returning int as result;
+
+define o_result int;
+
+on exception
+	rollback work;
+end exception;
+
+begin work;
+set lock mode to wait 30;
+
+    update rms_fms_ari_h
+    set 
+    resp_attr_ext_sys= i_resp_attr_ext_sys,
+    fms_ref_no = i_fms_ref_no,
+    resp_status = i_resp_status,
+    resp_msg = i_resp_msg,
+    resp_dt = i_resp_dt,
+    dt_modified = current,
+    retry = retry + 1,
+    resp_co = i_resp_ext_ref_no
+    where rms_batch_no = i_resp_ext_ref_no;
+
+let o_result = DBINFO('sqlca.sqlerrd2');
+
+commit work;
+
+return o_result;
+
+end procedure;
+Go

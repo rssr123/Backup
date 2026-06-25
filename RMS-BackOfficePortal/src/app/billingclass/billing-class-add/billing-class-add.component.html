@@ -1,0 +1,75 @@
+<div class="SingleContainer">
+    <!-- Header for Add Billing Class -->
+    <div class="SingleContainerHeader">
+      <h2 class="text-center">{{ "labels.addbillingclass" | translate }}</h2>
+    </div>
+    <form #formRef="ngForm" (ngSubmit)="handleFormSubmit(formRef)">
+      <div class="MALoadingContainer">
+        <!-- Loading spinner overlay -->
+        <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+          <div class="spinner-border" role="status">
+            <span class="sr-only"></span>
+          </div>
+        </div>
+        <div [ngClass]="{ 'TableDimmed': isLoading }">
+          <!-- Error Box -->
+          <div *ngIf="error" class="error-box">
+            <i class="bi bi-x-circle-fill error-icon"></i>
+            <div>
+              <strong>{{ "labels.validationerror" | translate }}</strong>
+              <ul>
+                <li *ngFor="let errorMsg of errorMessages">{{ errorMsg }}</li>
+              </ul>
+            </div>
+          </div>
+          <!-- Billing Class ID -->
+          <div class="form-group">
+            <label for="classId">{{ "labels.billingclassid" | translate }} <span class='RedAsterisk'>*</span></label>
+            <input
+              type="text"
+              class="form-control"
+              id="classId"
+              name="classId"
+              [(ngModel)]="classId"
+              #classIdRef="ngModel"
+              required
+              pattern="^\S.*"
+            />
+            <div *ngIf="classIdRef.errors?.['required'] && classIdRef.touched" class="error-text">
+              {{ "labels.billingclassidisrequired" | translate }}
+            </div>
+            <div *ngIf="classIdRef.errors?.['pattern'] && classIdRef.touched" class="error-text">
+              {{ "labels.billingclassidcannotbeginwithwhitespace" | translate }}
+            </div>
+          </div>
+          <!-- Billing Class Description -->
+          <div class="form-group">
+            <label for="classDesc">{{ "labels.billingclassdescription" | translate }} <span class='RedAsterisk'>*</span></label>
+            <input
+              type="text"
+              class="form-control"
+              id="classDesc"
+              name="classDesc"
+              [(ngModel)]="classDesc"
+              #classDescRef="ngModel"
+              required
+              pattern="^\S.*"
+            />
+            <div *ngIf="classDescRef.errors?.['required'] && classDescRef.touched" class="error-text">
+              {{ "labels.billingclassdescisrequired" | translate }}
+            </div>
+            <div *ngIf="classDescRef.errors?.['pattern'] && classDescRef.touched" class="error-text">
+              {{ "labels.billingclassdesccannotbeginwithwhitespace" | translate }}
+            </div>
+          </div>
+          <!-- Buttons -->
+          <div class="button-group">
+            <div>{{ "labels.Fields with * are mandatory" | translate }}</div>
+            <button class="btn btnSubmit" type="submit">{{ "buttons.submit" | translate }}</button>
+            <button class="btn btnClose" type="button" (click)="onClose()">{{ "Close" | translate }}</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  

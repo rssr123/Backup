@@ -1,0 +1,11 @@
+<h1>this is multi-language</h1>
+<label>{{ 'label' | translate }}</label>
+<select>
+    <option value="male">{{ 'gender.male' | translate }}</option>
+    <option value="female">{{ 'gender.female' | translate }}</option>
+</select>
+
+<br>
+
+<button (click)="useLanguage('en')">English</button>
+<button (click)="useLanguage('bm')">Bahasa Melayu</button>

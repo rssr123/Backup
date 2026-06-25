@@ -1,0 +1,22 @@
+CREATE OR REPLACE PROCEDURE sp_getpermissions()
+	returning  nvarchar(255) as module_nm, lvarchar(max) as function_nm, nvarchar(10) as status, integer as total;
+	DEFINE o_module_nm nvarchar(255);
+	DEFINE o_function_nm lvarchar(max);
+	DEFINE o_status nvarchar(10);
+	DEFINE total integer;
+
+	let total = (select count(1) FROM rms_perm
+        WHERE status = 'A');
+
+	FOREACH cursor1 FOR
+        	SELECT module_nm, sp_group_concat(function_nm) as function_nm , status
+       		INTO o_module_nm, o_function_nm, o_status
+        	FROM (SELECT module_nm, perm_cd, function_nm, status FROM rms_perm WHERE status = 'A' ORDER BY perm_cd)
+        	GROUP BY module_nm, status
+        	ORDER BY module_nm;
+
+		RETURN o_module_nm, o_function_nm, o_status, total WITH RESUME;
+	END foreach
+
+END procedure                                            
+GO;

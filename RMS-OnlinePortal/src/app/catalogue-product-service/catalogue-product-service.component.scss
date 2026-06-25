@@ -1,0 +1,173 @@
+.MALoadingContainer {
+  position: relative;
+}
+
+.TableLoading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.7); /* Dim effect */
+  z-index: 1000;
+}
+
+.TableDimmed {
+  opacity: 0.5;
+  pointer-events: none; /* Prevent interaction if needed */
+}
+.container {
+  display: flex;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  gap: 70px;
+  // background-color: #f4f4f4;
+
+  .MALoadingContainer {
+    position: relative;
+    /* Makes sure the spinner is positioned in reference to the table */
+    overflow: visible !important;
+    /* Keeps the spinner inside the table area */
+  }
+
+  .dropdown-menu {
+    margin-bottom: 15px;
+  }
+
+  .sidebar {
+    width: 25%;
+    padding: 15px;
+    background-color: #ffffff;
+    border-right: 1px solid #ddd;
+    margin-left: -100px;
+
+    .filter-group {
+      margin-bottom: 15px;
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+
+      select,
+      input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 120px;
+
+      button {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+
+        &:first-child {
+          background-color: #ccc;
+        }
+
+        &:last-child {
+          background-color: #007bff;
+          color: #fff;
+        }
+      }
+    }
+  }
+
+  .content h3 {
+    font-weight: bold;
+    /* Makes the table name bold */
+    font-size: 1.7em;
+    /* Optional: Adjusts the size for better visibility */
+    margin-bottom: 15px;
+    /* Optional: Adds spacing below the table name */
+  }
+
+  .MAPagination {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .fgSpacing {
+    margin-bottom: 5px;
+  }
+
+  .pagination-row {
+    display: flex;
+    width: 100%;
+  }
+
+  .dropdown {
+    margin-left: auto;
+    margin-right: 1rem;
+  }
+
+
+  .content {
+    flex: 1;
+    padding: 15px;
+    margin-left: 20px;
+
+    .catalog-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      /* Add shadow to the table */
+      border: 1px solid #ccc;
+
+      th,
+      td {
+        padding: 8px;
+        border: 1px solid #ccc;
+        text-align: left;
+      }
+
+      th {
+        background-color: #2e3192;
+        color: white;
+        font-weight: bold;
+      }
+
+      td {
+        background-color: #fff;
+      }
+
+      tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+
+      .pay-button {
+        background-color: #28a745;
+        color: white;
+        padding: 5px 50px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      /* Add specific alignments */
+      .center-align {
+        text-align: center !important;
+      }
+
+      .right-align {
+        text-align: right !important;
+      }
+
+      .totalrow {
+        font-weight: bold;
+      }
+    }
+  }
+}

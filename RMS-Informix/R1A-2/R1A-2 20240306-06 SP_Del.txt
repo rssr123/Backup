@@ -1,0 +1,139 @@
+DROP FUNCTION sp_deltaxcode
+GO
+DROP FUNCTION sp_delroleperm
+GO
+DROP FUNCTION sp_delpgtxn
+GO
+DROP FUNCTION sp_delmtt
+GO
+DROP FUNCTION sp_delfms
+GO
+DROP FUNCTION sp_delfeegroup
+GO
+
+CREATE PROCEDURE sp_delfeegroup (i_fee_grp_nm_en NVARCHAR(50), i_fee_grp_nm_bm NVARCHAR(50), i_modified_by NVARCHAR(25),i_status NVARCHAR(10))
+	RETURNING INT as row_count;
+
+	DEFINE o_row_count INT;
+
+	UPDATE rms_fee_group
+	SET status = i_status,
+	dt_modified = current,
+	modified_by = i_modified_by
+	WHERE (i_fee_grp_nm_en IS NULL OR fee_grp_nm_en = i_fee_grp_nm_en)
+	AND (i_fee_grp_nm_bm IS NULL OR fee_grp_nm_bm = i_fee_grp_nm_bm);
+
+	LET o_row_count = DBINFO('sqlca.sqlerrd2');
+
+	RETURN o_row_count;
+
+END PROCEDURE;
+GO
+CREATE PROCEDURE sp_delfms(i_fms_cd NVARCHAR(50))
+RETURNING INT AS row_count;
+
+DEFINE o_row_count INT;
+
+DELETE FROM rms_fms
+WHERE fms_id = (SELECT MAX(fms_id) FROM rms_fms WHERE fms_cd = i_fms_cd);
+
+LET o_row_count = DBINFO('sqlca.sqlerrd2');
+
+RETURN o_row_count;
+
+END PROCEDURE
+GO
+create procedure sp_delmtt(i_mtt_id int8)
+returns int8 as row_cnt;
+
+define o_row_cnt INT8;
+
+/* Delete from rms_mtt*/
+delete from rms_mtt
+where mtt_id = i_mtt_id;
+
+/* Delete from rms_mtt_item*/
+delete from rms_mtt_item
+where mtt_id = i_mtt_id;
+
+/* Delete from rms_mtt_pg*/
+delete from rms_mtt_pg
+where mtt_id = i_mtt_id;
+
+end procedure
+GO
+CREATE PROCEDURE sp_delpgtxn(i_rc_pgtxn_id int8)
+returning int8 as result;
+ 
+define o_result int;
+define o_exist int;
+ 
+on exception
+	rollback work;
+end exception;
+ 
+-- Set a default value
+LET o_result = '0';
+ 
+begin work;
+set lock mode to wait 30;
+ 
+-- check exist
+select count(1)
+into o_exist
+from rms_rc_pgtxn
+where rc_pgtxn_id = i_rc_pgtxn_id;
+ 
+if o_exist > 0 then
+ 
+    -- delete record
+    delete from rms_rc_pgtxn
+    where rc_pgtxn_id = i_rc_pgtxn_id;
+ 
+    -- get deleted id
+    let o_result = dbinfo('sqlca.sqlerrd2');
+ 
+end if;
+ 
+commit work;
+ 
+if o_result > 0 then
+    return o_result;
+else
+    return -1;
+end if;
+ 
+end procedure
+GO
+create procedure sp_delroleperm (i_role_id integer)
+
+returning int as row_count;
+
+define o_row_count int;
+
+delete from rms_role_perm where role_id = i_role_id;
+
+let o_row_count = dbinfo('sqlca.sqlerrd2');
+
+return o_row_count;
+
+end procedure
+GO
+CREATE PROCEDURE sp_deltaxcode (i_tax_cd NVARCHAR(10), i_modified_by NVARCHAR(25), i_status NVARCHAR(10))
+	RETURNING INT as row_count;
+
+	DEFINE o_row_count INT;
+
+	UPDATE rms_tax_code
+	SET status = i_status,
+	dt_modified = current,
+	modified_by = i_modified_by
+	WHERE tax_cd = i_tax_cd;
+
+	LET o_row_count = DBINFO('sqlca.sqlerrd2');
+
+	RETURN o_row_count;
+
+END PROCEDURE;
+GO
+

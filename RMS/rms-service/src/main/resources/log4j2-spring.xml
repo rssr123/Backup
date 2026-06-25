@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration monitorInterval="30" status="error">
+<!--
+    Log4j2 Spring Integration Configuration for RMS Service
+    
+    Features:
+    - Uses Spring datasource properties with Jasypt encryption
+    - Rolling file appenders with size-based policies in OS temp directory
+    - Custom database logging via SpringJdbcAppender (programmatically added)
+    - Multi-level failover: Database -> Console -> File (OS temp directory)
+    
+    Database Logging:
+    - JDBC appender is added programmatically to avoid Informix driver compatibility issues
+    - Custom SpringJdbcAppender uses Spring JdbcTemplate instead of Log4j2 JDBC
+    - All log entries have created_by and modified_by set to "System"
+    
+    Failover Strategy:
+    1. Primary: Database logging (programmatically added as "databaseAppender")
+    2. Secondary: Console output if database fails
+    3. Tertiary: File logging in OS temp directory (/tmp/rms on Unix, %TEMP%/rms on Windows)
+-->
+
+
+    <!-- 
+    ========================================
+    LOGGING PROPERTIES
+    ========================================
+    -->
+    <Properties>
+        <!-- Database table configuration -->
+        <Property name="db.tableName">rms_error_log</Property>
+        <Property name="db.defaultUser">System</Property>
+        <Property name="db.defaultRemark"></Property>
+        
+        <!-- Database column mappings -->
+        <Property name="db.columns.level">level</Property>
+        <Property name="db.columns.clientIp">client_ip</Property>
+        <Property name="db.columns.clientBrowser">client_browser</Property>
+        <Property name="db.columns.message">msg</Property>
+        <Property name="db.columns.stacktrace">stacktrace</Property>
+        <Property name="db.columns.source">source</Property>
+        <Property name="db.columns.loginUser">login_nm</Property>
+        <Property name="db.columns.remark">remark</Property>
+        <Property name="db.columns.createdDate">dt_created</Property>
+        <Property name="db.columns.modifiedDate">dt_modified</Property>
+        <Property name="db.columns.createdBy">created_by</Property>
+        <Property name="db.columns.modifiedBy">modified_by</Property>
+        
+        <!-- Failover Configuration -->
+        <Property name="failover.enabled">true</Property>
+        <Property name="failover.maxFiles">10</Property>
+        <Property name="failover.maxFileSize">5MB</Property>
+        <!-- Use rms.log.dir system property set by SpringBootSecurityApplication, fallback to OS temp -->
+        <Property name="log.dir">${sys:rms.log.dir:-${sys:java.io.tmpdir}/rms}</Property>
+    </Properties>
+    
+    <!-- 
+    ========================================
+    DATABASE TABLE STRUCTURE
+    ========================================
+    Table: rms_error_log
+    
+    Columns:
+    - id              : SERIAL (Primary Key)
+    - level           : VARCHAR(10) - Log level (INFO, WARN, ERROR, etc.)
+    - client_ip       : VARCHAR(45) - Client IP address (optional)
+    - client_browser  : VARCHAR(500) - Client browser info (optional)
+    - msg             : LVARCHAR(2048) - Log message
+    - stacktrace      : LVARCHAR(8192) - Exception stack trace (if any)
+    - source          : VARCHAR(500) - Logger name/source class
+    - login_nm        : VARCHAR(100) - Login username or "System"
+    - remark          : VARCHAR(500) - Additional remarks
+    - dt_created      : DATETIME - Creation timestamp (CURRENT)
+    - dt_modified     : DATETIME - Modification timestamp (CURRENT)
+    - created_by      : VARCHAR(100) - Created by user ("System")
+    - modified_by     : VARCHAR(100) - Modified by user ("System")
+    -->
+    
+    <!-- 
+    ========================================
+    CUSTOM LOG LEVELS
+    ========================================
+    -->
+    <CustomLevels>
+        <CustomLevel name="ACCESS" intLevel="350" />
+    </CustomLevels>
+
+    <!-- 
+    ========================================
+    APPENDERS
+    ========================================
+    -->
+    <Appenders>
+        <!-- Console Appender with original XML pattern format -->
+        <Console name="consoleAppender" target="SYSTEM_OUT">
+            <PatternLayout>
+                <!-- Match original XML: level=5char, correlationId in brackets, full class name -->
+                <Pattern>[%5p] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %C - [%X{correlationId}]- %msg%n%throwable%n</Pattern>
+            </PatternLayout>
+        </Console>
+
+        <!-- Application Log File (Rolling) - Uses OS temp directory with original format -->
+        <RollingFile name="fileAppender" 
+                     fileName="${log.dir}/rms_application.log"
+                     filePattern="${log.dir}/rms_application-%i.log.gz"
+                     immediateFlush="true">
+            <PatternLayout>
+                <!-- Match original XML format -->
+                <Pattern>[%5p] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %C - [%X{correlationId}]- %msg%n%throwable%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="5MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+        
+        <!-- Database Failover Log File (Rolling) with original format -->
+        <RollingFile name="databaseFailover" 
+                     fileName="${log.dir}/rms_database_failover.log"
+                     filePattern="${log.dir}/rms_database_failover-%i.log.gz"
+                     immediateFlush="true">
+            <PatternLayout>
+                <!-- Match original XML format -->
+                <Pattern>[%5p] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %C - [%X{correlationId}]- %msg%n%throwable%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="5MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+
+        <!-- Primary Failover Appender: Console -> File (Database will be added programmatically) -->
+        <Failover name="primaryFailover" primary="consoleAppender">
+            <Failovers>
+                <AppenderRef ref="databaseFailover"/>
+            </Failovers>
+        </Failover>
+
+        <!-- 
+        Database logging with custom failover sequence:
+        1. SpringJdbcAppender: Database -> File (handled internally)
+        2. primaryFailover: Console -> File (if console fails)
+        
+        This provides dual logging: database+file and console+file for redundancy
+        -->
+    </Appenders>
+
+    <!-- 
+    ========================================
+    LOGGERS
+    ========================================
+    -->
+    <Loggers>
+        <!-- Root logger configuration -->
+        <Root level="error">
+            <AppenderRef ref="primaryFailover"/>
+            <!-- Database appender will be added programmatically -->
+            <!-- Failover: Console -> File (OS temp directory) + Database -> File (internal) -->
+        </Root>
+    </Loggers>
+
+</Configuration>

@@ -1,0 +1,283 @@
+<!-- <ng-container *ngIf="permListAllow === 1"> -->
+    <body class="BodyCointaner">
+      <!-- mainContainer start-->
+      <div
+        [class.right-section-collapsed]="rightSectionCollapsed"
+        class="PAContainer73"
+      >
+        <!-- left section -->
+        <div class="left-section73">
+          <div>
+            <!-- alert box -->
+            <div *ngIf="showSubmittedForApprovalAlert" [@fadeInOut]>
+              <div class="alert alert-success PA-alert-box" role="alert">
+                {{"submittedforapproval" | translate}}
+              </div>
+            </div>
+    
+            <div *ngIf="showResultAlert" [@fadeInOut]>
+              <div class="alert alert-warning PA-alert-box" role="alert">
+                {{"showResultAlert" | translate}}
+              </div>
+            </div>
+    
+            <div *ngIf="showGenericAlert" [@fadeInOut]>
+              <div class="alert alert-warning PA-alert-box" role="alert">
+                {{"generalalert" | translate}}
+              </div>
+            </div>
+    
+           <div *ngIf="errorAccessDenied" class="error-box">
+            <i class="bi bi-x-circle-fill error-icon"></i>
+            <div>
+             <strong>{{"labels.accessdenied"| translate}}</strong>
+               <ul>
+                  <ul>
+                     <li *ngFor="let errorMsgAccessDenied of errorMessagesAccessDenied">{{"labels.thistaskisassignedorreassignedtoanotheruser" | translate}}</li>
+                  </ul>
+               </ul>
+            </div>
+         </div>
+            
+            <!-- <div class="LeftSectionPosition">
+              {{"labels.Home / Setup & Maintenance / Master Fee Table" | translate}}
+            </div> -->
+            <h2>Billing Listing</h2>
+    
+            <div class="LeftSectionPosition">
+              <!-- <button type="button" class="btn btnExport" (click)="exportSelected()" [disabled]="totalRecords<=0">
+                {{"buttons.export" | translate}} 
+              </button> -->
+            </div>
+          </div>
+          <div class="MATableContainer TablePosition-relative">
+            <div class="MALoadingContainer">
+              <!-- Loading spinner overlay -->
+              <div
+                *ngIf="isLoading"
+                class="TableLoading-overlay d-flex align-items-center justify-content-center"
+              >
+                <div class="spinner-border" role="status">
+                  <span class="sr-only"></span>
+                </div>
+              </div>
+    
+              <!-- Your table structure -->
+              <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+                <thead>
+                  <tr class="MATableHeader">
+                    <th>No.</th>
+                    <th>Customer ID</th>
+                    <th>Entity Name</th>
+                    <th>Entity No.</th>
+                    <th>Billing No.</th>
+                    <th>Amount (RM)</th>
+                    <th>Billing Method</th>
+                    <th>Billing Status</th>
+                    <th>Receipt No.</th>
+                    <th>Requester Name</th>
+                    <th>Issuance</th>
+                    <th>{{"labels.action" | translate}}</th>
+                  </tr>
+                </thead>
+                <ng-container *ngIf="totalRecords>0; else noResults">
+                <tbody *ngIf="isDisplay">
+                  <tr *ngFor="let item of billingListing; let i = index">
+                    <td>{{ (page - 1) * itemsPerPage + i + 1 }}</td>
+                    <td>{{item.cust_id}}</td>
+                    <td>{{item.ent_nm}}</td>
+                    <td>{{item.ent_no}}</td>
+                    <td>{{item.billing_no}}</td>
+                    <td>{{item.amount | number:'1.2-2'}}</td>
+                    <td>{{item.billing_method === "O" ? "One-Time" : item.billing_method === "L"  ? "Register with LOA" : item.billing_method === "A" ? "Register with Agreement" : ""}}</td>
+                    <td>{{item.bil_wf_status === "U" ? "Unpaid" : item.bil_wf_status === "P" ? "Paid" : item.bil_wf_status === "C" ? "Cancelled" :  "" }}</td>
+                    <td>{{item.rcpt_no}}</td>
+                    <td>{{item.req_name}}</td>
+                    <td>{{item.bil_child_status === "A" ?  "Yes" : item.bil_child_status === "D" ? "No"  : ""}}</td>
+                    <td><button type="button" class="btn btnView" (click)="viewSeleted(item)">{{"buttons.view" | translate}} </button></td>
+                  </tr>
+                </tbody>
+              </ng-container>
+              <ng-template #noResults>
+                <tr style="height: 100px;">
+                  <td colspan="20" class="text-center">{{"searchcriteriadoesnotmatch"| translate}}</td>
+                </tr>
+              </ng-template>
+              </table>
+            </div>
+    
+            <div class="MAPagination">
+              <div class="fgSpacing">
+                <div *ngIf="page * itemsPerPage < totalRecords">
+                  {{"showing" | translate}} {{ page * itemsPerPage }}  {{"from" | translate}} {{ totalRecords }}  {{"results" | translate}}
+                </div>
+                <div *ngIf="!(page * itemsPerPage < totalRecords)">
+                  {{"showing" | translate}} {{ totalRecords }} {{"from" | translate}} {{ totalRecords }} {{"results" | translate}}
+                </div>
+              </div>
+                <div class="pagination-row">
+    
+                  <div class="dropdown">
+               <button
+                 class="btn btn-secondary dropdown-toggle PaginControl"
+                 type="button"
+                 id="dropdownMenuButton"
+                 data-bs-toggle="dropdown"
+                 aria-haspopup="true"
+                 aria-expanded="false"
+               >
+                 {{ selectedValue }}
+               </button>
+               <div
+                 class="dropdown-menu dropdown-menu-white"
+                 aria-labelledby="dropdownMenuButton"
+               >
+                 <button
+                   class="dropdown-item"
+                   *ngFor="let singleItem of dropdownOptions"
+                   (click)="LoadData(singleItem)"
+                 >
+                   {{singleItem }}
+                 </button>
+               </div>
+             
+              </div>
+              <ngb-pagination
+                [(page)]="page"
+                [pageSize]="itemsPerPage"
+                [collectionSize]="totalRecords"
+                (pageChange)="loadData()"
+              ></ngb-pagination>
+            </div>
+          </div>
+          </div>
+        </div>
+         <!-- right section -->
+         <div class="middle-section73">
+          <button
+          class="btn btn-primary"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#rightSection"
+          [attr.aria-expanded]="!rightSectionCollapsed"
+          (click)="toggleRightSection()"
+        >
+        <ng-container *ngIf="rightSectionCollapsed; else arrowIcon">
+          <i class="bi bi-search"></i>
+        </ng-container>
+        <ng-template #arrowIcon>
+          <i
+            class="bi"
+            [class.bi-chevron-double-right]="!rightSectionCollapsed"
+            [class.bi-chevron-double-left]="rightSectionCollapsed"
+          ></i>
+        </ng-template>
+        </button>
+        </div>
+        
+        <div class="right-section73 collapse" [class.show]="!rightSectionCollapsed">
+          <div class="SingleContainer">
+            <!-- Header -->
+            <div class="SingleContainerHeader">
+              <h2 class="text-center">{{ "search filter" | translate }}</h2>
+            </div>
+    
+        
+            <div class="form-group">
+              <label for="entityNm">Entity Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="entityNm"
+                [(ngModel)]="entityNm"
+              />
+            </div>
+    
+            <div class="form-group">
+              <label for="entityNo">Entity No.</label>
+              <input
+                type="text"
+                class="form-control"
+                id="entityNo"
+                [(ngModel)]="entityNo"
+              />
+            </div>
+
+            <!-- Source System -->
+            <div class="form-group">
+              <label for="sourceSystemCode">{{"labels.sourcesystem" | translate}}</label>
+              <ng-select class="form-control" name="sourceSystemCode" [(ngModel)]="sourceSystemCode" id="sourceSystemCode"  dropdownPosition="bottom">
+                <ng-option *ngFor="let item of sourceSystemCodeOptions" [value]="item.ss_cd">{{item.ss_cd}}</ng-option>
+            </ng-select>
+            </div>
+
+
+            <div class="form-group">
+              <label for="receiptNo">Receipt No.</label>
+              <input
+                type="text"
+                class="form-control"
+                id="receiptNo"
+                [(ngModel)]="receiptNo"
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Date Range</label>
+              <input type="text"
+                     class="form-control" [bsConfig]="{ rangeInputFormat : 'DD MMM YYYY', dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,rangeSeparator:' to ',containerClass:'theme-default',adaptivePosition: true}"
+                     bsDaterangepicker 
+                     [(ngModel)]="selected"
+                     name="daterange" 
+                     readonly>
+            </div>
+
+
+                <div class="form-group">
+                  <label for="billingMethod">Billing Method</label>
+                  <ng-select class="form-control" name="billingMethod" [(ngModel)]="billingMethod" id="billingMethod"  dropdownPosition="bottom">
+                    <ng-option *ngFor="let item of billingMethodOptions" [value]="item.value">{{item.label}}</ng-option>
+                </ng-select>
+                </div>
+          
+    
+             <div class="form-group">
+              <label for="billingType">Billing Type</label>
+              <ng-select class="form-control" name="billingType" [(ngModel)]="billingType" id="billingType"  dropdownPosition="bottom">
+                <ng-option *ngFor="let item of billingTypeOptions" [value]="item.param_cd">{{item.nm_en}}</ng-option>
+             </ng-select>
+            </div>
+
+            <div class="form-group">
+              <label for="billingNo">Billing No.</label>
+              <input
+                type="text"
+                class="form-control"
+                id="billingNo"
+                [(ngModel)]="billingNo"
+              />
+            </div>
+
+  
+                <div class="form-group">
+                  <label for="paymentStatus">Payment Status</label>
+                  <ng-select class="form-control" name="paymentStatus" [(ngModel)]="paymentStatus" id="paymentStatus"  dropdownPosition="bottom">
+                    <ng-option *ngFor="let item of paymentStatusOptions" [value]="item.param_cd">{{item.nm_en}}</ng-option>
+                 </ng-select>
+                  <!--<select class="dropdown" class="form-control form-select" id="sourceSystemCode" name="sourceSystemCode" [(ngModel)]="sourceSystemCode">
+                    <option *ngFor="let item of sourceSystemCodeOptions" [value]="item.ss_cd">{{item.ss_cd}}</option>
+                </select> -->
+                </div>
+
+
+            <!-- Buttons -->
+            <div class="button-group">
+              <button class="btn btnApply" (click)="apply()">{{"buttons.apply" |translate}}</button>
+              <button class="btn btnReset" (click)="reset()">{{"buttons.reset" |translate}}</button>
+            </div>
+            <br /><br />
+          </div>
+        </div>
+      </div>
+    </body>
+    <!-- </ng-container> -->

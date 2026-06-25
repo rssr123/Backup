@@ -1,0 +1,200 @@
+<body class="BodyContainer">
+  <div class="PAContainer73" [class.right-section-collapsed]="rightSectionCollapsed" >
+    <div class="two-thirds left-section73">
+      <div>
+        <h1 style="padding-left:3%">{{ "menu.billist" | translate }}</h1>
+        <div class="btnexportgrp">
+          <h2 style="width: 22%;">{{ "labels.searchresults" | translate }}</h2>
+          <button type="button" [disabled]="isLoading" class="btn btn-secondary btnexport" (click)="exportButton()">{{ "buttons.export" | translate}}</button>
+        </div>
+      </div>
+      <div class="MATableContainer">
+        <div class="MALoadingContainer">
+          <!-- Loading spinner overlay -->
+          <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+            <div class="spinner-border" role="status">
+              <span class="sr-only"></span>
+            </div>
+          </div>
+          <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+            <thead>
+              <tr class="MATableHeader">
+                <th class="thWidth" style="width:5%;">No</th>
+                <th style="width:10%;">{{"labels.customerid" | translate}}</th>
+                <th style="width:10%;">{{"labels.entityname" | translate}}</th>
+                <th style="width:10%;">{{"labels.entitynumber" | translate}}</th>
+                <th style="width:10%;">{{"labels.billingno" | translate}}</th>
+                <th style="width:8%;">{{"labels.amountrm" | translate}}</th>
+                <th style="width:8%;">{{"labels.billingmethod" | translate}}</th>
+                <th style="width:8%;">{{"labels.billingstatus" | translate}}</th>
+                <th style="width:10%;">{{"labels.rcptno" | translate}}</th>
+                <th style="width:10%;">{{"labels.requestername" | translate}}</th>
+                <th style="width:7%;">{{"labels.issuance" | translate}}</th>
+                <th style="width:9%;">{{"labels.action" | translate}}</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="model.length > 0; else noResults">
+              <!-- Loop through the model to display rows -->
+             <tr *ngFor="let item of model; let i = index">
+                <td>{{ ((page-1) * itemsPerPage) + i + 1 }}</td>
+                <td>{{ item.cust_id }}</td>
+                <td>{{ item.ent_nm }}</td>
+                <td>{{ item.ent_no }}</td>
+                <td>{{ item.billing_no }}</td>
+                <td style="text-align: end;">{{ item.amount | number: '1.2-2' }}</td>
+                <td>{{ getParamDescBM(item.billing_method.trim()) }}</td>
+                <td>{{ getParamDescWF(item.bil_wf_status) }}</td>
+                <td>{{ item.receipt_no }}</td>
+                <td>{{ item.req_name }}</td>
+                <td>{{ item.issuance }}</td>
+                <td>
+                  <button *ngIf="!item.bil_wf_status.includes(' Q')" (click)="navigateScreen(item)" class="btn btnApply" style="background-color:#2185d0;margin-top:0px;">View</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <ng-template #noResults>
+            <tr style="height: 100px;">
+              <td colspan="20" class="text-center">{{ "searchcriteriadoesnotmatch" | translate }}</td>
+            </tr>
+          </ng-template>
+        </div>
+      </div>
+      <div class="MAPagination MAPagination-1" *ngIf="isDisplay">
+        <div class="fgSpacing">
+          <div *ngIf="page * itemsPerPage < totalRecords">
+            {{"showing" | translate}} {{ page * itemsPerPage }} {{"from" | translate }} {{ totalRecords }}
+            {{"results" | translate }}
+          </div>
+          <div *ngIf="!(page * itemsPerPage < totalRecords)">
+            {{"showing" | translate }} {{ totalRecords }} {{"from" | translate }} {{ totalRecords }}
+            {{"results" | translate }}
+          </div>
+        </div>
+        <div class="pagination-row">
+          <div class="dropdown">
+            <button
+              class="btn btn-secondary dropdown-toggle PaginControl"
+              type="button"
+              id="dropdownMenuButton"
+              data-bs-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              {{ selectedValue }}
+            </button>
+            <div class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton">
+              <button
+                class="dropdown-item"
+                *ngFor="let singleItem of dropdownOptions"
+                (click)="LoadData(singleItem)"
+              >
+                {{ singleItem }}
+              </button>
+            </div>
+          </div>
+
+          <ngb-pagination
+            [(page)]="page"
+            [pageSize]="itemsPerPage"
+            [collectionSize]="totalRecords"
+            (pageChange)="loadData()"
+          ></ngb-pagination>
+        </div>
+      </div>
+    </div>
+        <!-- right section -->
+    <div class="middle-section73">
+        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#rightSection"
+            [attr.aria-expanded]="!rightSectionCollapsed" (click)="toggleRightSection()" [disabled]="isLoading">
+            <ng-container *ngIf="rightSectionCollapsed; else arrowIcon">
+                <i class="bi bi-search"></i>
+            </ng-container>
+            <ng-template #arrowIcon>
+                <i class="bi" [class.bi-chevron-double-right]="!rightSectionCollapsed"
+                    [class.bi-chevron-double-left]="rightSectionCollapsed"></i>
+            </ng-template>
+        </button>
+    </div>
+    <div class="right-section73 collapse" [class.show]="!rightSectionCollapsed">
+      <div class="one-third">
+        <h3>{{"labels.searchfilter" | translate}}</h3><br>
+        <div class="form-group">
+          <label for="entNm">{{"labels.entityname" | translate}}</label>
+          <input
+            type="text"
+            id="entNm"
+            class="form-control"
+            placeholder="Enter Entity Name"
+            [(ngModel)]="entNm"
+          />
+        </div>
+        <div class="form-group">
+          <label for="entNo">{{"labels.entitynumber" | translate}}</label>
+          <input
+            type="text"
+            id="entNo"
+            class="form-control"
+            placeholder="Enter Entity No"
+            [(ngModel)]="entNo"
+          />
+        </div>
+        <!--
+        <div class="form-group">
+          <label for="sourceSys">{{"labels.sourcesystem" | translate}}</label>
+          <ng-select [disabled]="sourceSysList1.length < 1" class="form-control" name="sourceSys" [(ngModel)]="sourceSys" id="sourceSys" dropdownPosition="bottom" [clearable]="false" [searchable]="false"placeholder="Enter Source System">
+          <ng-option *ngFor="let item of sourceSysList1;" [value]="sourceSysList2.get(item)" style="width: 70%;">{{item}}</ng-option>
+          </ng-select>
+        </div>-->
+        <div class="form-group">
+          <label for="receiptNo">{{"labels.rcptno" | translate}}</label>
+          <input
+            type="text"
+            id="receiptNo"
+            class="form-control"
+            placeholder="Enter Receipt No."
+            [(ngModel)]="receiptNo"
+          />
+        </div>
+        <div class="form-group">
+          <label for="dateRange">{{"labels.daterange" | translate}}</label>
+          <input type="text" placeholder="Date Range Picker" class="form-control"
+          [bsConfig]="{ rangeInputFormat : 'DD MMM YYYY', dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,rangeSeparator:' to ',containerClass:'theme-default',adaptivePosition: true}"
+          bsDaterangepicker [(ngModel)]="dateRange" name="dateRange" readonly>
+        </div>
+        <div class="form-group">
+          <label for="billingMthd">{{"labels.billingmethod" | translate}}</label>
+          <ng-select [disabled]="bilMthds.length < 1" class="form-control" name="bilMthds" [(ngModel)]="billingMthd" id="billingMthd" dropdownPosition="bottom" [clearable]="false" [searchable]="false" placeholder="Enter Billing Method">
+          <ng-option *ngFor="let item of bilMthds" [value]="item.param_cd" style="width: 70%;">{{item.nm_en}}</ng-option>
+          </ng-select>
+        </div>
+          <!--<div class="form-group">
+          <label for="billingType">{{"labels.billingtype" | translate}}</label>
+          <ng-select [disabled]="bilType.length < 1" class="form-control" name="billingType" [(ngModel)]="billingType" id="billingType" dropdownPosition="bottom" [clearable]="false" [searchable]="false" placeholder="Enter Billing Type">
+          <ng-option *ngFor="let item of bilType" [value]="item.param_cd" style="width: 70%;">{{item.nm_en}}</ng-option>
+          </ng-select>
+        </div>-->
+        <div class="form-group">
+          <label for="billingNo">{{"labels.billingno" | translate}}</label>
+          <input
+            type="text"
+            id="billingNo"
+            class="form-control"
+            placeholder="Enter Billing No."
+            [(ngModel)]="billingNo"
+          />
+        </div>
+        <div class="form-group">
+          <label for="receiptNo">{{"labels.billingstatus" | translate}}</label>
+          <ng-select [disabled]="bilWfStatuses.length < 1" class="form-control" name="billStatus" [(ngModel)]="billStatus" id="billStatus" dropdownPosition="bottom" [clearable]="false" [searchable]="false" placeholder="Enter Billing Status">
+          <ng-option *ngFor="let item of bilWfStatuses" [value]="item.param_cd" style="width: 70%;">{{item.nm_en}}</ng-option>
+          </ng-select>
+        </div>
+        <div class="form-buttons mt-3">
+          <button type="button" class="btn btn-secondary" [disabled]="isLoading" (click)="clearFields()">{{"buttons.Clear" | translate}}</button>
+          <button type="button" class="btn btn-primary ml-2" [disabled]="isLoading" (click)="filterButton()">{{"buttons.search" | translate}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>

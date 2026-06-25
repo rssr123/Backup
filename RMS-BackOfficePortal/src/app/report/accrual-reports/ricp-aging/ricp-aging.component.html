@@ -1,0 +1,273 @@
+<ng-container *ngIf="permListAllow === 1">
+<body class="BodyCointaner">
+	<div class="PAContainer73">
+		<div class="left-section73">
+
+            <div *ngIf="showResultAlert" [@fadeInOut]>
+                <div class="alert alert-success PA-alert-box" role="alert">{{"labels.reportqueued" | translate}}
+                </div>
+            </div>
+
+            <div *ngIf="showCancelAlert" [@fadeInOut]>
+                <div class="alert alert-warning PA-alert-box" role="alert">{{"reportcancelled." | translate}}
+                </div>
+            </div>
+
+            <div *ngIf="showPendingAlert" [@fadeInOut]>
+                <div class="alert alert-warning PA-alert-box" role="alert">{{"labels.reportalreadyqueued" | translate}}
+                </div>
+            </div>
+
+			<!-- <div class="LeftSectionPosition"> {{"labels.Home / Report / Receivable Income Compound Aging Report" | translate}}
+			</div> -->
+			<h2>{{"labels.ricpagingreportgeneration" | translate}}</h2>
+			<form class="allFormClass overflow-form" class="form-group" #formRef="ngForm"
+				(ngSubmit)="handleFormSubmit(formRef)">
+				<table>
+					<!--<div class="displayColumn" style="height: 30px; margin-left: 20px;margin-top: 20px;">
+                        <label>{{"labels.reportpre-filters" | translate}}</label>
+					</div>-->
+					<tr>
+						<td>
+							<div class="displayColumn">
+								<label>{{"labels.asofagingreportdate" | translate}} <span class='RedAsterisk'>*</span></label>
+								<input type="text" class="form-control inputHeight" bsDatepicker
+									[(ngModel)]="requestDate" name="requestDate" required #requestDateRef="ngModel"
+									(keydown)="onKeyDown($event)"
+									[bsConfig]="{ dateInputFormat: 'DD MMM YYYY', showWeekNumbers:false,containerClass:'theme-default', adaptivePosition: true }">
+								<div *ngIf="requestDateRef.errors && requestDateRef.errors['required']  && requestDateRef.touched"
+									class="error-text">
+									{{"Aging Report Date is required" | translate}}
+								</div>
+							</div>
+						</td>
+						<td>
+							<div class="displayColumn">
+								<label class="tableLabel">{{"labels.issuancedaterange" | translate}} <span class='RedAsterisk'>*</span></label>
+								<input type="text" [placeholder]="'labels.daterangepicker'| translate" class="form-control" [bsConfig]="{ rangeInputFormat : 'DD MMM YYYY', dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,rangeSeparator:' to ',
+									containerClass:'theme-default',adaptivePosition: true, maxDateRange: 366}" bsDaterangepicker
+									[(ngModel)]="issDt" name="issDt" required #issDtRef="ngModel" (keydown)="onKeyDown($event)">
+                                <div *ngIf="issDtRef.errors && issDtRef.errors['required']  && issDtRef.touched"
+                                    class="error-text">
+                                    {{"Issuance Date Range is required" | translate}}
+                                </div>									
+							</div>
+						</td>
+						<td>
+							<div class="displayColumn">
+								<label class="tableLabel">{{"labels.emailnotification" | translate}} <span class='RedAsterisk'>*</span></label>
+								<select class="form-control" [(ngModel)]="emailNotification" name="emailNotification">
+									<option *ngFor="let item of emailOption" [value]="item.value">
+										{{ item.label }}
+									</option>
+								</select>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div class="displayColumn">
+								<label class="tableLabel">{{"labels.inclusiveexpired" | translate}}?</label>
+								<select class="form-control" [(ngModel)]="showExpiry" name="showExpiry">
+									<option *ngFor="let item of emailOption" [value]="item.value">
+										{{ item.label }}
+									</option>
+								</select>
+							</div>
+						</td>
+
+						<td>
+							<div class="displayColumn">
+								<label class="tableLabel">{{"labels.inclusivecancelvoid" | translate}}?</label>
+								<select class="form-control" [(ngModel)]="showCanVoid" name="showCanVoid">
+									<option *ngFor="let item of emailOption" [value]="item.value">
+										{{ item.label }}
+									</option>
+								</select>
+							</div>
+						</td>
+						<td>
+							<div class="displayColumn">
+								<label class="tableLabel">{{"labels.entitytype" | translate}}</label>
+								<select class="form-control" [(ngModel)]="entityType" name="entityType">
+									<option *ngFor="let item of entityTypeOptions" [value]="item.value">
+										{{ item.label }}
+									</option>
+								</select>
+							</div>
+						</td>
+
+					</tr>
+					<tr>
+						<td>
+							<div class="displayColumn">
+								<label>{{"labels.entityname" | translate}}</label>
+								<input type="text" class="form-control" [(ngModel)]="entityName" name="entityName" maxlength="100" (keypress)="alphaNumberOnly($event)">
+							</div>
+						</td>
+						<td>
+							<div class="displayColumn">
+								<label class="tableLabel">{{"labels.paymentdaterange" | translate}}</label>
+								<input type="text" [placeholder]="'labels.daterangepicker'| translate" class="form-control" [bsConfig]="{ rangeInputFormat : 'DD MMM YYYY', dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,rangeSeparator:' to ',
+									containerClass:'theme-default',adaptivePosition: true}" bsDaterangepicker
+									[(ngModel)]="pymtDt" name="pymtDt" (keydown)="onKeyDown($event)" readonly>
+							</div>
+						</td>
+						<td>
+							<div class="displayColumn">
+								<label class="tableLabel">{{"labels.expirydaterange" | translate}}</label>
+								<input type="text" [placeholder]="'labels.daterangepicker'| translate" class="form-control" [bsConfig]="{ rangeInputFormat : 'DD MMM YYYY', dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,rangeSeparator:' to ',
+									containerClass:'theme-default',adaptivePosition: true}" bsDaterangepicker
+									[(ngModel)]="expDt" name="expDt" (keydown)="onKeyDown($event)" readonly>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div class="displayColumn">
+								<label class="tableLabel">{{"labels.writeoffdaterange" | translate}}</label>
+								<input type="text" [placeholder]="'labels.daterangepicker'| translate" class="form-control" [bsConfig]="{ rangeInputFormat : 'DD MMM YYYY', dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,rangeSeparator:' to ',
+									containerClass:'theme-default',adaptivePosition: true}" bsDaterangepicker
+									[(ngModel)]="woDt" name="woDt" (keydown)="onKeyDown($event)" readonly>
+							</div>
+						</td>
+						<td>
+							<div class="displayColumn">
+								<label class="tableLabel">{{"labels.canceldaterange" | translate}}</label>
+								<input type="text" [placeholder]="'labels.daterangepicker'| translate" class="form-control" [bsConfig]="{ rangeInputFormat : 'DD MMM YYYY', dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,rangeSeparator:' to ',
+									containerClass:'theme-default',adaptivePosition: true}" bsDaterangepicker
+									[(ngModel)]="canDt" name="canDt" (keydown)="onKeyDown($event)" readonly>
+							</div>
+						</td>
+						<td>
+							<div class="displayColumn">
+								<label class="tableLabel">{{"labels.voiddaterange" | translate}}</label>
+								<input type="text" [placeholder]="'labels.daterangepicker'| translate" class="form-control" [bsConfig]="{ rangeInputFormat : 'DD MMM YYYY', dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,rangeSeparator:' to ',
+									containerClass:'theme-default',adaptivePosition: true}" bsDaterangepicker
+									[(ngModel)]="voidDt" name="voidDt" (keydown)="onKeyDown($event)" readonly>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td colspan="2">
+							<label class="note">{{"labels.iftherearereportspendingtobegeneratedthegeneratebuttonwillbedisabled" | translate}}</label>
+							<div class="displayRow">
+								<label>{{"labels.downloadreportas:" | translate}}</label>
+								<ng-select class="form-control" [(ngModel)]="selectedFileType" name="selectedFileType"
+									dropdownPosition="bottom" #selectedFileTypeRef="ngModel" required>
+									<ng-option *ngFor="let item of fileType"
+										[value]="item.value">{{item.label}}</ng-option>
+								</ng-select>
+								<div *ngIf="selectedFileTypeRef.errors && selectedFileTypeRef.errors['required'] && selectedFileTypeRef.touched"
+									class="error-text">
+									{{"File type is required" | translate}}
+								</div>
+								<button class="btn btnReset" type="button" (click)="resetWithDefaults()">{{"buttons.reset" | translate}}</button>
+								<button id= "submit" class="btn btnAdd" type="submit" disabled>{{"buttons.generate" | translate}}</button>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</form>
+		</div>
+	</div>
+	<!-- <div class="marginFromFooter"></div> -->
+	<!-- <div class="PAContainer73"> -->
+	<div>
+		<h2 style="margin-left: 3%;">{{"labels.reportgenerationhistory" | translate}}</h2>
+	</div>
+	<!-- </div> -->
+	<div class="MALoadingContainer">
+		<div *ngIf="isLoadingReport" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+			<div class="spinner-border" role="status">
+				<span class="sr-only"></span>
+			</div>
+		</div>
+		<div class="tableWrapper">
+			<table class="MATable" [ngClass]="{'TableDimmed': isLoadingReport}">
+				<thead>
+					<tr class="MATableHeader">
+                        <th class="thWidth">No.</th>
+                        <th>{{"labels.taskid" | translate}}</th>
+                        <th class="thFileName">{{"labels.filename" | translate}}</th>
+                        <th>{{"labels.generationstatus" | translate}}</th>
+                        <th class="thAction">{{"labels.action" | translate}}</th>
+                        <th class="thInitiadtedBy">{{"labels.initiatedby" | translate}}</th>
+                        <th>{{"labels.initiatedtime" | translate}}</th>
+                        <th>{{"labels.completedtime" | translate}}</th>
+                        <th class="thFileSize">{{"labels.filesize" | translate}}</th>
+                    </tr>
+				</thead>
+				<ng-container *ngIf="totalRecordsReport>0; else noResultsReport">
+					<tbody>
+						<tr *ngFor="let item of ricpagings; let i = index">
+							<td style="width: 20px !important;">{{ (pageReport - 1) * itemsPerPageReport + i + 1 }}</td>
+							<td>{{item.task_id}}</td>
+							<td><a *ngIf="item.status === 'S'; else elseBlock" style="cursor: pointer" class="hyperlink"
+									(click)="downloadFile(item.p_file_nm, item.p_file_type)">
+									{{ getReportName(item) }}
+								</a>
+								<ng-template #elseBlock>-</ng-template>
+							</td>
+							<td>{{item.status === 'P' ? 'Pending' : item.status === 'I' ? 'In Progress' : item.status
+								=== 'F' ? 'Failed' : item.status === 'C' ? 'Cancelled' : 'Success'}}</td>
+							<td><button type="button" class="btn btnCancel" *ngIf="item.status === 'P'" onClick="this.disabled"
+									(click)="cancelFile(item.rpt_ricp_age_id, $event)">Cancel</button></td>
+							<td>{{item.created_by}}</td>
+                            <td>{{convertDateString(item.dt_created)}}</td>
+							<td>{{item.status === 'S' ? convertDateString(item.dt_modified) : 
+								item.status === 'C' ? convertDateString(item.dt_modified) : 
+							item.status === 'F' ? convertDateString(item.dt_modified) : '-'}}</td>
+							<td>{{ item.p_file_size == null ? '-' : 
+								(item.p_file_size < 1000 ? item.p_file_size + ' Bytes' : 
+								(item.p_file_size < 1000000 ? (item.p_file_size / 1000).toFixed(2) + ' KB' : 
+								(item.p_file_size / 1000000).toFixed(2) + ' MB')) }}
+							</td>
+						</tr>
+					</tbody>
+				</ng-container>
+				<ng-template #noResultsReport>
+					<tr style="height: 100px;">
+						<td colspan="8" class="text-center">{{"nodatafound"| translate}}</td>
+					</tr>
+				</ng-template>
+			</table>
+
+			<div class="MAPagination" *ngIf="isDisplayReport">
+				<div class="fgSpacing">
+					<div>
+						<div *ngIf="pageReport * itemsPerPageReport < totalRecordsReport">
+							{{"showing" | translate}} {{ pageReport * itemsPerPageReport }} {{"from" | translate}} {{
+							totalRecordsReport }} {{"results" | translate}}
+						</div>
+						<div *ngIf="!(pageReport * itemsPerPageReport < totalRecordsReport)">
+							{{"showing" | translate}} {{ totalRecordsReport }} {{"from" | translate}} {{
+							totalRecordsReport }} {{"results" | translate}}
+						</div>
+					</div>
+				</div>
+				<div class="pagination-row">
+
+					<div class="dropdown">
+						<button class="btn btn-secondary dropdown-toggle PaginControl" type="button"
+							id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true"
+							aria-expanded="false">
+							{{ selectedValue }}
+						</button>
+						<div class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton">
+							<button class="dropdown-item" *ngFor="let singleItem of dropdownOptions"
+								(click)="LoadData(singleItem)">
+								{{singleItem }}
+							</button>
+						</div>
+					</div>
+					<ngb-pagination [(page)]="pageReport" [pageSize]="itemsPerPageReport"
+						[collectionSize]="totalRecordsReport" (pageChange)="loadData()"></ngb-pagination>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- <div class="marginFromFooter"></div> -->
+</body>
+</ng-container>

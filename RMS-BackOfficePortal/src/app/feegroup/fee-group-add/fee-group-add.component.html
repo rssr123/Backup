@@ -1,0 +1,75 @@
+<div class="SingleContainer">
+    
+   <!-- Header for Add Item -->
+   <div class="SingleContainerHeader">
+      <h2 class="text-center">{{"add" | translate}}</h2>
+   </div>
+   <form #formRef="ngForm" (ngSubmit)="handleFormSubmit(formRef)">
+   <div class="MALoadingContainer">
+      <!-- Loading spinner overlay -->
+      <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+         <div class="spinner-border" role="status">
+            <span class="sr-only"></span>
+         </div>
+      </div>
+      <div [ngClass]="{'TableDimmed': isLoading}">
+         <!-- Error Box -->
+         <div *ngIf="error" class="error-box">
+            <i class="bi bi-x-circle-fill error-icon"></i>
+            <div>
+               <strong>{{"labels.validationerror" | translate}}</strong>
+               <ul>
+                  <ul>
+                     <li *ngFor="let errorMsg of errorMessages">{{ errorMsg }}</li>
+                  </ul>
+               </ul>
+            </div>
+         </div>
+         <!-- Fee Group Name (EN) -->
+         <div class="form-group">
+            <label for="feeGroupNameEN">{{"labels.feegroupnameen" | translate}} <span class='RedAsterisk'>*</span></label>
+            <input type="text" class="form-control" id="feeGroupNameEN" name="feeGroupNameEN" [(ngModel)]="feeGroupNameEN" #feeGroupNameENRef="ngModel" required>
+            <div *ngIf="feeGroupNameENRef.errors && feeGroupNameENRef.errors['required'] && feeGroupNameENRef.touched" class="error-text">
+               {{"labels.feegroupnameenisrequired" | translate}}
+            </div>
+         </div>
+         <!-- Fee Group Name (BM) -->
+         <div class="form-group">
+            <label for="feeGroupNameBM">{{"labels.feegroupnamebm" | translate}} <span class='RedAsterisk'>*</span></label>
+            <input type="text" class="form-control" id="feeGroupNameBM" name="feeGroupNameBM" [(ngModel)]="feeGroupNameBM" #feeGroupNameBMRef="ngModel" required>
+            <div *ngIf="feeGroupNameBMRef.errors && feeGroupNameBMRef.errors['required'] && feeGroupNameBMRef.touched" class="error-text">
+               {{"labels.feegroupnamebmisrequired" | translate}}
+            </div>
+         </div>
+         <!--SS Code -->
+         <div class="form-group">
+            <label for="ssCd">{{"labels.sourcesystem" | translate}} <span class='RedAsterisk'>*</span></label>
+            <ng-select class="form-control" name="sourceSystemCode" [(ngModel)]="ssCd" id="ssCd"  dropdownPosition="bottom" [multiple]="false" #ssCdRef="ngModel">
+               <ng-option *ngFor="let item of sourceSystemCodeOptions" [value]="item.ss_cd">{{item.ss_cd}}</ng-option>
+            </ng-select>
+            <div *ngIf="ssfeeGroupIdRef.errors && ssfeeGroupIdRef.errors['required'] && ssfeeGroupIdRef.touched" class="error-text">
+               {{"labels.ssCdisrequired" | translate}}
+            </div>
+            
+          </div>  
+          <!--SS Fee Group ID -->
+          <div class="form-group">
+            <label for="ssFeeGroupId">{{"labels.ssFeeGroupId" | translate}} <span class='RedAsterisk'>*</span></label>
+            <input type="number" class="form-control" id="ssFeeGroupId" name="ssFeeGroupId" [(ngModel)]="ssFeeGroupId" #ssfeeGroupIdRef="ngModel" required  max="999999999"/>
+            <div *ngIf="ssfeeGroupIdRef.errors && ssfeeGroupIdRef.errors['required'] && ssfeeGroupIdRef.touched" class="error-text">
+               {{"labels.ssFeeGroupIdisrequired" | translate}}
+            </div>        
+            <div *ngIf="ssfeeGroupIdRef.errors && ssfeeGroupIdRef.errors['max'] && ssfeeGroupIdRef.touched" class="error-text">
+               {{"labels.ssFeeGroupIdexceedsmax" | translate}}
+            </div>     
+         </div>
+         <!-- Buttons -->
+         <div class="button-group">
+            <div>{{"labels.Fields with * are mandatory" | translate}}</div>
+            <button class="btn btnSubmit" type="submit">{{"buttons.submit" | translate}}</button>
+            <button class="btn btnClose" type="button" (click)="closed()">{{"buttons.close" | translate}}</button>
+         </div>
+      </div>
+   </div>
+   </form>
+</div>

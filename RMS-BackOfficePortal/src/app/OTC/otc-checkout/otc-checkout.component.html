@@ -1,0 +1,27 @@
+<body id="mainContainerOtc">
+  <div class="otcContainer" id="otcContainer">
+
+    <img id="logo-ssm-homepage" alt="Malaysia" class="img-responsive" src="assets/logo/logo-ssm-homepage.png" />
+    <div id="middle-container-notloggedin">
+      <label id="revenue">REVENUE MANAGEMENT SYSTEM</label>
+      <label id="backoffice">{{"labels.backofficecaps" | translate}}</label>
+      <label id="top" class="highlight">{{"labels.tobeatoptier" | translate}} <span class="blueHighlight">{{"labels.corporateregistry" | translate}} </span>{{"labels.and" | translate}} <span class="blueHighlight">{{"labels.regulatoryauthority" | translate}} </span>{{"labels.terulung" | translate}}.</label>
+    </div>
+
+    <div id="overlayout"><!--<div class="loader"></div>--></div>
+    <div *ngIf="showResultAlert" [@fadeInOut]>
+      <div class="alert alert-warning PA-alert-box alertCheckOut" role="alert">
+        <h3 style="text-align: center;">{{"labels.confirmcheckout" | translate}}</h3>
+        <br>
+        <a style="font-size: 130%;padding-left: 5%;display: inline-block;">{{"labels.checkoutconfirmation" | translate}}</a><br>
+        <a style="font-size: 130%;padding-left: 5%;display: inline-block;">{{"labels.checkoutconfirminfo" | translate}}</a>
+        <br><br>
+        <div class="btnGrper">
+          <button id="check-out" class="btn btnCheckOut" [disabled]="buttonPerms()" (click)="checkOut();" >{{"buttons.confirm" | translate}}</button>
+          <button id="close" class="btn" (click)="closeResultAlertBox();" >{{"buttons.cancel" | translate}}</button>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+</body>

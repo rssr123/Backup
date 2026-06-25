@@ -1,0 +1,606 @@
+@import '../../app.component.scss';
+
+$MAButtonMinWidth: 100px; //original is 30%
+
+.PAContainer73 {
+    padding: 20px;
+    margin-bottom: 20px;
+
+    span {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    h3 {
+        margin-bottom: 15px;
+    }
+
+    .parent-div {
+        display: flex;
+        justify-content: space-between;
+
+        .left-div, .right-div {
+            width: 48%; /* Adjust the width as needed */
+            background-color: #d6d6ec; /* Left div */
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+            padding: 15px;
+        }
+
+        .right-div {
+            background-color: #d9ecd6; /* Right div */
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+
+            tr:nth-child(even) {
+                background-color: #f8f9fc;
+            }
+
+            tr:nth-child(odd) {
+                background-color: white;
+            }
+
+            td:first-child {
+                width: 60%;
+            }
+
+            td {
+                padding: 8px;
+                text-align: left;
+                border: 1px solid #ddd;
+            }
+
+            a {
+                color: #0275d8;
+                text-decoration: none;
+            }
+
+            a:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    .content {
+        h3 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+    
+            td {
+                border: none;
+                padding: 8px;
+                text-align: left;
+    
+                &:nth-child(2) { // For colon cells
+                    width: 10px;
+                }
+    
+                textarea {
+                    width: 100%;
+                    height: 60px;
+                }
+    
+                input[type="checkbox"] {
+                    margin-right: 5px;
+                }
+    
+            
+    
+                button {
+                    margin-right: 10px;
+                }
+
+                   // Add styles for the button container
+            &.button-container {
+                text-align: right;
+            }
+            }
+    
+            tr {
+                background-color: white;
+                border: none;
+            }
+
+            
+        }
+    }
+    
+}
+
+.btnApply {
+    background-color: #21ba45;
+    color: white;
+    min-width: $MAButtonMinWidth;
+  }
+
+
+  .btnCancel {
+    background-color: #767676;
+    min-width: $MAButtonMinWidth;
+    color: white;
+  }
+
+#logo-menara-ssm{
+    
+    // position: relative;
+    // top: 0;
+    // left: 0;
+    width: 100%; 
+    height:100%;
+    object-fit: cover;
+    object-position: top;
+    z-index: 1
+  }
+
+#logo-ssm-homepage{
+    // position: absolute;
+    // top: 30%;
+    // left: 3%;
+    margin-top: 5%;
+    margin-left: 3%;
+    max-width: 100%; 
+ //   max-height: 60%; 
+  //  overflow: hidden;
+    z-index: 2;
+  }
+
+
+.otcContainer{
+    position: relative;
+    height: 100vh !important;
+    width: 100% !important;
+    background-image: url("../../../assets/logo/logo-menara-ssm.png");
+    background-repeat:no-repeat;
+    background-size:cover;
+    background-position: top center !important;
+    margin: 0% !important;
+    padding: 0% !important;
+    overflow: hidden;
+  }
+  
+// #middle-container {
+//     display: flex;
+//     flex-direction: column;
+//     justify-content: center; /* Center the content vertically */
+//    // align-items: center; /* Center the content horizontally */
+//     line-height: 0.8;
+//     margin-top: 7%; /* Set left margin to 30% */
+//     margin-left: 3%;
+//   }
+
+#middle-container #revenue {
+    // position: absolute;
+    // top: 43%;
+    // left: 5%;
+    // margin: 0;
+   // font-size: 45px;
+   //font-size: 2.88vmax;
+   font-size: 2.83vmax;
+   font-weight: 700;
+   letter-spacing: -1px; 
+   color: white;
+  //  z-index: 1; 
+  }
+
+#middle-container #backoffice {
+    // position: absolute;
+    // top: 49%;
+    // left: 5%;
+    // margin: 0;
+   // font-size: 45px;
+   margin-top: 1.0%;
+   font-size: 2.88vmax;
+   font-weight: 700;
+   letter-spacing: -1px; 
+   color: yellow;
+ //   z-index: 1; 
+  }
+
+#middle-container #top {
+    // position: absolute;
+    // top: 58%;
+    // left: 5%;
+    // margin: 0;
+   // font-size: 45px;
+   margin-top: 3%;
+   font-size: 1.62vmax;
+   font-weight: 700;
+   letter-spacing: -1px; 
+   color: white;
+   // z-index: 1; 
+  }
+
+#middle-container #top .blueHighlight {
+    color: rgb(47, 47, 138); /* Change color for specific part of the text */
+  }
+
+
+/* Container and Background Styling */
+.dashboard-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    
+}
+
+.background-image {
+    width: 100% !important;
+    height: 100vh !important;
+    background-image: url("../../../assets/logo/logo-menara-ssm.png");
+    background-repeat:no-repeat;
+    background-size: cover;
+    background-position: top center !important;
+    margin: 0% !important;
+    padding: 0% !important;
+}
+
+/* Grid Layout */
+.charts-grid {
+    display: grid;
+    // grid-template-columns: repeat(3, 1fr);
+    // grid-template-rows: repeat(2, 1fr);
+    grid-template-columns: repeat(3, minmax(450px, 1fr)); /* Limit width */
+    grid-template-rows: repeat(2, minmax(473px, 1fr)); /* Limit height */
+    // gap: 1rem;
+    // padding: 20px;
+    position: absolute;
+    z-index: 1;
+    max-height: 90vh; /* Restrict maximum height */
+    justify-content: center;
+}
+
+
+/* Transparent Section Styling */
+.chart-section {
+    background-color: rgba(255, 255, 255, 0.6); /* Semi-transparent */
+    padding: 15px;
+    // border-radius: 8px;
+    // box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Specific Section Styling */
+.logo-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.logo img {
+    margin-top: 5%;
+    margin-left: -100%;
+    max-width: 80%; 
+    z-index: 2;
+    margin-bottom: 50px; /* Adds space below the logo */
+}
+
+#middle-container {
+    display: flex;
+    flex-direction: column;
+    // justify-content: center; /* Center the content vertically */
+   // align-items: center; /* Center the content horizontally */
+    line-height: 1.0;
+    // margin-top: 7%; /* Set left margin to 30% */
+    // margin-left: 3%;
+  }
+
+#middle-container #revenue {
+    // position: absolute;
+    // top: 43%;
+    // left: 5%;
+    // margin: 0;
+   // font-size: 45px;
+   //font-size: 2.88vmax;
+   font-size: 2.00vmax;
+   font-weight: 700;
+   letter-spacing: -1px; 
+   color: black;
+  //  z-index: 1; 
+  }
+
+#middle-container #backoffice {
+    // position: absolute;
+    // top: 49%;
+    // left: 5%;
+    // margin: 0;
+   // font-size: 45px;
+   margin-top: 1.0%;
+   margin-left: -58%;
+//    font-size: 2.88vmax;
+   font-size: 2.15vmax;
+   font-weight: 700;
+   letter-spacing: -1px; 
+   color: yellow;
+ //   z-index: 1; 
+  }
+
+  #middle-container #top {
+    // position: absolute;
+    // top: 58%;
+    // left: 5%;
+    // margin: 0;
+   // font-size: 45px;
+   margin-top: 8%;
+   margin-left: 0%;
+//    font-size: 1.62vmax;
+   font-size: 1.20vmax;
+   font-weight: 700;
+   letter-spacing: -1px; 
+   color: black;
+   // z-index: 1; 
+   
+  }
+
+#middle-container #top .blueHighlight {
+    color: rgb(47, 47, 138); /* Change color for specific part of the text */
+  }
+
+/* Pie chart canvas styling */
+.pie-chart canvas {
+    width: 100% !important;
+    max-height: 400px !important; /* Adjust the height for pie charts only */
+}
+
+/* Bar chart canvas styling remains the same */
+.bar-chart canvas {
+    width: 100% !important;
+    max-height: none; /* Keeps original height for bar charts */
+}
+
+.dropdown-section {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Spacing between dropdowns */
+    flex-wrap: wrap; /* Ensures the dropdowns wrap if the screen is too narrow */
+  }
+  
+  .dropdown-section label {
+    margin-right: 5px;
+  }
+
+  label[for="reportType"] {
+    font-weight: bold; /* Makes the label bold */
+  }
+
+  label[for="year"] {
+    font-weight: bold; /* Makes the label bold */
+  }
+
+  label[for="month"] {
+    font-weight: bold; /* Makes the label bold */
+  }
+
+
+  #middle-container-notloggedin #revenue {
+    // position: absolute;
+    // top: 43%;
+    // left: 5%;
+    // margin: 0;
+   // font-size: 45px;
+   //font-size: 2.88vmax;
+   font-size: 2.83vmax;
+   font-weight: 700;
+   letter-spacing: -1px; 
+   color: white;
+  //  z-index: 1; 
+  }
+
+#middle-container-notloggedin #backoffice {
+    // position: absolute;
+    // top: 49%;
+    // left: 5%;
+    // margin: 0;
+   // font-size: 45px;
+   margin-top: 1.0%;
+   font-size: 2.88vmax;
+   font-weight: 700;
+   letter-spacing: -1px; 
+   color: yellow;
+ //   z-index: 1; 
+  }
+
+#middle-container-notloggedin #top {
+    // position: absolute;
+    // top: 58%;
+    // left: 5%;
+    // margin: 0;
+   // font-size: 45px;
+   margin-top: 3%;
+   font-size: 1.62vmax;
+   font-weight: 700;
+   letter-spacing: -1px; 
+   color: white;
+   // z-index: 1; 
+  }
+
+#middle-container-notloggedin #top .blueHighlight {
+    color: rgb(47, 47, 138); /* Change color for specific part of the text */
+  }
+
+#middle-container-notloggedin {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center the content vertically */
+    // align-items: center; /* Center the content horizontally */
+     line-height: 1;
+     margin-top: 7%; /* Set left margin to 30% */
+     margin-left: 3%;
+     max-width: 45%;
+  }
+
+#right-container {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.6); /* Semi-transparent */
+    display: flex;
+    flex-direction: column;
+    height: 50vh !important;
+    width: 35% !important;
+    font-size: 2.83vmax;
+    font-weight: 700;
+    letter-spacing: -1px; 
+    right: 2%;
+    top: 15%;
+  }
+
+#title {
+    color: black;
+    position: relative;
+    top: 8%;
+    left: 8%;
+    font-size: 50%;
+    font-weight: bold;
+}
+
+#filter1 {
+    position: relative;
+    top: 13%;
+    left: 7%;
+}
+
+#filter2 {
+    position: relative;
+    top: 13%;
+    left: 7%;
+}
+
+#title1 {
+    color: black;
+    font-size: 40%;
+}
+
+#title2 {
+    color: black;
+    font-size: 40%;
+}
+
+.filterDropDown {
+    position: absolute;
+    width: 68%;
+    top: 9%;
+    right: 12%;
+}
+
+#branch_code{
+    position: absolute;
+    width: 68%;
+    top: 20%;
+    right: 12%;
+    display: flex;
+    padding: unset;
+    line-height: 1.2;
+}
+
+#counter_id{
+    position: absolute;
+    width: 68%;
+    top: 20%;
+    right: 12%;
+    display: flex;
+    padding: unset;
+    line-height: 1.2;
+}
+
+.btnCheckOut{
+    //float:right;
+    color:white;
+    background-color:rgb(33 186 69);
+    //margin-right: 10px;
+    //position: relative;
+    //bottom: 5%;
+    //right: 25%;
+}
+
+.btnCheckOut:disabled{
+    opacity: 0.4;
+}
+
+.alertCheckOut{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    top: 10%;
+    left: 30%;
+    min-width: 40%;
+    min-height: 40%;
+    z-index:999;    
+    --bs-alert-color: #5f5f56;
+    --bs-alert-bg: #f7f7f7;
+    --bs-alert-border-color: #ffffff;
+    --bs-alert-link-color: #636363;
+    pointer-events: all;
+}
+
+#close{
+    //float:right;
+    //display:inline-block;    
+    //position: relative;
+    //left: 8%;
+    //bottom: 5%;
+    background: #767676;
+    color: #d9d9d9;
+    pointer-events: all;
+}
+
+.btnGrper{
+    display: flex;
+    padding-right: 5%;
+    gap: 12%;
+    padding-bottom: 5%;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+#overlayout {
+  position: fixed;
+  display: none;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 2;
+  cursor: pointer;
+}
+
+
+.loader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  width: 120px;
+  height: 120px;
+  margin: -76px 0 0 -76px;
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.highlight{
+    //width: 75%;
+    line-height: 140%;
+}

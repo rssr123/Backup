@@ -1,0 +1,1055 @@
+<body class="BodyCointaner" id="mainBodyContainer">
+    <!--<div id="f_overlay"><div class="loader"></div></div>-->
+
+    <div *ngIf="showInsertAlert" style="margin-left: 2%;">
+        <div class="alert alert-success PA-alert-box bold" role="alert">
+            {{ "labels.successfulBilCan" | translate }}
+        </div>
+    </div>
+    <!-- Error Box -->
+    <div *ngIf="isLoading ? false : isBillUnauth" class="alert alert-danger" style="margin-top: 1%;margin-left: 3%;margin-right: 3%;margin-bottom: 0%;">
+        <i class="bi bi-x-circle-fill error-icon"></i>
+        <strong>{{ 'labels.noperm' | translate }}</strong>
+        <p class="indented-text">{{ 'labels.noauthbill' | translate }}</p>
+    </div>
+
+
+    <div class="MALoadingContainer">
+      <!-- <div id="loading-overlay" *ngIf="isLoading" class="loading-overlay" >
+          <div class="white-box">
+              <div class="spinner-container">
+                  <div class="loader"></div>
+                  <img src="assets/logo/logo-ssm.png" alt="Loading..." />
+              </div>
+          </div>
+        </div> -->
+        <loading-overlay
+            *ngIf="isLoading"
+            [prefixText]="''"
+            [loadingText]="''"
+            [suffixText]="''"
+        >
+        </loading-overlay>
+    </div>
+    <div style="padding-left: 3%;">
+        <h1>{{ "menu.bilcanaproval" | translate}}</h1>
+        <h2>{{ "labels.billingdetails" | translate }}</h2>
+    </div>
+
+    <div class="PAContainer73">
+        <div class="two-thirds" [style.width] = "hideActions ? '100%' : '80%'">
+
+    <div class="MALoadingContainer">
+        <div *ngIf="isLoadingHistory" class="TableLoading-overlay d-flex align-items-center justify-content-center" style= "z-index: auto;">
+            <div class="spinner-border" role="status">
+                <span class="sr-only"></span>
+            </div>
+        </div>
+        <div>
+            <!--<table style="display: table;" [ngClass]="{ TableDimmed: isLoading }">
+              <thead>
+                  <tr class="MATableHeader">
+                      <th style="width: 15%;"></th>
+                      <th style="width: 20%;"></th>
+                      <th style="width: 5%;"></th>
+                      <th style="width: 15%;"></th>
+                      <th style="width: 20%;"></th>
+                  </tr>
+              </thead>
+                <tr>
+                  <td>
+                      <label class="tableLabel">{{"labels.customerid" | translate}}</label>
+                  </td>
+                  <td>
+                      <input
+                        class="form-control"
+                        type="text"
+                        [(ngModel)]="cust_id"
+                        placeholder="Customer ID"
+                        disabled
+                      />
+                  </td>
+                  <td></td>
+                  <td>
+                      <label class="tableLabel">{{"labels.customername" | translate}}</label>
+                  </td>
+                  <td>
+                      <input
+                        class="form-control"
+                        type="text"
+                        [(ngModel)]="cust_nm"
+                        disabled
+                        placeholder="Customer Name"
+                      />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                      <label class="tableLabel">{{"labels.customeremail" | translate}}</label>
+                  </td>
+                  <td>
+                      <input
+                        class="form-control"
+                        type="text"
+                        [(ngModel)]="cust_email"
+                        placeholder="Customer Email"
+                        disabled
+                      />
+                  </td>
+                  <td></td>
+                  <td>
+                      <label class="tableLabel">{{"labels.customerphonenumber" | translate}}</label>
+                  </td>
+                  <td>
+                      <input
+                        class="form-control"
+                        type="text"
+                        [(ngModel)]="cust_phone"
+                        placeholder="Enter Customer Phone"
+                        disabled
+                      />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                      <label class="tableLabel">{{"labels.addressline1" | translate}}</label>
+                  </td>
+                  <td>
+                      <input
+                        class="form-control"
+                        type="text"
+                        [(ngModel)]="cust_addr1"
+                        placeholder="Address 1"
+                        disabled
+                      />
+                  </td>
+                  <td></td>
+                  <td>
+                      <label class="tableLabel">{{"labels.addressline2" | translate}}</label>
+                  </td>
+                  <td>
+                      <input
+                        class="form-control"
+                        type="text"
+                        [(ngModel)]="cust_addr2"
+                        placeholder="Address 2"
+                        disabled
+                      />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                      <label class="tableLabel">{{"labels.addressline3" | translate}}</label>
+                  </td>
+                  <td>
+                      <input
+                        class="form-control"
+                        type="text"
+                        [(ngModel)]="cust_addr3"
+                        placeholder="Address 3"
+                        disabled
+                      />
+                  </td>
+                  <td></td>
+                  <td>
+                      <label class="tableLabel">{{"labels.postcode" | translate}}</label>
+                  </td>
+                  <td>
+                      <input
+                        class="form-control"
+                        type="text"
+                        [(ngModel)]="cust_postcode"
+                        placeholder="Postcode"
+                        disabled
+                      />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                        <label class="tableLabel">{{"labels.city" | translate}}</label>
+                  </td>
+                  <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="cust_city"
+                            placeholder="City"
+                            disabled
+                          />
+                  </td>
+                  <td></td>
+                  <td>
+                        <label class="tableLabel">{{"labels.state" | translate}}</label>
+                  </td>
+                  <td>
+                      <input
+                        class="form-control"
+                        type="text"
+                        [(ngModel)]="cust_state"
+                        placeholder="State"
+                        disabled
+                      />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                          <label class="tableLabel">{{"labels.entityname" | translate}}</label>
+                  </td>
+                  <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="ent_nm"
+                            placeholder="Entity Name"
+                            disabled
+                          />
+                    </td>
+                    <td></td>
+                    <td>
+                          <label class="tableLabel">{{"labels.entitytype" | translate}}</label>
+                    </td>
+                    <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="ent_ty"
+                            placeholder="Entity Type"
+                            disabled
+                          />
+                    </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label class="tableLabel">{{"labels.entitynumber" | translate}}</label>
+                  </td>
+                  <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="ent_no"
+                            placeholder="Entity Number"
+                            disabled
+                          />
+                    </td>
+                    <td></td>
+                    <td>
+                          <label class="tableLabel">{{"labels.sourcesystem" | translate}}</label>
+                    </td>
+                    <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="ss_cd"
+                            placeholder="Source System"
+                            disabled
+                          />
+                    </td>
+                </tr>
+                <tr>
+                  <td>
+                          <label class="tableLabel">{{"labels.billingno" | translate}}</label>
+                  </td>
+                  <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="billing_no"
+                            placeholder="Billing No."
+                            disabled
+                          />
+                    </td>
+                    <td></td>
+                    <td>
+                          <label class="tableLabel">{{"labels.billingmethod" | translate}}</label>
+                    </td>
+                    <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="billing_mthd"
+                            placeholder="Billing Method"
+                            disabled
+                          />
+                    </td>
+                </tr> 
+
+                <tr *ngIf="b_mthd=='O';">
+                    <td>
+                          <label class="tableLabel">{{"labels.billingdescription" | translate}}</label>
+                    </td>
+                    <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="billing_desc"
+                            placeholder="Billing Description"
+                            disabled
+                          />
+                    </td>
+                    <td></td>
+                    <td>
+                          <label class="tableLabel">{{"labels.requestorname" | translate}}</label>
+                    </td>
+                    <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="req_name"
+                            placeholder="Requester Name"
+                            disabled
+                          />
+                    </td>
+                </tr>
+
+                <tr *ngIf="b_mthd=='A';">
+                  <td>
+                          <label class="tableLabel">{{"labels.loareferencenumber" | translate}}</label>
+                  </td>
+                  <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="loa_id"
+                            placeholder="LOA Reference No."
+                            disabled
+                          />
+                    </td>
+                    <td></td>
+                    <td>
+                          <label class="tableLabel">{{"labels.agreementreferencenumber" | translate}}</label>
+                    </td>
+                    <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="agm_id"
+                            placeholder="Agreement Reference No."
+                            disabled
+                          />
+                    </td>
+                </tr>
+                <tr *ngIf="b_mthd=='A';">
+                  <td>
+                          <label class="tableLabel">{{"labels.agreementstartendrange" | translate}}</label>
+                  </td>
+                  <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="dateRangeString"
+                            placeholder="Start/End Date Range"
+                            disabled
+                          />
+                    </td>
+                    <td></td>
+                    <td>
+                          <label class="tableLabel">{{"labels.billingdescription" | translate}}</label>
+                    </td>
+                    <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="billing_desc"
+                            placeholder="Billing Description"
+                            disabled
+                          />
+                    </td>
+                </tr>
+                <tr *ngIf="b_mthd=='A';">
+                  <td>
+                          <label class="tableLabel">{{"labels.billingcount" | translate}}</label>
+                  </td>
+                  <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="billing_cnt"
+                            placeholder="Billing Count"
+                            disabled
+                          />
+                    </td>
+                    <td></td>
+                    <td>
+                          <label class="tableLabel">{{"labels.billingfrequency" | translate}}</label>
+                    </td>
+                    <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="billing_freq"
+                            placeholder="Billing Frequency"
+                            disabled
+                          />
+                    </td>
+                </tr>
+                <tr *ngIf="b_mthd=='A';">
+                  <td>
+                          <label class="tableLabel">{{"labels.dayofthebillingissued" | translate}}</label>
+                  </td>
+                  <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="billing_day"
+                            placeholder="Day of the Billing Issued"
+                            disabled
+                          />
+                    </td>
+                    <td></td>
+                    <td>
+                          <label class="tableLabel">{{"labels.requestorname" | translate}}</label>
+                    </td>
+                    <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="req_name"
+                            placeholder="Requester Name"
+                            disabled
+                          />
+                    </td>
+                </tr>
+                <tr *ngIf="b_mthd=='A' || b_mthd=='O';">
+                  <td>
+                          <label class="tableLabel">{{"labels.requestoremail" | translate}}</label>
+                  </td>
+                  <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="req_email"
+                            placeholder="Requester Email"
+                            disabled
+                          />
+                    </td>
+                    <td></td>
+                </tr>
+
+                <tr *ngIf="b_mthd=='L';">
+                  <td>
+                          <label class="tableLabel">{{"labels.loareferencenumber" | translate}}</label>
+                  </td>
+                  <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="loa_id"
+                            placeholder="LOA Reference No."
+                            disabled
+                          />
+                    </td>
+                    <td></td>
+                    <td>
+                          <label class="tableLabel">{{"labels.loastartendrange" | translate}}</label>
+                    </td>
+                    <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="dateRangeString"
+                            placeholder="Start/End Date Range"
+                            disabled
+                          />
+                    </td>
+                </tr>
+                <tr *ngIf="b_mthd=='L';">
+                    <td>
+                          <label class="tableLabel">{{"labels.billingdescription" | translate}}</label>
+                    </td>
+                    <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="billing_desc"
+                            placeholder="Billing Description"
+                            disabled
+                          />
+                    </td>
+                    <td></td>
+                    <td>
+                          <label class="tableLabel">{{"labels.billingcount" | translate}}</label>
+                  </td>
+                  <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="billing_cnt"
+                            placeholder="Billing Count"
+                            disabled
+                          />
+                    </td>
+                </tr>
+                <tr *ngIf="b_mthd=='L';">
+                    <td>
+                          <label class="tableLabel">{{"labels.billingfrequency" | translate}}</label>
+                    </td>
+                    <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="billing_freq"
+                            placeholder="Billing Frequency"
+                            disabled
+                          />
+                    </td>
+                    <td></td>
+                    <td>
+                          <label class="tableLabel">{{"labels.dayofthebillingissued" | translate}}</label>
+                    </td>
+                    <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="billing_day"
+                            placeholder="Day of the Billing Issued"
+                            disabled
+                          />
+                    </td>
+                </tr>
+                <tr *ngIf="b_mthd=='L';">
+                    <td>
+                          <label class="tableLabel">{{"labels.requestorname" | translate}}</label>
+                    </td>
+                    <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="req_name"
+                            placeholder="Requester Name"
+                            disabled
+                          />
+                    </td>
+                    <td></td>
+                    <td>
+                          <label class="tableLabel">{{"labels.requestoremail" | translate}}</label>
+                    </td>
+                    <td>
+                          <input
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="req_email"
+                            placeholder="Requester Email"
+                            disabled
+                          />
+                    </td>
+                </tr>
+        
+              </table> -->
+
+              <table [ngClass]="{ TableDimmed: isLoading }">
+                <tr>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.customerid" | translate}}</label>
+                            <label class="form-control">{{cust_id}}</label>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.customername" | translate}}</label>
+                            <label class="form-control">{{cust_nm}}</label>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.customeremail" | translate}}</label>
+                            <label class="form-control">{{cust_email}}</label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.customerphonenumber" | translate}}</label>
+                            <label class="form-control">{{cust_phone}}</label>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.addressline1" | translate}}</label>
+                            <label class="form-control">{{cust_addr1}}</label>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.addressline2" | translate}}</label>
+                            <label class="form-control">{{cust_addr2}}</label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.addressline3" | translate}}</label>
+                            <label class="form-control">{{cust_addr3}}</label>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.postcode" | translate}}</label>
+                            <label class="form-control">{{cust_postcode}}</label>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.city" | translate}}</label>
+                            <label class="form-control">{{cust_city}}</label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.state" | translate}}</label>
+                            <label class="form-control">{{cust_state}}</label>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.entityname" | translate}}</label>
+                            <label class="form-control">{{ent_nm}}</label>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.entitytype" | translate}}</label>
+                            <label class="form-control">{{ent_ty}}</label>
+                        </div>
+                    </td>
+                </tr>
+
+                <!--different start here between one time and loa/agmt-->
+                <!--one time-->
+                <ng-container *ngIf="b_mthd === 'O'">
+                    <tr>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.entitynumber" | translate}}</label>
+                                <label class="form-control">{{ent_no}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.sourcesystem" | translate}}</label>
+                                <label class="form-control">{{ss_cd}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.billingno" | translate}}</label>
+                                <label class="form-control">{{billing_no}}</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.billingmethod" | translate}}</label>
+                                <label class="form-control">{{billing_mthd}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.billingdescription" | translate}}</label>
+                                <label class="form-control">{{billing_desc}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.requestorname" | translate}}</label>
+                                <label class="form-control">{{req_name}}</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.requestoremail" | translate}}</label>
+                                <label class="form-control">{{req_email}}</label>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-container>
+                <!--loa/agmt-->
+                <ng-container *ngIf="b_mthd === 'L' || b_mthd === 'A'">
+                    <tr>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.sourcesystem" | translate}}</label>
+                                <label class="form-control">{{ss_cd}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.billingno" | translate}}</label>
+                                <label class="form-control">{{billing_no}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.entitynumber" | translate}}</label>
+                                <label class="form-control">{{ent_no}}</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.billingmethod" | translate}}</label>
+                                <label class="form-control">{{billing_mthd}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.loareferencenumber" | translate}}</label>
+                                <label class="form-control">{{loa_id}}</label>
+                            </div>
+                        </td>
+                        <td *ngIf="b_mthd === 'A'">
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.agreementreferencenumber" | translate}}</label>
+                                <label class="form-control">{{agm_id}}</label>
+                            </div>
+                        </td>
+                        <td *ngIf="b_mthd === 'L'">
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.loastartendrange" | translate}}</label>
+                                <label class="form-control">{{dateRangeString}}</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr *ngIf="b_mthd === 'A'">
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.agreementstartendrange" | translate}}</label>
+                                <label class="form-control">{{dateRangeString}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.billingdescription" | translate}}</label>
+                                <label class="form-control">{{billing_desc}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.billingcount" | translate}}</label>
+                                <label class="form-control">{{billing_cnt}}</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr *ngIf="b_mthd === 'A'">
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.billingfrequency" | translate}}</label>
+                                <label class="form-control">{{billing_freq}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.dayofthebillingissued" | translate}}</label>
+                                <label class="form-control">{{billing_day}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.requestorname" | translate}}</label>
+                                <label class="form-control">{{req_name}}</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr *ngIf="b_mthd === 'A'">
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.requestoremail" | translate}}</label>
+                                <label class="form-control">{{req_email}}</label>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr *ngIf="b_mthd === 'L'">
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.billingdescription" | translate}}</label>
+                                <label class="form-control">{{billing_desc}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.billingcount" | translate}}</label>
+                                <label class="form-control">{{billing_cnt}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.billingfrequency" | translate}}</label>
+                                <label class="form-control">{{billing_freq}}</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr *ngIf="b_mthd === 'L'">
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.dayofthebillingissued" | translate}}</label>
+                                <label class="form-control">{{billing_day}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.requestorname" | translate}}</label>
+                                <label class="form-control">{{req_name}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.requestoremail" | translate}}</label>
+                                <label class="form-control">{{req_email}}</label>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-container>
+            </table>
+            </div>
+          </div>
+            
+            <div class="MarginSeparator"></div>
+
+            <div>
+                <h2>{{"labels.listofbillingitem" | translate}}</h2>
+            </div>
+            <div class="MALoadingContainer">
+                <div *ngIf="isLoadingHistory" class="TableLoading-overlay d-flex align-items-center justify-content-center" style= "z-index: auto;">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only"></span>
+                    </div>
+                </div>
+            <div>
+                <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+                    <thead>
+                        <tr class="MATableHeader">
+                            <th class="thWidth">No.</th>
+                            <th style="width:55%;">{{"labels.billingitem" | translate}}</th>
+                            <th style="width:10%;">{{"labels.unitpricerm" | translate}}</th>
+                            <th style="width:10%;">{{"labels.quantity" | translate}}</th>
+                            <th style="width:10%;">{{"labels.tax%" | translate}}</th>
+                            <th style="width:10%;">{{"labels.totalrm" | translate}}</th>
+                        </tr>
+                    </thead>
+                    <ng-container *ngIf="totalRecordsListOfItem > 0; else noResultsItems">
+                    <tbody *ngIf="billing_items.length > 0; else noResultsItems">
+                        <tr *ngFor="let item of billing_items; let i = index">
+                          <td>{{ i + 1 }}</td>
+                          <td>{{ item.mft_desc_en }}</td>
+                          <td style="text-align: right;">{{ item.unit_fee | number: '1.2-2' }}</td>
+                          <td style="text-align: center;">{{ item.qty }}</td>
+                          <td style="text-align: center;">{{ item.tax_pct }}</td>
+                          <td style="text-align: right;">{{ item.final_amt | number: '1.2-2' }}</td>
+                        </tr>
+                        <tr>
+                            <td style="border-right-color: transparent;"></td>
+                            <td style="border-right-color: transparent;"><h6 style="margin-left:3%;font-weight:bold;text-align:right;">TOTAL</h6></td>
+                            <td style="border-right-color: transparent;"></td>
+                            <td style="border-right-color: transparent;"></td>
+                            <td style="border-right-color: transparent;"></td>
+                            <td style="text-align: right;">{{ total_amount | number: '1.2-2' }}</td>
+                        </tr>                        
+                    </tbody>
+                </ng-container>
+                <ng-template #noResultsItems>
+                  <tr style="height: 100px;">
+                    <td colspan="6" class="text-center">{{ "nodatafound" | translate }}</td>
+                  </tr>
+                </ng-template>
+                </table>
+            </div>
+          </div>
+            <div class="MarginSeparator"></div>
+            <div>
+                <h2>{{ "labels.listofbillingissuance" | translate }}</h2>
+            </div>
+          <div class="MALoadingContainer">
+              <div *ngIf="isLoadingHistory" class="TableLoading-overlay d-flex align-items-center justify-content-center" style= "z-index: auto;">
+                  <div class="spinner-border" role="status">
+                      <span class="sr-only"></span>
+                  </div>
+              </div>
+            <div>
+                  <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+                    <thead>
+                        <tr class="MATableHeader">
+                            <th class="thWidth">No.</th>
+                          <th style="width:20%;">{{ "labels.billingdate" | translate }}</th>
+                          <th style="width:44%;">{{ "labels.billingno" | translate }}</th>
+                          <th style="width:20%;">{{ "labels.billingstatus" | translate }}</th>
+                          <th style="width:11%;"></th>
+                        </tr>
+                    </thead>
+                    <ng-container *ngIf="totalRecordsListOfIssuance>0; else noResultsIss">
+                    <tbody *ngIf="billing_list.length > 0; else noResultsIss">
+                        <tr *ngFor="let item of billing_list; let i = index ">
+                          <td>{{ i + 1 }}</td>
+                          <td>{{ formatDate(item.bil_child_date) }}</td>                            
+                          <td *ngIf="!hasBilDoc(item.bil_child_date)"><a class="hyperlink" (click)="downloadImg(item)">{{ item.bil_no }}</a></td>
+                          <td *ngIf="hasBilDoc(item.bil_child_date)">{{ item.bil_no }}</td>
+                          <td>{{ getBillingStatusName(item.bil_status) }}</td>
+                          <td style="display: flex;justify-content: space-evenly;">
+                            <button class="btn btnApply" [disabled]="item.is_expired < 1 || item.is_expired == null || item.isEnablingPayment" (click)="enablePayment(item)">
+                                <div *ngIf="!item.isEnablingPayment">{{"labels.resendemail" | translate}}</div>
+                                <div *ngIf="item.isEnablingPayment" class="spinner-border check-spinner" role="status">
+                                <span class="sr-only"></span></div>
+                            </button>
+                          </td>
+                        </tr>                     
+                    </tbody>
+                  </ng-container>
+                <ng-template #noResultsIss>
+                  <tr style="height: 100px;">
+                    <td colspan="4" class="text-center">{{ "nodatafound" | translate }}</td>
+                  </tr>
+                </ng-template>
+                </table>
+            </div>
+          </div>
+            <div class="MarginSeparator"></div>
+            <div>
+                <h2>{{"labels.listofdocument" | translate}}</h2>
+            </div>
+          <div class="MALoadingContainer">
+              <div *ngIf="isLoadingHistory" class="TableLoading-overlay d-flex align-items-center justify-content-center" style= "z-index: auto;">
+                  <div class="spinner-border" role="status">
+                      <span class="sr-only"></span>
+                  </div>
+              </div>
+            <div>
+                <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+                    <thead>
+                        <tr class="MATableHeader">
+                            <th class="thWidth">No.</th>
+                            <th style="width:40%;">{{"labels.supportingdocument" | translate}}</th>
+                            <th style="width:18%;">{{"labels.uploadedby" | translate}}</th>
+                            <th style="width:18%;">{{"labels.uploadedon" | translate}}</th>
+                            <th style="width:19%;">{{"labels.filesize" | translate}}</th>
+                        </tr>
+                    </thead>
+                    <ng-container *ngIf="totalRecordsListOfDoc>0; else noResultsDoc">
+                    <tbody *ngIf="documents_list.length > 0; else noResultsDoc">
+                        <tr *ngFor="let item of documents_list; let i = index ">
+                          <td>{{ i + 1 }}</td>
+                          <td> <a class="hyperlink" (click)="downloadFile(item)"> {{ item.file_nm }}</a>
+                              <div *ngIf="item.isDownloadingFile" class="spinner-border download-spinner" role="status">
+                                  <span class="sr-only"></span>
+                              </div></td>
+                          <td>{{ item.uploader }}</td>
+                          <td>{{ item.timestamp | date: 'dd MMM yyyy HH:MM:ss' }}</td>
+                          <td>{{ item.file_size/1000 | number: '1.1-1' }}KB</td>
+                        </tr>                     
+                    </tbody>
+                  </ng-container>
+                <ng-template #noResultsDoc>
+                  <tr style="height: 100px;">
+                    <td colspan="5" class="text-center">{{ "nodatafound" | translate }}</td>
+                  </tr>
+                </ng-template>
+                </table>
+            </div>
+            </div>
+            <div class="MarginSeparator"></div>
+            <div>
+                <h2>{{"labels.historicaltable" | translate}}</h2>
+            </div>
+            <div class="MALoadingContainer">
+                <div *ngIf="isLoadingHistory" class="TableLoading-overlay d-flex align-items-center justify-content-center" style= "z-index: auto;">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only"></span>
+                    </div>
+                </div>
+            <div>
+                <table class="MATable" [ngClass]="{ TableDimmed: isLoadingHistory }">
+                  <thead>
+                      <tr class="MATableHeader">
+                          <th class="thWidth">No.</th>
+                          <th>{{"labels.action" | translate}}</th>
+                          <th>{{"labels.actiontimestamp" | translate}}</th>
+                          <th>{{"labels.status" | translate}}</th>
+                          <th>{{"labels.performedby" | translate}}</th>
+                          <th>{{"labels.assignedto" | translate}}</th>
+                          <th style="width:30%">{{"labels.remarks" | translate}}</th>
+                      </tr>
+                  </thead>
+                  <ng-container *ngIf="totalHistoryRecords>0; else noResultsHistory">
+                      <tbody>
+                          <tr *ngFor="let item of history; let i = index">
+                              <td>{{ totalHistoryRecords - i }}</td>
+                              <td>{{ item.action }}</td>
+                              <td>{{ item.action_timestamp | date: 'dd MMM yyyy HH:MM:ss'}}</td>
+                              <td>{{ getParamDescWF(item.bil_wf_status) }}</td>
+                              <td>{{ item.performer ? item.performer : 'N/A' }}</td>
+                              <td>{{ item.assignee ? item.assignee : 'N/A' }}</td>
+                              <td>{{ item.remark ? item.remark : 'N/A' }}</td>
+                          </tr>
+                      </tbody>
+                  </ng-container>
+                  <ng-template #noResultsHistory>
+                      <tr style="height: 100px;">
+                          <td colspan="7" class="text-center">{{"nodatafound"| translate}}</td>
+                      </tr>
+                  </ng-template>
+                </table>
+              </div>
+            </div>
+            <div class="MAPagination" *ngIf="totalHistoryRecords>20" style= "margin-left: 3%;margin-bottom: 0%;">
+              <div class="fgSpacing" style="text-align: right; margin-bottom: 7px">
+                <div *ngIf="page * itemsPerPage < totalHistoryRecords">
+                  {{"showing" | translate}} {{ page * itemsPerPage }} {{"from" | translate }} {{ totalHistoryRecords }}
+                  {{"results" | translate }}
+                </div>
+                <div *ngIf="!(page * itemsPerPage < totalHistoryRecords)">
+                  {{"showing" | translate }} {{ totalHistoryRecords }} {{"from" | translate }} {{ totalHistoryRecords }}
+                  {{"results" | translate }}
+                </div>
+              </div>
+                <div class="pagination-row" style="float: right;">
+                  <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle PaginControl" type="button" id="dropdownMenuButton"
+                      data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      {{ selectedValue }}
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton">
+                      <button class="dropdown-item" *ngFor="let singleItem of dropdownOptions" (click)="LoadHistory(singleItem)">{{ singleItem }}</button>
+                    </div>
+                  </div>
+                  <ngb-pagination [(page)]="page" [pageSize]="itemsPerPage" [collectionSize]="totalHistoryRecords"
+                    (pageChange)="loadHistory()"></ngb-pagination>
+                </div>
+              </div>
+            <div class="MarginSeparator"></div>
+        </div>
+
+         <div class="one-third" [hidden]="hideActions">
+
+            <div class="right-approval-side">
+              <h2 style="text-align:center;">{{"labels.approveraction" | translate}}</h2>
+              <br>
+              <h5>{{"labels.decision" | translate}} *</h5>
+              <ng-select class="form-control" name="selectedDecision" [(ngModel)]="selectedDecision" id="selectedDecision" dropdownPosition="bottom" [clearable]="false" [searchable]="false"  placeholder="{{'labels.decision' | translate}}">
+                <ng-option *ngIf="!queryOnly" [value]="'query'">{{"buttons.querytorequester" | translate}}</ng-option>
+                <ng-option *ngIf="!queryOnly" [value]="'aprv'">{{"buttons.approve" | translate}}</ng-option>
+                <ng-option *ngIf="!queryOnly" [value]="'rjct'">{{"buttons.reject" | translate}}</ng-option>
+                <ng-option *ngIf="queryOnly" [value]="'query'">{{"buttons.returnquery" | translate}}</ng-option>
+              </ng-select>
+              <br><br>
+              <div>
+                  <h5 style="position: relative;bottom: 8%;left: 1%;">{{"labels.remarks" | translate}}</h5>
+                  <textarea class="form-control" type="text" [(ngModel)]="remarks" placeholder="Please type here..." style="width: 99%;height: 301px;position: relative;left: 1%;"></textarea>
+                  <br>
+              </div>
+              <div class="submissionButtons">
+                  <button id="cancel" class="btn btnCancel" (click)="back()" >{{"buttons.cancel" | translate}}</button>
+                  <button id="submit" class="btn btnSubmit" (click)="submitForm()" [disabled]="submitCheck()">{{"buttons.submit" | translate}}</button>
+              </div>
+            </div>
+         </div>
+    </div>
+    <div class="MarginSeparator"></div>
+
+</body>

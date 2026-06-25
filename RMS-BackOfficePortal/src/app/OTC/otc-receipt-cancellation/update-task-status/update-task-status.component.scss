@@ -1,0 +1,618 @@
+@import '../../../app.component.scss';
+
+$backgroundColor: #f2f2f2;
+$columnLineColor: #e0dcdc;
+$leftPadding: 3%;
+$MainBackGroundColor: #eaeaea;
+$buttonMinWidth: 30%;
+$PaddingTopAndBottom: 20px;
+$MarginFromFooter:110px;
+
+$MAButtonMinWidth: 100px; //original is 30%
+$MarginSeparator: 20px;
+
+
+th {
+  border-left: 3px solid $columnLineColor;
+  border-right: 3px solid $columnLineColor;
+  text-align: center;
+  color: black;
+  background-color: #FFC107 !important;
+
+}
+
+.allFormClass {
+  width: 100%;
+  // border: 2px solid $MATROddBGColor;
+  // margin-left: 5%;
+
+}
+
+.formContainer {
+  display: flex;
+  gap: 5%;
+}
+
+
+.btnCancel {
+  float: right;
+}
+
+.leftSectionContainer {
+  padding: 5%;
+  border: solid 1px #dfdfdf;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+}
+
+.leftSection {
+  width: 67%;
+  // flex: 1; // This will make both tables take up equal space
+  min-height: 0; // This ensures the tables respect the height of the container
+
+}
+
+.rightSection {
+  // width: 33%;
+  //flex: 1; // This will make both tables take up equal space
+  min-height: 0; // This ensures the tables respect the height of the container
+  margin-right: 3%;
+}
+
+#mftAddApproval {
+  margin-left: 0;
+}
+
+h2 {
+  margin-bottom: 0px;
+//   margin-left: $leftPadding;
+  padding-top: $PaddingTopAndBottom;
+  padding-bottom: 10px;
+}
+
+h5 {
+  margin: 10px;
+  text-align: center;
+  padding-top: $MAMainPaddingTopAndBottom;
+  padding-bottom: $MAMainPaddingTopAndBottom;
+}
+
+h6 {
+  margin-top: 20px;
+  text-align: left;
+}
+
+//bottom table alignment start
+.tableWrapper {
+  display: flex;
+  flex-direction: column;
+  // justify-content: flex-end;
+  // margin: 0;
+//   margin-left: 3%;
+//   margin-right: 3%;
+
+  tr:nth-child(odd) {
+    background-color: white !important;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f0f0f0 !important;
+  }
+
+  //width: 67%;
+}
+
+.paginationRight {
+  float: right;
+}
+
+.flexContainer {
+  display: flex;
+}
+
+.resultDisplay {
+  margin-left: auto;
+  margin-right: 0px;
+}
+
+//bottom table alignment end
+
+#requesterForm {
+  text-align: left;
+  padding: 0%;
+  margin-left: 0;
+  // font-weight:bold;
+}
+
+#mftItemDetails {
+  text-align: left;
+  padding: 0%;
+  margin-left: 0;
+  margin-top: 30px;
+  //  font-weight:bold;
+}
+
+//roy
+.leftSection {
+  margin: 0;
+  margin-left: $MAMainLeftPadding;
+
+}
+
+.MATable {
+
+  mat-form-field {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid #644ded; // Curve the borders with a 5px radius
+  }
+
+  mat-form-field {
+    width: 100%;
+
+    .mat-form-field-wrapper {
+      padding-bottom: 0;
+    }
+
+    .mat-form-field-infix {
+      border: 1px solid #ccc;
+      border-radius: 4px;
+
+      input.mat-input-element {
+        padding: 10px;
+        height: auto;
+      }
+    }
+
+    & input.mat-input-element {
+      border-radius: 5px;
+      border: 1px solid #dfdfdf; // Apply curve to the inner input of mat-form-field
+    }
+  }
+}
+
+.rightSectionContainer {
+  h5 {
+    // If you have any styles for h5, you can include them here
+  }
+
+  .taskActionTable {
+    // If you have any styles for the table, you can include them here
+
+    input,
+    select,
+    mat-form-field {
+      width: 100%;
+      background-color: white;
+      border-radius: 8px;
+      border: 1px solid #644ded; // Curve the borders with a 5px radius
+    }
+
+    mat-form-field {
+      width: 100%;
+      display: block; // Ensures it takes up full width
+
+      .mat-form-field-wrapper {
+        padding-bottom: 0; // Removes extra spacing at the bottom
+      }
+
+      .mat-form-field-infix {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+
+        input.mat-input-element {
+          padding: 10px;
+          height: auto;
+          border-radius: 5px;
+          border: 1px solid #dfdfdf; // Apply curve to the inner input of mat-form-field
+        }
+      }
+
+      // Angular Material select dropdown specifics
+      .mat-select-value {
+        line-height: 30px; // Aligns with the height of the input
+      }
+    }
+
+    // If you have styles for other elements inside the table, you can include them here
+  }
+}
+
+
+
+.taskActionTable {
+  border-collapse: separate;
+  //border-spacing: 0 15px; // This sets 0 horizontal spacing and 15px vertical spacing
+  border: 1px solid $MAMainBGColor; // Apply a red border around the table
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // Apply a shadow to the table
+  background-color: white;
+  padding-left: 30px;
+  padding-right: 30px;
+
+  tr {
+    td {
+      background-color: white; // White background for the cell
+      border-left: 3px solid transparent;
+      border-right: 3px solid transparent;
+      //  border: #FFFFFF solid 7.5px; // Half of the vertical spacing for top and bottom
+
+    }
+
+    &:first-child td,
+    &:last-child td {
+      border-top-width: 0; // Remove top border for the first row
+      border-bottom-width: 0; // Remove bottom border for the last row
+    }
+  }
+}
+
+textarea {
+  float: left;
+  resize: none;
+  border-radius: 8px;
+  border: 1px solid #644ded;
+  padding: 8px;
+}
+
+#fileInput {
+  border: 1px solid transparent;
+  /* Set the border color to transparent */
+  /* Add any other custom styles you want for this input element */
+
+}
+
+.divider {
+  margin-bottom: 45px;
+  margin-top: 20px;
+  // width:200px;
+  width: 100%;
+
+  td {
+    width: 350px
+  }
+}
+
+.MATable {
+
+  input,
+  select {
+    // border: 1px solid #dfdfdf;
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+    // text-align: left;
+  }
+
+  tr:nth-child(even) {
+    background-color: white;
+  }
+
+  tr:nth-child(odd) {
+    background-color: #f0f0f0;
+  }
+}
+
+.button-group {
+  margin-bottom: 20px
+}
+
+::ng-deep .ng-multiselect-dropdown .dropdown-btn .filter-text::placeholder {
+  color: transparent;
+}
+
+.leftPadding {
+  margin-left: 3%;
+  margin-right: 3%;
+
+  h2 {
+    margin-left: 0;
+  }
+}
+
+.thWidth {
+  width: 45%;
+}
+
+.formTable {
+  background-color: white;
+  width: 100%;
+  border-collapse: collapse;
+  padding: 5%;
+  margin-bottom: 20px;
+  border-spacing: 50px;
+  // border: solid 1px #dfdfdf;
+  // box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  label{
+    font-weight: bold;
+  }
+
+  td {
+    // border: 1px solid #dfdfdf;
+    // margin-left: 20px;
+    padding: 10px;
+    padding-left: 25px;
+    text-align: left;
+   // max-width: 200px;
+    word-wrap: break-word;
+    word-break: break-all;
+
+    //padding-left: 10px;
+    &:first-child {
+      width: 30%;
+    }
+
+    &:nth-child(2) {
+      width: 70%;
+    }
+  }
+}
+
+//effective date start
+.effectiveDateColumn {
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+}
+
+#effectiveDate {
+  vertical-align: middle;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #644ded;
+  height: 40px;
+}
+
+//effective date end
+
+.marginTopAndBottom {
+  // margin-top:40px;
+  // margin-bottom:40px;
+  border: 10px solid $MainBackGroundColor;
+}
+
+
+.remarks {
+  max-width: 500px;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+.addNotes {
+  vertical-align: top;
+}
+
+.addNotesWrapper {
+  //max-width: 500px;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+.MALoadingContainerFormTable {
+  //separate from bottom table to avoid tr background color
+  position: relative;
+  /* Makes sure the spinner is positioned in reference to the table */
+  overflow: visible !important;
+  /* Keeps the spinner inside the table area */
+}
+
+.MALoadingContainer {
+  position: relative;
+  overflow: hidden !important;
+}
+
+//dropdown start
+:host ::ng-deep ng-select {
+
+  display: inline-block;
+  width: 100% !important;
+  padding: 8px !important;
+  margin-bottom: 0 !important;
+  //font-size: 12px !important;
+  //font-weight: 400!important;
+  //  line-height: 1.1 !important;
+  border: 1px solid blue !important;
+  // border: 1px solid transparent !important;
+  text-align: left !important;
+  vertical-align: middle !important;
+  cursor: pointer !important;
+  background-image: none !important;
+  border-radius: 8px !important;
+  align-items: center;
+}
+
+:host ::ng-deep ng-select .ng-select-container,
+:host ::ng-deep ng-select .ng-value-container {
+
+  min-height: 0 !important;
+  padding: 0 !important;
+  border-top: none !important;
+
+}
+
+:host ::ng-deep ng-dropdown-panel {
+  top: auto !important;
+}
+
+.MATable {
+
+  input,
+  select,
+  ng-select {
+    // border: 1px solid #dfdfdf;
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+    // text-align: left;
+  }
+}
+
+//remove drop down underline
+:host ::ng-deep ng-select .ng-select-container::after {
+  border-bottom: 5px solid transparent !important;
+}
+//dropdown end
+
+//checkbox start
+//when checkbox checked
+:host ::ng-deep .mat-mdc-checkbox.mat-mdc-checkbox-checked .mdc-checkbox__background,
+.mdc-checkbox__ripple {
+  background-color: #21ba45 !important;
+  border-color: white !important;
+
+  .mdc-checkbox__checkmark {
+    color: white !important;
+  }
+}
+
+//when checkbox unchecked
+:host ::ng-deep .mat-mdc-checkbox .mdc-checkbox__background,
+:host ::ng-deep .mat-mdc-checkbox .mdc-checkbox__ripple {
+  border-color: #644ded !important;
+  border: 1px solid;
+}
+
+
+:host ::ng-deep .mdc-form-field .mdc-label {
+  padding-left: 0;
+}
+
+.checkBoxText {
+  color: black !important;
+}
+
+.checkBoxRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap; //this allow overflow items to wrap to next line w/o exceed the 15% width
+}
+//checkbox end
+
+.PA-alert-box {
+  margin-top:30px;
+  width:100%;
+  }
+
+.MAPagination{
+    margin-bottom: 0px;
+  }
+  
+.marginFromFooter{
+    margin-bottom: $MarginFromFooter;
+  }
+
+  //---------------------------------------
+
+  .OrderInformationTable {
+    background-color: white;
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .OrderInformationTable td {
+    width: 50%; /* Equal width for both left and right cells */
+    vertical-align: top;
+  }
+  
+  .form-control {
+    height: auto; /* Let the height grow with content */
+    background-color: #e9ecef;
+    padding: 8px;
+    border-radius: 5px;
+    display: inline-block;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal; /* Allow wrapping */
+    width: 100%; /* Ensure it fills the column */
+  }
+  
+  .tableLabel {
+    font-weight: bold;
+    width: 180px;
+    display: inline-block;
+    white-space: nowrap;
+    margin-bottom: 5px;
+  }
+  
+  td .displayColumn {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 40px; /* Apply same padding on both left and right */
+    box-sizing: border-box;
+  }
+  
+  
+  //payment info start
+.paymentinfo{ 
+  // margin-left: 3%;
+  // margin-right: 3%;
+  background-color: white; 
+
+  .paymentinfodetails{
+   // margin-top: 20px;
+    margin-left: 3%;
+
+    label{
+      display: block; 
+      width: 350px; 
+      word-wrap: break-word; /* Allows long words to break and wrap */
+      word-break: break-word; /* Breaks words if necessary */
+      overflow-wrap: break-word; /* Ensures compatibility */
+      white-space: normal; /* Allows text to wrap */
+    }
+    .form-control{
+      border: 1px solid blue; /* Sets the border color to blue */
+      height: 40px;
+    }
+    
+  }
+}
+
+.small-dot {
+  display: inline-block;
+  width: 7px; /* Size of the dot */
+  height: 7px; /* Size of the dot */
+  background-color: black; /* Fill color */
+  border-radius: 50%; /* Makes it a perfect circle */
+  margin-left: 2%;
+}
+
+.tableWrapperPaymentInfo {
+  margin-top: 20px;
+  margin-left: 3%;
+  margin-right: 3%;
+
+  .MATable{
+    tr:nth-child(odd) {
+      background-color: white !important;
+    }
+  
+    tr:nth-child(even) {
+      background-color: #f0f0f0 !important;
+    }
+  }
+}
+
+.custom-radio{
+  accent-color: black; /* Change the radio button color to black */
+}
+
+//payment info end
+
+.MarginSeparator {
+  margin-top: $MarginSeparator;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.marginTop{
+  margin-top: 10px;
+}
+
+.marginLeft{
+  margin-left: 10px;
+}
+
+td{
+  word-wrap: break-word;
+  word-break: break-all;
+}

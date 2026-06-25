@@ -1,0 +1,128 @@
+<div class="SingleContainer">
+  <!-- Header for Add Billing Type -->
+  <div class="SingleContainerHeader">
+    <h2 class="text-center">{{ "labels.addbillingtype" | translate }}</h2>
+  </div>
+  <form #formRef="ngForm" (ngSubmit)="handleFormSubmit(formRef)">
+    <div class="MALoadingContainer">
+      <!-- Loading spinner overlay -->
+      <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+        <div class="spinner-border" role="status">
+          <span class="sr-only"></span>
+        </div>
+      </div>
+      <div [ngClass]="{ 'TableDimmed': isLoading }">
+        <!-- Error Box -->
+        <div *ngIf="error" class="error-box">
+          <i class="bi bi-x-circle-fill error-icon"></i>
+          <div>
+            <strong>{{ "labels.validationerror" | translate }}</strong>
+            <ul>
+              <li *ngFor="let errorMsg of errorMessages">{{ errorMsg }}</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Billing Type ID (Required) -->
+        <div class="form-group">
+          <label for="btCd">{{ "labels.billingtypecode" | translate }} <span class='RedAsterisk'>*</span></label>
+          <input type="text" class="form-control" id="btCd" name="btCd" [(ngModel)]="btCd" #btIdRef="ngModel" required
+            pattern="^\S.*" />
+          <div *ngIf="btIdRef.errors?.['required'] && btIdRef.touched" class="error-text">
+            {{ "labels.billingtypeidisrequired" | translate }}
+          </div>
+          <div *ngIf="btIdRef.errors?.['pattern'] && btIdRef.touched" class="error-text">
+            {{ "labels.billingtypeidcannotbeginwithwhitespace" | translate }}
+          </div>
+        </div>
+
+        <!-- Billing Type (Required) -->
+        <div class="form-group">
+          <label for="btTy">{{ "labels.billingtype" | translate }} <span class='RedAsterisk'>*</span></label>
+          <ng-select class="form-control form-select" id="btTy" name="btTy" [(ngModel)]="selectedBillingType"
+            #btTyRef="ngModel" required>
+            <ng-option *ngFor="let item of billing_types" [value]="item.param_cd">
+              {{ item.nm_en }}
+            </ng-option>
+          </ng-select>
+          <div *ngIf="btTyRef.errors?.['required'] && btTyRef.touched" class="error-text">
+            {{ "labels.billingtypeisrequired" | translate }}
+          </div>
+        </div>
+
+
+        <!-- Billing Type Description (Required) -->
+        <div class="form-group">
+          <label for="btDesc">{{ "labels.billingtypedescription" | translate }} <span
+              class='RedAsterisk'>*</span></label>
+          <input type="text" class="form-control" id="btDesc" name="btDesc" [(ngModel)]="btDesc" #btDescRef="ngModel"
+            required pattern="^\S.*" />
+          <div *ngIf="btDescRef.errors?.['required'] && btDescRef.touched" class="error-text">
+            {{ "labels.billingtypedescisrequired" | translate }}
+          </div>
+          <div *ngIf="btDescRef.errors?.['pattern'] && btDescRef.touched" class="error-text">
+            {{ "labels.billingtypedesccannotbeginwithwhitespace" | translate }}
+          </div>
+        </div>
+
+        <!-- Class ID (Required) -->
+        <div class="form-group">
+          <label for="btTy">{{ "labels.classid" | translate }} <span class='RedAsterisk'>*</span></label>
+          <ng-select class="form-control form-select" id="classId" name="classId" [(ngModel)]="classId"
+            #classIdRef="ngModel" required>
+            <ng-option *ngFor="let item of nblcm" [value]="item.classId">
+              {{item.classId + ' - ' + item.classDesc}}
+            </ng-option>
+          </ng-select>
+          <div *ngIf="classIdRef.errors?.['required'] && classIdRef.touched" class="error-text">
+            {{ "labels.classidisrequired" | translate }}
+          </div>
+        </div>
+
+        <!-- Source System (Required) -->
+        <div class="form-group">
+          <label for="ssCd">{{"labels.sourcesystem" | translate}} <span class='RedAsterisk'>*</span></label>
+          <ng-select class="form-control" name="sourceSystemCode" [(ngModel)]="ssCd" id="ssCd" dropdownPosition="bottom"
+            [multiple]="false" #ssCdRef="ngModel" required>
+            <ng-option *ngFor="let item of sourceSystemCodeOptions" [value]="item.ss_cd">{{item.ss_cd}}</ng-option>
+          </ng-select>
+          <div *ngIf="ssCdRef.errors && ssCdRef.errors['required'] && ssCdRef.touched" class="error-text">
+            {{"labels.ssCdisrequired" | translate}}
+          </div>
+        </div>
+
+        <!-- MFT ID (Required) -->
+        <div class="form-group">
+          {{"labels.mftfeedetailid" | translate}} <span class='RedAsterisk'>*</span>
+          <ng-select class="tempRFeeDetNm" name="tempRFeeDetNm" [(ngModel)]="mftId" required #rFeeDetNmRef="ngModel"
+            dropdownPosition="bottom" maxlength="100" [multiple]="true">
+            <ng-option *ngFor="let item of mfts" [value]="item">{{item.fee_detail_id}} :
+              {{item.fee_detail_nm_e}}</ng-option>
+          </ng-select>
+          <div *ngIf="rFeeDetNmRef.errors && rFeeDetNmRef.errors['required'] && rFeeDetNmRef.touched"
+            class="error-text">
+            {{ "labels.mftfeedetailidisrequired" | translate }}
+          </div>
+        </div>
+
+        <!-- DPS Manufacturer ID (Required) -->
+        <div class="form-group">
+          {{"labels.depositfeedetailid" | translate}}
+          <ng-select class="tempRFeeDetNm" name="dpsMftId" [(ngModel)]="dpsMftId" #dpsMftIdRef="ngModel"
+            dropdownPosition="bottom" maxlength="100" [multiple]="true">
+            <ng-option *ngFor="let item of mfts" [value]="item">
+              {{ item.fee_detail_id }} : {{ item.fee_detail_nm_e }}
+            </ng-option>
+          </ng-select>
+        </div>
+
+        <!-- Buttons -->
+        <div class="button-group">
+          <div>{{ "labels.Fields with * are mandatory" | translate }}</div>
+          <button class="btn btnSubmit" type="submit">{{ "buttons.submit" | translate }}</button>
+          <button class="btn btnClose" type="button" (click)="onClose()">{{ "Close" | translate }}</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,39 @@
+<body class="BodyCointaner">
+    <div class="PAContainer73">
+        <div class="left-section73">
+            <div>
+                <h2>{{"menu.collectionreport" | translate}}</h2>
+            </div>
+
+            <div>
+                <table class="MATable">
+                    <thead>
+                        <tr class="MATableHeader">
+                            <th style="width: 30px;">No.</th>
+                            <th>{{"reporttitle" | translate}}</th>
+                        </tr>
+                    </thead>
+
+
+
+                    <tbody>
+                        <tr *ngFor="let report of reportList; index as i">
+                            <td style="width: 30px;">{{ i + 1 }}</td>
+                            <td><a [routerLink]="[report.route]">{{ report.label | translate }}</a></td>
+                        </tr>
+                    </tbody>
+
+
+
+                </table>
+            </div>
+
+
+
+        </div>
+    </div>
+
+
+
+
+</body>

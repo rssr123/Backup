@@ -1,0 +1,248 @@
+<ng-container *ngIf="permListAllow === 1">
+
+    <body class="BodyCointaner">
+
+        <!-- mainContainer start-->
+        <div [class.right-section-collapsed]="rightSectionCollapsed" class="PAContainer73">
+            <!-- left section -->
+            <div class="left-section73">
+                <div>
+                    <!-- alert box -->
+                    <div *ngIf="showInsertAlert" [@fadeInOut]>
+                        <div class="alert alert-success PA-alert-box" role="alert">
+                            {{"added successfully" | translate}}
+                        </div>
+                    </div>
+
+                    <div *ngIf="showUpdateAlert" [@fadeInOut]>
+                        <div class="alert alert-info PA-alert-box" role="alert">
+                            {{"updated successfully" | translate}}
+                        </div>
+                    </div>
+
+                    <div *ngIf="showDeleteAlert" [@fadeInOut]>
+                        <div class="alert alert-danger PA-alert-box" role="alert">
+                            {{"deleted successfully" | translate}}
+                        </div>
+                    </div>
+
+                    <div *ngIf="showResultAlert" [@fadeInOut]>
+                        <div class="alert alert-warning PA-alert-box" role="alert">
+                            {{"showResultAlert" | translate}}
+                        </div>
+                    </div>
+
+                    <div *ngIf="showDeactiveAlert" [@fadeInOut]>
+                        <div class="alert alert-warning PA-alert-box" role="alert">
+                            {{"The record cannot be deactivated because it is in use by another module." | translate }}
+                        </div>
+                    </div>
+
+                    <div *ngIf="showEmailAlert" [@fadeInOut]>
+                        <div class="alert alert-success PA-alert-box" role="alert">
+                            {{"Email Resend Successfully." | translate }}
+                        </div>
+                    </div>
+
+
+                    <h2>{{"labels.serviceproviderpaymentlisting" | translate}}</h2>
+
+
+                </div>
+                <div class="MATableContainer TablePosition-relative" *ngIf="isDisplay">
+                    <div class="MALoadingContainer">
+                        <!-- Loading spinner overlay -->
+                        <div *ngIf="isLoading"
+                            class="TableLoading-overlay d-flex align-items-center justify-content-center">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only"></span>
+                            </div>
+                        </div>
+
+                        <!-- Your table structure -->
+                        <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+                            <thead>
+                                <tr class="MATableHeader">
+                                    <th class="thWidth">No.</th>
+                                    <th>{{"labels.profilename" | translate}}</th>
+                                    <th>{{"labels.orderreferenceno" | translate}}</th>
+                                    <th>{{"labels.customeremail" | translate}}</th>
+                                    <th>{{"labels.totalamountpayable" | translate}} (RM)</th>
+                                    <th>{{"labels.collectiondate" | translate}}</th>
+                                    <th>{{"labels.paymentstatus" | translate}}</th>
+                                    <th>{{"labels.paymentdate" | translate}}</th>
+                                    <th>{{"labels.emailsentdate"  | translate}}</th>
+                                    <th>{{"labels.emailresend"  | translate}}</th>
+
+                                    <!-- <th>Delete</th> -->
+
+                                </tr>
+                            </thead>
+                            <ng-container *ngIf="model.length > 0; else noResults">
+                                <tbody *ngIf="isDisplay">
+                                    <tr *ngFor="let item of model; let i = index">
+                                        <td>{{ (page - 1) * itemsPerPage + i + 1 }}</td>
+                                        <td>{{ item.profile_nm }}</td>
+                                        <td>{{ item.ag_bil_no }}</td>
+                                        <td>{{ item.cust_email }}</td>
+                                        <td>{{ item.total_amt_payable | number:'1.2-2' }}</td>
+                                        <td>{{ item.date_collection | date : "dd MMM yyyy HH:mm:ss" }}</td>
+                                        <td>{{ item.pymt_status }}</td>
+                                        <td>{{ item.dt_pymt | date : "dd MMM yyyy HH:mm:ss" }}</td>
+                                        <td>{{ item.date_email_sent | date : "dd MMM yyyy HH:mm:ss" }}</td>
+
+
+                                        <td>
+                                            <button type="button" class="btn btnEdit" 
+                                                (click)="resendNotification(item.ag_bil)" 
+                                                >
+                                                {{"labels.resend" | translate}}
+                                            </button>
+                                        </td>
+
+                                    </tr>
+                                </tbody>
+                            </ng-container>
+                            <ng-template #noResults>
+                                <tr style="height: 100px;">
+                                    <td colspan="20" class="text-center">{{"searchcriteriadoesnotmatch"| translate}}
+                                    </td>
+                                </tr>
+                            </ng-template>
+
+                        </table>
+                    </div>
+
+                    <div class="MAPagination" *ngIf="isDisplay" style="margin-bottom:100px; margin-top:30px;">
+                        <div class="fgSpacing">
+                            <div *ngIf="page * itemsPerPage < totalRecords">
+                                {{"showing" | translate}} {{ page * itemsPerPage }} {{"from" | translate}} {{
+                                totalRecords }}
+                                {{"results"
+                                | translate}}
+                            </div>
+                            <div *ngIf="!(page * itemsPerPage < totalRecords)">
+                                {{"showing" | translate}} {{ totalRecords }} {{"from" | translate}} {{ totalRecords }}
+                                {{"results" |
+                                translate}}
+                            </div>
+                        </div>
+                        <div class="pagination-row">
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle PaginControl" type="button"
+                                    id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">
+                                    {{ selectedValue }}
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton">
+                                    <button class="dropdown-item" *ngFor="let singleItem of dropdownOptions"
+                                        (click)="LoadData(singleItem)">
+                                        {{ singleItem }}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <ngb-pagination [(page)]="page" [pageSize]="itemsPerPage" [collectionSize]="totalRecords"
+                                (pageChange)="loadData()"></ngb-pagination>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- right section -->
+            <div class="middle-section73">
+                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#rightSection"
+                    [attr.aria-expanded]="!rightSectionCollapsed" (click)="toggleRightSection()">
+                    <ng-container *ngIf="rightSectionCollapsed; else arrowIcon">
+                        <i class="bi bi-search"></i>
+                    </ng-container>
+                    <ng-template #arrowIcon>
+                        <i class="bi" [class.bi-chevron-double-right]="!rightSectionCollapsed"
+                            [class.bi-chevron-double-left]="rightSectionCollapsed"></i>
+                    </ng-template>
+                </button>
+            </div>
+
+            <div class="right-section73 collapse" [class.show]="!rightSectionCollapsed ">
+                <div class="SingleContainer">
+                    <!-- Header -->
+                    <div class="SingleContainerHeader">
+                        <h2 class="text-center">{{ "search filter" | translate }}</h2>
+                    </div>
+
+                    <!-- Profile Name -->
+                    <div class="form-group">
+                        <label for="profileName">{{"labels.profilename" | translate}}</label>
+                        <input type="text" class="form-control" id="taxCode" [(ngModel)]="profileName" />
+                    </div>
+
+                    <!-- Ag Bil No-->
+                    <div class="form-group">
+                        <label for="agBilNo">{{"labels.orderreferenceno" | translate}}</label>
+                        <input type="text" class="form-control" id="agBilNo" [(ngModel)]="agBilNo" />
+                    </div>
+
+                    <!-- Customer Email-->
+                    <div class="form-group">
+                        <label for="customerEmail">{{"labels.customeremail" | translate}}</label>
+                        <input type="text" class="form-control" id="taxCodeNameEn" [(ngModel)]="customerEmail" />
+                    </div>
+
+                    <!-- Total Amount Payable-->
+                    <div class="form-group">
+                        <label for="totalAmountPayable">{{"labels.totalamountpayable" | translate}}</label>
+                        <input type="text" class="form-control" id="taxCodeNameBM" [(ngModel)]="totalAmountPayable" />
+                    </div>
+
+
+
+                    <!-- Collection Date Range -->
+                    <div class="form-group">
+                        <label>{{"labels.collectiondaterange" | translate}}</label>
+                        <input type="text" placeholder="{{ 'labels.daterangepicker' | translate }}" class="form-control"
+                            [bsConfig]="{ rangeInputFormat : 'DD MMM YYYY', dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,rangeSeparator:' to ',containerClass:'theme-default',adaptivePosition: true}"
+                            bsDaterangepicker [(ngModel)]="selectedCollectionDate" name="daterange" readonly>
+                    </div>
+
+                    <!-- Payment Status -->
+                    <div class="form-group">
+                        <label for="paymentStatus">{{"labels.paymentstatus" | translate}}</label>
+                        <select class="dropdown" name="paymentStatus" class="form-control form-select"
+                            [(ngModel)]="paymentStatus" [required]="!isReadOnly">
+                            <option *ngFor="let item of pymtStatus" [value]="item.param_cd">
+                                {{ item.nm_en }}
+                            </option>
+                        </select>
+                    </div>
+                    
+                    <!-- Payment Date Range -->
+                    <div class="form-group">
+                        <label>{{"labels.paymentdaterange" | translate}}</label>
+                        <input type="text" placeholder="{{ 'labels.daterangepicker' | translate }}" class="form-control"
+                            [bsConfig]="{ rangeInputFormat : 'DD MMM YYYY', dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,rangeSeparator:' to ',containerClass:'theme-default',adaptivePosition: true}"
+                            bsDaterangepicker [(ngModel)]="selectedPaymentDate" name="daterange" readonly>
+                    </div>
+
+                    <!-- Email Sent Date Range -->
+                    <div class="form-group">
+                        <label>{{"labels.emailsentdaterange"  | translate}}</label>
+                        <input type="text" placeholder="{{ 'labels.daterangepicker' | translate }}" class="form-control"
+                            [bsConfig]="{ rangeInputFormat : 'DD MMM YYYY', dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,rangeSeparator:' to ',containerClass:'theme-default',adaptivePosition: true}"
+                            bsDaterangepicker [(ngModel)]="selectedEmailSentDate" name="daterange" readonly>
+                    </div>
+
+
+
+                    <!-- Buttons -->
+                    <div class="button-group">
+                        <button class="btn btnApply" (click)="apply()">{{"buttons.apply" |translate}}</button>
+                        <button class="btn btnReset" (click)="reset()">{{"buttons.reset" |translate}}</button>
+                    </div>
+
+                    <br /><br />
+                </div>
+            </div>
+        </div>
+
+
+    </body>
+</ng-container>

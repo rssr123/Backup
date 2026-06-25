@@ -1,0 +1,255 @@
+<!-- <ng-container *ngIf="permListAllow === 1"> -->
+
+    <body class="BodyCointaner">
+
+        <!-- mainContainer start-->
+        <div [class.right-section-collapsed]="rightSectionCollapsed" class="PAContainer73">
+            <!-- left section -->
+            <div class="left-section73">
+                <div>
+                    <!-- alert box -->
+                    <div *ngIf="showResultAlert" [@fadeInOut]>
+                        <div class="alert alert-warning PA-alert-box" role="alert">
+                            {{"searchcriteriadoesnotmatch" | translate}}
+                        </div>
+                    </div>
+
+                    
+                    <!-- <div class="LeftSectionPosition">
+                        {{"labels.Home / Setup & Maintenance / Deferred Income Listing" | translate}}
+                    </div> -->
+    
+                    <h2>{{"labels.deferredincometransactionlisting" | translate}}</h2>
+
+                </div>
+
+                <div class="MATableContainer TablePosition-relative" *ngIf="isDisplay">
+                    <div class="MALoadingContainer">
+                        <!-- Loading spinner overlay -->
+                        <div *ngIf="isLoading"
+                            class="TableLoading-overlay d-flex align-items-center justify-content-center">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only"></span>
+                            </div>
+                        </div>
+
+                        <!-- Your table structure -->
+                        <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+                            <thead>
+                                <tr class="MATableHeader">
+                                    <th>No.</th>
+                                    <th>{{"entitytype" | translate}}</th>
+                                    <th>{{"labels.entityNo." | translate}}</th>
+                                    <th>{{"feedetailid" | translate}}</th>
+                                    <th>{{"txntype" | translate}}</th>
+                                    <th>{{"effectivedate" | translate}}</th>
+                                    <th>{{"expirydate" | translate}}</th>
+                                    <th>{{"approvalstatus" | translate}}</th>
+                                    <th>{{"approvaldate" | translate}}</th>
+                                    <th>{{"itemreferrenceno" | translate}}</th>
+                                    <th>{{"distatus" | translate}}</th>
+                                    <th>{{"buttons.view" | translate}}</th>
+                                </tr>
+                            </thead>
+                            
+                            <ng-container *ngIf="model.length > 0; else noResults">
+                                <tbody *ngIf="isDisplay">
+                                    <tr *ngFor="let item of model; let i = index">
+                                        <td>{{ (page - 1) * itemsPerPage + i + 1 }}</td>
+                                        <td>{{ item.entity_type}}</td>
+                                        <td>{{ item.entity_no }}</td>
+                                        <td>{{ item.fee_detail_id }}</td>
+                                        <td>{{ item.txn_type }}</td>
+                                        <td>{{ item.dt_effective | date : "dd MMM yyyy" }}</td>
+                                        <td>{{ item.dt_expiry | date : "dd MMM yyyy" }}</td>
+                                        <td>{{item.approval_status }}</td>
+                                        <td>{{item.dt_approval | date : "dd MMM yyyy"}}</td>
+                                        <td>{{item.item_ref_no}}</td>
+                                        <td>{{item.status_nm_en}}</td>
+                                        <td><button [disabled]="permDIDetailsAllow === 0" type="button" class="btn btnView" (click)="viewSelected(item)">{{"buttons.view" | translate}}</button></td>
+                                    </tr>
+                                </tbody>
+                            </ng-container>
+                            <ng-template #noResults>
+                                <tr style="height: 100px;">
+                                    <td colspan="20" class="text-center">{{"searchcriteriadoesnotmatch"| translate}}
+                                    </td>
+                                </tr>
+                            </ng-template>
+
+                        </table>
+                    </div>
+
+                    <div class="MAPagination" *ngIf="isDisplay" >
+                        <div class="fgSpacing">
+                            <div *ngIf="page * itemsPerPage < totalRecords">
+                                {{"showing" | translate}} {{ page * itemsPerPage }} {{"from" | translate}} {{
+                                totalRecords }}
+                                {{"results"
+                                | translate}}
+                            </div>
+                            <div *ngIf="!(page * itemsPerPage < totalRecords)">
+                                {{"showing" | translate}} {{ totalRecords }} {{"from" | translate}} {{ totalRecords }}
+                                {{"results" |
+                                translate}}
+                            </div>
+                        </div>
+                        <div class="pagination-row">
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle PaginControl" type="button"
+                                    id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">
+                                    {{ selectedValue }}
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton">
+                                    <button class="dropdown-item" *ngFor="let singleItem of dropdownOptions"
+                                        (click)="LoadData(singleItem)">
+                                        {{ singleItem }}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <ngb-pagination [(page)]="page" [pageSize]="itemsPerPage" [collectionSize]="totalRecords"
+                                (pageChange)="loadData()"></ngb-pagination>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- right section -->
+            <div class="middle-section73">
+                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#rightSection"
+                    [attr.aria-expanded]="!rightSectionCollapsed" (click)="toggleRightSection()">
+                    <ng-container *ngIf="rightSectionCollapsed; else arrowIcon">
+                        <i class="bi bi-search"></i>
+                    </ng-container>
+                    <ng-template #arrowIcon>
+                        <i class="bi" [class.bi-chevron-double-right]="!rightSectionCollapsed"
+                            [class.bi-chevron-double-left]="rightSectionCollapsed"></i>
+                    </ng-template>
+                </button>
+            </div>
+
+            <div class="right-section73 collapse" [class.show]="!rightSectionCollapsed ">
+                <div class="SingleContainer">
+                    <!-- Header -->
+                    <div class="SingleContainerHeader">
+                        <h2 class="text-center">{{ "search filter" | translate }}</h2>
+                    </div>
+
+                    <!-- Fee Details ID -->
+                    <div class="form-group">
+                        <label for="feeDetailId">{{"feedetailid" | translate}}</label>
+                        <input type="text" class="form-control" id="feeDetailId" [(ngModel)]="feeDetailId" />
+                    </div>
+    
+    
+    
+                    <!-- Transaction Type-->
+                    <div class="form-group">
+                        <label for="transactionType">{{"transactiontype" | translate}}</label>
+                        <select class="dropdown" name="transactionType" class="form-control form-select"
+                            [(ngModel)]="transactionType" [required]="!isReadOnly">
+                            <option *ngFor="let item of txnType" [value]="item.param_cd">
+                                {{ item.nm_en }}
+                            </option>
+                        </select>
+                    </div>
+    
+    
+    
+                    <!-- Entity Type-->
+                    <div class="form-group">
+                        <label for="entityType">{{"entitytype" | translate}}</label>
+                        <select class="dropdown" name="entityType" class="form-control form-select" [(ngModel)]="entityType"
+                            [required]="!isReadOnly">
+                            <option *ngFor="let item of enType" [value]="item.param_cd">
+                                {{ item.nm_en }}
+                            </option>
+                        </select>
+                    </div>
+    
+                    <!-- Entity No -->
+                    <div class="form-group">
+                        <label for="entityNo">{{"labels.entityNo." | translate}}</label>
+                        <input type="text" class="form-control" id="entityNo" [(ngModel)]="entityNo" />
+                    </div>
+    
+                    <!-- Effective Date -->
+                    <div class="form-group">
+                        <label for="effectiveDate">{{"effectivedate" | translate}}</label>
+                        <input type="text" placeholder="{{ 'datepicker' | translate }}" class="form-control"
+                            [bsConfig]="{  dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,containerClass:'theme-default',adaptivePosition: true}"
+                            bsDatepicker [(ngModel)]="effectiveDate" name="date" readonly onkeydown="return false">
+                    </div>
+    
+                    <!-- Expiry Date -->
+                    <div class="form-group">
+                        <label for="expiryDate">{{"expirydate" | translate}}</label>
+                        <input type="text" placeholder="{{ 'datepicker' | translate }}" class="form-control"
+                            [bsConfig]="{  dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,containerClass:'theme-default',adaptivePosition: true}"
+                            bsDatepicker [(ngModel)]="expiryDate" name="date" readonly onkeydown="return false">
+                    </div>
+    
+    
+    
+    
+                    <!-- Approval Status-->
+                    <div class="form-group">
+                        <label for="approvalStatus">{{"approvalstatus" | translate}}</label>
+                        <select class="dropdown" name="approvalStatus" class="form-control form-select"
+                            [(ngModel)]="approvalStatus" [required]="!isReadOnly">
+                            <option *ngFor="let item of aprStatus" [value]="item.param_cd">
+                                {{ item.nm_en }}
+                            </option>
+                        </select>
+                    </div>
+    
+                    <!-- Approval Date -->
+                    <div class="form-group">
+                        <label for="approvalDate">{{"approvaldate" | translate}}</label>
+                        <input type="text" placeholder="{{ 'datepicker' | translate }}" class="form-control"
+                            [bsConfig]="{  dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,containerClass:'theme-default',adaptivePosition: true}"
+                            bsDatepicker [(ngModel)]="approvalDate" name="date" readonly onkeydown="return false">
+                    </div>
+    
+    
+                    <!-- Item Reference No -->
+                    <div class="form-group">
+                        <label for="itemReferanceNo">{{"itemreferrenceno" | translate}}</label>
+                        <input type="text" class="form-control" id="itemReferanceNo" [(ngModel)]="itemReferanceNo" />
+                    </div>
+    
+    
+    
+                    <!-- DI Status-->
+                    <div class="form-group">
+                        <label for="diStatus">{{"distatus" | translate}}</label>
+                        <select class="dropdown" name="diStatus" class="form-control form-select" [(ngModel)]="diStatus"
+                            [required]="!isReadOnly">
+                            <option *ngFor="let item of distatus" [value]="item.param_cd">
+                                {{ item.nm_en }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="button-group">
+                        <button class="btn btnApply" (click)="apply()">{{"buttons.apply" |translate}}</button>
+                        <button class="btn btnReset" (click)="reset()">{{"buttons.reset" |translate}}</button>
+                    </div>
+
+                    <br /><br />
+                </div>
+            </div>
+        </div>
+
+        <!-- mainContainer end-->
+
+        <!-- <div class="PAContainer73">
+      <div class="left-section73">
+        <div class="MainContainerFooter"></div>
+      </div>
+      <div class="right-section73"></div>
+    </div> -->
+    </body>
+<!-- </ng-container> -->

@@ -1,0 +1,24 @@
+@import '../../app.component.scss';
+
+.button-group {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    float:right;
+    display: flex;
+  justify-content: space-between;
+  align-items: center;
+  }
+  
+  .SingleContainer {
+    overflow-y: scroll;
+    max-height: 500px;
+  }
+
+    //right section Start
+.SingleContainer {
+  width: 100%;
+  margin: auto;
+  float: left;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}

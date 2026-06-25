@@ -1,0 +1,258 @@
+<body *ngIf="permViewListingAllow === 1" class="BodyCointaner">
+
+  <div *ngIf="showInsertAlert" style="margin-left: 2%;">
+    <div class="alert alert-success PA-alert-box bold" role="alert">
+        {{ "labels.successfulpickuptask" | translate }}
+    </div>
+  </div>
+
+  <!-- Mobile Search Section -->
+  <div class="mobile-search-section">
+    <div class="mobile-search-header d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">{{ "search filter" | translate }}</h5>
+      <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#mobileSearchPanel">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+    
+    <div class="collapse" id="mobileSearchPanel">
+      <div class="mobile-search-body">
+        <div class="form-group">
+          <label for="mobile-task-id">{{"labels.taskid" | translate}}</label>
+          <input type="text" class="form-control" id="mobile-task-id" [(ngModel)]="task_id" />
+        </div>
+
+        <div class="form-group">
+          <label for="mobile-task-status">{{"labels.taskstatus" | translate}}</label>
+          <select class="dropdown form-control form-select" id="mobile-task-status" [(ngModel)]="task_status">
+            <option *ngFor="let item of task_statuses" [value]="item.param_cd">{{item.nm_en}}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="mobile-payment-status">{{"labels.paymentstatus" | translate}}</label>
+          <select class="dropdown form-control form-select" id="mobile-payment-status" [(ngModel)]="payment_status">
+            <option *ngFor="let item of pymt_statuses" [value]="item.param_cd">{{item.nm_en}}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="mobile-txn-type">{{"labels.transactiontype" | translate}}</label>
+          <select class="dropdown form-control form-select" id="mobile-txn-type" [(ngModel)]="txn_type">
+            <option *ngFor="let item of txn_types" [value]="item.param_cd">{{item.nm_en}}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="mobile-cust-nm">{{"labels.customername" | translate}}</label>
+          <input type="text" class="form-control" id="mobile-cust-nm" [(ngModel)]="cust_nm" />
+        </div>
+
+        <div class="form-group">
+          <label for="mobile-case-no">{{"labels.caseno" | translate}}</label>
+          <input type="text" class="form-control" id="mobile-case-no" [(ngModel)]="case_no" />
+        </div>
+
+        <div class="button-group-mobile">
+          <button class="btn btnApply w-100 mb-2" (click)="apply()" data-bs-toggle="collapse" data-bs-target="#mobileSearchPanel">
+            {{"buttons.apply" | translate}}
+          </button>
+          <button class="btn btnReset w-100" (click)="reset()">
+            {{"buttons.reset" | translate}}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div [class.right-section-collapsed]="rightSectionCollapsed" class="PAContainer73">
+    <!-- left section -->
+    <div class="left-section73">
+      <div>
+
+        <div *ngIf="showResultAlert" [@fadeInOut]>
+          <div class="alert alert-warning PA-alert-box" role="alert">
+            {{"showResultAlert" | translate}}
+          </div>
+        </div>
+
+        <h2>{{"labels.mastercreditcontrollisting" | translate}}</h2>
+
+        <button type="button" (click)="submitSelectedTasks()" class="btn btnAdd" [disabled]="!permPickupAllow" >{{"buttons.pickup" | translate}}</button>
+        <div class="MarginSeparator"></div>
+      </div>
+
+      <div class="MATableContainer TablePosition-relative" *ngIf="isDisplay">
+        <div class="MALoadingContainer">
+          <!-- Loading spinner overlay -->
+          <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+            <div class="spinner-border" role="status">
+              <span class="sr-only"></span>
+            </div>
+          </div>
+
+          <!-- Your table structure -->
+          <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+            <thead>
+              <tr class="MATableHeader">
+                <th>No.</th>
+                <th>{{"labels.taskid" | translate}}</th>
+                <th>{{"labels.taskstatus" | translate}}</th>
+                <th>{{"labels.assignedto" | translate}}</th>
+                <th>{{"labels.pickup" | translate}}</th>
+                <th>{{"labels.paymentstatus" | translate}}</th>
+                <th>{{"labels.transactiontype" | translate}}</th>
+                <th>{{"labels.customername" | translate}}</th>
+                <th>{{"labels.caseno" | translate}}</th>
+                <th>{{"labels.remindercount" | translate}}</th>
+                <th>{{"labels.lastemailsentdate" | translate}}</th>
+                <th>{{"labels.amountrm" | translate}}</th>
+                <th>{{"labels.action" | translate}}</th>
+                <!-- <th style="vertical-align: middle; display: flex; align-items: center; gap: 5px;">
+                  {{ "labels.select" | translate }}
+                  <input type="checkbox" class="custom-checkbox" [(ngModel)]="selectAll" (change)="toggleSelectAll()" />
+                </th> -->
+                <th style="vertical-align: middle;">
+                  <div style="display: flex; align-items: center; gap: 5px;">
+                    {{ "labels.select" | translate }}
+                    <input type="checkbox" class="custom-checkbox" [(ngModel)]="selectAll" (change)="toggleSelectAll()" style="transform: scale(1.2);"/>
+                  </div>
+                </th>
+              </tr>
+            </thead>
+
+            <ng-container *ngIf="model.length > 0; else noResults">
+              <tbody *ngIf="isDisplay">
+
+                <tr *ngFor="let entry of model; let i = index">
+                  <td>{{ (page - 1) * itemsPerPage + i + 1 }}</td>
+                  <td>{{ entry.task_id ? entry.task_id : '-' }}</td>
+                  <td>{{ entry.task_status ? entry.task_status : '-'}}</td>
+                  <td>{{ entry.assign_to ? entry.assign_to : '-'}}</td>
+                  <td>{{ entry.pick_up ? entry.pick_up : '-'}}</td>
+                  <td>{{ entry.pymt_status ? entry.pymt_status : '-'}}</td>
+                  <td>{{ entry.txn_ty ? entry.txn_ty : '-'}}</td>
+                  <td>{{ entry.cust_nm ? entry.cust_nm : '-'}}</td>
+                  <td>{{ entry.attr_case_no ? entry.attr_case_no : '-'}}</td>
+                  <td>{{ entry.reminder_cnt ? entry.reminder_cnt : '-'}}</td>
+                  <td>{{ entry.reminder_dt | date : "dd MMM yyyy HH:mm:ss" }}</td>
+                  <td>{{ entry.txn_total_amt | number: '1.2-2'}}</td>
+                  <td>
+                    <button type="button" class="btn btnAdd" (click)="navigateToDetail(entry)" [disabled]="!permViewAllow"> {{"buttons.view" | translate}} </button>
+                  </td>
+                  <td>
+                    <input *ngIf="disableCheckBox(entry)" type="checkbox" [(ngModel)]="selectedItems[i]" class="custom-checkbox" (change)="updateHeaderCheckbox()"/>
+                  </td>
+                </tr>
+              </tbody>
+            </ng-container>
+            <ng-template #noResults>
+              <tr style="height: 100px;">
+                <td colspan="20" class="text-center">{{"searchcriteriadoesnotmatch"| translate}}</td>
+              </tr>
+            </ng-template>
+          </table>
+        </div>
+
+        <div class="MAPagination" *ngIf="isDisplay">
+          <div class="fgSpacing">
+            <div *ngIf="page * itemsPerPage < totalRecords">
+              {{"showing" | translate}} {{ page * itemsPerPage }} {{"from" | translate}} {{ totalRecords }} {{"results"
+              | translate}}
+            </div>
+            <div *ngIf="!(page * itemsPerPage < totalRecords)">
+              {{"showing" | translate}} {{ totalRecords }} {{"from" | translate}} {{ totalRecords }} {{"results" |
+              translate}}
+            </div>
+          </div>
+          <div class="pagination-row">
+            <div class="dropdown">
+              <button class="btn btn-secondary dropdown-toggle PaginControl" type="button" id="dropdownMenuButton"
+                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{ selectedValue }}
+              </button>
+              <div class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton">
+                <button class="dropdown-item" *ngFor="let singleItem of dropdownOptions" (click)="LoadData(singleItem)">
+                  {{ singleItem }}
+                </button>
+              </div>
+            </div>
+
+            <ngb-pagination [(page)]="page" [pageSize]="itemsPerPage" [collectionSize]="totalRecords"
+              (pageChange)="loadData()"></ngb-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- right section -->
+    <div class="middle-section73">
+      <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#rightSection"
+        [attr.aria-expanded]="!rightSectionCollapsed" (click)="toggleRightSection()">
+        <ng-container *ngIf="rightSectionCollapsed; else arrowIcon">
+          <i class="bi bi-search"></i>
+        </ng-container>
+        <ng-template #arrowIcon>
+          <i class="bi" [class.bi-chevron-double-right]="!rightSectionCollapsed"
+            [class.bi-chevron-double-left]="rightSectionCollapsed"></i>
+        </ng-template>
+      </button>
+    </div>
+
+    <div class="right-section73 collapse" [class.show]="!rightSectionCollapsed">
+      <div class="SingleContainer">
+        <!-- Header -->
+        <div class="SingleContainerHeader">
+          <h2 class="text-center">{{ "search filter" | translate }}</h2>
+        </div>
+
+        <!-- Search Filter -->
+        <div class="form-group">
+          <label for="Task ID">{{"labels.taskid" | translate}}</label>
+          <input type="text" class="form-control" id="Task ID" [(ngModel)]="task_id" />
+        </div>
+
+        <div class="form-group">
+          <label for="Task Status">{{"labels.taskstatus" | translate}}</label>
+          <select class="dropdown" class="form-control form-select" id="Task Status" name="Task Status"
+            [(ngModel)]="task_status">
+            <option *ngFor="let item of task_statuses" [value]="item.param_cd">{{item.nm_en}}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="Payment Status">{{"labels.paymentstatus" | translate}}</label>
+          <select class="dropdown" class="form-control form-select" id="Task Status" name="Task Status"
+            [(ngModel)]="payment_status">
+            <option *ngFor="let item of pymt_statuses" [value]="item.param_cd">{{item.nm_en}}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="Transaction Type">{{"labels.transactiontype" | translate}}</label>
+          <select class="dropdown" class="form-control form-select" id="Task Status" name="Task Status"
+            [(ngModel)]="txn_type">
+            <option *ngFor="let item of txn_types" [value]="item.param_cd">{{item.nm_en}}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="Customer Name">{{"labels.customername" | translate}}</label>
+          <input type="text" class="form-control" id="Customer Name" [(ngModel)]="cust_nm" />
+        </div>
+
+        <div class="form-group">
+          <label for="Case No">{{"labels.caseno" | translate}}</label>
+          <input type="text" class="form-control" id="Merchant ID" [(ngModel)]="case_no" />
+        </div>
+
+        <!-- Buttons -->
+        <div class="button-group">
+          <button class="btn btnApply" (click)="apply()">{{ 'buttons.apply' | translate }}</button>
+          <button class="btn btnReset" (click)="reset()">{{ 'buttons.reset' | translate}}</button>
+        </div>
+        <br /><br />
+      </div>
+    </div>
+  </div>
+
+</body>

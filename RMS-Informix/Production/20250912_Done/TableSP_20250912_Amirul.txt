@@ -1,0 +1,88 @@
+drop procedure sp_getotcreturncheque
+
+GO
+
+CREATE OR REPLACE PROCEDURE sp_getotcreturncheque(
+    i_date_from NVARCHAR(100),
+    i_date_to NVARCHAR(100),
+    i_branch_cd NVARCHAR(10),
+    i_receipt_no NVARCHAR(20),
+    i_cheque_no NVARCHAR(255),
+    i_customer_name NVARCHAR(150),
+    i_entity_no NVARCHAR(40),
+    i_non_billing_no NVARCHAR(255),
+    i_non_billing_status NVARCHAR(10)
+    )
+    
+    RETURNING
+        NVARCHAR(10) AS branch_cd,
+        NVARCHAR(50) AS counter_id,
+        NVARCHAR(50) AS user_id,
+        NVARCHAR(20) AS receipt_no,
+        NVARCHAR(255) AS cheque_no,
+        DATETIME year to fraction(3) AS cancelled_date,
+        NVARCHAR(150) AS payer_name,
+        DECIMAL(16,2) AS amount,
+        NVARCHAR(40) AS entity_no,
+        NVARCHAR(255) AS non_billing_no,
+        NVARCHAR(10) AS non_billing_status,
+        DATETIME year to fraction(3) AS repayment_date,
+        DECIMAL(16,2) AS amount2,
+        NVARCHAR(255) AS reason;
+
+    DEFINE o_branch_cd NVARCHAR(10);
+    DEFINE o_counter_id NVARCHAR(50);
+    DEFINE o_user_id NVARCHAR(50);
+    DEFINE o_receipt_no NVARCHAR(20);
+    DEFINE o_cheque_no NVARCHAR(255);
+    DEFINE o_cancelled_date DATETIME year to fraction(3);
+    DEFINE o_payer_name NVARCHAR(150);
+    DEFINE o_amount DECIMAL(16,2);
+    DEFINE o_entity_no NVARCHAR(40);
+    DEFINE o_non_billing_no NVARCHAR(255);
+    DEFINE o_non_billing_status NVARCHAR(10);
+    DEFINE o_repayment_date DATETIME year to fraction(3);
+    DEFINE o_amount2 DECIMAL(16,2);
+    DEFINE o_reason NVARCHAR(255);
+
+    FOREACH cursor1 FOR
+        SELECT
+    T1.branch_cd AS branch_cd,
+    T1.counter_id AS counter_id,
+    T2.nm AS user_id,
+    T3.rcpt_no AS receipt_no,
+    T4.che_no AS cheque_no,
+    T5.dt_created AS cancelled_date,
+    T4.che_payer_nm AS payer_name,
+    T4.che_amt AS amount,
+    (
+        SELECT DISTINCT
+            entity_no
+        FROM
+            rms_mtt_item
+        WHERE
+            mtt_item_id = T6.mtt_id
+    ) AS entity_no,
+    T5.non_bil_no AS non_billing_no,
+    T5.bil_status AS non_billing_status,
+    T3.dt_created AS repayment_date,
+    T5.total_bil_amt AS amount2,
+    T4.v_reason_cd AS reason
+INTO
+    o_branch_cd, o_counter_id, o_user_id, o_receipt_no, o_cheque_no, o_cancelled_date, o_payer_name, o_amount, o_entity_no, o_non_billing_no, o_non_billing_status, o_repayment_date, o_amount2, o_reason
+FROM
+    rms_non_bil                     T5
+    INNER JOIN rms_otc_body         T4 ON T4.otc_body_id = T5.otc_body_id
+    INNER JOIN rms_otc              T7 ON T7.otc_id = T4.otc_id
+    INNER JOIN rms_otc_counter      T1 ON T1.otc_counter_id = T7.otc_counter_id           
+    INNER JOIN rms_otc_rcpt         T3 ON T3.otc_id = T7.otc_id
+    INNER JOIN rms_mtt              T6 ON T6.mtt_id = T7.mtt_id
+    INNER JOIN rms_user             T2 ON T2.ssm4uuserrefno = T1.user_id 
+    WHERE
+    (i_date_from IS NULL OR TRIM(i_date_from) = "" OR T5.dt_created >= TO_DATE(i_date_from, "%Y-%m-%d %H:%M:%S"))
+    AND (i_date_to IS NULL OR TRIM(i_date_to) = "" OR T5.dt_created <= TO_DATE(i_date_to, "%Y-%m-%d %H:%M:%S"))
+        RETURN
+            o_branch_cd, o_counter_id, o_user_id, o_receipt_no, o_cheque_no, o_cancelled_date, o_payer_name, o_amount, o_entity_no, o_non_billing_no, o_non_billing_status, o_repayment_date, o_amount2, o_reason WITH RESUME;
+    END FOREACH;
+
+END PROCEDURE;

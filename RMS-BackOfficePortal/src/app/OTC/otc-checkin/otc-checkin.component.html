@@ -1,0 +1,50 @@
+<body id="mainContainerOtc">
+  <div class="otcContainer" id="otcContainer">
+
+    <div id="middle-container-notloggedin">
+      <div><img id="logo-ssm-homepage" alt="Malaysia" class="img-responsive" src="assets/logo/logo-ssm-homepage.png" /></div>
+      <label id="revenue">REVENUE MANAGEMENT SYSTEM</label>
+      <label id="backoffice">{{"labels.backofficecaps" | translate}}</label>
+      <label id="top" class="highlight">{{"labels.tobeatoptier" | translate}} <span class="blueHighlight">{{"labels.corporateregistry" | translate}} </span>{{"labels.and" | translate}} <span class="blueHighlight">{{"labels.regulatoryauthority" | translate}} </span>{{"labels.terulung" | translate}}.</label>
+    </div>
+
+    <div id="right-container" *ngIf="!isCheckedIn"  [@fadeInOut]>
+      <label id="title">{{"menu.otccheckin" | translate}}</label>
+      <table style="position: static; display: flex; flex-direction: column;padding-bottom: 8%;padding-left: 5%;padding-top: 2%;">
+        <tr style="display: flex;flex-direction: row;align-items: flex-end;">
+          <td class="tdarrange" style="width: 25%;"><label id="title1">{{"branch code" | translate}}</label></td>
+          <td class="tdarrange" style="width: 67%;"><ng-select [disabled]="branch_code_list_flag" class="form-control" name="branch_code" [(ngModel)]="branch_code" id="branch_code" dropdownPosition="bottom" (change)="updateCounterList(branch_code)" [clearable]="false" [searchable]="false">
+            <ng-option *ngFor="let item of branchList;" [value]="item">{{item}}</ng-option>
+          </ng-select></td>
+        </tr>
+        <tr style="display: flex;flex-direction: row;align-items: flex-end;">
+          <td class="tdarrange" style="width: 25%;"><label id="title2">{{"labels.counterid" | translate}}</label></td>
+          <td class="tdarrange" style="width: 67%;"><ng-select [disabled]="counter_id_list_flag" class="form-control" name="counter_id" [(ngModel)]="counter_id" id="counter_id" dropdownPosition="bottom" [clearable]="false" [searchable]="false">
+            <ng-option *ngFor="let item of counterList;" [value]="item">{{item}}</ng-option>
+          </ng-select></td>
+        </tr>
+      </table>
+      <div style="padding-right: 7%;padding-bottom: 3%;">
+        <button id="checkIn" class="btn btnCheckIn" (click)="checkIn()" [disabled]="buttonPerms()">{{"labels.checkin" | translate}}   ></button>
+      </div>
+    </div>
+    <div id="overlay"><div class="loader"></div></div>
+    <div *ngIf="showResultAlert" [@fadeInOut]>
+      <div class="alert alert-warning PA-alert-box alertCheckIn" role="alert">
+        <button id="close" (click)="closeResultAlertBox();" >x</button>
+        <h3>{{"labels.unabletocheckin" | translate}}</h3>
+        <a *ngIf="errorFlag == 1">{{"labels.checkinforuser" | translate}} {{error_user}} {{"labels.isunavailable" | translate}}. {{"labels.userisalreadycheckedin" | translate}}.</a>
+        <a *ngIf="errorFlag == 2">{{"labels.checkinfor" | translate}} {{counter_id}} {{"labels.isunavailable" | translate}}. {{"labels.selectedcounterisalreadyopen" | translate}}.</a>
+        <a *ngIf="errorFlag == 3">{{"labels.checkinfor" | translate}} {{branch_code}} {{"labels.isunavailable" | translate}}. {{"labels.balancinginprogress" | translate}}.</a>
+        <br><br>
+        <a *ngIf="errorFlag == 1 || errorFlag == 2">{{"labels.counterid" | translate}} = {{error_counter}}</a><br>
+        <a *ngIf="errorFlag == 1 || errorFlag == 2">{{"userid" | translate}} = {{error_user}}</a><br>
+        <a *ngIf="errorFlag == 1 || errorFlag == 2">{{"labels.checkintime" | translate}} = {{timestamp_now}}</a><br>
+        <br><br>  
+        <a *ngIf="errorFlag == 1">{{"labels.requestadmincounterbalancing" | translate}} {{error_counter}}.</a>
+        <a *ngIf="errorFlag == 2">{{"labels.requestcounterbalancing" | translate}} {{error_counter}}.</a>
+      </div>
+    </div>
+  
+  </div>
+</body>

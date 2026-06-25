@@ -1,0 +1,155 @@
+<EntityDescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata" ID="_1e9e7d28-554c-444e-9df2-40904a574b6f" entityID="https://sts.windows.net/8144d3e6-b693-44dd-b829-109530418f4d/">
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+<SignedInfo>
+<CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+<SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+<Reference URI="#_1e9e7d28-554c-444e-9df2-40904a574b6f">
+<Transforms>
+<Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+<Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+</Transforms>
+<DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<DigestValue>w1nBZU/Qf1fGT6LoaHCYB0H3J7HPv424G+jZnqPbbZY=</DigestValue>
+</Reference>
+</SignedInfo>
+<SignatureValue>AYkuw3gIT8WABeBTVb4g5NRf4bbeuJ1R49pbJGWfsHAOB+ApqriOU7CJ6sw1TDifxRP87EeZ8GeWksAavHiE1ZqrYZRGjr63erPVqcMwR0SQC3tZEf6upzr9tMrCEKfxV/E1dAdspOf8QS6E6l2CcZZDFuwXWtdUww5tOspEb6b6GYUqFBhgBCSejkz0z5KBDaRzfF98bi0kyLTQV5mpxqrTFUu1ejIsw62Lsr30aC3KeZw6IXQIuN95zR7p0u35eVm7Yjg+7z1AXPIcNeUje0yI48fNZkDrAqYqgpGZvvWbSEfFoUModBc7NtsOA4W8MTyEsef2PKKo6ftvDCXeBw==</SignatureValue>
+<ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<ds:X509Data>
+<ds:X509Certificate>MIIC8DCCAdigAwIBAgIQYJw6quDEM7NO0BvVMAtCtDANBgkqhkiG9w0BAQsFADA0MTIwMAYDVQQDEylNaWNyb3NvZnQgQXp1cmUgRmVkZXJhdGVkIFNTTyBDZXJ0aWZpY2F0ZTAeFw0yMzEwMDQwMjEwNDFaFw0yNjEwMDQwMjEwNDFaMDQxMjAwBgNVBAMTKU1pY3Jvc29mdCBBenVyZSBGZWRlcmF0ZWQgU1NPIENlcnRpZmljYXRlMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuSp4iOIU0NF2rx+rbOw9Z7UiNmz2KnZyyzamyQa03hJyTafbo3PkmmalZKHYtjm+NtpmtLtf4sByyPjdoN7+KnHY9nn3LopouGT1B3+jJRVl9T6WMHexwLRr3KPUTz2gaKfQhxMr6Vmth4vVaTJeRTD+0jxPIuxh2mF2ar4Jg40v0CnKzIT7zMBxE1ojc+QMD3YtJfqAPoj5OjZF3sXeNc+dwVK+HUo4rEPvDCGvgXrLQ8p6+y0pXM9Q+7vupD+LJjslgw0dMSZs+ihd1ZM86JyRKGrVET7KUr0pb+0u10e/VkWxlFtaLiIy1qWcy9jiYrgsHdo/9uduqlfiSzKJ5QIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQBJgspWl47BPMf+az9zThpZQDrzIemV2DH73Zkytr7gLIyd/CPpruLhATb6d4NaAA3C/bUYupzNhyQy4ZRq0ck2N3qZOUSNPV6aEg9hSjrWM3YyAf5r1RQ8tZ+Sf6MhSjt3/LDThT39oY6eI0HFAJAe68ZXvGHkq1LU2NRxTPed3Jz0hhc3yAaIepI8lgZ35ZWUErUxS0srOjeZAQoXuIjpYl2v/OYO1NMmMgQABsWMpVm2MGDm9V6SrDAHxO3lWLrS/bTrfpHOoa+QprUUFumfnwzc5xPWU5gBCMLhUjOuESAyQ54lVXqsMYbv8Qz/Jc4JjwRtxHMcclW9/rSROdVx</ds:X509Certificate>
+</ds:X509Data>
+</ds:KeyInfo>
+</Signature>
+<RoleDescriptor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:fed="http://docs.oasis-open.org/wsfed/federation/200706" xsi:type="fed:SecurityTokenServiceType" protocolSupportEnumeration="http://docs.oasis-open.org/wsfed/federation/200706">
+<KeyDescriptor use="signing">
+<KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+<X509Data>
+<X509Certificate>MIIC8DCCAdigAwIBAgIQYJw6quDEM7NO0BvVMAtCtDANBgkqhkiG9w0BAQsFADA0MTIwMAYDVQQDEylNaWNyb3NvZnQgQXp1cmUgRmVkZXJhdGVkIFNTTyBDZXJ0aWZpY2F0ZTAeFw0yMzEwMDQwMjEwNDFaFw0yNjEwMDQwMjEwNDFaMDQxMjAwBgNVBAMTKU1pY3Jvc29mdCBBenVyZSBGZWRlcmF0ZWQgU1NPIENlcnRpZmljYXRlMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuSp4iOIU0NF2rx+rbOw9Z7UiNmz2KnZyyzamyQa03hJyTafbo3PkmmalZKHYtjm+NtpmtLtf4sByyPjdoN7+KnHY9nn3LopouGT1B3+jJRVl9T6WMHexwLRr3KPUTz2gaKfQhxMr6Vmth4vVaTJeRTD+0jxPIuxh2mF2ar4Jg40v0CnKzIT7zMBxE1ojc+QMD3YtJfqAPoj5OjZF3sXeNc+dwVK+HUo4rEPvDCGvgXrLQ8p6+y0pXM9Q+7vupD+LJjslgw0dMSZs+ihd1ZM86JyRKGrVET7KUr0pb+0u10e/VkWxlFtaLiIy1qWcy9jiYrgsHdo/9uduqlfiSzKJ5QIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQBJgspWl47BPMf+az9zThpZQDrzIemV2DH73Zkytr7gLIyd/CPpruLhATb6d4NaAA3C/bUYupzNhyQy4ZRq0ck2N3qZOUSNPV6aEg9hSjrWM3YyAf5r1RQ8tZ+Sf6MhSjt3/LDThT39oY6eI0HFAJAe68ZXvGHkq1LU2NRxTPed3Jz0hhc3yAaIepI8lgZ35ZWUErUxS0srOjeZAQoXuIjpYl2v/OYO1NMmMgQABsWMpVm2MGDm9V6SrDAHxO3lWLrS/bTrfpHOoa+QprUUFumfnwzc5xPWU5gBCMLhUjOuESAyQ54lVXqsMYbv8Qz/Jc4JjwRtxHMcclW9/rSROdVx</X509Certificate>
+</X509Data>
+</KeyInfo>
+</KeyDescriptor>
+<fed:ClaimTypesOffered>
+<auth:ClaimType xmlns:auth="http://docs.oasis-open.org/wsfed/authorization/200706" Uri="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name">
+<auth:DisplayName>Name</auth:DisplayName>
+<auth:Description>The mutable display name of the user.</auth:Description>
+</auth:ClaimType>
+<auth:ClaimType xmlns:auth="http://docs.oasis-open.org/wsfed/authorization/200706" Uri="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier">
+<auth:DisplayName>Subject</auth:DisplayName>
+<auth:Description>An immutable, globally unique, non-reusable identifier of the user that is unique to the application for which a token is issued.</auth:Description>
+</auth:ClaimType>
+<auth:ClaimType xmlns:auth="http://docs.oasis-open.org/wsfed/authorization/200706" Uri="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname">
+<auth:DisplayName>Given Name</auth:DisplayName>
+<auth:Description>First name of the user.</auth:Description>
+</auth:ClaimType>
+<auth:ClaimType xmlns:auth="http://docs.oasis-open.org/wsfed/authorization/200706" Uri="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname">
+<auth:DisplayName>Surname</auth:DisplayName>
+<auth:Description>Last name of the user.</auth:Description>
+</auth:ClaimType>
+<auth:ClaimType xmlns:auth="http://docs.oasis-open.org/wsfed/authorization/200706" Uri="http://schemas.microsoft.com/identity/claims/displayname">
+<auth:DisplayName>Display Name</auth:DisplayName>
+<auth:Description>Display name of the user.</auth:Description>
+</auth:ClaimType>
+<auth:ClaimType xmlns:auth="http://docs.oasis-open.org/wsfed/authorization/200706" Uri="http://schemas.microsoft.com/identity/claims/nickname">
+<auth:DisplayName>Nick Name</auth:DisplayName>
+<auth:Description>Nick name of the user.</auth:Description>
+</auth:ClaimType>
+<auth:ClaimType xmlns:auth="http://docs.oasis-open.org/wsfed/authorization/200706" Uri="http://schemas.microsoft.com/ws/2008/06/identity/claims/authenticationinstant">
+<auth:DisplayName>Authentication Instant</auth:DisplayName>
+<auth:Description>The time (UTC) when the user is authenticated to Windows Azure Active Directory.</auth:Description>
+</auth:ClaimType>
+<auth:ClaimType xmlns:auth="http://docs.oasis-open.org/wsfed/authorization/200706" Uri="http://schemas.microsoft.com/ws/2008/06/identity/claims/authenticationmethod">
+<auth:DisplayName>Authentication Method</auth:DisplayName>
+<auth:Description>The method that Windows Azure Active Directory uses to authenticate users.</auth:Description>
+</auth:ClaimType>
+<auth:ClaimType xmlns:auth="http://docs.oasis-open.org/wsfed/authorization/200706" Uri="http://schemas.microsoft.com/identity/claims/objectidentifier">
+<auth:DisplayName>ObjectIdentifier</auth:DisplayName>
+<auth:Description>Primary identifier for the user in the directory. Immutable, globally unique, non-reusable.</auth:Description>
+</auth:ClaimType>
+<auth:ClaimType xmlns:auth="http://docs.oasis-open.org/wsfed/authorization/200706" Uri="http://schemas.microsoft.com/identity/claims/tenantid">
+<auth:DisplayName>TenantId</auth:DisplayName>
+<auth:Description>Identifier for the user's tenant.</auth:Description>
+</auth:ClaimType>
+<auth:ClaimType xmlns:auth="http://docs.oasis-open.org/wsfed/authorization/200706" Uri="http://schemas.microsoft.com/identity/claims/identityprovider">
+<auth:DisplayName>IdentityProvider</auth:DisplayName>
+<auth:Description>Identity provider for the user.</auth:Description>
+</auth:ClaimType>
+<auth:ClaimType xmlns:auth="http://docs.oasis-open.org/wsfed/authorization/200706" Uri="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress">
+<auth:DisplayName>Email</auth:DisplayName>
+<auth:Description>Email address of the user.</auth:Description>
+</auth:ClaimType>
+<auth:ClaimType xmlns:auth="http://docs.oasis-open.org/wsfed/authorization/200706" Uri="http://schemas.microsoft.com/ws/2008/06/identity/claims/groups">
+<auth:DisplayName>Groups</auth:DisplayName>
+<auth:Description>Groups of the user.</auth:Description>
+</auth:ClaimType>
+<auth:ClaimType xmlns:auth="http://docs.oasis-open.org/wsfed/authorization/200706" Uri="http://schemas.microsoft.com/identity/claims/accesstoken">
+<auth:DisplayName>External Access Token</auth:DisplayName>
+<auth:Description>Access token issued by external identity provider.</auth:Description>
+</auth:ClaimType>
+<auth:ClaimType xmlns:auth="http://docs.oasis-open.org/wsfed/authorization/200706" Uri="http://schemas.microsoft.com/ws/2008/06/identity/claims/expiration">
+<auth:DisplayName>External Access Token Expiration</auth:DisplayName>
+<auth:Description>UTC expiration time of access token issued by external identity provider.</auth:Description>
+</auth:ClaimType>
+<auth:ClaimType xmlns:auth="http://docs.oasis-open.org/wsfed/authorization/200706" Uri="http://schemas.microsoft.com/identity/claims/openid2_id">
+<auth:DisplayName>External OpenID 2.0 Identifier</auth:DisplayName>
+<auth:Description>OpenID 2.0 identifier issued by external identity provider.</auth:Description>
+</auth:ClaimType>
+<auth:ClaimType xmlns:auth="http://docs.oasis-open.org/wsfed/authorization/200706" Uri="http://schemas.microsoft.com/claims/groups.link">
+<auth:DisplayName>GroupsOverageClaim</auth:DisplayName>
+<auth:Description>Issued when number of user's group claims exceeds return limit.</auth:Description>
+</auth:ClaimType>
+<auth:ClaimType xmlns:auth="http://docs.oasis-open.org/wsfed/authorization/200706" Uri="http://schemas.microsoft.com/ws/2008/06/identity/claims/role">
+<auth:DisplayName>Role Claim</auth:DisplayName>
+<auth:Description>Roles that the user or Service Principal is attached to</auth:Description>
+</auth:ClaimType>
+<auth:ClaimType xmlns:auth="http://docs.oasis-open.org/wsfed/authorization/200706" Uri="http://schemas.microsoft.com/ws/2008/06/identity/claims/wids">
+<auth:DisplayName>RoleTemplate Id Claim</auth:DisplayName>
+<auth:Description>Role template id of the Built-in Directory Roles that the user is a member of</auth:Description>
+</auth:ClaimType>
+</fed:ClaimTypesOffered>
+<fed:SecurityTokenServiceEndpoint>
+<wsa:EndpointReference xmlns:wsa="http://www.w3.org/2005/08/addressing">
+<wsa:Address>https://login.microsoftonline.com/8144d3e6-b693-44dd-b829-109530418f4d/wsfed</wsa:Address>
+</wsa:EndpointReference>
+</fed:SecurityTokenServiceEndpoint>
+<fed:PassiveRequestorEndpoint>
+<wsa:EndpointReference xmlns:wsa="http://www.w3.org/2005/08/addressing">
+<wsa:Address>https://login.microsoftonline.com/8144d3e6-b693-44dd-b829-109530418f4d/wsfed</wsa:Address>
+</wsa:EndpointReference>
+</fed:PassiveRequestorEndpoint>
+</RoleDescriptor>
+<RoleDescriptor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:fed="http://docs.oasis-open.org/wsfed/federation/200706" xsi:type="fed:ApplicationServiceType" protocolSupportEnumeration="http://docs.oasis-open.org/wsfed/federation/200706">
+<KeyDescriptor use="signing">
+<KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+<X509Data>
+<X509Certificate>MIIC8DCCAdigAwIBAgIQYJw6quDEM7NO0BvVMAtCtDANBgkqhkiG9w0BAQsFADA0MTIwMAYDVQQDEylNaWNyb3NvZnQgQXp1cmUgRmVkZXJhdGVkIFNTTyBDZXJ0aWZpY2F0ZTAeFw0yMzEwMDQwMjEwNDFaFw0yNjEwMDQwMjEwNDFaMDQxMjAwBgNVBAMTKU1pY3Jvc29mdCBBenVyZSBGZWRlcmF0ZWQgU1NPIENlcnRpZmljYXRlMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuSp4iOIU0NF2rx+rbOw9Z7UiNmz2KnZyyzamyQa03hJyTafbo3PkmmalZKHYtjm+NtpmtLtf4sByyPjdoN7+KnHY9nn3LopouGT1B3+jJRVl9T6WMHexwLRr3KPUTz2gaKfQhxMr6Vmth4vVaTJeRTD+0jxPIuxh2mF2ar4Jg40v0CnKzIT7zMBxE1ojc+QMD3YtJfqAPoj5OjZF3sXeNc+dwVK+HUo4rEPvDCGvgXrLQ8p6+y0pXM9Q+7vupD+LJjslgw0dMSZs+ihd1ZM86JyRKGrVET7KUr0pb+0u10e/VkWxlFtaLiIy1qWcy9jiYrgsHdo/9uduqlfiSzKJ5QIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQBJgspWl47BPMf+az9zThpZQDrzIemV2DH73Zkytr7gLIyd/CPpruLhATb6d4NaAA3C/bUYupzNhyQy4ZRq0ck2N3qZOUSNPV6aEg9hSjrWM3YyAf5r1RQ8tZ+Sf6MhSjt3/LDThT39oY6eI0HFAJAe68ZXvGHkq1LU2NRxTPed3Jz0hhc3yAaIepI8lgZ35ZWUErUxS0srOjeZAQoXuIjpYl2v/OYO1NMmMgQABsWMpVm2MGDm9V6SrDAHxO3lWLrS/bTrfpHOoa+QprUUFumfnwzc5xPWU5gBCMLhUjOuESAyQ54lVXqsMYbv8Qz/Jc4JjwRtxHMcclW9/rSROdVx</X509Certificate>
+</X509Data>
+</KeyInfo>
+</KeyDescriptor>
+<fed:TargetScopes>
+<wsa:EndpointReference xmlns:wsa="http://www.w3.org/2005/08/addressing">
+<wsa:Address>https://sts.windows.net/8144d3e6-b693-44dd-b829-109530418f4d/</wsa:Address>
+</wsa:EndpointReference>
+</fed:TargetScopes>
+<fed:ApplicationServiceEndpoint>
+<wsa:EndpointReference xmlns:wsa="http://www.w3.org/2005/08/addressing">
+<wsa:Address>https://login.microsoftonline.com/8144d3e6-b693-44dd-b829-109530418f4d/wsfed</wsa:Address>
+</wsa:EndpointReference>
+</fed:ApplicationServiceEndpoint>
+<fed:PassiveRequestorEndpoint>
+<wsa:EndpointReference xmlns:wsa="http://www.w3.org/2005/08/addressing">
+<wsa:Address>https://login.microsoftonline.com/8144d3e6-b693-44dd-b829-109530418f4d/wsfed</wsa:Address>
+</wsa:EndpointReference>
+</fed:PassiveRequestorEndpoint>
+</RoleDescriptor>
+<IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+<KeyDescriptor use="signing">
+<KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+<X509Data>
+<X509Certificate>MIIC8DCCAdigAwIBAgIQYJw6quDEM7NO0BvVMAtCtDANBgkqhkiG9w0BAQsFADA0MTIwMAYDVQQDEylNaWNyb3NvZnQgQXp1cmUgRmVkZXJhdGVkIFNTTyBDZXJ0aWZpY2F0ZTAeFw0yMzEwMDQwMjEwNDFaFw0yNjEwMDQwMjEwNDFaMDQxMjAwBgNVBAMTKU1pY3Jvc29mdCBBenVyZSBGZWRlcmF0ZWQgU1NPIENlcnRpZmljYXRlMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuSp4iOIU0NF2rx+rbOw9Z7UiNmz2KnZyyzamyQa03hJyTafbo3PkmmalZKHYtjm+NtpmtLtf4sByyPjdoN7+KnHY9nn3LopouGT1B3+jJRVl9T6WMHexwLRr3KPUTz2gaKfQhxMr6Vmth4vVaTJeRTD+0jxPIuxh2mF2ar4Jg40v0CnKzIT7zMBxE1ojc+QMD3YtJfqAPoj5OjZF3sXeNc+dwVK+HUo4rEPvDCGvgXrLQ8p6+y0pXM9Q+7vupD+LJjslgw0dMSZs+ihd1ZM86JyRKGrVET7KUr0pb+0u10e/VkWxlFtaLiIy1qWcy9jiYrgsHdo/9uduqlfiSzKJ5QIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQBJgspWl47BPMf+az9zThpZQDrzIemV2DH73Zkytr7gLIyd/CPpruLhATb6d4NaAA3C/bUYupzNhyQy4ZRq0ck2N3qZOUSNPV6aEg9hSjrWM3YyAf5r1RQ8tZ+Sf6MhSjt3/LDThT39oY6eI0HFAJAe68ZXvGHkq1LU2NRxTPed3Jz0hhc3yAaIepI8lgZ35ZWUErUxS0srOjeZAQoXuIjpYl2v/OYO1NMmMgQABsWMpVm2MGDm9V6SrDAHxO3lWLrS/bTrfpHOoa+QprUUFumfnwzc5xPWU5gBCMLhUjOuESAyQ54lVXqsMYbv8Qz/Jc4JjwRtxHMcclW9/rSROdVx</X509Certificate>
+</X509Data>
+</KeyInfo>
+</KeyDescriptor>
+<SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://login.microsoftonline.com/8144d3e6-b693-44dd-b829-109530418f4d/saml2"/>
+<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://login.microsoftonline.com/8144d3e6-b693-44dd-b829-109530418f4d/saml2"/>
+<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://login.microsoftonline.com/8144d3e6-b693-44dd-b829-109530418f4d/saml2"/>
+</IDPSSODescriptor>
+</EntityDescriptor>

@@ -1,0 +1,1737 @@
+DROP PROCEDURE sp_insfmsrcpgmtt_f；
+CREATE OR REPLACE PROCEDURE sp_insfmsrcpgmtt_f(	i_crmemo_hid INT8,
+											    i_mtt_pg_id INT8, i_is_drmemo integer)
+RETURNING INT AS result;
+
+    DEFINE o_result INT;
+    DEFINE o_exist INT;
+    DEFINE o_fms_ref_no1 NVARCHAR(50);
+    DEFINE v_doc_ty NVARCHAR(20);
+
+    on exception
+		rollback work;
+	end exception;
+	 
+	begin work;
+	set lock mode to wait 30;
+
+    LET v_doc_ty = CASE 
+        WHEN i_is_drmemo = 1 THEN 'Debit Memo'
+        ELSE 'Invoice'
+    END;
+
+    -- create temp table
+    CREATE TEMP TABLE tempA(
+        o_fms_ref_no NVARCHAR(50)
+    );
+
+    -- populate temp table
+    if i_is_drmemo = 0 then
+        INSERT INTO tempA (o_fms_ref_no)
+        SELECT DISTINCT t3.fms_ref_no
+        FROM rms_fms_ari_h t3
+        INNER JOIN rms_fms_ari_b t2 ON t3.ari_hid = t2.ari_hid
+        WHERE t2.mtt_pg_id = i_mtt_pg_id AND t3.status = 'A';
+    end if;
+
+    if i_is_drmemo = 1 then
+        INSERT INTO tempA (o_fms_ref_no)
+        SELECT first 1 t1.fms_ref_no
+        FROM rms_fms_drmemo_h t1
+        INNER JOIN rms_fms_drmemo_b t2 ON t1.drmemo_hid = t2.drmemo_hid
+        INNER JOIN rms_fms_drmemo_f t3 ON t1.drmemo_hid = t3.drmemo_hid
+        WHERE t2.mtt_pg_id = i_mtt_pg_id AND t3.status = 'A' order by t1.dt_created;
+    end if;
+--826c9487-b78c-47bc-b02a-2
+   
+   	LET o_result = 0;
+   
+    -- loop tempA and check if fms_ref_no exists in the footer
+    FOREACH 
+    	SELECT o_fms_ref_no 
+    	INTO o_fms_ref_no1
+    	FROM tempA
+    	
+        -- check if the record exists
+        SELECT COUNT(1) 
+        INTO o_exist
+        FROM rms_fms_crmemo_f
+        WHERE crmemo_hid = i_crmemo_hid
+        AND fms_ref_no = o_fms_ref_no1;
+
+        -- Insert if the record does not exist
+        IF o_exist = 0 THEN
+            INSERT INTO rms_fms_crmemo_f (
+                crmemo_hid, fms_ref_no, doc_ty, dt_created, dt_modified, created_by,
+                modified_by, status
+            ) VALUES (
+                i_crmemo_hid, o_fms_ref_no1, v_doc_ty, CURRENT, CURRENT, 'system',
+                'system', 'A'
+            );
+           	LET o_result = o_result + 1;
+        END IF;
+    END FOREACH;
+
+--    LET o_result = DBINFO('sqlca.sqlerrd2');
+
+    -- drop temp table
+    DROP TABLE tempA;
+
+    IF (o_result > 0) THEN
+        COMMIT WORK;
+        RETURN o_result;
+    ELSE
+        ROLLBACK WORK;
+        RETURN -1;
+    END IF;
+
+END PROCEDURE;
+
+
+DROP PROCEDURE sp_insfmsrcpgtxn_f;
+CREATE OR REPLACE PROCEDURE sp_insfmsrcpgtxn_f(	i_drmemo_hid INT8,
+												i_mtt_pg_id INT8)
+returning int as result;
+
+	define o_result int;
+	define o_exist int;
+    define o_fms_ref_no1 NVARCHAR(50); 
+	
+    on exception
+		rollback work;
+	end exception;
+	 
+	begin work;
+	set lock mode to wait 30;
+
+    if i_mtt_pg_id is null then
+         insert into rms_fms_drmemo_f (
+				drmemo_hid, fms_ref_no, doc_ty, dt_created, dt_modified, created_by, 
+				modified_by, status
+			) values (
+				i_drmemo_hid, null, null, current, current, 'system', 
+				'system', 'A'
+			);
+            commit work;
+            return 1;
+     end if;
+	
+	-- create temp table
+    CREATE TEMP TABLE tempA(
+        o_fms_ref_no NVARCHAR(50)
+    );
+   
+    -- populate temp table
+    INSERT INTO tempA (o_fms_ref_no)
+    SELECT DISTINCT t3.fms_ref_no
+    FROM rms_fms_ari_h t3
+    INNER JOIN rms_fms_ari_b t2 ON t3.ari_hid = t2.ari_hid
+    WHERE t2.mtt_pg_id = i_mtt_pg_id AND t3.status = 'A';
+--	826c9487-b78c-47bc-b02a-2
+   
+   	LET o_result = 0;
+	
+	foreach 
+    	SELECT o_fms_ref_no 
+    	INTO o_fms_ref_no1
+    	FROM tempA
+		
+		-- check if the record exists
+        SELECT COUNT(1) 
+        INTO o_exist
+        FROM rms_fms_drmemo_f
+        WHERE drmemo_hid = i_drmemo_hid
+        AND fms_ref_no = o_fms_ref_no1;
+		
+		-- Insert if the record does not exist
+        IF o_exist = 0 THEN
+            insert into rms_fms_drmemo_f (
+				drmemo_hid, fms_ref_no, doc_ty, dt_created, dt_modified, created_by, 
+				modified_by, status
+			) values (
+				i_drmemo_hid, o_fms_ref_no1, 'Invoice', current, current, 'system', 
+				'system', 'A'
+			);
+           	LET o_result = o_result + 1;
+        END IF;
+	end foreach;
+
+	-- drop temp table
+    DROP TABLE tempA;
+	
+	if (o_result > 0) then
+	    commit work;
+	    return o_result;
+	else
+	    rollback work;
+	    return -1;
+	end if;
+ 
+end procedure;
+
+
+DROP PROCEDURE sp_insfmsrcpgtxn_h;
+CREATE OR REPLACE PROCEDURE sp_insfmsrcpgtxn_h(i_pg_pymt_amt DECIMAL(16,2), i_flag int)
+
+returning int8 as drmemo_hid;
+
+	define o_fms_acct_cd NVARCHAR(10);
+	define o_batch_no nvarchar(30);
+	define o_hid int8;
+	define o_result int;
+	define o_result1 int;
+	 
+	on exception
+		rollback work;
+	end exception;
+	
+    execute procedure sp_getrunno('DN') into o_result1;
+	
+    begin work;
+	set lock mode to wait 30;
+	
+	update rms_runno
+	set last_runno = last_runno + 1
+	where runno_cd = 'DN';
+
+	-- Get the latest value after update
+	SELECT last_runno
+	INTO o_result
+	FROM rms_runno
+	WHERE runno_cd = 'DN';
+
+	-- Generate unique receipt number
+	LET o_batch_no = 'DN' || TO_CHAR(TODAY, '%Y%m%d') || LPAD(o_result, 6, '0');
+	
+--	select acct_cd 
+--	into o_fms_acct_cd 
+--	from rms_fms_acct 
+--	where acct_nm = 'Unmatched Clearing Account';
+
+    if i_flag = 0 then
+        select acct_cd 
+        into o_fms_acct_cd 
+        from rms_fms_acct 
+        where acct_nm = 'Unknown Collection Transaction';
+    else
+        select acct_cd 
+        into o_fms_acct_cd 
+        from rms_fms_acct 
+        where acct_nm = 'Revenue';
+     end if;
+	
+	-- insert into rms_fms_drmemo_h
+	insert into rms_fms_drmemo_h (
+		type, link_branch, amt, cust, rms_batch_no, dt_sent, desc, 
+		attr_ext_sys, resp_attr_ext_sys, fms_ref_no, resp_co, resp_status, 
+		resp_msg, resp_dt, dt_created, dt_modified, created_by, modified_by, 
+		status, retry
+	) values (
+		'Debit Memo', '00000', i_pg_pymt_amt, o_fms_acct_cd, o_batch_no, current, 'Debit Note Batch', 
+		'RMS', null, null, null, null, 
+		null, null, current, current, 'system', 'system', 
+		'A', 0
+	);
+	 
+	let o_hid = dbinfo('serial8');
+	 
+	let o_result = dbinfo('sqlca.sqlerrd2');
+	 
+	if (o_result > 0) then
+	    commit work;
+	    return o_hid;
+	else
+	    rollback work;
+	    return -1;
+	end if;
+ 
+end procedure;
+
+DROP PROCEDURE sp_inspgmtttxn;
+CREATE or replace PROCEDURE sp_inspgmtttxn(i_rc_pg_id int8) -- to get settlement date
+returning int8 as result;
+
+define o_result int;
+define o_exist int;
+define o_compare_range int;
+define o_dt_settlement date;
+
+on exception
+	rollback work;
+end exception;
+ 
+-- Set a default value
+LET o_result = '0';
+ 
+begin work;
+set lock mode to wait 30;
+
+-- create a temporary table
+create temp table temppgmtt (
+    rc_pg_id int8 null,
+    mtt_pg_id int8 null,
+    found_in_pg int,
+    sub_criteria nvarchar(10)
+);
+
+-- create a temporary table for gather all the mtt_pg_id
+create temp table temppg (
+    mtt_pg_id int8 null
+);
+ 
+-- check exist
+select count(1)
+into o_exist
+from rms_rc_pg
+where rc_pg_id = i_rc_pg_id;
+ 
+if o_exist > 0 then
+
+    -- get settlement date
+    select dt_settlement
+    into o_dt_settlement
+    from rms_rc_pg
+    where rc_pg_id = i_rc_pg_id;
+
+    -- get compare range
+    select config_value
+    into o_compare_range
+    from rms_config
+    where config_cd='PGRecon_Period_In_Days';
+
+    -- get all related mtt_pg_id from rms_mtt_pg and rms_mtt_rcpt
+    insert into temppg (mtt_pg_id)
+    select * from 
+    (select mtt_pg_id
+    from rms_mtt_rcpt
+    where DATE(rcpt_dt) = o_dt_settlement and rcpt_status='A'
+    union
+    select mtt_pg_id
+    from rms_mtt_pg
+    where DATE(pymt_submit_dt) = o_dt_settlement
+    and (pg_txn_id is not null or pg_txn_id !=''));
+    --and (pg_txn_status=0 or pg_txn_status=2)); 20251104 After dicusssion with WeiErn and Tony, need pgrecon need to compare paid and pending status(b2b scenario)
+
+    --select statement
+    insert into temppgmtt (mtt_pg_id,rc_pg_id, sub_criteria,found_in_pg)
+    select t1.mtt_pg_id, 
+            i_rc_pg_id,
+            CASE 
+                WHEN t2.txn_id IS NULL THEN 'NF' 
+                WHEN t1.pg_txn_status = 1 THEN 'TXF' 
+                WHEN t1.pg_pymt_amt = t2.txn_amt THEN 'SAM' 
+                ELSE 'SNM' 
+            END AS status,
+            CASE 
+                WHEN t2.txn_id IS NULL THEN 0 
+                ELSE 1 
+            END AS found_in
+    from rms_mtt_pg t1
+    left join rms_rc_pgtxn t2 on t1.pg_txn_id=t2.txn_id  and t2.rc_pg_id=i_rc_pg_id
+    inner join temppg t3 on t1.mtt_pg_id = t3.mtt_pg_id;
+
+--    insert into temppgmtt (mtt_pg_id,rc_pg_id, sub_criteria,found_in_pg)
+--    select t1.mtt_pg_id, 
+--            t2.rc_pg_id,
+--            CASE 
+--                WHEN t2.txn_id IS NULL THEN 'NF' 
+--                WHEN t1.pg_txn_status = 1 THEN 'TXF' 
+--                WHEN t1.pg_pymt_amt = t2.txn_amt THEN 'SAM' 
+--                ELSE 'SNM' 
+--            END AS status,
+--            CASE 
+--                WHEN t2.txn_id IS NULL THEN 0 
+--                ELSE 1 
+--            END AS found_in
+--    from rms_mtt_pg t1
+--    left join rms_rc_pgtxn t2 on t1.pg_txn_id=t2.txn_id  and t2.rc_pg_id=i_rc_pg_id
+--    left join temppg t3 on t1.mtt_pg_id = t3.mtt_pg_id;
+    --DATE(t1.pymt_submit_dt) = o_dt_settlement
+    --and t1.pg_txn_id is not null;
+    --and DATE(rms_mtt_pg.pymt_submit_dt) <= o_dt_settlement and DATE(rms_mtt_pg.pymt_submit_dt) >= (o_dt_settlement -o_compare_range UNITS DAY);
+
+    -- insert rms_rc_pgmtt
+    INSERT INTO rms_rc_pgmtt( rc_pg_id, mtt_pg_id, found_in_pg, sub_criteria, 
+                                        dt_created, dt_modified, created_by, modified_by, status) 
+    select rc_pg_id, mtt_pg_id, found_in_pg, sub_criteria,current, current, 'system', 'system', 'A'
+    from temppgmtt;
+ 
+    -- get inserted id
+    let o_result = DBINFO('Serial8');
+
+    -- update rms_rc_pg'recon_status
+    update rms_rc_pg
+    set recon_status ='PSSCR'
+    where rc_pg_id =i_rc_pg_id;
+
+drop table temppgmtt;
+drop table temppg;
+ 
+end if;
+ 
+commit work;
+ 
+if o_result > 0 then
+    return o_result;
+else
+    return -1;
+end if;
+ 
+end procedure;
+
+
+DROP PROCEDURE sp_updpgmtttxn;
+
+CREATE OR REPLACE PROCEDURE sp_updpgmtttxn()
+returning int8 as result;
+ 
+define o_result int;
+define o_exist int;
+define o_compare_range int;
+define o_dt_settlement date;
+
+on exception
+	rollback work;
+end exception;
+ 
+-- Set a default value
+LET o_result = '0';
+ 
+begin work;
+set lock mode to wait 30;
+
+-- create a temporary table
+create temp table temppgmtt (
+    rc_pgmtt_id int8,
+    rc_pg_id int8,
+    sub_criteria nvarchar(10)
+);
+ 
+-- check exist
+select count(1)
+into o_exist
+from rms_rc_pgmtt
+where sub_criteria = 'NF';
+
+if o_exist > 0 then
+
+    -- select statement
+    insert into temppgmtt (rc_pgmtt_id,rc_pg_id,sub_criteria)
+    SELECT 
+        rms_rc_pgmtt.rc_pgmtt_id, 
+        rms_rc_pgmtt.rc_pg_id,
+        CASE 
+            WHEN rms_rc_pgtxn.txn_id IS NULL THEN 'NFP'
+            ELSE 'FIP' --Found in Prev. not need care task status.
+--            WHEN rms_rc_pg.task_status = 'CS' THEN 'CIP'
+--            ELSE 'NCP'
+        END as Status
+    FROM 
+        rms_rc_pgmtt
+    Inner JOIN 
+        rms_mtt_pg ON rms_rc_pgmtt.mtt_pg_id = rms_mtt_pg.mtt_pg_id  and (rms_mtt_pg.pg_txn_status=0 or rms_mtt_pg.pg_txn_status=2)
+    LEFT JOIN 
+        rms_rc_pgtxn ON rms_mtt_pg.pg_txn_id = rms_rc_pgtxn.txn_id and rms_rc_pgtxn.status = 'A'
+    LEFT JOIN 
+        rms_rc_pg ON rms_rc_pgtxn.rc_pg_id = rms_rc_pg.rc_pg_id
+    WHERE 
+        rms_rc_pgmtt.sub_criteria = 'NF';
+
+    -- update
+    UPDATE 
+        rms_rc_pgmtt
+    SET 
+        rms_rc_pgmtt.sub_criteria = temppgmtt.sub_criteria
+    FROM 
+        temppgmtt
+    WHERE 
+        rms_rc_pgmtt.rc_pgmtt_id = temppgmtt.rc_pgmtt_id;
+ 
+    -- get update count
+    let o_result = dbinfo('sqlca.sqlerrd2');
+
+    -- update rms_rc_pg' recon status
+    update rms_rc_pg
+    set recon_status = 'PSSCR'
+    where rc_pg_id in (select distinct rc_pg_id from temppgmtt);
+
+drop table temppgmtt;
+ 
+end if;
+ 
+commit work;
+ 
+if o_result > 0 then
+    return o_result;
+else
+    return -1;
+end if;
+ 
+end procedure
+;
+
+DROP PROCEDURE sp_getfmsrcpgmtt;
+CREATE OR REPLACE PROCEDURE sp_getfmsrcpgmtt()
+RETURNING  
+    int8 AS rc_pg_id,
+    nvarchar(3) as pg_pymt_method,
+    int8 as mtt_pg_id,
+    int as qty,
+    nvarchar(150) as item_desc,
+    decimal(16,2) as unit_fee,
+    nvarchar(100) as entity_nm,
+    nvarchar(20) as entity_no,
+    nvarchar(1) as entity_type,
+    decimal(16,2) as gross_amt,
+    nvarchar(10) as fee_detail_id,
+    decimal(16,2) as tax_amt,
+    nvarchar(10) as dps_id,
+    nvarchar(30) as dps_task,
+    nvarchar(20) as rcpt_no,
+    nvarchar(255) as cust_nm,
+    decimal(16,2) as pg_pymt_amt,
+    int8 as rc_pgmtt_id;
+-- 241010- added dps_id, dps_task
+
+   	define o_mtt_pg_id int8;
+    define o_rc_pg_id INT8;
+	define o_pg_pymt_method nvarchar(3);
+	define o_qty int;
+	define o_item_desc nvarchar(150);
+	define o_unit_fee decimal(16,2);
+	define o_entity_nm nvarchar(100);
+	define o_entity_no nvarchar(20);
+	define o_entity_type nvarchar(1);
+	define o_gross_amt decimal(16,2);
+	define o_fee_detail_id nvarchar(10);
+	define o_tax_amt decimal(16,2);
+	define o_rcpt_no nvarchar(20);
+	define o_cust_nm nvarchar(255);
+	define o_pg_pymt_amt decimal(16,2);
+
+    define o_dps_id nvarchar(10);
+    define o_dps_task nvarchar(30);
+
+    define o_rc_pgmtt_id int8;
+    define temp_date date;
+
+	SELECT min(date(dt_settlement)) as dt_settlement
+    into temp_date
+	FROM rms_rc_pg t1
+    INNER JOIN rms_rc_pgmtt t3 ON t3.rc_pg_id = t1.rc_pg_id
+	WHERE t1.dt_settlement < TODAY
+	    AND t1.recon_status = 'SSSCR'
+	    -- AND t3.found_in_pg = 0
+	    AND (t3.in_fms_posting = 0 OR t3.in_fms_posting IS NULL)
+        AND t1.task_status = 'CS'
+        AND t3.status = 'A' AND t3.sub_criteria in('NFP', 'FIP');
+
+	-- for sum amount
+    SELECT SUM(pg_pymt_amt) into o_pg_pymt_amt from(
+	SELECT SUM(distinct pg_pymt_amt) AS pg_pymt_amt
+	FROM (
+	    SELECT DISTINCT t1.rc_pg_id, t2.pg_pymt_method, t2.pg_pymt_amt, t2.mtt_pg_id, t4.qty, t4.item_desc,
+	                    t4.unit_fee, t4.entity_nm, t4.entity_no, t4.entity_type,
+	                    t4.gross_amt, t4.fee_detail_id, t4.tax_amt, t4.dps_id, t4.dps_task, t5.rcpt_no, t6.cust_nm, t3.rc_pgmtt_id
+	    FROM rms_rc_pg t1
+        INNER JOIN rms_rc_pgmtt t3 ON t3.rc_pg_id = t1.rc_pg_id
+	    INNER JOIN rms_mtt_pg t2 ON t2.mtt_pg_id = t3.mtt_pg_id 
+	    INNER JOIN rms_mtt_item t4 ON t2.mtt_id = t4.mtt_id
+	    LEFT JOIN rms_mtt_rcpt t5 ON t2.mtt_pg_id = t5.mtt_pg_id
+	    INNER JOIN rms_mtt t6 ON t2.mtt_id = t6.mtt_id
+	    WHERE 
+              -- t1.dt_settlement < TODAY
+              t1.dt_settlement = temp_date
+	        AND t1.recon_status = 'SSSCR'
+	        AND t3.found_in_pg = 0
+	        AND (t3.in_fms_posting = 0 OR t3.in_fms_posting IS NULL)
+            AND t1.task_status = 'CS'
+            AND t3.status = 'A'
+            AND (t2.pg_txn_status=0 or t2.pg_txn_status=2)
+	) AS distinct_rows group by distinct_rows.mtt_pg_id)b;
+   
+    FOREACH c_arr for
+    	SELECT DISTINCT
+		    t1.rc_pg_id,
+		    t2.pg_pymt_method,
+		    t2.mtt_pg_id,
+		    t4.qty, 
+		    t4.item_desc, 
+		    t4.unit_fee, 
+		    t4.entity_nm, 
+		    t4.entity_no,
+		    t4.entity_type, 
+		    t4.gross_amt, 
+		    t4.fee_detail_id, 
+		    t4.tax_amt,
+            t4.dps_id,
+            t4.dps_task,
+		    t5.rcpt_no, 
+		    t6.cust_nm,
+            t3.rc_pgmtt_id
+        INTO 
+            o_rc_pg_id, 
+            o_pg_pymt_method, 
+            o_mtt_pg_id,
+            o_qty,
+            o_item_desc,
+            o_unit_fee,
+            o_entity_nm,
+            o_entity_no,
+            o_entity_type,
+            o_gross_amt,
+            o_fee_detail_id,
+            o_tax_amt,
+            o_dps_id,
+            o_dps_task,
+            o_rcpt_no,
+            o_cust_nm,
+            o_rc_pgmtt_id
+        FROM 
+            rms_rc_pg t1
+        INNER JOIN rms_rc_pgmtt t3 ON t3.rc_pg_id = t1.rc_pg_id
+	    INNER JOIN rms_mtt_pg t2 ON t2.mtt_pg_id = t3.mtt_pg_id 
+        inner JOIN 
+        	rms_mtt_item t4 on t2.mtt_id = t4.mtt_id
+        LEFT JOIN 
+        	rms_mtt_rcpt t5 on t2.mtt_pg_id = t5.mtt_pg_id
+        INNER JOIN 
+        	rms_mtt t6 on t2.mtt_id = t6.mtt_id
+        WHERE 
+            -- t1.dt_settlement < TODAY
+             t1.dt_settlement = temp_date
+            AND t1.recon_status = 'SSSCR'
+            AND t3.found_in_pg = 0
+            and (t3.in_fms_posting = 0 or t3.in_fms_posting is null)
+            AND t1.task_status = 'CS'
+            AND t3.status = 'A'
+            AND (t2.pg_txn_status=0 or t2.pg_txn_status=2)
+        ORDER BY 
+            t1.rc_pg_id
+		 
+        RETURN 
+            o_rc_pg_id, 
+            o_pg_pymt_method, 
+            o_mtt_pg_id,
+            o_qty,
+            o_item_desc,
+            o_unit_fee,
+            o_entity_nm,
+            o_entity_no,
+            o_entity_type,
+            o_gross_amt,
+            o_fee_detail_id,
+            o_tax_amt,
+            o_dps_id,
+            o_dps_task,
+            o_rcpt_no,
+            o_cust_nm,
+            o_pg_pymt_amt,
+            o_rc_pgmtt_id
+			WITH RESUME;
+    END FOREACH;
+
+END PROCEDURE;
+
+DROP PROCEDURE sp_getfmsrcpgtxn;
+CREATE OR REPLACE PROCEDURE sp_getfmsrcpgtxn()
+RETURNING  
+    int8 AS rc_pg_id,
+    nvarchar(3) as pg_pymt_method,
+    int8 as mtt_pg_id,
+    int as qty,
+    nvarchar(150) as item_desc,
+    decimal(16,2) as unit_fee,
+    nvarchar(100) as entity_nm,
+    nvarchar(20) as entity_no,
+    nvarchar(1) as entity_type,
+    decimal(16,2) as gross_amt,
+    nvarchar(10) as fee_detail_id,
+    decimal(16,2) as tax_amt,
+    nvarchar(10) as dps_id,
+    nvarchar(30) as dps_task,
+    nvarchar(20) as rcpt_no,
+    nvarchar(255) as cust_nm,
+    decimal(16,2) as pg_pymt_amt,
+    int8 as rc_pgtxn_id;
+
+   	define o_mtt_pg_id int8;
+    define o_rc_pg_id INT8;
+	define o_pg_pymt_method nvarchar(3);
+	define o_qty int;
+	define o_item_desc nvarchar(150);
+	define o_unit_fee decimal(16,2);
+	define o_entity_nm nvarchar(100);
+	define o_entity_no nvarchar(20);
+	define o_entity_type nvarchar(1);
+	define o_gross_amt decimal(16,2);
+	define o_fee_detail_id nvarchar(10);
+	define o_tax_amt decimal(16,2);
+	define o_rcpt_no nvarchar(20);
+	define o_cust_nm nvarchar(255);
+	define o_pg_pymt_amt decimal(16,2);
+    define o_rc_pgtxn_id int8;
+
+    -- 241010: Added 2 new fields, dps_id and dps_task
+    define o_dps_id nvarchar(10);
+    define o_dps_task nvarchar(30);
+    define temp_date date;
+
+	SELECT min(date(dt_settlement)) AS dt_settlement INTO temp_date
+	FROM rms_rc_pg t1 INNER JOIN  rms_rc_pgtxn t2 ON t1.rc_pg_id = t2.rc_pg_id
+    WHERE t1.dt_settlement < TODAY AND t1.recon_status = 'SSSCR'
+          --  -- AND t2.found_in_rms =0
+          AND (t2.in_fms_posting = 0 or t2.in_fms_posting is null)
+          AND t2.status = 'A' AND t2.sub_criteria = 'NFR';
+
+    select sum(pg_pymt_amt) as pg_pymt_amt 	into o_pg_pymt_amt from(
+	-- select SUM(distinct txn_amt) AS pg_pymt_amt
+    select SUM(gross_amt) AS pg_pymt_amt
+	from (
+		SELECT DISTINCT
+			    t1.rc_pg_id,
+			    t3.pg_pymt_method,
+                -- t2.txn_amt,
+			    --t3.pg_pymt_amt,
+			    t3.mtt_pg_id,
+                nvl(t4.gross_amt, t2.txn_amt) as gross_amt,
+			    t4.qty, 
+			    t4.item_desc, 
+			    t4.unit_fee, 
+			    t4.entity_nm, 
+			    t4.entity_no,
+			    t4.entity_type, 
+			    t4.gross_amt, 
+			    t4.fee_detail_id, 
+			    t4.tax_amt,
+                t4.dps_id,
+                t4.dps_task,
+			    t5.rcpt_no, 
+			    t6.cust_nm,
+                t2.rc_pgtxn_id
+	        FROM 
+	            rms_rc_pg t1
+	        INNER JOIN 
+	            rms_rc_pgtxn t2 ON t1.rc_pg_id = t2.rc_pg_id
+	        LEFT JOIN 
+	            rms_mtt_pg t3 ON t2.txn_id=t3.pg_txn_id
+	        LEFT JOIN 
+	        	rms_mtt_item t4 on t3.mtt_id = t4.mtt_id
+	        LEFT JOIN 
+	        	rms_mtt_rcpt t5 on t3.mtt_id = t5.mtt_id
+	        LEFT JOIN 
+	        	rms_mtt t6 on t3.mtt_id = t6.mtt_id
+	        WHERE
+                t1.dt_settlement = temp_date
+	            -- t1.dt_settlement < TODAY
+	            AND t1.recon_status = 'SSSCR'
+	            AND t2.found_in_rms =0
+	            AND (t2.in_fms_posting = 0 or t2.in_fms_posting is null)
+                AND t2.status = 'A'
+	) as a
+group by a.mtt_pg_id) as b;
+   
+    FOREACH c_arr for
+        SELECT DISTINCT
+		    t1.rc_pg_id,
+		    t3.pg_pymt_method,
+		    t3.mtt_pg_id,
+		    nvl(t4.qty, 1), 
+		    t4.item_desc, 
+		    nvl(t4.unit_fee, t2.txn_amt), 
+		    t4.entity_nm, 
+		    t4.entity_no,
+		    t4.entity_type, 
+		    t4.gross_amt, 
+		    t4.fee_detail_id, 
+		    t4.tax_amt,
+            t4.dps_id,
+            t4.dps_task,
+		    t5.rcpt_no, 
+		    t6.cust_nm,
+            t2.rc_pgtxn_id
+        INTO 
+            o_rc_pg_id, 
+            o_pg_pymt_method, 
+            o_mtt_pg_id,
+            o_qty,
+            o_item_desc,
+            o_unit_fee,
+            o_entity_nm,
+            o_entity_no,
+            o_entity_type,
+            o_gross_amt,
+            o_fee_detail_id,
+            o_tax_amt,
+            o_dps_id,
+            o_dps_task,
+            o_rcpt_no,
+            o_cust_nm,
+            o_rc_pgtxn_id
+            
+        FROM 
+            rms_rc_pg t1
+        INNER JOIN 
+            rms_rc_pgtxn t2 ON t1.rc_pg_id = t2.rc_pg_id
+        LEFT JOIN 
+            rms_mtt_pg t3 ON t2.txn_id=t3.pg_txn_id
+        LEFT JOIN 
+        	rms_mtt_item t4 on t3.mtt_id = t4.mtt_id
+        LEFT JOIN 
+        	rms_mtt_rcpt t5 on t3.mtt_id = t5.mtt_id
+        LEFT JOIN 
+        	rms_mtt t6 on t3.mtt_id = t6.mtt_id
+        WHERE
+            t1.dt_settlement = temp_date
+            -- t1.dt_settlement < TODAY
+            AND t1.recon_status = 'SSSCR'
+            AND t2.found_in_rms =0
+            AND (t2.in_fms_posting = 0 or t2.in_fms_posting is null)
+            AND t2.status = 'A'
+        ORDER BY 
+            t1.rc_pg_id
+           
+        RETURN 
+            o_rc_pg_id, 
+            o_pg_pymt_method, 
+            o_mtt_pg_id,
+            o_qty,
+            o_item_desc,
+            o_unit_fee,
+            o_entity_nm,
+            o_entity_no,
+            o_entity_type,
+            o_gross_amt,
+            o_fee_detail_id,
+            o_tax_amt,
+            o_dps_id,
+            o_dps_task,
+            o_rcpt_no,
+            o_cust_nm,
+            o_pg_pymt_amt,
+            o_rc_pgtxn_id
+			WITH RESUME;
+    END FOREACH;
+
+END PROCEDURE;
+
+DROP PROCEDURE sp_insfmsrcpgmtt_h;
+CREATE OR REPLACE PROCEDURE sp_insfmsrcpgmtt_h(i_pg_pymt_amt DECIMAL(16,2), i_flag int)
+
+returning 	int8 as crmemo_hid;
+
+	define o_fms_acct_cd NVARCHAR(10);
+	define o_batch_no nvarchar(30);
+	define o_hid int8;
+	define o_result int;
+	define o_result1 int;
+
+	on exception
+		rollback work;
+	end exception;
+	 
+	begin work;
+	set lock mode to wait 30;
+
+	--get runno
+	execute procedure sp_getrunno('CN') into o_result1;
+
+	update rms_runno
+	set last_runno = last_runno + 1
+	where runno_cd = 'CN';
+
+	-- Get the latest value after update
+	SELECT last_runno
+	INTO o_result
+	FROM rms_runno
+	WHERE runno_cd = 'CN';
+
+	-- Generate unique receipt number
+	LET o_batch_no = 'CN' || TO_CHAR(TODAY, '%Y%m%d') || LPAD(o_result, 6, '0');
+	
+    if i_flag = 0 then
+        select acct_cd 
+        into o_fms_acct_cd 
+        from rms_fms_acct 
+        where acct_nm = 'Revenue';
+    else
+        select acct_cd 
+        into o_fms_acct_cd 
+        from rms_fms_acct 
+        where acct_nm = 'Unknown Collection Transaction';
+     end if;
+	
+	-- insert into rms_fms_crmemo_h
+	insert into rms_fms_crmemo_h (
+		type, link_branch, amt, cust, rms_batch_no, dt_sent, desc, 
+		attr_ext_sys, resp_attr_ext_sys, fms_ref_no, resp_co, resp_status, 
+		resp_msg, resp_dt, dt_created, dt_modified, created_by, modified_by, 
+		status, retry
+	) values (
+		'Credit Memo', '00000', i_pg_pymt_amt, o_fms_acct_cd, o_batch_no, current, 'Credit Note Batch', 
+		'RMS', null, null, null, null, 
+		null, null, current, current, 'system', 'system', 
+		'A', 0
+	);
+	 
+	let o_hid = dbinfo('serial8');
+	 
+	let o_result = dbinfo('sqlca.sqlerrd2');
+	 
+	if (o_result > 0) then
+	    commit work;
+	    return o_hid;
+	else
+	    rollback work;
+	    return -1;
+	end if;
+ 
+end procedure;
+
+DROP PROCEDURE sp_insfmsarr;
+create or REPLACE PROCEDURE sp_insfmsarr(i_rc_bank_id int8, i_rc_pg_id int8, i_credit decimal(16,2), i_mdr_amt decimal(16,2),
+                                    i_mtt_pg_id int8, i_acct_cd nvarchar(10), i_cust nvarchar(10), i_fms_ref_no nvarchar(100), i_hid integer, i_flag integer)
+returning int as result;
+ 
+define o_fms_ref_no nvarchar(25);
+define o_batch_no nvarchar(30);
+define o_hid int8;
+define o_result int;
+define o_ari_count int;
+define o_ari_fms_ref_no nvarchar(25);
+define o_ari_amt decimal(16,2);
+ 
+on exception
+	rollback work;
+end exception;
+ 
+begin work;
+set lock mode to wait 30;
+
+/*Get latest running no*/
+execute procedure sp_getrunno('arrc') into o_result;
+
+/* update last running no */
+update rms_runno
+set last_runno = last_runno + 1
+where runno_cd = 'arrc';
+
+/* select running no */
+SELECT last_runno
+INTO o_result
+FROM rms_runno
+WHERE runno_cd = 'ARRC';
+
+-- Generate unique receipt number
+LET o_batch_no = 'ARRC' || TO_CHAR(TODAY, '%Y%m%d') || LPAD(o_result, 6, '0');
+
+if (i_fms_ref_no is null) or (i_fms_ref_no is not null and i_flag=1) then
+    -- insert into rms_fms_arr_h (header)
+    insert into rms_fms_arr_h (
+        type, branch, dt_sent, cash_acct, pymt_method,
+        cust, rms_batch_no, pymt_amt, attr_ext_sys, resp_attr_ext_sys,
+        fms_ref_no, resp_co, resp_status, resp_msg, resp_dt,
+        dt_created, dt_modified, created_by, modified_by, status, retry, rc_pg_id
+    ) values (
+        'Payment', '00000', current, i_acct_cd, 'ONLINER',
+        i_cust, o_batch_no, i_credit + i_mdr_amt, 'RMS', null,
+        null, null, null, null, null,
+        current, current, 'system', 'system', 'A', 0, i_rc_pg_id
+    );
+
+    let o_hid = dbinfo('serial8');
+
+    -- insert into rms_fms_arr_c (charge)
+    insert into rms_fms_arr_c (
+        arr_hid, amt, doc_type, entity_type, offset_subacct,
+        dt_created, dt_modified, created_by, modified_by, status, acct_id
+    ) values (
+        o_hid, NVL(i_mdr_amt,0), 'PMT', 'BANKCHGS', '000M01',
+        current, current, 'system', 'system', 'A', 'C017909101'
+    );
+
+    -- insert into rms_fms_arr_b (details)
+
+    SELECT first 1 t1.amt
+    INTO o_ari_amt
+    FROM rms_fms_ari_h t1
+    JOIN rms_fms_ari_b t2 ON t1.ari_hid = t2.ari_hid
+    WHERE t2.mtt_pg_id IN (
+        SELECT t3.mtt_pg_id 
+        FROM rms_rc_pgmtt t3
+        join rms_rc_pgtxn t4 on t3.mtt_pg_id = t4.mtt_pg_id and t4.found_in_rms != 0
+        WHERE t3.rc_pg_id = i_rc_pg_id
+    )
+    AND t1.status = 'A'
+    AND t1.fms_ref_no IS NOT NULL;
+
+    if o_ari_amt >= i_credit then
+        foreach c1 for
+            select distinct t1.fms_ref_no
+            into o_ari_fms_ref_no
+            from rms_fms_ari_h t1
+            join rms_fms_ari_b t2 on t1.ari_hid = t2.ari_hid
+            where t2.mtt_pg_id in (
+                select t3.mtt_pg_id 
+                from rms_rc_pgmtt t3
+                join rms_rc_pgtxn t4 on t3.mtt_pg_id = t4.mtt_pg_id and t4.found_in_rms != 0
+                where t3.rc_pg_id = i_rc_pg_id
+            )
+            and t1.status = 'A'
+            and t1.fms_ref_no is not null
+
+            -- do your insert per loop here
+            insert into rms_fms_arr_b (
+                arr_hid, fms_ref_no, amt_paid, doc_type, dt_created, dt_modified,
+                created_by, modified_by, status, mtt_pg_id
+            )
+            values(
+                o_hid, o_ari_fms_ref_no, i_credit, 'Invoice', current, current,
+                'system', 'system', 'a', i_mtt_pg_id
+            );
+        end foreach;
+    end if;
+
+    if i_rc_bank_id is not null then
+        update rms_rc_bank
+        set in_fms_posting = 1, 
+            dt_modified = current
+        where rc_bank_id = i_rc_bank_id;
+    end if;
+
+    if i_fms_ref_no is not null then
+
+        insert into rms_fms_arr_b (
+            arr_hid, fms_ref_no, amt_paid, doc_type, dt_created, dt_modified,
+            created_by, modified_by, status
+        )	
+        values (
+            o_hid, i_fms_ref_no, i_credit - i_mdr_amt, 'Debit Memo',
+            current, current, 'system', 'system', 'A'
+        );
+
+        update rms_fms_drmemo_b
+        set in_fms_posting = 1, dt_modified = current
+        where drmemo_hid = (select drmemo_hid from rms_fms_drmemo_h where fms_ref_no = i_fms_ref_no); 
+
+    end if;
+
+    let o_result = dbinfo('sqlca.sqlerrd2');
+
+    if (o_result > 0) then
+        commit work;
+        return o_hid;
+    else
+        rollback work;
+        return -1;
+    end if;
+
+end if;
+
+if i_fms_ref_no is not null then
+-- insert into rms_fms_arr_b (details)
+insert into rms_fms_arr_b (
+    arr_hid, fms_ref_no, amt_paid, doc_type, dt_created, dt_modified,
+    created_by, modified_by, status
+)	
+values (
+    i_hid, i_fms_ref_no, i_credit - i_mdr_amt, 'Debit Memo',
+    current, current, 'system', 'system', 'A'
+);
+
+
+update rms_fms_drmemo_b
+set in_fms_posting = 1, dt_modified = current
+where drmemo_hid = (select drmemo_hid from rms_fms_drmemo_h where fms_ref_no = i_fms_ref_no); 
+
+update rms_fms_arr_h set pymt_amt = pymt_amt + i_credit - i_mdr_amt where arr_hid = i_hid;
+
+let o_result = dbinfo('sqlca.sqlerrd2');
+
+if (o_result > 0) then
+    commit work;
+    return o_result;
+else
+   rollback work;
+    return -1;
+end if;
+
+end if;
+ 
+--if (o_result > 0) then
+  --  commit work;
+    --return o_hid;
+--else
+  --  rollback work;
+    --return -1;
+--end if;
+ 
+end procedure;
+
+
+
+DROP PROCEDURE sp_getfmsrcbank;
+CREATE OR REPLACE PROCEDURE sp_getfmsrcbank()
+returning 
+    int8 as rc_bank_id,
+    int8 as rc_pg_id,
+    decimal(16,2) as credit,
+    decimal(16,2) as mdr_amt,
+    nvarchar(10) as acct_cd,
+    nvarchar(10) as cust;
+
+define o_rc_bank_id int8;
+define o_rc_pg_id int8;
+define o_credit decimal(16,2);
+define o_mdr_amt decimal(16,2);
+define o_acct_cd nvarchar(10);
+define o_cust nvarchar(10);
+
+let o_acct_cd = (select first 1 acct_cd from rms_fms_acct where acct_nm = 'AR Receipt''s Cash Account');
+let o_cust = (select first 1 acct_cd from rms_fms_acct where acct_nm = 'Revenue');
+
+foreach c_arr for
+    -- MDR aggregation (PG side)
+    with mdr_totals as (
+        select 
+            b.rc_bank_id,
+            b.rc_pg_id,
+            sum(p.mdr_amt) as total_mdr_amt
+        from rms_rc_bank b
+        join rms_rc_pgtxn p on p.rc_pg_id = b.rc_pg_id
+        where (b.in_fms_posting = 0 or b.in_fms_posting is null)
+        and date(b.dt_created) <= today
+        and b.recon_status = 'SBSR'
+        group by b.rc_bank_id, b.rc_pg_id
+    ),
+    -- CREDIT aggregation (BankTxn side, based on stmt_no pattern match)
+    credit_totals as (
+        select 
+            t2.rc_bank_id,
+            t2.rc_pg_id,
+            sum(t1.credit) as total_credit
+        from rms_rc_banktxn t1
+        join rms_rc_bank t2 
+            on t2.rc_bank_id = t1.rc_bank_id
+            and t2.recon_status = 'SBSR'
+        join rms_rc_pg t3 
+            on t3.rc_pg_id = t2.rc_pg_id 
+            and t1.txn_ref like t3.stmt_no || '%'
+        group by t2.rc_bank_id, t2.rc_pg_id
+    )
+
+    -- Final combined result
+    select 
+        m.rc_bank_id,
+        m.rc_pg_id,
+        m.total_mdr_amt,
+        c.total_credit
+        into o_rc_bank_id, o_rc_pg_id, o_mdr_amt, o_credit
+    from mdr_totals m
+    left join credit_totals c 
+        on c.rc_bank_id = m.rc_bank_id 
+        and c.rc_pg_id = m.rc_pg_id
+    order by m.rc_bank_id
+
+    return o_rc_bank_id, o_rc_pg_id, o_credit, o_mdr_amt, o_acct_cd, o_cust with resume;
+end foreach;
+
+end procedure;
+
+DROP PROCEDURE sp_insfmsmttb;
+create or replace procedure sp_insfmsmttb(i_mtt_pg_id int8,i_pg_pymt_amt decimal(16,2),i_qty int,i_item_desc nvarchar(100)
+                ,i_unit_fee decimal(16,2),i_rcpt_no nvarchar(100),i_cust_nm nvarchar(100), i_entity_nm nvarchar(100), i_entity_no nvarchar(100)
+                ,i_entity_type nvarchar(100), i_gross_amt decimal(16,2)--i_fee_detail_id nvarchar(100) -- change to use fee_detail_pk
+                ,i_fee_detail_pk int8, i_pg_pymt_method nvarchar(100)
+                ,i_tax_amt decimal(16,2),i_customer nvarchar(100),i_hid int8,i_item_ref_no nvarchar(100),i_cp_no nvarchar(100), 
+                 i_disc_amt decimal(16,2) , i_deposit_id nvarchar(100), i_deposit_task nvarchar(100), i_flag int,i_bil_child_id int,i_net_amt decimal(16,2), i_lit_item_ref nvarchar(100))
+
+-- 241010: Wei Ern added 4 new fields based on latest SDS and ISD, which are line_nbr defaulted value to 1, discount_amt, deposit_id, deposit task
+-- All insert statement in this stored procedure has been updated with all these 4 fields, line_nbr is not in the parameter as it is hard-coded as 1. 
+
+returning int8 as result;
+
+define o_result         int;
+define di_exist         int;
+define cp_exist         int;
+define coa1             nvarchar(100);
+define coa1_d           nvarchar(100);
+define coa1_disc        nvarchar(100);
+define o_accr_amt       decimal(16,2);
+define temp_amt         decimal(16,2);
+define next_line_nbr    int;
+define i_fee_detail_id    nvarchar(100);
+define i_branch nvarchar(30);
+define i_sub_acct nvarchar(30);
+
+define o_di_txn_type    nvarchar(10);
+define o_dt_pymt        date;
+define o_di_dt_effective    date;
+define o_ledger_cd      nvarchar(50);
+
+define coa1_lt          nvarchar(100);
+
+on exception
+	rollback work;
+end exception;
+
+begin work;
+set lock mode to wait 30;
+
+-- default coa1 to mft.ledger_cd
+select ledger_cd,fee_detail_id
+into coa1_d,i_fee_detail_id
+from rms_mft
+--where fee_detail_id = i_fee_detail_id; -- change to use fee_detail_pk
+where fee_detail_pk = i_fee_detail_pk;
+
+-- check if is RICP arrcual    
+select count(1)
+into cp_exist
+from rms_ricp
+where cp_no = i_cp_no
+and entity_no = i_entity_no
+and entity_type = i_entity_type
+--and cp_tier != '3'; -- tony say if tier 3 means direct sales
+and cp_tier < 4; -- tony say only need check max up to 3, this is an extra validation as CRS will send again cp_tier to RMS.
+
+let i_sub_acct = '000M01';
+select limit 1 config_value into i_branch from rms_config where config_cd = 'FMSBranch';
+if i_bil_child_id is not null or i_bil_child_id != '' then
+    select limit 1 config_value into i_sub_acct from rms_config where config_cd = 'FMSSubAcctBilling';
+end if;
+    
+if cp_exist > 0 then -- if count>0 means this is not direct sale
+        -- check if is RICP arrcual (get accrual ammount)   
+        select accr_amt
+        into o_accr_amt
+        from rms_ricp
+        where cp_no = i_cp_no
+        and entity_no = i_entity_no
+        and entity_type = i_entity_type;
+        --and cp_tier != '3'; -- tony say if tier 3 means direct sales. 20250314 remove this tier3 also count as CP
+
+        -- compare amt
+        -- if o_accr_amt = i_gross_amt then
+        if o_accr_amt = i_net_amt then
+            -- find account from fms_acct
+            select acct_cd
+            into coa1
+            from rms_fms_acct
+            where acct_nm = 'RI/CMP';
+
+            select coalesce(max(line_nbr), 0) + 1 into next_line_nbr
+            from rms_fms_ari_b
+            where ari_hid = i_hid;
+
+            -- insert rms_fms_ari_b  
+            INSERT INTO rms_fms_ari_b(ari_hid, acct, branch, qty, sub_acct, 
+                        txn_desc, unit_price, rcpt_no, payee_info, ent_nm, 
+                        ent_no, ent_ty, item_amt, coa1, pymt_mode, 
+                        item_tax_amt, dt_created, dt_modified, created_by, modified_by, 
+                        status, coa2, mtt_pg_id, line_nbr, disc_amt, dps_id, dps_task) 
+                VALUES(i_hid, null, i_branch, i_qty, i_sub_acct, 
+                        i_item_desc, i_unit_fee, i_rcpt_no, i_cust_nm, i_entity_nm, 
+                        i_entity_no, i_entity_type, i_gross_amt, coa1, i_pg_pymt_method, 
+                        i_tax_amt, current, current, 'system', 'system', 
+                        'A', i_fee_detail_id, i_mtt_pg_id, next_line_nbr, i_disc_amt, i_deposit_id, i_deposit_task);
+
+
+        -- elif o_accr_amt < i_gross_amt then -- need insert 3 rows to body table
+        elif o_accr_amt < i_net_amt then -- need insert 3 rows to body table
+
+            let temp_amt = i_net_amt-o_accr_amt;
+            -- find account from fms_acct
+
+            select acct_cd
+            into coa1
+            from rms_fms_acct
+            where acct_nm = 'RI/CMP';
+
+            select coalesce(max(line_nbr), 0) + 1 into next_line_nbr
+            from rms_fms_ari_b
+            where ari_hid = i_hid;
+
+            -- 1st row
+            INSERT INTO rms_fms_ari_b(ari_hid, acct, branch, qty, sub_acct, 
+                        txn_desc, unit_price, rcpt_no, payee_info, ent_nm, 
+                        ent_no, ent_ty, item_amt, coa1, pymt_mode, 
+                        item_tax_amt, dt_created, dt_modified, created_by, modified_by, 
+                        status, coa2, mtt_pg_id, line_nbr, disc_amt, dps_id, dps_task) 
+                VALUES(i_hid, null, i_branch, i_qty, i_sub_acct, 
+                        --i_item_desc, i_unit_fee, i_rcpt_no, i_cust_nm, i_entity_nm, 
+                        i_item_desc, o_accr_amt, i_rcpt_no, i_cust_nm, i_entity_nm, 
+                        i_entity_no, i_entity_type, o_accr_amt, coa1, i_pg_pymt_method, 
+                        i_tax_amt, current, current, 'system', 'system', 
+                        'A', i_fee_detail_id, i_mtt_pg_id, next_line_nbr, 0, i_deposit_id, i_deposit_task);
+
+            select coalesce(max(line_nbr), 0) + 1 into next_line_nbr
+            from rms_fms_ari_b
+            where ari_hid = i_hid;
+            -- 2nd row
+            INSERT INTO rms_fms_ari_b(ari_hid, acct, branch, qty, sub_acct, 
+                        txn_desc, unit_price, rcpt_no, payee_info, ent_nm, 
+                        ent_no, ent_ty, item_amt, coa1, pymt_mode, 
+                        item_tax_amt, dt_created, dt_modified, created_by, modified_by, 
+                        status, coa2, mtt_pg_id, line_nbr, disc_amt, dps_id, dps_task) 
+                VALUES(i_hid, null, i_branch, i_qty, i_sub_acct, 
+                        --i_item_desc, i_unit_fee, i_rcpt_no, i_cust_nm, i_entity_nm, 
+                        i_item_desc, temp_amt, i_rcpt_no, i_cust_nm, i_entity_nm, 
+                        i_entity_no, i_entity_type, temp_amt, coa1_d, i_pg_pymt_method, 
+                        i_tax_amt, current, current, 'system', 'system', 
+                        'A', i_fee_detail_id, i_mtt_pg_id, next_line_nbr, 0, i_deposit_id, i_deposit_task);
+
+            -- 3rd row If there is any discount for net_amt more than accr_amt
+             if i_disc_amt > 0 then
+                -- find account from fms_acct
+                select acct_cd
+                into coa1_disc
+                from rms_fms_acct
+                where acct_nm = 'Compound Discount';
+
+                select coalesce(max(line_nbr), 0) + 1 into next_line_nbr
+                from rms_fms_ari_b
+                where ari_hid = i_hid;
+
+                INSERT INTO rms_fms_ari_b(ari_hid, acct, branch, qty, sub_acct, 
+                        txn_desc, unit_price, rcpt_no, payee_info, ent_nm, 
+                        ent_no, ent_ty, item_amt, coa1, pymt_mode, 
+                        item_tax_amt, dt_created, dt_modified, created_by, modified_by, 
+                        status, coa2, mtt_pg_id, line_nbr, disc_amt, dps_id, dps_task) 
+                    VALUES(i_hid, null, i_branch, i_qty, i_sub_acct, 
+                        --i_item_desc, i_unit_fee, i_rcpt_no, i_cust_nm, i_entity_nm, 
+                        i_item_desc, -temp_amt, i_rcpt_no, i_cust_nm, i_entity_nm, 
+                        i_entity_no, i_entity_type, -temp_amt, coa1_disc, i_pg_pymt_method, 
+                        i_tax_amt, current, current, 'system', 'system', 
+                        'A', i_fee_detail_id, i_mtt_pg_id, next_line_nbr, 0, i_deposit_id, i_deposit_task);                
+             end if;
+
+        else 
+        -- o_accr_amt > i_gross_amt then -- need insert 3 rows to body table 
+            let temp_amt = o_accr_amt-i_net_amt;
+
+            -- find account from fms_acct
+            select acct_cd
+            into coa1
+            from rms_fms_acct
+            where acct_nm = 'RI/CMP';
+
+            select coalesce(max(line_nbr), 0) + 1 into next_line_nbr
+            from rms_fms_ari_b
+            where ari_hid = i_hid;
+            -- 1st row
+            INSERT INTO rms_fms_ari_b(ari_hid, acct, branch, qty, sub_acct, 
+                        txn_desc, unit_price, rcpt_no, payee_info, ent_nm, 
+                        ent_no, ent_ty, item_amt, coa1, pymt_mode, 
+                        item_tax_amt, dt_created, dt_modified, created_by, modified_by, 
+                        status, coa2, mtt_pg_id, line_nbr, disc_amt, dps_id, dps_task) 
+                VALUES(i_hid, null, i_branch, i_qty, i_sub_acct, 
+                        i_item_desc, o_accr_amt, i_rcpt_no, i_cust_nm, i_entity_nm, 
+                        i_entity_no, i_entity_type, o_accr_amt, coa1, i_pg_pymt_method, 
+                        i_tax_amt, current, current, 'system', 'system', 
+                        --'A', i_fee_detail_id, i_mtt_pg_id, next_line_nbr, i_disc_amt, i_deposit_id, i_deposit_task);
+                        'A', i_fee_detail_id, i_mtt_pg_id, next_line_nbr, 0, i_deposit_id, i_deposit_task);
+
+            -- find account from fms_acct
+            select acct_cd
+            into coa1_disc
+            from rms_fms_acct
+            where acct_nm = 'Compound Discount';
+
+            select coalesce(max(line_nbr), 0) + 1 into next_line_nbr
+            from rms_fms_ari_b
+            where ari_hid = i_hid;
+            -- 2nd row
+            INSERT INTO rms_fms_ari_b(ari_hid, acct, branch, qty, sub_acct, 
+                        txn_desc, unit_price, rcpt_no, payee_info, ent_nm, 
+                        ent_no, ent_ty, item_amt, coa1, pymt_mode, 
+                        item_tax_amt, dt_created, dt_modified, created_by, modified_by, 
+                        status, coa2, mtt_pg_id, line_nbr, disc_amt, dps_id, dps_task) 
+                VALUES(i_hid, null, i_branch, i_qty, i_sub_acct, 
+                        i_item_desc, -temp_amt, i_rcpt_no, i_cust_nm, i_entity_nm, 
+                        i_entity_no, i_entity_type, -temp_amt, coa1_disc, i_pg_pymt_method, 
+                        i_tax_amt, current, current, 'system', 'system', 
+                        --'A', i_fee_detail_id, i_mtt_pg_id, next_line_nbr, i_disc_amt, i_deposit_id, i_deposit_task);
+                        'A', i_fee_detail_id, i_mtt_pg_id, next_line_nbr, 0, i_deposit_id, i_deposit_task);
+        end if;
+       --end if;
+else
+        -- check if is DI arrcual
+        select count(1), txn_type, dt_effective
+        into di_exist, o_di_txn_type, o_di_dt_effective
+        from rms_di
+        where item_ref_no = i_item_ref_no
+        and entity_no = i_entity_no
+        and entity_type = i_entity_type
+        --and fee_detail_id = i_fee_detail_id -- change to use fee_detail_pk
+        and fee_detail_pk = i_fee_detail_pk
+        and (status = 'R' or status = 'A')
+        group by txn_type, dt_effective;
+
+        select first 1 date(pg_resp_time)
+        into o_dt_pymt
+        from rms_mtt_pg
+        where mtt_pg_id = i_mtt_pg_id;
+
+        if di_exist > 0 then -- if count>0 means this is not direct sale
+            if o_di_txn_type = 'ROC-RPC' then
+                -- find account from fms_acct
+                select acct_cd
+                into coa1
+                from rms_fms_acct
+                where acct_nm = 'Prepayment/DI ROC';
+            elif o_di_txn_type = 'ROB-ROB' then
+                -- find account from fms_acct
+                select acct_cd
+                into coa1
+                from rms_fms_acct
+                where acct_nm = 'Prepayment/DI ROB';                
+            end if;
+
+            if o_di_dt_effective > o_dt_pymt then
+                select coalesce(max(line_nbr), 0) + 1 
+                into next_line_nbr
+                from rms_fms_ari_b
+                where ari_hid = i_hid;
+
+                -- insert rms_fms_ari_b  
+                INSERT INTO rms_fms_ari_b(ari_hid, acct, branch, qty, sub_acct, 
+                    txn_desc, unit_price, rcpt_no, payee_info, ent_nm, 
+                    ent_no, ent_ty, item_amt, coa1, pymt_mode, 
+                    item_tax_amt, dt_created, dt_modified, created_by, modified_by, 
+                    status, coa2, mtt_pg_id, line_nbr, disc_amt, dps_id, dps_task) 
+                VALUES(i_hid, null, i_branch, i_qty, i_sub_acct, 
+                    i_item_desc, i_unit_fee, i_rcpt_no, i_cust_nm, i_entity_nm, 
+                    i_entity_no, i_entity_type, i_gross_amt, coa1, i_pg_pymt_method, 
+                    i_tax_amt, current, current, 'system', 'system', 
+                    'A', i_fee_detail_id, i_mtt_pg_id, next_line_nbr, i_disc_amt, i_deposit_id, i_deposit_task);
+            else
+                select first 1 ledger_cd
+                into o_ledger_cd
+                from rms_mft
+                where fee_detail_id = i_fee_detail_id
+                and status = 'A';
+
+                --Insert 1st line for Invoice
+                select coalesce(max(line_nbr), 0) + 1 
+                into next_line_nbr
+                from rms_fms_ari_b
+                where ari_hid = i_hid;
+
+                -- insert rms_fms_ari_b  
+                INSERT INTO rms_fms_ari_b(ari_hid, acct, branch, qty, sub_acct, 
+                    txn_desc, unit_price, rcpt_no, payee_info, ent_nm, 
+                    ent_no, ent_ty, item_amt, coa1, pymt_mode, 
+                    item_tax_amt, dt_created, dt_modified, created_by, modified_by, 
+                    status, coa2, mtt_pg_id, line_nbr, disc_amt, dps_id, dps_task) 
+                VALUES(i_hid, null, i_branch, 1, i_sub_acct, 
+                    i_item_desc, i_unit_fee, i_rcpt_no, i_cust_nm, i_entity_nm, 
+                    i_entity_no, i_entity_type, i_unit_fee, o_ledger_cd, i_pg_pymt_method, 
+                    i_tax_amt, current, current, 'system', 'system', 
+                    'A', i_fee_detail_id, i_mtt_pg_id, next_line_nbr, i_disc_amt, i_deposit_id, i_deposit_task);
+
+                --Insert 2nd line for Accrual
+                select coalesce(max(line_nbr), 0) + 1 
+                into next_line_nbr
+                from rms_fms_ari_b
+                where ari_hid = i_hid;
+
+                -- insert rms_fms_ari_b  
+                INSERT INTO rms_fms_ari_b(ari_hid, acct, branch, qty, sub_acct, 
+                    txn_desc, unit_price, rcpt_no, payee_info, ent_nm, 
+                    ent_no, ent_ty, item_amt, coa1, pymt_mode, 
+                    item_tax_amt, dt_created, dt_modified, created_by, modified_by, 
+                    status, coa2, mtt_pg_id, line_nbr, disc_amt, dps_id, dps_task) 
+                VALUES(i_hid, null, i_branch, (i_qty - 1), i_sub_acct, 
+                    i_item_desc, i_unit_fee, i_rcpt_no, i_cust_nm, i_entity_nm, 
+                    i_entity_no, i_entity_type, (i_gross_amt - i_unit_fee), coa1, i_pg_pymt_method, 
+                    i_tax_amt, current, current, 'system', 'system', 
+                    'A', i_fee_detail_id, i_mtt_pg_id, next_line_nbr, i_disc_amt, i_deposit_id, i_deposit_task);
+            end if;
+        -- Check for RILT
+        elif i_lit_item_ref is not null and i_lit_item_ref != '' then 
+            select acct_cd
+            into coa1_lt
+            from rms_fms_acct
+            where acct_nm = 'RI/LT';
+
+            select coalesce(max(line_nbr), 0) + 1 into next_line_nbr
+            from rms_fms_ari_b
+            where ari_hid = i_hid;
+
+            -- insert rms_fms_ari_b  
+            INSERT INTO rms_fms_ari_b(ari_hid, acct, branch, qty, sub_acct, 
+                        txn_desc, unit_price, rcpt_no, payee_info, ent_nm, 
+                        ent_no, ent_ty, item_amt, coa1, pymt_mode, 
+                        item_tax_amt, dt_created, dt_modified, created_by, modified_by, 
+                        status, coa2, mtt_pg_id, line_nbr, disc_amt, dps_id, dps_task) 
+                VALUES(i_hid, null, i_branch, i_qty, i_sub_acct, 
+                        i_item_desc, i_unit_fee, i_rcpt_no, i_cust_nm, i_entity_nm, 
+                        i_entity_no, i_entity_type, i_gross_amt, coa1_lt, i_pg_pymt_method, 
+                        i_tax_amt, current, current, 'system', 'system', 
+                        'A', i_fee_detail_id, i_mtt_pg_id, next_line_nbr, i_disc_amt, i_deposit_id, i_deposit_task);
+        else
+
+             select coalesce(max(line_nbr), 0) + 1 into next_line_nbr
+             from rms_fms_ari_b
+             where ari_hid = i_hid;
+
+            INSERT INTO rms_fms_ari_b(ari_hid, acct, branch, qty, sub_acct, 
+                    txn_desc, unit_price, rcpt_no, payee_info, ent_nm, 
+                    ent_no, ent_ty, item_amt, coa1, pymt_mode, 
+                    item_tax_amt, dt_created, dt_modified, created_by, modified_by, 
+                    status, coa2, mtt_pg_id, line_nbr, disc_amt, dps_id, dps_task, bil_child_id) 
+            VALUES(i_hid, null, i_branch, i_qty, i_sub_acct, 
+                    i_item_desc, i_unit_fee, i_rcpt_no, i_cust_nm, i_entity_nm, 
+                    i_entity_no, i_entity_type, i_gross_amt, coa1_d, i_pg_pymt_method, 
+                    i_tax_amt, current, current, 'system', 'system', 
+                    'A', i_fee_detail_id, i_mtt_pg_id, next_line_nbr, i_disc_amt, i_deposit_id, i_deposit_task, i_bil_child_id);
+
+        end if;
+
+end if;
+
+    let o_result = dbinfo('serial8');
+
+    if i_flag = 1 then
+    
+        update rms_mtt_pg
+        set in_fms_posting = 1,
+        dt_modified = current
+        where mtt_pg_id=i_mtt_pg_id;
+
+        -- update rms_fms_ari_h
+        update rms_fms_ari_h
+        set amt=amt+i_pg_pymt_amt
+        where ari_hid = i_hid;
+    end if;
+
+    -- Only for CP with Disc Amt
+    /*if o_accr_amt > i_net_amt then
+        select accr_amt
+        into o_accr_amt
+        from rms_ricp
+        where cp_no = i_cp_no
+        and entity_no = i_entity_no
+        and entity_type = i_entity_type;
+
+        update rms_fms_ari_h
+        set amt = amt + o_accr_amt
+        where ari_hid = i_hid;
+    end if;*/
+
+    commit work;
+
+return o_result;
+end procedure;
+
+DROP PROCEDURE sp_getfmsmtt;
+create or REPLACE PROCEDURE sp_getfmsmtt()
+returning int8 as mtt_pg_id, decimal(16,2) as pg_pymt_amt, int as qty, nvarchar(100) as item_desc,
+            decimal(16,2) as unit_fee, nvarchar(100) as rcpt_no, nvarchar(100) as cust_nm, nvarchar(100) as entity_nm, nvarchar(100) as entity_no,
+            nvarchar(100) as entity_type, decimal(16,2) as gross_amt, --nvarchar(100) as fee_detail_id
+            int8 as fee_detail_pk, nvarchar(100) as pg_pymt_method,
+            decimal(16,2) as tax_amt,nvarchar(100) as customer,nvarchar(100) as item_ref_no, nvarchar(100) as cp_no,
+            decimal(16,2) as disc_amt, nvarchar(10) as dps_id, nvarchar(30) as dps_task,decimal(16,2) as net_amt, datetime year to fraction(3) as inv_dt, NVARCHAR(100) as lit_item_ref;
+
+define o_mtt_pg_id int8;
+define o_pg_pymt_amt decimal(16,2);
+define o_qty int;
+define o_item_desc nvarchar(250);
+define o_unit_fee decimal(16,2);
+define o_rcpt_no nvarchar(30);
+define o_cust_nm nvarchar(250);
+define o_entity_nm nvarchar(100);
+define o_entity_no nvarchar(100);
+define o_entity_type nvarchar(1);
+define o_gross_amt decimal(16,2);
+define o_fee_detail_id nvarchar(100);
+define o_fee_detail_pk int8;
+define o_pg_pymt_method nvarchar(50);
+define o_tax_amt decimal(16,2);
+
+define o_product nvarchar(100);
+define o_coa1 nvarchar(100);
+define o_customer nvarchar(100);
+define o_item_ref_no nvarchar(100);
+define o_cp_no nvarchar(100);
+
+define o_disc_amt decimal(16,2);
+define o_dps_id nvarchar(10);
+define o_dps_task nvarchar(30);
+
+define o_net_amt decimal(16,2);
+
+define ari_limit nvarchar(100);
+define temp_date date;
+define o_lit_item_ref nvarchar(100);
+
+    -- get limit per payment
+    select config_value
+    into ari_limit
+    from rms_config
+    where config_cd = 'FMS_ARI_Details';
+
+    -- filter in rms_fms_arrb's mtt record
+    -- get the most earliest date
+    select min(date(pg_resp_time)) as resp_time
+    into temp_date
+    from rms_mtt_pg
+    where (in_fms_posting = 0 or in_fms_posting is null)
+    and (pg_txn_status=0 or pg_txn_status=2)
+    and date(pg_resp_time) <= today -1;
+    --and date(pg_resp_time) <= today;
+
+    -- customer field
+    select acct_cd
+    into o_customer
+    from rms_fms_acct
+    where acct_nm ='Revenue';
+
+foreach c_ari for
+    -- filter out the limit
+    SELECT t1.mtt_pg_id,
+       t1.pg_pymt_amt,
+       t2.qty,
+       t2.item_desc,
+       t2.unit_fee,
+       NVL(t4.rcpt_no,''),
+       t3.cust_nm,
+       t2.entity_nm,
+       t2.entity_no,
+       t2.entity_type,
+       t2.gross_amt,
+--       t2.fee_detail_id, --change to use pk
+       t2.fee_detail_pk,
+       t1.pg_pymt_method,
+       t2.tax_amt,
+       t2.item_ref_no,
+       t2.cp_no,
+       t2.disc_amt,
+       t2.dps_id,
+       t2.dps_task,
+       t2.net_amt,
+       t2.lit_item_ref
+    into o_mtt_pg_id,o_pg_pymt_amt,o_qty,o_item_desc,o_unit_fee,o_rcpt_no,o_cust_nm,o_entity_nm,o_entity_no,o_entity_type
+        ,o_gross_amt,o_fee_detail_pk,o_pg_pymt_method,o_tax_amt,o_item_ref_no,o_cp_no,o_disc_amt,o_dps_id,o_dps_task,o_net_amt, o_lit_item_ref
+    FROM (
+        SELECT FIRST ari_limit
+            mtt_pg_id,
+            mtt_id,
+            pg_pymt_amt,
+            pg_pymt_method,
+            pg_resp_time
+        FROM rms_mtt_pg
+        WHERE DATE(pg_resp_time) = temp_date
+          AND (in_fms_posting = 0 OR in_fms_posting IS NULL)
+          AND (pg_txn_status = 0 OR pg_txn_status = 2)
+        ORDER BY pg_resp_time
+    ) t1
+    INNER JOIN rms_mtt_item t2 ON t1.mtt_id = t2.mtt_id
+    INNER JOIN rms_mtt t3 ON t1.mtt_id = t3.mtt_id
+    LEFT JOIN rms_mtt_rcpt t4 ON t1.mtt_pg_id = t4.mtt_pg_id AND t4.rcpt_status = 'A'
+    -- WHERE t4.rcpt_status = 'A'
+    ORDER BY t1.pg_resp_time
+
+    return o_mtt_pg_id,o_pg_pymt_amt,o_qty,o_item_desc,o_unit_fee,o_rcpt_no,o_cust_nm,o_entity_nm,o_entity_no,o_entity_type
+    ,o_gross_amt,o_fee_detail_pk,o_pg_pymt_method,o_tax_amt,o_customer,o_item_ref_no,o_cp_no,o_disc_amt,o_dps_id,o_dps_task,o_net_amt,temp_date, o_lit_item_ref with resume;
+
+end foreach;
+
+end procedure;
+
+
+
+
+DROP PROCEDURE sp_getfmsarrdebit;
+create or REPLACE PROCEDURE sp_getfmsarrdebit(i_rc_pg_id int8)
+returning 
+    decimal(16,2) as credit,
+    decimal(16,2) as mdr_amt,
+    nvarchar(10) as acct_cd,
+    nvarchar(10) as cust,
+    nvarchar(100) as fms_ref_no;
+
+define o_credit decimal(16,2);
+define o_mdr_amt decimal(16,2);
+define o_fms_ref_no nvarchar(100);
+define o_acct_cd nvarchar(10);
+define o_cust nvarchar(10);
+
+let o_acct_cd = (select first 1 acct_cd from rms_fms_acct where acct_nm = 'AR Receipt''s Cash Account');
+-- let o_cust = (select first 1 acct_cd from rms_fms_acct where acct_nm = 'Payment Gateway');
+
+if i_rc_pg_id = 0 then
+    UPDATE rms_rc_pgtxn t1
+    SET mtt_pg_id = (
+        SELECT t2.mtt_pg_id
+        FROM rms_mtt_pg t2
+        WHERE t1.txn_id LIKE '%' || t2.pg_pymt_id || '%'
+          AND t2.pg_pymt_id IS NOT NULL
+    )
+    WHERE mtt_pg_id IS NULL
+      AND 1 = (
+        SELECT COUNT(*)
+        FROM rms_mtt_pg t2
+        WHERE t1.txn_id LIKE '%' || t2.pg_pymt_id || '%'
+          AND t2.pg_pymt_id IS NOT NULL
+      );
+
+    foreach c_arr for
+
+      -- select t1.amt, t1.fms_ref_no, nvl(sum(t4.mdr_amt),0)
+      select t1.amt, t1.fms_ref_no, 0, t1.cust
+      into o_credit, o_fms_ref_no, o_mdr_amt, o_cust
+      from rms_fms_drmemo_h t1 
+      left join rms_fms_drmemo_b t2 on t1.drmemo_hid = t2.drmemo_hid 
+      left join rms_fms_drmemo_f t3 on t1.drmemo_hid = t3.drmemo_hid
+      left join rms_rc_pgtxn t4 on t2.rc_pgtxn_id = t4.rc_pgtxn_id
+      -- left join rms_rc_pgtxn t4 on t2.mtt_pg_id = t4.mtt_pg_id
+      where (t2.in_fms_posting = 0 or t2.in_fms_posting is null)
+        and t1.status = 'A' 
+        --and t4.rc_pg_id = i_rc_pg_id
+        -- and t4.mtt_pg_id is not null
+      group by t1.amt, t1.fms_ref_no, t4.mdr_amt, t1.cust
+
+        return o_credit, o_mdr_amt, o_acct_cd, o_cust, o_fms_ref_no with resume;
+    end foreach;
+else
+    UPDATE rms_rc_pgtxn t1
+    SET mtt_pg_id = (
+        SELECT t2.mtt_pg_id
+        FROM rms_mtt_pg t2
+        WHERE t1.txn_id LIKE '%' || t2.pg_pymt_id || '%'
+          AND t2.pg_pymt_id IS NOT NULL
+    )
+    WHERE mtt_pg_id IS NULL
+      AND 1 = (
+        SELECT COUNT(*)
+        FROM rms_mtt_pg t2
+        WHERE t1.txn_id LIKE '%' || t2.pg_pymt_id || '%'
+          AND t2.pg_pymt_id IS NOT NULL
+      );
+
+    foreach c_arr for
+
+      -- select t1.amt, t1.fms_ref_no, nvl(sum(t4.mdr_amt),0)
+      select t1.amt, t1.fms_ref_no, 0, t1.cust
+      into o_credit, o_fms_ref_no, o_mdr_amt, o_cust
+      from rms_fms_drmemo_h t1 
+      left join rms_fms_drmemo_b t2 on t1.drmemo_hid = t2.drmemo_hid 
+      left join rms_fms_drmemo_f t3 on t1.drmemo_hid = t3.drmemo_hid
+      left join rms_rc_pgtxn t4 on t2.rc_pgtxn_id = t4.rc_pgtxn_id
+      -- left join rms_rc_pgtxn t4 on t2.mtt_pg_id = t4.mtt_pg_id
+      where (t2.in_fms_posting = 0 or t2.in_fms_posting is null)
+        and t1.status = 'A' 
+        and t4.rc_pg_id = i_rc_pg_id
+        -- and t4.mtt_pg_id is not null
+      group by t1.amt, t1.fms_ref_no, t4.mdr_amt, t1.cust
+
+        return o_credit, o_mdr_amt, o_acct_cd, o_cust, o_fms_ref_no with resume;
+    end foreach;
+end if;
+
+
+
+end procedure;
+

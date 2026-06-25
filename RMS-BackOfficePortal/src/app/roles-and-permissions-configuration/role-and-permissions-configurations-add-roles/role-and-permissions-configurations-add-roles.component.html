@@ -1,0 +1,46 @@
+<div class="SingleContainer">
+   <!-- Header for Add Item -->
+   <div class="SingleContainerHeader">
+      <h2 class="text-center">{{"labels.adduserrole" | translate}}</h2>
+   </div>
+   <form #formRef="ngForm" (ngSubmit)="handleFormSubmit(formRef)">
+      <div class="MALoadingContainer">
+         <!-- Loading spinner overlay -->
+         <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+            <div class="spinner-border" role="status">
+               <span class="sr-only"></span>
+            </div>
+         </div>
+         <div [ngClass]="{'TableDimmed': isLoading}">
+            <!-- Error Box -->
+            <div *ngIf="error" class="error-box">
+               <i class="bi bi-x-circle-fill error-icon"></i>
+               <div>
+                  <strong>{{"labels.unabletoaddroles" | translate}}</strong>
+                  <ul>
+                     <ul>
+                        <li *ngFor="let errorMsg of errorMessages">{{ "labels.theuserroleyouhaveenteredalreadyexists" | translate }}</li>
+                     </ul>
+                  </ul>
+               </div>
+            </div>
+            <div class="form-group">
+               <label for="roleNmEn">{{"labels.userrolename" | translate}} <span class='RedAsterisk'>*</span></label>
+               <input type="text" class="form-control" id="roleNmEn" name="roleNmEn" [(ngModel)]="role_nm_en"
+                  #RoleNameRef="ngModel" required>
+               <div *ngIf="RoleNameRef.errors && RoleNameRef.errors['required'] && RoleNameRef.touched"
+                  class="error-text">
+                  User Role Name is required
+               </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="button-group">
+               <div>{{"fields with are mandatory" | translate}}</div>
+               <button class="btn btnSubmit" type="submit">{{"buttons.submit" | translate}}</button>
+               <button class="btn btnClose" type="button" (click)="closed()">{{"buttons.cancel" | translate}}</button>
+            </div>
+         </div>
+      </div>
+   </form>
+</div>

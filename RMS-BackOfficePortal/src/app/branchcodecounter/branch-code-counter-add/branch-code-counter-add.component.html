@@ -1,0 +1,100 @@
+<div class="SingleContainer">
+    <!-- Header for Add Item -->
+    <div class="SingleContainerHeader">
+       <h2 class="text-center">{{"add item" | translate}}</h2>
+    </div>
+    <form #formRef="ngForm" (ngSubmit)="handleFormSubmit(formRef)">
+       <div class="MALoadingContainer">
+          <!-- Loading spinner overlay -->
+          <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+             <div class="spinner-border" role="status">
+                <span class="sr-only"></span>
+             </div>
+          </div>
+          <div [ngClass]="{'TableDimmed': isLoading}">
+             <!-- Error Box -->
+             <div *ngIf="error" class="error-box">
+                <i class="bi bi-x-circle-fill error-icon"></i>
+                <div>
+                   <strong>{{"labels.validationerror" | translate}}</strong>
+                   <ul>
+                      <ul>
+                         <li *ngFor="let errorMsg of errorMessages">{{ errorMsg }}</li>
+                      </ul>
+                   </ul>
+                </div>
+             </div>
+             <!-- Counter ID -->
+             <div class="form-group">
+               <label for="counterID">{{"counter id" | translate}} <span class='RedAsterisk'>*</span></label>
+               <input type="text" class="form-control" id="counterID" name="counterID" [(ngModel)]="counterID"
+                  #counterIDRef="ngModel" required pattern="^\S.*" maxlength="20">
+               <div *ngIf="counterIDRef.errors && counterIDRef.errors['required'] && counterIDRef.touched" class="error-text">
+                  {{"labels.counteridisrequired" | translate}}
+               </div>
+               <div *ngIf="counterIDRef.errors && counterIDRef.errors['pattern'] && counterIDRef.touched" class="error-text">
+                  {{"labels.counteridcannotbeginwithwhitespace" | translate}}
+               </div>
+               <div *ngIf="counterIDRef.errors && counterIDRef.errors['maxlength'] && counterIDRef.touched" class="error-text">
+                  {{"labels.counteridlimit" | translate}}
+               </div>
+            </div>
+             <!-- Terminal ID -->
+            <div class="form-group">
+               <label for="terminalID">{{"terminal id" | translate}} <span class='RedAsterisk'>*</span></label>
+               <input type="text" class="form-control" id="terminalID" name="terminalID"
+                     [(ngModel)]="terminalID" #terminalIDRef="ngModel" pattern="^\S.*" required maxlength="50">
+               <div *ngIf="terminalIDRef.errors && terminalIDRef.errors['required'] && terminalIDRef.touched"
+                  class="error-text">
+                  {{"labels.terminalidisrequired" | translate}}
+               </div>
+               <div *ngIf="terminalIDRef.errors && terminalIDRef.errors['pattern'] && terminalIDRef.touched"
+                  class="error-text">
+                  {{"labels.terminalidcannotbeginwithwhitespace" | translate}}
+               </div>
+               <div *ngIf="terminalIDRef.errors && terminalIDRef.errors['maxlength'] && terminalIDRef.touched"
+                  class="error-text">
+                  {{"labels.terminalidlimit" | translate}}
+               </div>
+            </div>
+             <!-- Counter IP -->
+             <div class="form-group">
+                <label for="counterIP">{{"counter ip" | translate}} <span class='RedAsterisk'>*</span></label>
+                <input type="text" class="form-control" id="counterIP" name="counterIP" [(ngModel)]="counterIP"
+                   #counterIPRef="ngModel" pattern="^\S.*" required maxlength="40">
+                <div *ngIf="counterIPRef.errors && counterIPRef.errors['required'] && counterIPRef.touched"
+                   class="error-text">
+                   {{"labels.counteripisrequired" | translate}}
+                </div>
+                <div *ngIf="counterIPRef.errors && counterIPRef.errors['pattern'] && counterIPRef.touched"
+                   class="error-text">
+                   {{"labels.counteripcannotbeginwithwhitespace" | translate}}
+                </div>
+                <div *ngIf="counterIPRef.errors && counterIPRef.errors['maxlength'] && counterIPRef.touched"
+                   class="error-text">
+                   {{"labels.counteriplimit" | translate}}
+                </div>
+             </div>
+             <!-- Branch Code -->
+             <div class="form-group">
+                <label>{{"branch code" | translate}} <span class='RedAsterisk'>*</span></label>
+                <select class="form-control" (change)="onBranchCodeChange($event)">
+                    <option disabled selected [value]="null">{{"select branch code" | translate}}</option>
+                    <option *ngFor="let item of model2" [value]="item.bcm_id">
+                        {{ item.bcm_code }}
+                    </option>
+                </select>
+                <div *ngIf="branchIDCheck" class="error-text">
+                    {{"labels.branchcodeisrequired" | translate}}
+                </div>
+            </div>
+             <!-- Buttons -->
+             <div class="button-group">
+                <div>{{"fields with are mandatory" | translate}}</div>
+                <button class="btn btnSubmit" type="submit">{{"buttons.submit" | translate}}</button>
+                <button class="btn btnClose" type="button" (click)="closed()">{{"buttons.close" | translate}}</button>
+             </div>
+          </div>
+       </div>
+    </form>
+ </div>

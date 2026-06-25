@@ -1,0 +1,143 @@
+<body class="BodyCointaner">
+    <!-- mainContainer start-->
+    <div class="leftPadding">
+        <!-- <div class="LeftSectionPosition">{{"labels.Home / Setup & Maintenance / Receivable Income Compound Details" | translate}}</div> -->
+
+
+        <h2>{{"labels.receivableincomecompounddetails" | translate}}</h2>
+
+    </div>
+    <!-- Loading spinner overlay -->
+    <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+        <div class="spinner-border" role="status">
+            <span class="sr-only"></span>
+        </div>
+    </div>
+    <div class="formContainer">
+        <div class="leftSide">
+            <table class="leftSectionContainer" [ngClass]="{ TableDimmed: isLoading }">
+                <thead>
+                    <tr class="header">
+                        <th class="parameterWidthNo">No.</th>
+                        <th class="parameterWidth">Parameter</th>
+                        <th class="parameterWidth">{{"currentvalue" | translate}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>{{"transactiontype" | translate}}</td>
+                        <td>{{txnType}}</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>{{"entitytype" | translate}}</td>
+                        <td>{{entityType}}</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>{{"entitynumber" | translate}}</td>
+                        <td>{{entityNo}}</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>{{"calendaryear" | translate}}</td>
+                        <td>{{calenderYear}}</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>{{"compoundnumber" | translate}}</td>
+                        <td>{{cpNo}}</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>{{"compoundactid" | translate}}</td>
+                        <td>{{cpActId}}</td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>{{"compoundsectionid" | translate}}</td>
+                        <td>{{cpSectId}}</td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td>{{"compoundsubsectionid" | translate}}</td>
+                        <td>{{cpSubSectId}}</td>
+                    </tr>
+                    <tr>
+                        <td>9</td>
+                        <td>{{"issuancedate" | translate}}</td>
+                        <td>{{issuanceDate | date:'dd MMM yyyy'}}</td>
+                    </tr>
+                    <tr>
+                        <td>10</td>
+                        <td>{{"expirydate" | translate}}</td>
+                        <td>{{expiryDate | date:'dd MMM yyyy'}}</td>
+                    </tr>
+                    <tr>
+                        <td>11</td>
+                        <td>{{"voiddate" | translate}}</td>
+                        <td>{{voidDate ? (voidDate | date:'dd MMM yyyy') : '-'}}</td>
+                    </tr>
+                    <tr>
+                        <td>12</td>
+                        <td>{{"canceldate" | translate}}</td>
+                        <td>{{cancelDate ? (cancelDate | date:'dd MMM yyyy') : '-'}}</td>
+                    </tr>
+                    <tr>
+                        <td>13</td>
+                        <td>{{"writeoffdate" | translate}}</td>
+                        <td>{{writeoffDate | date:'dd MMM yyyy'}}</td>
+                    </tr>
+                    <tr>
+                        <td>14</td>
+                        <td>{{"compoundamount" | translate}} (RM)</td>
+                        <td>{{cpAmount| number:'.2-2'}}</td>
+                    </tr>
+                    <tr>
+                        <td>15</td>
+                        <td>{{"accrualamount" | translate}} (RM)</td>
+                        <td>{{accrualAmount| number:'.2-2'}}</td>
+                    </tr>
+                    <tr>
+                        <td>16</td>
+                        <td>{{"compoundtierlevel" | translate}} <i class="bi bi-info-square-fill info-icon"  [ngbTooltip]="tooltipContent"></i></td>
+                        
+                         <ng-template #tooltipContent >
+                             <div style="width: 100%; text-align: left;">
+                                 <strong>{{"tierlevelcharges" | translate}}</strong>
+                                 <br />
+                                 {{"tier1charges" | translate}}<br>
+                                 {{"tier2charges" | translate}}<br>
+                                 {{"tier3charges" | translate}}
+                             </div>
+                         </ng-template>
+                        <td>{{cpTier }}</td>
+                    </tr>
+
+                    <tr>
+                        <td>17</td>
+                        <td>{{"compoundtieramount" | translate}} (RM)</td>
+                        <td>{{cpTierAmount | number:'.2-2'}}</td>
+                    </tr>
+
+                    <tr>
+                        <td>18</td>
+                        <td>{{"createddate" | translate}}</td>
+                        <td>{{createdDate | date:'dd MMM yyyy hh:mm:ss' }}</td>
+                    </tr>
+
+                    <tr>
+                        <td>19</td>
+                        <td>{{"ricpstatus" | translate}}</td>
+                        <td>{{ricpStatus}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="marginTopAndBottom"></div>
+
+
+
+</body>

@@ -1,0 +1,209 @@
+@import 'src/app/app.component.scss';
+
+/* Green color for enabled button */
+.btn-enable {
+    background-color: green;
+    color: white;
+  }
+
+.ml-2 {
+  background-color: green;
+}
+
+.btnexport {
+  width: 10%;
+  height:100%;
+  float: right;
+  background: #21ba45;
+}
+
+.btnexportgrp {
+  display: flex;
+  //position: relative;
+  flex-direction: row-reverse;
+  margin-right: 3%;
+  padding-bottom: 1.5%;
+}
+
+.right-section73 {
+  background-color: white;
+}
+
+.middle-section73{
+  //padding-top: 4.5%;
+}
+
+// Define base styles for body and html
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: #ebe8e8;
+  }
+  
+  // Create a container using Flexbox to arrange the sections
+  .container {
+    display: flex;
+    height: 100%;
+  }
+  
+  .form-control:disabled{
+    opacity: 0.5;
+  }
+
+  // SingleContainer section takes up the search panel area
+  .SingleContainer {
+    padding-top: 5%;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: white;
+    box-sizing: border-box;
+  }
+
+
+  .PAContainer73 {
+    &.right-section-collapsed{
+      .left-section73 {
+        flex: 0 0 76.5%;
+        transition: flex 0.5s ease;
+      }
+      .right-section73 {
+        transition: flex 0.5s ease;
+      }
+    }
+    .right-section {
+      flex: 0 0 80%;
+      transition: flex 0.5s ease;
+    }
+  }
+  
+  // Two-thirds section takes up 66.66% width
+  .two-thirds {
+    //width: 80%;
+    background-color: rgb(235, 232, 232);
+    padding: 10px;
+    box-sizing: border-box;
+
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  button {
+    margin-top: 20px;
+  }
+
+
+  .breadcrumbOTC {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0 0;
+    margin-bottom: 30px;
+    // margin-left: 3%;
+    display: flex;
+    // align-items: center;
+  }
+
+  .breadcrumbOTC li {
+    display: inline;
+  }
+  
+  .breadcrumbOTC a {
+    color: rgb(2, 117, 216);
+    text-decoration: none;
+    font-size: 18px;
+  }
+  
+  .breadcrumbOTC a:hover {
+    text-decoration: underline;
+  }
+  
+  .breadcrumbOTC-separator {
+    font-size: inherit; /* Inherit the font size from the breadcrumb label */
+  }
+
+  .button-group {
+    margin-top: 20px;
+  }
+
+  .btnApply{
+    float:left;
+  }
+
+  .btnReset{
+    float:right;
+  }
+
+  .MAPagination-1{
+      padding-right: 3%;
+  }
+
+  //style for dropdown start
+
+:host ::ng-deep {
+ 
+  .ng-select {
+    padding-bottom: 6px;
+    //width: 70%;
+
+    .ng-select-container {
+      min-height: 0 !important;
+      padding: 0 !important;
+      border-top: none !important;
+
+ 
+      .ng-value-container {
+        padding: 0;
+        border: 0;
+      }
+    }
+  }
+ 
+  //adjust arrow, clear and cursor position
+  .ng-select-single .ng-select-container {
+ 
+ 
+    .ng-arrow-wrapper {
+      bottom: 3px;
+    }
+ 
+    .ng-clear-wrapper {
+      bottom: 0px;
+    }
+ 
+    .ng-value-container .ng-input {
+      top: 0px
+    }
+ 
+  }
+ 
+}
+ 
+:host ::ng-deep ng-dropdown-panel {
+ 
+  top: auto !important;
+ 
+}
+ 
+//remove drop down underline
+:host ::ng-deep ng-select .ng-select-container::after {
+  border-bottom: 5px solid transparent !important;
+}
+ 
+//style for dropdown end
+
+.MATable {
+    word-wrap: break-word;
+    overflow: hidden;
+    table-layout:fixed;
+}
+
+.MATableContainer{
+  display: table;
+}
+
+// .btnApply {
+//   min-width:$MAButtonMinWidth/4*3;
+// }

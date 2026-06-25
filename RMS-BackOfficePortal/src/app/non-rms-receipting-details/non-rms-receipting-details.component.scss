@@ -1,0 +1,229 @@
+@import '../app.component.scss';
+$MarginSeparator: 30px;
+
+$MAButtonMinWidth: 100px; //original is 30%
+ 
+.PAContainer74 {
+    padding: 20px;
+    margin-bottom: 20px;
+    margin-right: 5px;
+ 
+    span {
+        display: block;
+        margin-bottom: 10px;
+    }
+ 
+    h3 {
+        margin-bottom: 15px;
+    }
+ 
+    .parent-div {
+        display: flex;
+        justify-content: space-between;
+ 
+        .left-div, .right-div {
+            width: 48%; /* Adjust the width as needed */
+            background-color: #d6d6ec; /* Left div */
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+            padding: 15px;
+        }
+ 
+        .right-div {
+            background-color: #d9ecd6; /* Right div */
+        }
+ 
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+ 
+            tr:nth-child(even) {
+                background-color: #f8f9fc;
+            }
+ 
+            tr:nth-child(odd) {
+                background-color: white;
+            }
+ 
+            td:first-child {
+                width: 60%;
+            }
+ 
+            td {
+                padding: 8px;
+                text-align: left;
+                border: 1px solid #ddd;
+            }
+ 
+            a {
+                color: #0275d8;
+                text-decoration: none;
+            }
+ 
+            a:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    .tableWrapper {
+        width: 100%;
+        overflow-x: auto; /* Allows horizontal scrolling if needed */
+    }
+    
+    .container {
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    .MATable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .MATable th,
+    .MATable td {
+        padding: 12px;
+        text-align: center;
+        border: 1px solid #ddd;
+    }
+    
+    .MATable thead {
+        background-color: #f4f4f4;
+    }
+    
+ 
+    
+
+    .content {
+        background-color: white;
+        font-weight: bold;
+        h3 {
+            text-align: left;
+            margin-bottom: 20px;
+            margin-left: 10px;
+            
+        }
+   
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+   
+            td {
+                border: none;
+                padding: 8px;
+                text-align: left;
+   
+                &:nth-child(2) { // For colon cells
+                    width: 10px;
+                }
+   
+                textarea {
+                    width: 100%;
+                    height: 60px;
+                }
+   
+                input[type="checkbox"] {
+                    margin-right: 5px;
+                }
+   
+                button {
+                    margin-right: 10px;
+                }
+ 
+                   // Add styles for the button container
+            &.button-container {
+                text-align: right;
+            }
+            }
+   
+            tr {
+                background-color: white;
+                border: none;
+            }
+ 
+           
+        }
+    }
+   
+}
+
+.toggle-button{
+    margin-left:5px;
+}
+ 
+.btnApply {
+    background-color: #21ba45;
+    color: white;
+    min-width: $MAButtonMinWidth;
+  }
+ 
+ 
+  .btnCancel {
+    background-color: #767676;
+    min-width: $MAButtonMinWidth;
+    color: white;
+  }
+
+  .full-width-line {
+    border: none; /* Remove the default border style */
+    border-top: 1px solid #000; /* Add a top border for the line */
+    width: 96%; /* Ensure the line spans the entire width */
+    margin: 0; /* Optional: Adjust the margin as needed */
+    margin-top: 50px;
+    margin-right: 2%;
+    margin-left: 2%;
+  }
+
+  .MarginSeparator {
+    margin-top: $MarginSeparator;
+  }
+
+  .custom-file-input {
+    font-size: 16px;
+    border: 1px solid #ccc;
+    padding: 5px;
+    cursor: pointer;
+}
+
+/* Style the "Choose File" button inside the input field */
+.custom-file-input::file-selector-button {
+    background-color: #2185d0;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.btnDelete {
+    background-color: #d01919; /* Red */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+
+  .TableLoading-overlay {
+    position: fixed; /* Fixed to cover entire screen */
+    top: 0;
+    left: 0;
+    width: 100vw; 
+    height: 100vh; /* Full viewport height */
+    // background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999; /* Ensure it's on top of all elements */
+  }
+  
+//   .spinner-border {
+//     width: 4rem;
+//     height: 4rem;
+//     border-width: 0.4rem;
+//     color: white; /* Spinner color */
+//   }
+  

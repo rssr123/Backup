@@ -1,0 +1,24 @@
+@import '../../app.component.scss';
+
+.button-group {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;  /* Center buttons */
+  gap: 20px; /* Add space between buttons */
+}
+
+.button-group button {
+  flex: 1; /* Make buttons take equal space */
+  max-width: 100px; /* Limit button width */
+  text-align: center;
+}
+
+
+.display {
+  margin-top: 20px;
+  text-align: center;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}

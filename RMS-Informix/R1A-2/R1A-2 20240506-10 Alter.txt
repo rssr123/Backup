@@ -1,0 +1,65 @@
+CREATE or replace PROCEDURE sp_checkLatestOrderStatus_v2(i_orn_no NVARCHAR(20))
+RETURNING NVARCHAR(10) AS status;
+DEFINE o_paymentStatus NVARCHAR(50);
+DEFINE o_mtt_id INT;
+DEFINE rowCount INT;
+DEFINE o_withinMin NVARCHAR(5);
+DEFINE latest_dt DATETIME YEAR TO SECOND;
+DEFINE time_diff INT;
+DEFINE time_check int;
+
+if (i_orn_no is null or i_orn_no = '') then 
+    raise exception -746, 0, "i_orn_no is null or empty";
+end if
+
+LET  i_orn_no = UPPER(i_orn_no);
+
+SELECT COUNT(*)
+INTO rowCount
+FROM rms_mtt
+WHERE orn_no = i_orn_no;
+
+IF rowCount < 1 THEN
+	LET o_paymentStatus = '';
+	LET o_withinMin = 0 ; --false
+ELSE
+	SELECT mtt_id
+	INTO o_mtt_id
+	FROM informix.rms_mtt
+	WHERE orn_no = i_orn_no;
+
+	-- update latest order status from payment table
+	call sp_updateLatestOrderStatus(o_mtt_id);
+
+	SELECT order_status
+	INTO o_paymentStatus
+	FROM rms_mtt
+	WHERE orn_no = i_orn_no;
+
+    SELECT config_value
+    into time_check
+    FROM rms_config
+    where config_cd = 'PIP_BlockPayOnline_In_Minute';
+
+    let time_check = time_check*60;
+ 
+    SELECT 
+      CASE 
+        WHEN (current - (SELECT MAX(dt_created) FROM rms_mtt_pg WHERE mtt_id = o_mtt_id)) <= time_check UNITS SECOND THEN 'TRUE'
+        ELSE 'FALSE'
+      END 
+    INTO o_withinMin
+    FROM sysmaster:sysdual;
+
+
+END IF
+ 
+LET o_paymentStatus = o_paymentStatus || '_' || o_withinMin;
+ 
+-- o_paymentstatus_true
+RETURN o_paymentStatus;
+END PROCEDURE;
+GO
+alter table informix.rms_rc_bank
+modify (created_by nvarchar(25) not null, modified_by nvarchar(25) not null,remarks nvarchar )
+GO

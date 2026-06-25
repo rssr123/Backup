@@ -1,0 +1,234 @@
+DROP FUNCTION sp_checkuserperm
+GO
+DROP FUNCTION sp_checkpymtrcpt
+GO
+DROP FUNCTION sp_checklatestorderstatus_v2
+GO
+DROP FUNCTION sp_checklatestorderstatus
+GO
+DROP FUNCTION sp_checkfmsbyid
+GO
+DROP FUNCTION sp_checkfeetaxbyid 
+GO
+DROP FUNCTION sp_checkdocexist
+GO
+
+CREATE PROCEDURE sp_checkdocexist(i_file_nm VARCHAR(255))
+returning int as o_doc_exist;
+
+    -- Declare a variable to store the count of records with the given document name
+    DEFINE o_doc_exist INT;
+
+    -- Check if the document name exists in the fms_doc table
+    SELECT COUNT(*) INTO o_doc_exist
+    FROM rms_fms_doc
+    WHERE file_nm = i_file_nm;
+
+    -- Set the output parameter based on the count
+    return o_doc_exist;
+END procedure
+GO
+create procedure sp_checkfeetaxbyid(i_fee_grp_id int, i_tax_cd_id int)
+returning int as result;
+
+define o_result int;
+
+select case
+        when exists( select 1 
+                     from rms_mft
+                     where (i_fee_grp_id IS NULL OR fee_grp_id = i_fee_grp_id)
+                     and (i_tax_cd_id is null or tax_cd_id = i_tax_cd_id)
+                     and status NOT IN ('RJ-RHOD','RJ-FA','RJ-FHOD')
+                    )
+        then 1
+        when exists( select 1
+                     from rms_mft_wf
+                     where (i_fee_grp_id IS NULL OR fee_grp_id = i_fee_grp_id)
+                     and (i_tax_cd_id is null or tax_cd_id = i_tax_cd_id)
+                     and status NOT IN ('RJ-RHOD','RJ-FA','RJ-FHOD')
+                   )
+        then 1
+        else 0
+end into o_result;
+
+return o_result;
+            
+end procedure
+GO
+create procedure sp_checkfmsbyid(i_fms_id int)
+returning int as result;
+
+define o_result int;
+define total_mft_items int;
+
+-- Get the total items in the mft table
+let total_mft_items = (select count(*) from rms_mft);
+select case
+        when exists( select 1
+                     from rms_fms
+                     where fms_id = i_fms_id
+                       and (
+                           select count(case when t2.found = 'F' and t2.status = 'A' then 1 else null end)
+                             from rms_fms_ledger t2
+                            where t2.fms_id = i_fms_id
+                       ) >= total_mft_items
+                    )
+        then 1
+        else 0
+        end into o_result;
+
+return o_result;
+            
+end procedure
+GO
+CREATE PROCEDURE sp_checkLatestOrderStatus(i_orn_no NVARCHAR(20))
+RETURNING NVARCHAR(10) AS status;--,int as withinMin;
+
+DEFINE o_paymentStatus NVARCHAR(10);
+DEFINE o_mtt_id int;
+DEFINE rowCount int;
+DEFINE o_withinMin int;
+DEFINE latestDt DATETIME YEAR TO FRACTION(5);
+--DEFINE time_difference INTERVAL MINUTE TO SECOND;
+
+select COUNT(*)
+into rowCount
+FROM rms_mtt
+WHERE orn_no = i_orn_no;
+
+if rowCount<1 then
+	let o_paymentStatus='';
+	let o_withinMin=0; --false
+else
+	select mtt_id
+	into o_mtt_id
+	from informix.rms_mtt
+	WHERE orn_no = i_orn_no;
+
+	-- update latest order status from payment table
+	call sp_updateLatestOrderStatus(o_mtt_id);
+	
+	SELECT order_status||'_false'
+	INTO o_paymentStatus
+	FROM rms_mtt
+	WHERE orn_no = i_orn_no;
+
+	select max(dt_created)
+	into latestDt
+	from rms_mtt_pg
+	where mtt_id = o_mtt_id;
+	--order by dt_created desc;
+	
+	-- get param
+	-- Calculate the time difference between current time and dt_created
+    --LET time_difference = current YEAR TO FRACTION(5) - latestDt;
+   
+   	-- Check if the time difference is less than 5 minutes
+    --IF time_difference <= INTERVAL(5) MINUTE THEN
+        --LET o_withinMin = 1; --true
+    --ELSE
+        LET o_withinMin = 0; --false
+    --END IF
+	
+END if
+		
+	RETURN o_paymentStatus;--,o_withinMin;
+
+END PROCEDURE;
+GO
+CREATE PROCEDURE sp_checkLatestOrderStatus_v2(i_orn_no NVARCHAR(20))
+RETURNING NVARCHAR(10) AS status;
+DEFINE o_paymentStatus NVARCHAR(50);
+DEFINE o_mtt_id INT;
+DEFINE rowCount INT;
+DEFINE o_withinMin NVARCHAR(5);
+DEFINE latest_dt DATETIME YEAR TO SECOND;
+DEFINE time_diff INT;
+DEFINE time_check int;
+
+LET  i_orn_no = UPPER(i_orn_no);
+
+SELECT COUNT(*)
+INTO rowCount
+FROM rms_mtt
+WHERE orn_no = i_orn_no;
+
+IF rowCount < 1 THEN
+	LET o_paymentStatus = '';
+	LET o_withinMin = 0 ; --false
+ELSE
+	SELECT mtt_id
+	INTO o_mtt_id
+	FROM informix.rms_mtt
+	WHERE orn_no = i_orn_no;
+
+	-- update latest order status from payment table
+	call sp_updateLatestOrderStatus(o_mtt_id);
+
+	SELECT order_status
+	INTO o_paymentStatus
+	FROM rms_mtt
+	WHERE orn_no = i_orn_no;
+
+    SELECT config_value
+    into time_check
+    FROM rms_config
+    where config_cd = 'PIP_BlockPayOnline_In_Minute';
+
+    let time_check = time_check*60;
+ 
+    SELECT 
+      CASE 
+        WHEN (current - (SELECT MAX(dt_created) FROM rms_mtt_pg WHERE mtt_id = o_mtt_id)) <= time_check UNITS SECOND THEN 'TRUE'
+        ELSE 'FALSE'
+      END 
+    INTO o_withinMin
+    FROM sysmaster:sysdual;
+
+
+END IF
+ 
+LET o_paymentStatus = o_paymentStatus || '_' || o_withinMin;
+ 
+-- o_paymentstatus_true
+RETURN o_paymentStatus;
+END PROCEDURE;
+GO
+CREATE PROCEDURE sp_checkpymtrcpt(i_orn_no NVARCHAR(20))
+RETURNS INT as row_cnt;
+
+DEFINE o_row_cnt INT;
+
+SELECT COUNT(*) as result
+INTO o_row_cnt
+FROM rms_mtt_rcpt t1
+INNER JOIN rms_mtt t2 ON t1.mtt_id = t2.mtt_id
+WHERE t2.orn_no = i_orn_no;
+
+RETURN o_row_cnt;
+
+END PROCEDURE
+GO
+CREATE PROCEDURE sp_checkuserperm(
+    i_username NVARCHAR(25),
+    i_perm_cd_list VARCHAR(255)
+) 
+RETURNING VARCHAR(255) AS o_has_access;
+
+    DEFINE o_has_access VARCHAR(255);
+    DEFINE t_user_role_id INT;
+
+    SELECT sp_group_concat(t4.perm_cd) into o_has_access
+    FROM rms_user_role t5
+    LEFT OUTER JOIN rms_user t1 ON t1.ssm4uuserrefno = t5.ssm4uuserrefno
+    LEFT OUTER JOIN rms_role t2 ON t5.role_id = t2.role_id
+    LEFT OUTER JOIN rms_role_perm t3 ON t3.role_id = t2.role_id
+    LEFT OUTER JOIN rms_perm t4 ON t3.perm_id = t4.perm_id
+    WHERE i_username = t5.ssm4uuserrefno
+    AND t4.perm_cd IN (SELECT * FROM TABLE (regex_split(i_perm_cd_list, ','))) AND is_allow = 1;
+
+    RETURN o_has_access;
+
+END PROCEDURE;
+GO
+

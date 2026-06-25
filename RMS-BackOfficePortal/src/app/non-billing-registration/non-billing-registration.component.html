@@ -1,0 +1,727 @@
+<body class="BodyCointaner">
+    <div class="PAContainer73">
+        <div class="left-section73">
+
+            <div *ngIf="showDuplicateBox2" [@fadeInOut]>
+                <div class="alert alert-danger PA-alert-box" role="alert">
+                  {{ duplicateMessage }}
+                </div>
+            </div>
+            <!-- <div *ngIf="showCancelNotAllowedAlert" [@fadeInOut]>
+                <div class="alert alert-warning PA-alert-box" role="alert">Report cancelled.
+                </div>
+            </div> -->
+            <div class="order-info">
+                <h2>{{"labels.nonbillingregistration" | translate}}</h2>
+                <!-- <div class="order-details">
+                    <div class="left-section">
+                        <button class="btn btnEdit" type="button">
+                            cancelReceipt
+                        </button>
+                        <label class="bold">STATUS:</label>
+                    </div>
+                    <label class="bold" style="color: #21ba45;">PAID</label>
+                </div> -->
+            </div>
+            <!-- <h3>Customer ID Validation </h3>
+            <table>
+                <tr>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">Billing Type Code</label>
+                            <div class="select-wrapper">
+                                    <select id="orderReferenceNo" class="form-control" [(ngModel)]="billingTypeCode">
+                                        <option value="null" disabled selected>Select Billing Type Code</option>
+                                        <option *ngFor="let nbltc of nbltcModel" [value]="nbltc.bt_cd">
+                                          {{ nbltc.bt_cd + ' - ' + nbltc.bt_desc }}
+                                        </option>
+                                      </select>
+                                      
+                              </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">Entity Type</label>
+                            <div class="select-wrapper">
+                                <select id="orderReferenceNo" class="form-control">
+                                    <option value="null" disabled selected>Select Entity Type</option>
+                                    <option value="">BT13-Returned Cheque</option>
+                                </select>
+
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">Entity Number</label>
+                            <input type="text" id="customerName" class="form-control"
+                                placeholder="Enter Entity Number" />
+                        </div>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td colspan="2"></td>
+                    <td style="text-align: right;">
+                        <button type="button" class="btn btnApply" (click)="fetchNBLTCItem()">Search Customer ID</button>
+                    </td>
+                </tr>
+
+            </table> -->
+
+            <h3>{{"labels.customeridvalidation" | translate}}</h3>
+            <table>
+                <tr>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.billingtypecode" | translate}}<span class='RedAsterisk'> *</span></label>
+                            <div class="select-wrapper">
+                                <select id="orderReferenceNo" class="form-control" [(ngModel)]="billingTypeCode">
+                                    <option value="" disabled selected>{{"labels.selectbillingtypecode" | translate}}</option>
+                                    <option *ngFor="let nbltc of nbltcModel" [value]="nbltc.bt_cd">
+                                        {{ nbltc.bt_cd + ' - ' + nbltc.bt_desc }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.entitytype" | translate}}<span class='RedAsterisk'> *</span></label>
+                            <div class="select-wrapper">
+                                <!-- <select id="entityType" class="form-control" [(ngModel)]="entityType">
+                                    <option value="" disabled selected>{{"labels.selectentitytype" | translate}}</option>
+                                    <option value="I">Individual</option>
+                                    <option value="C">Company</option>
+                                </select> -->
+                                <select id="entityType" class="form-control" style = "height: 40px;" [(ngModel)]="entityType">
+                                    <option value="" disabled selected>{{"labels.selectentitytype" | translate}}</option>
+                                    <option *ngFor="let s of entityTypeDropdown" [value]="s.param_cd">{{ s.nm_en }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="displayColumn">
+                            <label class="tableLabel">{{"labels.entitynumber" | translate}}<span class='RedAsterisk'> *</span></label>
+                            <input type="text" id="entityNumber" class="form-control" [(ngModel)]="entityNumber"
+                                [placeholder]="'labels.enterentitynumber' | translate"  (input)="checkEntityNoLength()"/>
+                                <div class="text-danger" *ngIf="isEntityNoTooLong">
+                                    {{"Entity No. must be between 5 to 30 characters." | translate}}
+                                </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"></td>
+                    <!-- <td style="text-align: right; position: relative;">
+                        <div style="display: flex; justify-content: flex-end; align-items: center; gap: 10px;">
+                            <span *ngIf="validationMessage" [style.color]="messageColor" class="validation-message"
+                                style="white-space: nowrap;">
+                                {{ validationMessage }}
+                            </span>
+                            <div class="button-container"
+                                style="margin-top: 50px; margin-right: 20px; margin-bottom: 10px;">
+                                <button type="button" class="btn btnApply" (click)="validateAndFetch()">Search Customer
+                                    ID</button>
+                            </div>
+                        </div>
+                    </td> -->
+
+                    <td style="text-align: right; position: relative;">
+                        <div class="button-container"
+                            style="margin-top: 50px; margin-right: 20px; margin-bottom: 10px;">
+                            <span *ngIf="validationMessage" [style.color]="messageColor" class="validation-message"
+                                style="white-space: nowrap;">
+                                {{ validationMessage }}
+                            </span>
+                            <button type="button" class="btn btnApply"
+                                [disabled]="billingTypeCode == '' || entityType == '' || entityNumber == '' || isEntityNoTooLong"
+                                (click)="callCustomerAPI()">
+                                {{"buttons.searchcustomerid" | translate}}</button>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+
+    <div *ngIf=customerExist>
+        <div class="content-container">
+            <!-- Left Section: Tables -->
+            <div class="tables-section">
+                <!-- <div class="MarginSeparator"></div> -->
+                <div>
+                    <h3 style="margin-left: 3%;">{{"labels.customerandentityinformation" | translate}}</h3>
+                </div>
+                <div class="MALoadingContainer">
+                    <!-- <div class="TableLoading-overlay d-flex align-items-center justify-content-center">
+             <div class="spinner-border" role="status">
+                <span class="sr-only"></span>
+            </div>
+        </div> -->
+                    <div class="tableWrapper">
+                        <table class="MATable">
+                            <thead>
+                                <tr class="MATableHeader">
+                                    <th class="thWidth">No.</th>
+                                    <th class="thFileName">{{"labels.parameter" | translate}}</th>
+                                    <th>{{"labels.value" | translate}}</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <td>{{1}}</td>
+                                <td>{{"labels.customerid" | translate}} <span class='RedAsterisk'> *</span></td>
+                                <td><input type="text" id="collectionSlipNo" class="form-control"
+                                    [placeholder]="'labels.entercustomerid' | translate"[(ngModel)]="mockCustId" disabled /></td>
+                            </tbody>
+                            <tbody>
+                                <td>{{2}}</td>
+                                <td>{{"labels.customername" | translate}} <span class='RedAsterisk'> *</span></td>
+                                <td><input type="text" id="collectionSlipNo" class="form-control"
+                                    [placeholder]="'labels.entercustomername' | translate" [(ngModel)]="custName" /></td>
+                            </tbody>
+                            <tbody>
+                                <td>{{3}}</td>
+                                <td>{{"labels.customeremail" | translate}} <span class='RedAsterisk'> *</span></td>
+                                <td><input type="text" id="collectionSlipNo" class="form-control"
+                                    [placeholder]="'labels.entercustomeremail' | translate" [(ngModel)]="custEmail" /></td>
+                            </tbody>
+                            <tbody>
+                                <td>{{4}}</td>
+                                <td>{{"labels.customerphoneno" | translate}}<span class='RedAsterisk'> *</span></td>
+                                <td><input type="text" id="collectionSlipNo" class="form-control"
+                                    (input)="checkPhoneLength()" (keypress)="allowOnlyNumbers($event)" [placeholder]="'labels.entercustomerphone' | translate" [(ngModel)]="custPhoneNumber" />
+                                    <div class="text-danger" *ngIf="isPhoneInvalid">
+                                        {{"Phone number must be between 10 to 15 digits." | translate}}
+                                    </div></td>
+                            </tbody>
+                            <tbody>
+                                <td>{{5}}</td>
+                                <td>{{"labels.customeraddressline1" | translate}}<span class='RedAsterisk'> *</span></td>
+                                <td><input type="text" id="collectionSlipNo" class="form-control"
+                                    [placeholder]="'labels.entercustomeraddress1' | translate" [(ngModel)]="custAddr1" (input)="custAddr1 = (custAddr1 || '').toUpperCase()"/></td>
+                            </tbody>
+                            <tbody>
+                                <td>{{6}}</td>
+                                <td>{{"labels.customeraddressline2" | translate}}<span class='RedAsterisk'> *</span></td>
+                                <td><input type="text" id="collectionSlipNo" class="form-control"
+                                    [placeholder]="'labels.entercustomeraddress2' | translate" [(ngModel)]="custAddr2" (input)="custAddr2 = (custAddr2 || '').toUpperCase()"/></td>
+                            </tbody>
+                            <tbody>
+                                <td>{{7}}</td>
+                                <td>{{"labels.customeraddressline3" | translate}}</td>
+                                <td><input type="text" id="collectionSlipNo" class="form-control"
+                                    [placeholder]="'labels.entercustomeraddress3' | translate" [(ngModel)]="custAddr3" (input)="custAddr3 = (custAddr3 || '').toUpperCase()"/></td>
+                            </tbody>
+                            <!-- <tbody>
+                                <td>{{8}}</td>
+                                <td>{{"labels.postcode" | translate}}</td>
+                                <td><input type="text" id="collectionSlipNo" class="form-control"
+                                    [placeholder]="'labels.enterpostcode' | translate" [(ngModel)]="postcode" /></td>
+                            </tbody> -->
+                            <tbody>
+                                <td>{{8}}</td>
+                                <td>{{"labels.postcode" | translate}}<span class='RedAsterisk'> *</span></td>
+                                <!-- <td>
+                                    <input type="text" 
+                                           id="collectionSlipNo" 
+                                           class="form-control"
+                                           [placeholder]="'labels.enterpostcode' | translate" 
+                                           [(ngModel)]="postcode" 
+                                           pattern="^[0-9]{5}$" 
+                                           maxlength="5" 
+                                           required
+                                           (input)="validatePostcode()" 
+                                           title="Postcode must be exactly 5 numeric characters" />
+                                    <div *ngIf="isInvalidPostcode" class="text-danger">
+                                        {{"Postcode must be exactly 5 digits." | translate}}
+                                    </div>
+                                </td> -->
+
+                                <td>
+                                    <ng-select name="postcode" [(ngModel)]="postcode" required
+                                        #postcodeRef="ngModel" dropdownPosition="bottom" class="form-control"
+                                        placeholder="{{'labels.pleasetypehere' | translate}}"
+                                        style="border: 1px solid blue;width:35%;"
+                                        (ngModelChange)="onPostcodeChange($event)" 
+                                        [addTag]="checkTag"  (keypress)="allow5Numbers($event)" minlength="5">
+                                        <ng-option *ngFor="let item of postCodes"
+                                            [value]="item.postcode">{{item.postcode}}</ng-option>
+                                    </ng-select>
+                                    <div *ngIf="postcodeRef.errors && postcodeRef.errors['required'] && postcodeRef.touched"
+                                        class="error-text">
+                                        {{"labels.postcodeisrequired" | translate}}
+                                    </div>
+                                    <div *ngIf="postcodeRef.errors && postcodeRef.errors['minlength'] && postcodeRef.touched"
+                                                class="error-text">{{"labels.postcodebadcount" | translate}}</div>
+                                    <!-- <div *ngIf="postcodeRef.errors && (postcodeRef.errors['maxlength']) && postcodeRef.touched"
+                                        class="error-text">{{"labels.postcodebadcount" | translate}}</div> -->
+                                </td>
+                            </tbody>
+                            
+                            <tbody>
+                                <td>{{9}}</td>
+                                <td>{{"labels.city" | translate}}<span class='RedAsterisk'> *</span></td>
+                                <!-- <td><input type="text" id="collectionSlipNo" class="form-control"
+                                    [placeholder]="'labels.entercity' | translate" [(ngModel)]="city" /></td> -->
+
+                                    <td><ng-select name="city" [(ngModel)]="city" required
+                                        #cityRef="ngModel" dropdownPosition="bottom" class="form-control"
+                                        placeholder="{{'labels.pleasetypehere' | translate}}"
+                                        style="border: 1px solid blue;"
+                                        [addTag]="upperCity" 
+                                        >
+                                        <ng-option *ngFor="let cityItem of uniqueCities" [value]="cityItem">{{ cityItem }}</ng-option>
+                                      </ng-select>
+                                    <div *ngIf="cityRef.errors && cityRef.errors['required'] && cityRef.touched"
+                                        class="error-text">
+                                        {{"labels.cityisrequired" | translate}}
+                                    </div>
+                                </td>
+                            </tbody>
+                            <tbody>
+                                <td>{{10}}</td>
+                                <td>{{"labels.state" | translate}}<span class='RedAsterisk'> *</span></td>
+                                <!-- <td>
+                                    <select id="orderReferenceNo" class="form-control" style = "height: 40px;" [(ngModel)]="state">
+                                        <option value="" disabled selected>{{"labels.enterstate" | translate}}</option>
+                                        <option *ngFor="let s of states" [value]="s.param_cd">
+                                            {{ s.nm_en }}
+                                        </option>
+                                    </select>
+                                </td> -->
+
+                                <td><ng-select name="state" [(ngModel)]="state" required
+                                    #stateRef="ngModel" dropdownPosition="bottom" class="form-control"
+                                    placeholder="{{'labels.pleasetypehere' | translate}}"
+                                    style="border: 1px solid blue;">
+                                    <ng-option *ngFor="let stateItem of uniqueStates" [value]="stateItem">{{ stateItem }}</ng-option>
+                                  </ng-select>
+                                  
+                                    <!-- <ng-select [disabled]="states.length < 1" class="form-control" name="state"
+                                        #stateRef="ngModel" [(ngModel)]="state" id="state"
+                                        dropdownPosition="bottom" [clearable]="false" [searchable]="false"
+                                        style="border: 1px solid blue;width:57%;"
+                                        placeholder="{{'labels.selecthere' | translate}}" required
+                                        maxlength="50">
+                                        <ng-option *ngFor="let item of states;"
+                                            [value]="item.param_cd">{{item.nm_en}}</ng-option>
+                                    </ng-select> -->
+                                    <!-- <select [disabled]="states.length < 1" class="form-control" name="state"
+                                        #stateRef="ngModel" [(ngModel)]="state" id="state"
+                                        style="border: 1px solid blue; width: 65%;" required>
+
+                                        <option value="" disabled selected hidden>
+                                            {{ 'labels.selecthere' | translate }}
+                                        </option>
+
+                                        <option *ngFor="let item of states" [value]="item.param_cd">
+                                            {{ item.nm_en }}
+                                        </option>
+                                    </select> -->
+
+                                    <div *ngIf="stateRef.errors && stateRef.errors['required'] && stateRef.touched"
+                                        class="error-text">
+                                        {{"labels.stateisrequired" | translate}}
+                                    </div>
+                                </td>
+                            </tbody>
+                            <tbody>
+                                <td>{{11}}</td>
+                                <td>{{"labels.entityname" | translate}}<span class='RedAsterisk'> *</span></td>
+                                <td><input type="text" id="collectionSlipNo" class="form-control"
+                                    [placeholder]="'labels.enterentityname' | translate" [(ngModel)]="entityName" /></td>
+                            </tbody>
+                            <tbody>
+                                <td>{{12}}</td>
+                                <td>{{"labels.entitytype" | translate}}<span class='RedAsterisk'> *</span></td>
+                                <td><input type="text" id="collectionSlipNo" class="form-control"
+                                    [placeholder]="'labels.enterentitytype' | translate" [(ngModel)]="entityType" disabled /></td>
+                            </tbody>
+                            <tbody>
+                                <td>{{13}}</td>
+                                <td>{{"labels.entitynumber" | translate}}<span class='RedAsterisk'> *</span></td>
+                                <td><input type="text" id="collectionSlipNo" class="form-control"
+                                    [placeholder]="'labels.enterentitynumber' | translate" [(ngModel)]="entityNumber" disabled /></td>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+
+                <div class="MarginSeparator"></div>
+
+                <div>
+                    <h3 style="margin-left: 3%;">{{"labels.nonbillinginformation" | translate}}</h3>
+                </div>
+                <div class="paymentinfo">
+
+                    <table class="MATable">
+                        <thead>
+                            <tr class="MATableHeader">
+                                <th class="thWidth">No.</th>
+                                <th class="thFileName">{{"labels.parameter" | translate}}</th>
+                                <th>{{"labels.value" | translate}}</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <td>{{1}}</td>
+                            <td>{{"labels.Return Cheque No." | translate}}</td>
+                            <td><input type="text" id="collectionSlipNo" class="form-control"
+                                    placeholder="Enter Return Cheque No." [(ngModel)]="chequeNo" disabled/></td>
+                        </tbody>
+
+                        <tbody>
+                            <td>{{2}}</td>
+                            <td>{{"labels.Return Cheque Amount (RM)"| translate}}</td>
+                            <!-- <td><input type="text" id="collectionSlipNo" class="form-control"
+                                    placeholder="Return Cheque Amount" [(ngModel)]="chequeAmt | number: '1.2-2'" disabled /></td> -->
+                            <td>
+                                <input type="text" id="collectionSlipNo" class="form-control"
+                                    placeholder="Return Cheque Amount (RM)" [value]="chequeAmt | number: '1.2-2'"
+                                    disabled />
+                            </td>
+                        </tbody>
+
+                        <!-- <tbody>
+                            <td>{{3}}</td>
+                            <td>{{"labels.Non-billing No."| translate}}</td>
+                            <td><input type="text" id="collectionSlipNo" class="form-control"
+                                    placeholder="Non-billing number will be auto-generated" [(ngModel)]="nbrunno"
+                                    disabled /></td>
+                        </tbody> -->
+                        <tbody>
+                            <td>{{3}}</td>
+                            <td>{{"labels.Non-billing Description"| translate}} <span class='RedAsterisk'> *</span></td>
+                            <td><input type="text" id="collectionSlipNo" class="form-control"
+                                [placeholder]="'labels.enternonbillingdesc' | translate" [(ngModel)]="nbdesc" /></td>
+                        </tbody>
+                    </table>
+                    <!-- <div class="paymentinfodetails">
+            <label class="bold">payeremail:</label>
+            <label class="form-control" style="margin-top: 10px;">mmmmm</label>
+        </div>
+        <div class="paymentinfodetails">
+            <label class="bold">paymentmode:</label>
+            <div class="marginTop">
+                <input type="radio" checked class="custom-radio" />
+                <span class="marginLeft">hh</span>
+                <div class="payment-mode">
+                    <div class="marginTop">
+                    <span class="small-dot"></span>
+                    <span class="marginLeft">Small Dot Label</span>
+                    <label class="form-control" style="margin-left: 45px;">mmmmm</label>
+                    </div>
+                </div>
+                <div class="marginTop">
+                    <span class="small-dot"></span>
+                    <span style="margin-left: 10px;">Cheque</span>
+                </div>
+                <div class="marginTop">
+                    <span class="small-dot"></span>
+                    <span class="marginLeft">Extra</span>
+                </div>
+            </div>
+        </div>
+        <div class="tableWrapperPaymentInfo">
+            <table class="MATable">
+                <thead>
+                    <tr class="MATableHeader">
+                        <th>No.</th>
+                        <th>Item Description</th>
+                        <th>quantity</th>
+                        <th>amount(RM)</th>
+                        <th>{{"labels.action" | translate}}</th>
+                        <th>{{"labels.initiatedby" | translate}}</th>
+                        <th>{{"labels.initiatedtime" | translate}}</th>
+                        <th>{{"labels.completedtime" | translate}}</th>
+                        <th>{{"labels.filesize" | translate}}</th>
+                    </tr>
+                </thead>
+            </table>
+        </div> -->
+                </div>
+                <div class="MarginSeparator"></div>
+                <div>
+                    <h3 style="margin-left: 3%;">{{"labels.others" | translate}}</h3>
+                </div>
+                <div class="tableWrapper">
+                    <table class="MATable">
+                        <thead>
+                            <tr class="MATableHeader">
+                                <th class="thWidth">No.</th>
+                                <th class="thFileName">{{"labels.parameter" | translate}}</th>
+                                <th>{{"labels.value" | translate}}</th>
+                            </tr>
+                        </thead>
+
+                        <!-- <tbody>
+                            <td>{{1}}</td>
+                            <td>{{"labels.requestorname" | translate}}<span class='RedAsterisk'> *</span></td>
+                            <td><input type="text" id="collectionSlipNo" class="form-control"
+                                [placeholder]="'labels.enterrequestorname' | translate"[(ngModel)]="requestorName" /></td>
+                        </tbody>
+                        <tbody>
+                            <td>{{2}}</td>
+                            <td>{{"labels.requestoremail" | translate}}<span class='RedAsterisk'> *</span></td>
+                            <td><input type="text" id="collectionSlipNo" class="form-control"
+                                [placeholder]="'labels.enterrequestoremail' | translate" [(ngModel)]="requestorEmail" /></td>
+                        </tbody> -->
+                        <tbody>
+                            <td>{{1}}</td>
+                            <td>{{"labels.payername" | translate}}<span class='RedAsterisk'> *</span></td>
+                            <td><input type="text" id="collectionSlipNo" class="form-control"
+                                [placeholder]="'labels.enterpayername' | translate" [(ngModel)]="payerName" /></td>
+                        </tbody>
+
+                        <tbody>
+                            <td>{{2}}</td>
+                            <td>{{"labels.payeremailnb" | translate}}<span class='RedAsterisk'> *</span></td>
+                            <td><input type="email" id="collectionSlipNo" class="form-control"
+                                [placeholder]="'labels.enterpayeremail' | translate" [(ngModel)]="payerEmail" /></td>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="MarginSeparator"></div>
+                <div>
+                    <h3 style="margin-left: 3%;">{{"labels.listofnonbillingitems" | translate}}</h3>
+                </div>
+                <!-- <div class="tableWrapper">
+                <table class="MATable">
+                    <thead>
+                        <tr class="MATableHeader">
+                            <th class="thWidth">No.</th>
+                            <th class="thFileName">Billing Item</th>
+                            <th class="thFileName">Unit Price (RM)*</th>
+                            <th class="thFileName">Quantity*</th>
+                            <th class="thWidth">Tax (%)</th>
+                            <th class="thWidth">Tax (RM)</th>
+                            <th class="thFileName">Total (RM)</th>
+                        </tr>
+                    </thead>
+
+                    <tbody *ngIf="nbltcItemModel.length > 0; else noResults">
+
+                        <tr *ngFor="let item of nbltcItemModel; let i = index">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ item.fee_detail_nm_e}}</td>
+                            <td><input type="number" id="collectionSlipNo" class="form-control" [(ngModel)]="item.unit_fee" placeholder="Enter Unit Price (RM)" /></td>
+                            <td><input type="number" id="collectionSlipNo" class="form-control" placeholder="Enter Quantity"/></td>
+                            <td>{{ item.tax_pct }}%</td>
+                            <td>{{ item.tax_pct | number: '1.2-2' }}</td>
+                            <td>{{ item.tax_pct | number: '1.2-2'}}</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="6" style="text-align: right; font-weight: bold;">Grand Total (RM):</td>
+                            <td>{{ grandTotal | number: '1.2-2' }}</td>
+                        </tr>
+                    </tfoot>
+
+                </table>
+                <ng-template #noResults>
+                    <tr style="height: 100px;">
+                        <td colspan="7" class="text-center">{{ "searchcriteriadoesnotmatch" | translate }}</td>
+                    </tr>
+                </ng-template>
+            </div> -->
+                <div class="tableWrapper">
+                    <table class="MATable">
+                        <thead>
+                            <tr class="MATableHeader">
+                                <th class="thWidth">No.</th>
+                                <th class="thFileName">{{"labels.billingitem" | translate}}</th>
+                                <th class="thFileSize">{{"labels.unitpricerm" | translate}}<span class='RedAsterisk'> *</span></th>
+                                <th class="thFileSize">{{"labels.quantity" | translate}}<span class='RedAsterisk'> *</span></th>
+                                <th class="thFileSize">{{"labels.tax%" | translate}}</th>
+                                <th class="thFileSize">{{"labels.taxrm" | translate}}</th>
+                                <th class="thFileSize">{{"labels.amountrm" | translate}}</th>
+                            </tr>
+                        </thead>
+
+                        <tbody *ngIf="nbltcItemModel.length > 0; else noResults">
+                            <tr *ngFor="let item of nbltcItemModel; let i = index">
+                                <td>{{ i + 1 }}</td>
+                                <td>{{ item.fee_detail_nm_e }}</td>
+                                <td>
+                                    <input type="number" class="form-control" [(ngModel)]="item.unit_fee"
+                                        (input)="calculateRowTotal(i)" [placeholder]="'labels.enterunitpricerm' | translate" min = "0"/>
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control" [(ngModel)]="quantities[i]"
+                                        (input)="calculateRowTotal(i)" [placeholder]="'labels.enterquantity' | translate" min = "0" (keydown)="preventTyping($event)"/>
+                                </td>
+                                <td>{{ item.tax_pct | number: '1.2-2'}}</td>
+                                <td>{{ taxAmounts[i] | number: '1.2-2' }}</td>
+                                <td>{{ rowTotals[i] | number: '1.2-2' }}</td>
+                            </tr>
+                        </tbody>
+
+                        <tfoot>
+                            <tr>
+                                <td colspan="6" style="text-align: right; font-weight: bold;">{{"labels.totalamountrm" | translate}}</td>
+                                <td>{{ grandTotal | number: '1.2-2' }}</td>
+                            </tr>
+
+                                <tr *ngIf="chequeAmt !== grandTotal">
+                                    <td colspan="7" style="color: red; font-weight: bold; text-align: left;">
+                                        {{ 'labels.Return Cheque Amount (RM) must be the same as the Total Amount (RM).' | translate }}
+                                    </td>
+                                </tr>
+                        </tfoot>
+                    </table>
+
+                    <ng-template #noResults>
+                        <tr style="height: 100px;">
+                            <td colspan="7" class="text-center">{{ "searchcriteriadoesnotmatch" | translate }}</td>
+                        </tr>
+                    </ng-template>
+                </div>
+
+                <div class="MarginSeparator"></div>
+
+                <!-- <div>
+                <h3 style="margin-left: 3%;">Historical Table</h3>
+            </div>
+            <div class="tableWrapper">
+                <table class="MATable">
+                    <thead>
+                        <tr class="MATableHeader">
+                            <th class="thWidth">No.</th>
+                            <th>Action</th>
+                            <th class="thFileName">Action Timestamp</th>
+                            <th>Performed By</th>
+                            <th>Assigned To</th>
+                            <th>Remarks</th>
+                            <th class="thAction">{{"labels.action" | translate}}</th>
+                    <th class="thInitiadtedBy">{{"labels.initiatedby" | translate}}</th>
+                    <th>{{"labels.initiatedtime" | translate}}</th>
+                    <th>{{"labels.completedtime" | translate}}</th>
+                    <th class="thFileSize">{{"labels.filesize" | translate}}</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div> -->
+            </div>
+            <div class="MarginSeparator"></div>
+            <!-- Right Section: Document Submission -->
+            <!-- <div class="document-submission">
+            <h3>Document Submission</h3>
+            <label for="supporting-docs">Supporting Document(s)</label>
+            <select id="supporting-docs" class="form-control">
+                <option>Select File...</option>
+            </select>
+            <p>File Limit: 10MB</p>
+            <button class="btn btn-primary">Select File</button>
+
+            <label for="rca-docs">RCA File Attachment</label>
+            <select id="rca-docs" class="form-control">
+                <option>Select File...</option>
+            </select>
+            <p>File Limit: 10MB</p>
+            <button class="btn btn-primary">Select File</button>
+
+            <label for="reason">Reason<span class='RedAsterisk'>*</span></label>
+            <select id="reason" class="form-control">
+                <option>Select here...</option>
+            </select>
+
+            <label for="remarks">Remarks</label>
+            <textarea id="remarks" class="form-control" placeholder="Enter your remarks here..."></textarea>
+
+            <div class="buttons">
+                <button class="btn btn-secondary">Cancel</button>
+                <button class="btn btn-success">Submit</button>
+            </div>
+        </div> -->
+            <div class="document-submission">
+                <h3>{{ "labels.documentssubmission" | translate }}</h3>
+
+                <!-- Supporting Documents -->
+                <div class="divider form-group">
+                    <label>{{ "labels.Supporting Documents" | translate }}</label>
+                    <div class="file-container">
+                        <ng-container *ngFor="let file of selectedFiles; let last = last">
+                            {{ file.name }}{{ !last ? ', ' : '' }}
+                        </ng-container>
+                    </div>
+                    <div class="fileSize">
+                        {{ "labels.File Limit" | translate }}: {{ selectedFilesSize / 1000000 | number:'1.2-2' }}/10MB
+                    </div>
+                    <!-- Flex container to align buttons -->
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <label for="supportingFilesInput" class="btn btn-primary"
+                            style="background-color: #007bff; color: white;">
+                            {{ "buttons.Choose File(s)" | translate }}
+                        </label>
+                        <input type="file" #supportingFilesInput id="supportingFilesInput" (change)="onSupportingFilesSelected($event)"
+                            multiple style="display: none;" />
+                        <button type="button" class="btn btnCancel" (click)="clearSupportingFiles()">
+                            {{ "buttons.Clear File(s)" | translate }}
+                        </button>
+                    </div>
+                </div>
+                <div class="MarginSeparator"></div>
+                <!-- RCA Attachment -->
+                <div class="divider form-group">
+                    <label>{{ "labels.RCA File Attachment" | translate }} <span class='RedAsterisk'>*</span></label>
+                    <div class="file-container">
+                        {{ selectedRcaFile?.name }}
+                    </div>
+                    <div class="fileSize">
+                        {{ "labels.File Limit" | translate }}: {{ selectedRcaFileSize / 1000000 | number:'1.2-2' }}/10MB
+                    </div>
+                    <!-- Flex container to align buttons -->
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <label for="rcaFileInput" class="btn btn-primary"
+                            style="background-color: #007bff; color: white;">
+                            {{ "buttons.Choose File" | translate }}
+                        </label>
+                        <input type="file" #rcaFileInput id="rcaFileInput" (change)="onRcaFileSelected($event)"
+                            style="display: none;" />
+                        <button type="button" class="btn btnCancel" (click)="clearRcaFile()">
+                            {{ "buttons.Clear File" | translate }}
+                        </button>
+                    </div>
+                </div>
+                <div class="MarginSeparator"></div>
+                <!-- Other Form Elements -->
+                <label for="reason">{{ "labels.reason" | translate }}<span class='RedAsterisk'> *</span></label>
+                <select id="reason" class="form-control" [(ngModel)]="selectedReason">
+                    <option value="" disabled selected>{{ "labels.selectreason" | translate }}</option>
+                    <option *ngFor="let rctype of rctypeModel" [value]="rctype.nm_en">{{ rctype.nm_en }}</option>
+                </select>
+                <div class="MarginSeparator"></div>
+                <label for="remarks">{{ "labels.remarks" | translate }}</label>
+                <textarea id="remarks" class="form-control" [placeholder]="'labels.enteryourremarksherenbl' | translate"
+                    [(ngModel)]="remarks" maxlength="255"></textarea>
+                <div class="text-muted">
+                    {{ 255 - (remarks.length || 0) }} {{ "labels.charactersremaining" | translate }}
+                </div>
+                <div class="MarginSeparator"></div>
+                <!-- Submit Button -->
+                <div class="buttons">
+                    <button class="btn btn-secondary" (click)="cancel()">{{"buttons.cancel" | translate}}</button>
+                    <button class="btn btnApply" [disabled]="!isFormValid() || !validateChequeAndTotal()"
+                        (click)="submitNonBilling()">{{"buttons.submit" | translate}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <loading-overlay
+        *ngIf="isLoading"
+        [prefixText]="''"
+        [loadingText]="'labels.Registration In Progress'"
+        [suffixText]="'...'"
+    >
+    </loading-overlay>
+</body>

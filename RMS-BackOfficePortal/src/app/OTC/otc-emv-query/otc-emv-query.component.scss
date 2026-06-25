@@ -1,0 +1,39 @@
+@import '../../app.component.scss';
+
+.button-group {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    float:right;
+    display: flex;
+  justify-content: space-between;
+  align-items: center;
+  }
+
+.btnSubmit{
+    margin-right:30px;
+    margin-left:30px;
+   
+}
+
+.btn-disable {
+  background-color: red;
+  color: white;
+}
+
+.btn-cancel {
+  background-color: grey;
+  color: white;
+}
+
+.btn-delete {
+    background-color: #21ba45;
+    color: white;
+  }
+
+// .btnDelete {
+//   background-color: #21ba45; /* Green */
+//   color: white;
+//   border: none;
+//   padding: 5px 10px;
+//   cursor: pointer;
+// }

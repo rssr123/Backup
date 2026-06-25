@@ -1,0 +1,240 @@
+<body *ngIf="permViewListingAllow === 1" class="BodyCointaner">
+  
+  <!-- Mobile Search Section (visible only on mobile) -->
+  <div class="mobile-search-section">
+      <div class="mobile-search-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">{{ "search filter" | translate }}</h5>
+          <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#mobileSearchPanel">
+              <i class="bi bi-search"></i>
+          </button>
+      </div>
+      
+      <div class="collapse" id="mobileSearchPanel">
+          <div class="mobile-search-body">
+              <!-- Task ID -->
+              <div class="form-group">
+                  <label for="taskIDMobile">{{"labels.taskid" | translate}}</label>
+                  <input type="text" class="form-control" id="taskIDMobile" [(ngModel)]="task_id" />
+              </div>
+
+              <!-- Settlement Date -->
+              <div class="form-group">
+                  <label>{{"labels.settlementdate" | translate}}</label>
+                  <input type="text" [placeholder]="'datepicker' | translate" class="form-control"
+                      [bsConfig]="{ dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false, containerClass: 'theme-default', adaptivePosition: true }"
+                      bsDatepicker [(ngModel)]="settlement_date" name="settlementdate" readonly />
+              </div>
+
+              <!-- Merchant ID -->
+              <div class="form-group">
+                  <label for="merchantIDMobile">{{"labels.merchantid" | translate}}</label>
+                  <input type="text" class="form-control" id="merchantIDMobile" [(ngModel)]="merchant_id" />
+              </div>
+
+              <!-- Task Status -->
+              <div class="form-group">
+                  <label for="taskStatusMobile">{{"labels.taskstatus" | translate}}</label>
+                  <select class="form-control form-select" id="taskStatusMobile" name="taskStatus" [(ngModel)]="task_status">
+                      <option *ngFor="let item of taskstatus" [value]="item.param_cd">{{item.nm_en}}</option>
+                  </select>
+              </div>
+
+              <!-- Date Uploaded -->
+              <div class="form-group">
+                  <label>{{"labels.dateuploaded" | translate}}</label>
+                  <input type="text" [placeholder]="'datepicker' | translate" class="form-control"
+                      [bsConfig]="{ dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false, containerClass: 'theme-default', adaptivePosition: true }"
+                      bsDatepicker [(ngModel)]="date_upload" name="dateuploaded" readonly />
+              </div>
+
+              <!-- PG Settlement Status -->
+              <div class="form-group">
+                  <label for="settlementStatusMobile">{{"labels.pgsettlementstatus" | translate}}</label>
+                  <select class="form-control form-select" id="settlementStatusMobile" name="settlementStatus" [(ngModel)]="settlement_status_option">
+                      <option *ngFor="let item of settlement_status" [value]="item.param_cd">{{item.nm_en}}</option>
+                  </select>
+              </div>
+
+              <!-- Buttons -->
+              <div class="button-group-mobile">
+                  <button class="btn btnApply w-100 mb-2" (click)="apply()" data-bs-toggle="collapse" data-bs-target="#mobileSearchPanel">{{ 'buttons.apply' | translate }}</button>
+                  <button class="btn btnReset w-100" (click)="reset()">{{ 'buttons.reset' | translate}}</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <div [class.right-section-collapsed]="rightSectionCollapsed" class="PAContainer73">
+    <!-- left section -->
+    <div class="left-section73">
+      <div>
+
+        <div *ngIf="showResultAlert" [@fadeInOut]>
+          <div class="alert alert-warning PA-alert-box" role="alert">
+            {{"showResultAlert" | translate}}
+          </div>
+        </div>
+
+        <h2>{{"labels.bankstatementreconciliationfornonrmsreceipting" | translate}}</h2>
+
+      </div>
+
+      <div class="MATableContainer TablePosition-relative" *ngIf="isDisplay">
+        <div class="MALoadingContainer">
+          <!-- Loading spinner overlay -->
+          <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+            <div class="spinner-border" role="status">
+              <span class="sr-only"></span>
+            </div>
+          </div>
+
+          <!-- Your table structure -->
+          <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+            <thead>
+              <tr class="MATableHeader">
+                <th>{{"No" | translate}}</th>
+                <th>{{"labels.taskid" | translate}}</th>
+                <th>{{"labels.sourcesystem" | translate}}</th>
+                <th>{{"labels.settlementdate" | translate}}</th>
+                <th>{{"labels.merchantid" | translate}}</th>
+                <th>{{"labels.taskstatus" | translate}}</th>
+                <th>{{"labels.dateuploaded" | translate}}</th>
+                <th>{{"labels.pgsettlementstatus" | translate}}</th>
+                <th>{{"labels.action" | translate}}</th>
+              </tr>
+            </thead>
+
+            <ng-container *ngIf="model.length > 0; else noResults">
+              <tbody *ngIf="isDisplay">
+
+                <tr *ngFor="let entry of model; let i = index">
+                  <td>{{ (page - 1) * itemsPerPage + i + 1 }}</td>
+                  <td>{{ entry.task_id ? entry.task_id : '-'}}</td>
+                  <td>{{ entry.ss_cd ? entry.ss_cd : '-'}}</td>
+                  <td>{{ entry.dt_settlement | date : "dd MMM yyyy" }}</td>
+                  <td>{{ entry.merchant_id ? entry.merchant_id : '-'}}</td>
+                  <td>{{ entry.task_status ? entry.task_status : '-'}}</td>
+                  <td>{{ (entry.dt_upload | date : "dd MMM yyyy HH:mm:ss") ? (entry.dt_upload | date : "dd MMM yyyy HH:mm:ss") : '-' }}</td>
+                  <td>{{ entry.settle_status ? entry.settle_status : '-'}}</td>
+                  <td>
+                    <button *ngIf="entry.task_status == 'COMPLETED'" type="button" class="btn btnAdd" (click)="navigateToDetail(entry)" [disabled]="!permViewAllow">{{"buttons.view" | translate}}</button>
+                    <button *ngIf="entry.task_status == 'OPEN'" type="button" class="btn btnApply" (click)="navigateToDetail(entry)" [disabled]="!permReconcileAllow">{{"buttons.reconcile" | translate}}</button>
+                  </td>
+                </tr>
+              </tbody>
+            </ng-container>
+            <ng-template #noResults>
+              <tr style="height: 100px;">
+                <td colspan="20" class="text-center">{{"searchcriteriadoesnotmatch"| translate}}</td>
+              </tr>
+            </ng-template>
+          </table>
+        </div>
+
+        <div class="MAPagination" *ngIf="isDisplay">
+          <div class="fgSpacing">
+            <div *ngIf="page * itemsPerPage < totalRecords">
+              {{"showing" | translate}} {{ page * itemsPerPage }} {{"from" | translate}} {{ totalRecords }} {{"results"
+              | translate}}
+            </div>
+            <div *ngIf="!(page * itemsPerPage < totalRecords)">
+              {{"showing" | translate}} {{ totalRecords }} {{"from" | translate}} {{ totalRecords }} {{"results" |
+              translate}}
+            </div>
+          </div>
+          <div class="pagination-row">
+            <div class="dropdown">
+              <button class="btn btn-secondary dropdown-toggle PaginControl" type="button" id="dropdownMenuButton"
+                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{ selectedValue }}
+              </button>
+              <div class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton">
+                <button class="dropdown-item" *ngFor="let singleItem of dropdownOptions" (click)="LoadData(singleItem)">
+                  {{ singleItem }}
+                </button>
+              </div>
+            </div>
+
+            <ngb-pagination [(page)]="page" [pageSize]="itemsPerPage" [collectionSize]="totalRecords"
+              (pageChange)="loadData()"></ngb-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- right section -->
+    <div class="middle-section73">
+      <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#rightSection"
+        [attr.aria-expanded]="!rightSectionCollapsed" (click)="toggleRightSection()">
+        <ng-container *ngIf="rightSectionCollapsed; else arrowIcon">
+          <i class="bi bi-search"></i>
+        </ng-container>
+        <ng-template #arrowIcon>
+          <i class="bi" [class.bi-chevron-double-right]="!rightSectionCollapsed"
+            [class.bi-chevron-double-left]="rightSectionCollapsed"></i>
+        </ng-template>
+      </button>
+    </div>
+
+    <div class="right-section73 collapse" [class.show]="!rightSectionCollapsed">
+      <div class="SingleContainer">
+        <!-- Header -->
+        <div class="SingleContainerHeader">
+          <h2 class="text-center">{{ "search filter" | translate }}</h2>
+        </div>
+
+        <!-- Search Filter -->
+        <div class="form-group">
+          <label for="Task ID">{{"labels.taskid" | translate}}</label>
+          <input type="text" class="form-control" id="Task ID" [(ngModel)]="task_id" />
+        </div>
+
+
+        <div class="form-group">
+          <label>{{"labels.settlementdate" | translate}}</label>
+          <input type="text" [placeholder]="'datepicker' | translate" class="form-control"
+            [bsConfig]="{ dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false, containerClass: 'theme-default', adaptivePosition: true }"
+            bsDatepicker [(ngModel)]="settlement_date" name="settlementdate" readonly />
+        </div>
+
+
+        <div class="form-group">
+          <label for="Task ID">{{"labels.merchantid" | translate}}</label>
+          <input type="text" class="form-control" id="Merchant ID" [(ngModel)]="merchant_id" />
+        </div>
+
+
+        <div class="form-group">
+          <label for="Task Status">{{"labels.taskstatus" | translate}}</label>
+          <select class="dropdown" class="form-control form-select" id="Task Status" name="Task Status"
+            [(ngModel)]="task_status">
+            <option *ngFor="let item of taskstatus" [value]="item.param_cd">{{item.nm_en}}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>{{"labels.dateuploaded" | translate}}</label>
+          <input type="text" [placeholder]="'datepicker' | translate" class="form-control"
+            [bsConfig]="{ dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false, containerClass: 'theme-default', adaptivePosition: true }"
+            bsDatepicker [(ngModel)]="date_upload" name="dateuploaded" readonly />
+        </div>
+
+
+        <div class="form-group">
+          <label for="Settlement Status">{{"labels.pgsettlementstatus" | translate}}</label>
+          <select class="dropdown" class="form-control form-select" id="Settlement Status" name="Settlement Status"
+            [(ngModel)]="settlement_status_option">
+            <option *ngFor="let item of settlement_status" [value]="item.param_cd">{{item.nm_en}}</option>
+          </select>
+        </div>
+
+        <!-- Buttons -->
+        <div class="button-group">
+          <button class="btn btnApply" (click)="apply()">{{ 'buttons.apply' | translate }}</button>
+          <button class="btn btnReset" (click)="reset()">{{ 'buttons.reset' | translate}}</button>
+        </div>
+        <br /><br />
+      </div>
+    </div>
+  </div>
+
+</body>

@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.5.final using JasperReports Library version 6.20.5-3efcf2e67f959db3888d79f73dde2dbd7acb4f8e  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="SSM_Receipt" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="517d0de1-01a5-4c18-976d-323258f85668">
+	<subDataset name="listOfItems" uuid="57e27615-035c-412f-88fc-57c118cdb5f3">
+		<field name="item_desc" class="java.lang.String"/>
+		<field name="qty" class="java.lang.Integer"/>
+		<field name="unit_fee" class="java.math.BigDecimal"/>
+		<field name="tax_amt" class="java.math.BigDecimal"/>
+		<field name="gross_amt" class="java.math.BigDecimal"/>
+	</subDataset>
+	<parameter name="logo" class="java.io.InputStream"/>
+	<parameter name="rmsRTT" class="com.maven.rms.models.SlipRequest"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<background>
+		<band height="802" splitType="Stretch">
+			<frame borderSplitType="NoBorders">
+				<reportElement positionType="FixRelativeToBottom" stretchType="ContainerBottom" mode="Opaque" x="-20" y="90" width="21" height="712" isPrintWhenDetailOverflows="true" backcolor="#2D2B84" uuid="6cd2d7e3-b440-4265-ac04-4daa0bba8ae0">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+				</reportElement>
+			</frame>
+			<frame>
+				<reportElement mode="Opaque" x="-20" y="-30" width="21" height="120" forecolor="#FBF003" backcolor="#FBF003" uuid="e2d602dc-28fb-4fd8-b942-a8fcacf03c81"/>
+			</frame>
+		</band>
+	</background>
+	<title>
+		<band height="405">
+			<frame>
+				<reportElement x="17" y="120" width="527" height="130" uuid="371550bd-987d-427d-8c8c-274ed05b1cbe"/>
+				<staticText>
+					<reportElement mode="Transparent" x="100" y="10" width="195" height="27" forecolor="#515151" backcolor="#FFFFFF" uuid="d2ecd45a-9f97-437d-8c9c-6279d81fe0c9"/>
+					<textElement textAlignment="Right" markup="styled">
+						<font size="20" isBold="true"/>
+					</textElement>
+					<text><![CDATA[	REFUND SLIP]]></text>
+				</staticText>
+				<frame>
+					<reportElement x="130" y="50" width="94" height="40" uuid="27cbe240-f6d4-4bf8-86d0-45cf8e0109d6"/>
+					<staticText>
+						<reportElement mode="Transparent" x="-118" y="-10" width="212" height="70" forecolor="#515151" backcolor="#FFFFFF" uuid="3a0c3a70-90bb-4585-9421-971ea9f53df5">
+							<property name="com.jaspersoft.studio.unit.y" value="px"/>
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						</reportElement>
+						<textElement textAlignment="Right" markup="styled">
+							<font size="13"/>
+							<paragraph lineSpacing="Fixed" lineSpacingSize="16.0"/>
+						</textElement>
+						<text><![CDATA[<style forecolor='#818181'>Refund Slip Number:
+Refund Application Number: 
+Printed Date:</style>]]></text>
+					</staticText>
+					<staticText>
+						<reportElement mode="Transparent" x="-130" y="130" width="106" height="100" forecolor="#515151" backcolor="#FFFFFF" uuid="0dc56432-057e-49b6-b7c1-7e6f0b2854cd">
+							<property name="com.jaspersoft.studio.unit.y" value="px"/>
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						</reportElement>
+						<textElement textAlignment="Left" markup="styled">
+							<font size="13"/>
+							<paragraph lineSpacing="Fixed" lineSpacingSize="22.0"/>
+						</textElement>
+						<text><![CDATA[<style forecolor='#818181'>Payee Name:
+Entity Number: 
+Phone Number:
+Email:</style>]]></text>
+					</staticText>
+					<staticText>
+						<reportElement mode="Transparent" x="-130" y="270" width="173" height="230" forecolor="#515151" backcolor="#FFFFFF" uuid="ef49d1bd-cab6-4017-ac98-6b5dbe7de7d7">
+							<property name="com.jaspersoft.studio.unit.y" value="px"/>
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						</reportElement>
+						<textElement textAlignment="Left" markup="styled">
+							<font size="13"/>
+							<paragraph lineSpacing="Fixed" lineSpacingSize="22.0"/>
+						</textElement>
+						<text><![CDATA[<style forecolor='#818181'>Transaction Date:
+Order Reference Number: 
+Payment Method:
+Payment Mode:
+State (Branch Code):
+Receipt Number:
+Amount Approved for Refund:
+Reason for Refund:</style>]]></text>
+					</staticText>
+				</frame>
+				<staticText>
+					<reportElement mode="Transparent" x="0" y="150" width="159" height="27" forecolor="#515151" backcolor="#FFFFFF" uuid="efced541-7383-4226-88d3-41366001dd3d"/>
+					<textElement textAlignment="Left" markup="styled">
+						<font size="16" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Payee Information]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Transparent" x="0" y="290" width="336" height="27" forecolor="#515151" backcolor="#FFFFFF" uuid="0137e1b7-a552-47e5-b5e6-9fc337924351"/>
+					<textElement textAlignment="Left" markup="styled">
+						<font size="16" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Information of transaction to be refunded]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="230" y="40" width="120" height="20" uuid="38fe4d85-2a4e-4213-b3ba-dd4ff43f3e15"/>
+					<textFieldExpression><![CDATA[$P{rmsRTT}.getSlipNo()]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="230" y="60" width="178" height="20" uuid="e24a0ff9-df66-4788-862f-79ee84ef9acc"/>
+					<textFieldExpression><![CDATA[$P{rmsRTT}.getRttAppNo()]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="230" y="80" width="178" height="20" uuid="new-uuid-for-txnId"/>
+					<textFieldExpression><![CDATA[$P{rmsRTT}.getTxnId()]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement x="-5" y="-13" width="559" height="120" uuid="12194391-7222-4afa-9906-e047fc38d476"/>
+				<staticText>
+					<reportElement mode="Transparent" x="215" y="22" width="324" height="50" forecolor="#515151" backcolor="#FFFFFF" uuid="4cce53e6-82e6-4b80-8a76-1f9f2590d909"/>
+					<textElement markup="styled">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[<style forecolor='#818181'>SURUHANJAYA SYARIKAT MALAYSIA
+Menara SSM@Sentral, No 7 Jalan Stesen Sentral 5,
+Kuala Lumpur Sentral, 50623, Kuala Lumpur</style>]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Transparent" x="215" y="72" width="324" height="40" forecolor="#515151" backcolor="#FFFFFF" uuid="0dc77667-7b80-4952-908d-0f623d739888"/>
+					<textElement markup="styled">
+						<font size="11"/>
+					</textElement>
+					<text><![CDATA[<style forecolor='#818181'>Tel: +60322994400 | Contact Centre: 03-72214000
+Email: enquiry@ssm.com.my | Website: www.ssm.com.my</style>]]></text>
+				</staticText>
+				<image isUsingCache="true">
+					<reportElement x="0" y="0" width="250" height="120" uuid="7dff5ca2-4b09-4fcc-bcb9-089043e9bae9"/>
+					<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+				</image>
+				<staticText>
+					<reportElement x="45" y="109" width="514" height="2" uuid="9d252ef0-cc04-4b20-a081-c9899fd5314c">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<text><![CDATA[]]></text>
+				</staticText>
+			</frame>
+			<textField>
+				<reportElement x="220" y="300" width="120" height="20" uuid="815bae40-5be5-4659-922f-8626c79afb93"/>
+				<textFieldExpression><![CDATA[$P{rmsRTT}.getCustNm()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="220" y="328" width="120" height="20" uuid="abd8ff5a-cbd0-4fe9-9ee1-79a55c18a211"/>
+				<textFieldExpression><![CDATA[$P{rmsRTT}.getEntNo()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="220" y="353" width="172" height="20" uuid="8034ee1b-52ac-430b-96e1-a34399b125af"/>
+				<textFieldExpression><![CDATA[$P{rmsRTT}.getCustPhone()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="220" y="383" width="172" height="20" uuid="6d434ed7-b614-4d86-b4e9-f298b8d00fa9"/>
+				<textFieldExpression><![CDATA[$P{rmsRTT}.getCustEmail()]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="120" splitType="Stretch">
+			<printWhenExpression><![CDATA[$V{PAGE_NUMBER} != 1]]></printWhenExpression>
+			<textField>
+				<reportElement x="221" y="90" width="172" height="20" uuid="03d1d397-f539-44e4-9eae-0e00e1559921"/>
+				<textFieldExpression><![CDATA[$P{rmsRTT}.getRmsType()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="221" y="60" width="172" height="20" uuid="7e3a2bb3-c391-4e1e-852b-14d775965a41"/>
+				<textFieldExpression><![CDATA[$P{rmsRTT}.getOrnNo()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="65" splitType="Stretch">
+			<textField>
+				<reportElement x="221" y="-10" width="172" height="20" uuid="388e7a01-2478-4306-861b-22f3b9f5d321"/>
+				<textFieldExpression><![CDATA[$P{rmsRTT}.getRefundTy()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="221" y="20" width="172" height="20" uuid="ce0a835b-1ac4-47c5-8ee4-3eec8adca352"/>
+				<textFieldExpression><![CDATA[$P{rmsRTT}.getCustState()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="221" y="40" width="172" height="20" uuid="9728191f-98d9-4b03-957d-64d3ea6669ac"/>
+				<textFieldExpression><![CDATA[$P{rmsRTT}.getRcptNo()]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="114" splitType="Stretch">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<textField>
+				<reportElement x="220" y="0" width="172" height="20" uuid="79476fd2-7a4f-4c60-ba8f-b007fb96c964"/>
+				<textFieldExpression><![CDATA[$P{rmsRTT}.getRefundAmt()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="220" y="30" width="172" height="20" uuid="9cc7a159-7c64-403f-aaba-1a2c69d4bf1c"/>
+				<textFieldExpression><![CDATA[$P{rmsRTT}.getRefundReason()]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="75" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Transparent" x="130" y="39" width="295" height="36" forecolor="#515151" backcolor="#FFFFFF" uuid="ea7972c7-7194-4d93-8421-b28087033dcd"/>
+				<textElement textAlignment="Center" markup="styled">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[<style forecolor='#818181'>*Peniagaan anda bermula di SSM*
+This computer print does not require a signature</style>]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="157">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<frame>
+				<reportElement x="35" y="9" width="513" height="145" uuid="7b3cedb7-bf5f-42c4-95b9-2f011f7f0240"/>
+			</frame>
+		</band>
+	</summary>
+</jasperReport>

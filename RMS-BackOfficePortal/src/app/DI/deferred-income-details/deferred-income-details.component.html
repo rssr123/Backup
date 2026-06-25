@@ -1,0 +1,123 @@
+<body class="BodyCointaner">
+    <!-- mainContainer start-->
+    <div class="leftPadding">
+        <!-- <div class="LeftSectionPosition">
+            {{"labels.Home / Setup & Maintenance / Deferred Income Details" | translate}}
+        </div> -->
+
+
+        <h2>{{"labels.deferredincometransactionlisting" | translate}}</h2>
+
+    </div>
+    <!-- Loading spinner overlay -->
+    <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+        <div class="spinner-border" role="status">
+            <span class="sr-only"></span>
+        </div>
+    </div>
+    <div class="formContainer">
+        <div class="leftSide">
+            <table class="leftSectionContainer" [ngClass]="{ TableDimmed: isLoading }">
+                <thead>
+                    <tr class="header">
+                        <th class="parameterWidthNo">No.</th>
+                        <th class="parameterWidth">Parameter</th>
+                        <th class="parameterWidth">{{"currentvalue" | translate}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>{{"feedetailid" | translate}}</td>
+                        <td>{{feeDetailId}}</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>{{"transactiontype" | translate}}</td>
+                        <td>{{transactionType}}</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>{{"entitytype" | translate}}</td>
+                        <td>{{entityType}}</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>{{"entitynumber" | translate }}</td>
+                        <td>{{entityNo}}</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>{{"effectivedate" | translate}}</td>
+                        <td>{{effectiveDate | date : "dd MMM yyyy"}}</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>{{"expirydate" | translate}}</td>
+                        <td>{{expiryDate | date : "dd MMM yyyy"}}</td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>{{"terminationdate" | translate}}</td>
+                        <td>{{terminationDate ? (terminationDate | date : "dd MMM yyyy") : '-'}}</td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td>{{"itemreferencenumber" | translate}}</td>
+                        <td>{{itemReferanceNo}}</td>
+                    </tr>
+                    <tr>
+                        <td>9</td>
+                        <td>{{"approvalstatus" | translate}}</td>
+                        <td>{{approvalStatus}}</td>
+                    </tr>
+                    <tr>
+                        <td>10</td>
+                        <td>{{"approvaldate" | translate}}</td>
+                        <td>{{ approvalDate | date : "dd MMM yyyy"}}</td>
+                    </tr>
+                    <tr>
+                        <td>11</td>
+                        <td>{{"numberofyears" | translate}}</td>
+                        <td>{{numberOfYears}}</td>
+                    </tr>
+                    <tr>
+                        <td>12</td>
+                        <td>{{"unitfee" | translate}} (RM)</td>
+                        <td>{{unitFee | number:'.2-2' }}</td>
+                    </tr>
+                    <tr>
+                        <td>13</td>
+                        <td>{{"totalfee" | translate}} (RM)</td>
+                        <td>{{totalFee | number:'.2-2'}}</td>
+                    </tr>
+                    <tr>
+                        <td>14</td>
+                        <td>{{"balancedeferredincomeamount" | translate}} (RM)</td>
+                        <td>{{balanceDIAmount | number:'.2-2'}}</td>
+                    </tr>
+                    <tr>
+                        <td>15</td>
+                        <td>{{"nextcalculationdate" | translate}}</td>
+                        <td>{{nextCalculationDate | date : "dd MMM yyyy"}}</td>
+                    </tr>
+                    <tr>
+                        <td>16</td>
+                        <td>{{"createddate" | translate}}</td>
+                        <td>{{createdDate | date: "dd MMM yyyy hh:mm:ss"}}</td>
+                    </tr>
+
+                    <tr>
+                        <td>17</td>
+                        <td>{{"distatus" | translate}}</td>
+                        <td>{{ statusNmEn }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="marginTopAndBottom"></div>
+
+
+
+</body>

@@ -1,0 +1,223 @@
+<ng-container *ngIf="permListAllow === 1">
+  
+<body class="BodyCointaner">
+  <!-- mainContainer start-->
+  <div [class.right-section-collapsed]=true class="PAContainer73">
+    <!-- left section -->
+    <div class="left-section73">
+      <div>
+        <!-- <div class="LeftSectionPosition">{{"labels.Home / Setup & Maintenance / FMS Code"| translate}}</div> -->
+
+        <!-- alert box -->
+        <div *ngIf="showInsertAlert" [@fadeInOut]>
+          <div class="alert alert-success PA-alert-box" role="alert">
+            {{"added successfully"| translate}}
+          </div>
+        </div>
+
+        <div *ngIf="showUpdateAlert" [@fadeInOut]>
+          <div class="alert alert-info PA-alert-box" role="alert">
+            {{"updated successfully"| translate}}
+          </div>
+        </div>
+
+        <div *ngIf="showResultAlert" [@fadeInOut]>
+          <div class="alert alert-warning PA-alert-box" role="alert">
+            {{"showResultAlert"| translate}}
+          </div> 
+        </div>
+
+        <div *ngIf="showDeactiveAlert" [@fadeInOut]>
+          <div class="alert alert-warning PA-alert-box" role="alert">
+            {{"recorddeactivate"| translate}}
+          </div>
+        </div>
+
+        <div *ngIf="showActivateAlert" [@fadeInOut]>
+          <div class="alert alert-warning PA-alert-box" role="alert">
+            {{"recordactivatefms"| translate}}
+          </div>
+        </div>
+
+        <div *ngIf="showGenericAlert" [@fadeInOut]>
+          <div class="alert alert-warning PA-alert-box" role="alert">
+           {{"geeneralalert"| translate}}
+          </div>
+        </div>
+        <!--alert box -->
+
+
+        <h2>{{"labels.fmscodelisting"| translate}}</h2>
+
+        <div class="LeftSectionPosition">
+          <button type="button" [disabled]="permAddAllow===0"  class="btn btnAdd" (click)="addSelected()">
+            {{"buttons.addfmscode"| translate}}
+          </button>
+          <!-- (click)="addSelected()" insert beside class btn -->
+        </div>
+      </div>
+      <div class="MATableContainer TablePosition-relative">
+        <div class="MALoadingContainer">
+          <!-- Loading spinner overlay -->
+          <div
+            *ngIf="isLoading"
+            class="TableLoading-overlay d-flex align-items-center justify-content-center"
+          >
+            <div class="spinner-border" role="status">
+              <span class="sr-only"></span>
+            </div>
+          </div>
+
+
+          <!-- Your table structure -->
+          <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+            <thead>
+              <tr class="MATableHeader">
+                <th>No. </th>
+                <th>{{"labels.fmscode"| translate}}</th>
+                <th>{{"labels.totalmftitems"| translate}}</th>
+                <th>{{"labels.configuredledgercount"| translate}}</th>
+                <th>{{"modified by"| translate}}</th>
+                <th>{{"date modified"| translate}}</th>
+                <th class="custom-align-center">
+                  Status
+                    <button type="button" [disabled]="permEditAllow === 0" class="btn btn-info btn-sm" [ngbTooltip]="getStatusInfo()" triggers="mouseenter:mouseleave">
+                    <i class="fa fa-info-circle"></i> i
+                  </button>
+                </th>
+                <th class = "custom-align-center">{{"buttons.edit"| translate}}</th>
+                <th class = "custom-align-center">{{"buttons.view"| translate}}</th>
+              </tr>
+            </thead>
+            <ng-container *ngIf="model.length>0; else noResults">
+              <tbody *ngIf="isDisplay">
+              <tr *ngFor="let item of model; let i = index">
+                <td>{{(page - 1) * itemsPerPage + i + 1}}</td>
+                <td>{{ item.fmsCd }}</td>
+                <td>{{ item.mft_total }}</td>
+                <td>{{ item.congLedCnt }}</td>
+                <td>{{ item.modifiedBy ? item.modifiedBy : '-'}}</td>
+                <td>{{ item.dtModified | date : "dd MMM yyyy HH:mm:ss" }}</td>
+                <td>
+                  <div class="form-check form-switch custom-switch align-items-center">
+                    <input
+                    
+                      class="form-check-input"
+                      type="checkbox"
+                      [disabled] = "permActivateAllow === 0"
+                      id="activationSwitch{{ item.fmsCd }}"
+                      [(ngModel)]="item.isActive"
+                      [ngModelOptions]="{ standalone: true }"
+                      (ngModelChange)="toggleActivation(item)"
+                    />
+                    <label
+                      class="form-check-label"
+                      for="activationSwitch{{ item.fmsCd }}"
+                    >
+                      {{ item.isActive === 1 ? "On" : "Off" }}
+                    </label>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <div class = "button-container"> 
+                  <button
+                    type="button"
+                    [disabled]="permEditAllow === 0"
+                    class="btn btnEdit"
+                    (click)="editSelected(item)"
+                  >
+                    {{"buttons.edit"| translate}}
+                  </button>
+                </div>
+                </td>
+                <td class="text-center">
+                  <button
+                   
+                    type="button"
+                    [disabled] = "permFMSLedgerAllow === 0"  
+                    class="btn btnView"
+                    (click)="viewInfo(item)"
+                  >
+                    {{"buttons.view"| translate}}
+                  </button>
+                </td>
+                <!-- <td>
+                  <button
+                    type="button"
+                    class="btn btnDelete"
+                    (click)="deleteSelected(item)"
+                  >
+                    <i class="bi bi-trash-fill"></i> Delete
+                  </button>
+                </td> -->
+              </tr>
+            </tbody>
+          </ng-container>
+            <ng-template #noResults>
+              <tr style="height: 100px;">
+                <td colspan="20" class="text-center">{{"searchcriteriadoesnotmatch"| translate}}</td>
+              </tr>
+            </ng-template>
+          </table>
+        </div>
+
+      
+
+        <div class="MAPagination" *ngIf="isDisplay">
+          <div class="fgSpacing">
+            <div *ngIf="page * itemsPerPage < totalRecords">
+              {{"showing" | translate}} {{ page * itemsPerPage }}  {{"from" | translate}} {{ totalRecords }}  {{"results" | translate}}
+            </div>
+            <div *ngIf="!(page * itemsPerPage < totalRecords)">
+              {{"showing" | translate}} {{ totalRecords }} {{"from" | translate}} {{ totalRecords }} {{"results" | translate}}
+            </div>
+          </div>
+          <div class="pagination-row">
+            <div class="dropdown">
+              <button
+                class="btn btn-secondary dropdown-toggle PaginControl"
+                type="button"
+                id="dropdownMenuButton"
+                data-bs-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                {{ selectedValue }}
+              </button>
+              <div
+                class="dropdown-menu dropdown-menu-white"
+                aria-labelledby="dropdownMenuButton"
+              >
+                <button
+                  class="dropdown-item"
+                  *ngFor="let singleItem of dropdownOptions"
+                  (click)="LoadData(singleItem)"
+                >
+                  {{ singleItem }}
+                </button>
+              </div>
+            </div>
+
+            <ngb-pagination
+              [(page)]="page"
+              [pageSize]="itemsPerPage"
+              [collectionSize]="totalRecords"
+              (pageChange)="loadData()"
+            ></ngb-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+        <!-- <br><br> -->
+  </div>
+  <!-- mainContainer end-->
+
+  <!-- <div class="PAContainer73" [class.right-section-collapsed]="rightSectionCollapsed">
+    <div class="left-section73">
+      <div class="MainContainerFooter"></div>
+    </div>
+    <div class="right-section73 collapse" [class.show]="!rightSectionCollapsed"></div>
+  </div> -->
+
+</body>
+</ng-container>

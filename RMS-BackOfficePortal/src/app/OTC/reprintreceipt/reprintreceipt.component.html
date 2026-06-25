@@ -1,0 +1,147 @@
+<ng-container *ngIf="permListAllow === 1">
+
+    <body class="BodyContainer">
+        <div class="PAContainer73">
+            <div class="one-third">
+
+                <div class="form-group">
+                    <label for="receiptNo">{{"labels.receiptno."| translate}}</label>
+                    <input type="text" id="receiptNo" class="form-control"
+                    placeholder="{{'labels.enterreceiptno' | translate}}"  [(ngModel)]="rcptNo" />
+                </div>
+                <!-- <button type="button" class="btn btnClear" (click)="reset()">Clear</button>
+            <button type="button" class="btn btn-primary mt-3" (click)="search()">Search ></button> -->
+
+
+
+                <div class="button-group">
+                    <button type="button" class="btn btnCancel" (click)="reset()">{{"buttons.clear" |
+                        translate}}</button>
+                    <button type="button" class="btn btnSearch" (click)="search()">
+                        {{"buttons.search" | translate}}
+                    </button>
+
+                </div>
+
+
+            </div>
+            <div class="two-thirds">
+                <ul class="breadcrumbOTC">
+                    <li>
+                        <a [routerLink]="'/home'">{{"menu.home" | translate}}</a>
+                        <span class="breadcrumb-separator"> / </span>
+                    </li>
+                    <li>
+                        <a [routerLink]="'/reprintreceipt'">{{"labels.reprintreceipt" | translate}}</a>
+                    </li>
+                </ul>
+
+                <h1>{{"labels.reprintreceipt" | translate}}</h1>
+
+                <div class="MATableContainer TablePosition-relative" *ngIf="isDisplay">
+                    <div class="MALoadingContainer">
+                        <!-- Loading spinner overlay -->
+                        <div *ngIf="isLoading"
+                            class="TableLoading-overlay d-flex align-items-center justify-content-center">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only"></span>
+                            </div>
+                        </div>
+
+                        <!-- No results found -->
+                        <table class="MATable" *ngIf="isEmptyResult">
+                            <thead>
+                                <tr class="MATableHeader">
+                                    <th>No.</th>
+                                    <th>{{"labels.receiptno."| translate}}</th>
+                                    <th>{{"labels.referenceno"| translate}}</th>
+                                    <th>{{"labels.counterid"| translate}}</th>
+                                    <th>{{"labels.branchcode"| translate}}</th>
+                                    <th>{{"pymtmthd"| translate}}</th>
+                                    <th>{{"labels.amount(RM)"| translate}}</th>
+                                    <th>{{"labels.action"| translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="8" style="text-align: center;">{{"searchcriteriadoesnotmatch"|
+                                        translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+                        <!-- Your table structure -->
+                        <table class="MATable" *ngIf="!isEmptyResult">
+                            <thead>
+                                <tr class="MATableHeader">
+                                    <th>No.</th>
+                                    <th>{{"labels.receiptno."| translate}}</th>
+                                    <th>{{"labels.referenceno"| translate}}</th>
+                                    <th>{{"labels.counterid"| translate}}</th>
+                                    <th>{{"labels.branchcode"| translate}}</th>
+                                    <th>{{"pymtmthd"| translate}}</th>
+                                    <th>{{"labels.amount(RM)"| translate}}</th>
+                                    <th>{{"labels.action"| translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of model; let i = index">
+                                    <td>{{ (page - 1) * itemsPerPage + i + 1 }}</td>
+                                    <td>{{ item.rcpt_no }}</td>
+                                    <td>{{ item.orn_no }}</td>
+                                    <td>{{ item.counter_id }}</td>
+                                    <td>{{ item.branch_cd }}</td>
+                                    <td>{{ item.otc_pymt_mode }}</td>
+                                    <td>{{ item.total_amt | number:'1.2-2' }}</td>
+                                    <td style="text-align: center;"><button type="button"
+                                            class="btn btnView"  (click)="viewSelected(item)">{{"buttons.view" |
+                                            translate}}</button></td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+
+                    <div class="MAPagination" *ngIf="isDisplay">
+                        <div class="fgSpacing">
+                            <div *ngIf="page * itemsPerPage < totalRecords">
+                                {{"showing" | translate}} {{ page * itemsPerPage }} {{"from" | translate}} {{
+                                totalRecords }}
+                                {{"results"
+                                | translate}}
+                            </div>
+                            <div *ngIf="!(page * itemsPerPage < totalRecords)">
+                                {{"showing" | translate}} {{ totalRecords }} {{"from" | translate}} {{ totalRecords }}
+                                {{"results" |
+                                translate}}
+                            </div>
+                        </div>
+                        <div class="pagination-row">
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle PaginControl" type="button"
+                                    id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">
+                                    {{ selectedValue }}
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton">
+                                    <button class="dropdown-item" *ngFor="let singleItem of dropdownOptions"
+                                        (click)="LoadData(singleItem)">
+                                        {{ singleItem }}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <ngb-pagination [(page)]="page" [pageSize]="itemsPerPage" [collectionSize]="totalRecords"
+                                (pageChange)="loadData()"></ngb-pagination>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </body>
+</ng-container>

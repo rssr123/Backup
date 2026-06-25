@@ -1,0 +1,20 @@
+<div class="SingleContainer">
+    
+    <!-- Header for Add Item -->
+    <div class="SingleContainerHeader">
+       <h2 class="text-center">{{"labels.confirmation"| translate}}</h2>
+    </div>
+    <div>
+      {{"labels.excelwillbeextracted"| translate}}
+    </div>
+    <form #formRef="ngForm" (ngSubmit)="onSave()">
+    <div class="MALoadingContainer">
+  
+          <!-- Buttons -->
+          <div class="button-group">
+             <button class="btn btnSubmit" type="submit">{{"buttons.confirm"| translate}}</button>
+             <button class="btn btnClose" type="button" (click)="onCancel()">{{"buttons.cancel"| translate}}</button>
+          </div>
+       </div>
+    </form>
+  </div>

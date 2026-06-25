@@ -1,0 +1,599 @@
+<body class="BodyCointaner">
+    <!-- Error Box -->
+<div *ngIf="isLoading ? false : isTaskUnauth" class="alert alert-danger" style="margin-top: 1%;margin-left: 3%;margin-right: 3%;margin-bottom: 0%;">
+    <i class="bi bi-x-circle-fill error-icon"></i>
+    <strong>{{ 'labels.noperm' | translate }}</strong>
+    <p class="indented-text">{{ 'labels.noauthccc' | translate }}</p>
+</div>
+<div class="PAContainer73">
+<div class="MALoadingContainer">
+  <!-- <div id="loading-overlay" *ngIf="isLoading" class="loading-overlay" >
+      <div class="white-box">
+          <div class="spinner-container">
+              <div class="loader"></div>
+              <img src="assets/logo/logo-ssm.png" alt="Loading..." />
+          </div>
+      </div>
+    </div> -->
+    <loading-overlay
+        *ngIf="isLoading"
+        [prefixText]="''"
+        [loadingText]="''"
+        [suffixText]="''"
+    >
+    </loading-overlay>
+</div>
+</div>
+
+<div style="padding-left: 3%;">
+    <h1>{{ "labels.cccdetails" | translate }}</h1>
+    <h2>{{ "labels.taskinformation" | translate }}</h2>
+</div>
+<div class="flexcontainer">
+    <div class="two-third">
+        <div class="MALoadingContainerFormTable tableWrapper">
+            <div *ngIf="isLoading"
+                class="TableLoading-overlay d-flex align-items-center justify-content-center" style= "z-index: auto;">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only"></span>
+                </div>
+            </div>
+            <div>
+                <table [ngClass]="{ TableDimmed: isLoading }">
+                    <tr>
+                        <td style="width: 20%;">
+                            <div style="padding-left: 6%;padding-top: 3%;">
+                                <label class="tableLabel">{{"labels.taskid" | translate}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <label class="tableLabel">:{{taskNo}}</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div style="padding-left: 6%;padding-top: 3%;">
+                                <label class="tableLabel">{{"labels.taskdesc" | translate}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <label class="tableLabel">:{{taskDesc}}</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div style="padding-left: 6%;padding-top: 3%;">
+                                <label class="tableLabel">{{"labels.status" | translate}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <label class="tableLabel">:{{getTaskStatusName(taskStatus)}}</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div style="padding-left: 6%;padding-top: 3%;padding-bottom:3%">
+                                <label class="tableLabel">{{"labels.assigneddate" | translate}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <label class="tableLabel">:{{assignedDate}}</label>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="full-width-line"></div>
+
+        <div>
+            <h2 style="padding-left: 3%;">{{"labels.caseinformation" | translate}}</h2>
+        </div>
+
+        <div class="MALoadingContainerFormTable tableWrapper">
+            <div *ngIf="isLoading"
+                class="TableLoading-overlay d-flex align-items-center justify-content-center" style= "z-index: auto;">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only"></span>
+                </div>
+            </div>
+            <div>
+                <table [ngClass]="{ TableDimmed: isLoading }">
+                    <tr>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.customername" | translate}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="form-control">{{custName}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.customeremail" | translate}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="form-control">{{custEmail}}</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.customerphonenumber" | translate}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="form-control">{{custPhoneNo}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.addressline1" | translate}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="form-control">{{add1}}</label>
+                            </div>
+                        </td>
+                    </tr>    
+                    <tr>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.addressline2" | translate}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="form-control">{{add2}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.addressline3" | translate}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="form-control">{{add3}}</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.postcode" | translate}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="form-control">{{postcode}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.city" | translate}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="form-control">{{city}}</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.state" | translate}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="form-control">{{state}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.fmscaseno" | translate}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="form-control">{{fmsCaseNo}}</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.casecreateddate" | translate}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="form-control">{{caseCreatedDate}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.fmsarirefno" | translate}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="form-control">{{fmsARIRefNo}}</label>
+                            </div>
+                        </td>
+                    </tr>    
+                    <tr>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.paymentstatus" | translate}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="form-control">{{paymentStatus}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"transactiontype" | translate}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="form-control">{{txnType}}</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.txnrefno" | translate}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="form-control">{{txnRefNo}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.cheqnoifapplicable" | translate}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="form-control">{{cheqNo}}</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.rcptnoifapplicable" | translate}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="form-control">{{rcptNo}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="tableLabel">{{"labels.amountpayablerm" | translate}}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="displayColumn">
+                                <label class="form-control">{{amountPayable | number:'1.2-2' }}</label>
+                            </div>
+                        </td>
+                    </tr>            
+                </table>
+            </div>
+        </div>
+
+        <div>
+            <h2 style="padding-left: 3%;">{{"labels.paymentiteminformation" | translate}}</h2>
+        </div>
+        <div class="MALoadingContainer tableWrapper">
+            <div *ngIf="isLoading"
+                class="TableLoading-overlay d-flex align-items-center justify-content-center " style= "z-index: auto;">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only"></span>
+                </div>
+            </div>
+            <div>
+                <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+                    <thead>
+                        <tr class="MATableHeader">
+                            <th class="thWidth">No.</th>
+                            <th style="width:20%;">{{"labels.txnitemrefno" | translate}}</th>
+                            <th style="width: 35%;">{{"labels.taskitemdesc" | translate}}</th>
+                            <th style="width: 9%;">{{"labels.quantity" | translate}}</th>
+                            <th style="width: 11%;">{{"labels.unitpricerm" | translate}}</th>
+                            <th style="width: 10%;">{{"labels.discountamountrm" | translate}}</th>
+                            <th style="width: 9%;">{{"labels.itemamountrm" | translate}}</th>
+                        </tr>
+                    </thead>
+                    <ng-container *ngIf="totalRecordsListOfItem>0; else noResultsItem">
+                        <tbody>
+                            <tr *ngFor="let item of payment_items; let i = index">
+                                <td>{{ i + 1 }}</td>
+                                <td>{{ item.txn_item_ref }}</td>
+                                <td>{{ item.txn_item_desc }}</td>
+                                <td style="text-align: center;">{{ item.qty}}</td>
+                                <td style="text-align: right;">{{ item.unit_price | number:'1.2-2'}}</td>
+                                <td style="text-align: right;">{{ item.disc_amt | number:'1.2-2'}}</td>
+                                <td style="text-align: right;">{{ item.final_amt | number:'1.2-2'}}</td>
+                            </tr>
+                            <tr class="totalRow" style="background-color: white;">
+                                <td style="border-right-color: transparent;"></td>
+                                <td style="border-right-color: transparent;"></td>
+                                <td style="border-right-color: transparent;"></td>
+                                <td style="border-right-color: transparent;"></td>
+                                <td style="border-right-color: transparent;"><h6 style="margin-left:3%;font-weight:bold;text-align:right;">{{"labels.totalrm" | translate}}</h6></td>
+                                <td style="border-right-color: transparent;"></td>
+                                <td style="font-weight: bold;text-align: right;">{{ total_amount | number:'1.2-2' }}</td>
+                            </tr>
+                        </tbody>
+                    </ng-container>
+                    <ng-template #noResultsItem>
+                        <tr style="height: 100px;">
+                            <td colspan="7" class="text-center">{{"nodatafound"| translate}}</td>
+                        </tr>
+                    </ng-template>
+                </table>
+            </div>
+            <div class="MarginSeparator"></div>
+        </div>
+        <div>
+            <h2 style="padding-left: 3%;">{{ "labels.reminderinformation" | translate }}</h2>
+        </div>
+        <div class="MALoadingContainer tableWrapper">
+            <div *ngIf="isLoading"
+                class="TableLoading-overlay d-flex align-items-center justify-content-center" style= "z-index: auto;">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only"></span>
+                </div>
+            </div>
+            <div>
+                <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+                    <thead>
+                        <tr class="MATableHeader">
+                            <th class="thWidth">No.</th>
+                            <th style="width:15%;">{{ "labels.remindercount" | translate }}</th>
+                            <th style="width:15%;">{{ "labels.reminderdate" | translate }}</th>
+                            <th style="width:15%;">{{ "labels.reminderreceiveddate" | translate }}</th>
+                            <th>{{ "labels.remindercontent" | translate }}</th>
+                        </tr>
+                    </thead>
+                    <ng-container *ngIf="totalRecordsListOfReminder>0; else noResultsIssuance">
+                        <tbody>
+                            <tr *ngFor="let item of reminders; let i = index">
+                                <td>{{ i + 1 }}</td>
+                                <td>{{ item.reminder_cnt }}</td>
+                                <td>{{ item.reminder_dt }}</td>
+                                <td>{{ item.reminder_received_date }}</td>
+                                <td style="white-space: pre-line;">{{ item.reminder_email_content }}</td>
+                            </tr>
+                        </tbody>
+                    </ng-container>
+                    <ng-template #noResultsIssuance>
+                        <tr style="height: 100px;">
+                            <td colspan="5" class="text-center">{{"nodatafound"| translate}}</td>
+                        </tr>
+                    </ng-template>
+                </table>
+            </div>
+        </div>
+        <div class="MarginSeparator"></div>
+        <div>
+            <h2 style="padding-left: 3%;">{{"labels.listofdocument" | translate}}</h2>
+        </div>
+        <div class="MALoadingContainer tableWrapper">
+            <div *ngIf="isLoading"
+                class="TableLoading-overlay d-flex align-items-center justify-content-center" style= "z-index: auto;">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only"></span>
+                </div>
+            </div>
+            <div>
+                <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+                    <thead>
+                        <tr class="MATableHeader">
+                            <th class="thWidth">No.</th>
+                            <th class="docWidth">{{"labels.document" | translate}}</th>
+                            <th>{{"labels.uploadedby" | translate}}</th>
+                            <th>{{"labels.uploadedon" | translate}}</th>
+                            <th>{{"labels.filesize" | translate}}</th>
+                        </tr>
+                    </thead>
+                    <ng-container *ngIf="totalRecordsListOfDoc>0; else noResultsDoc">
+                        <tbody>
+                            <tr *ngFor="let item of documents_list; let i = index">
+                                <td>{{ i + 1 }}</td>
+                                <td> <a class="hyperlink" (click)="downloadFile(item)"> {{ item.file_nm }}</a>
+                                    <div *ngIf="item.isDownloadingFile" class="spinner-border download-spinner" role="status">
+                                        <span class="sr-only"></span>
+                                    </div></td>
+                                <td>{{ item.uploader }}</td>
+                                <td>{{ item.timestamp | date: 'dd MMM yyyy HH:MM:ss' }}</td>
+                                <td> {{ item.file_size < 1000 ? item.file_size + ' Bytes' : (item.file_size < 1000000 ?
+                                        (item.file_size / 1000).toFixed(2) + ' KB' : (item.file_size / 1000000).toFixed(2)
+                                        + ' MB' ) }}</td>
+                            </tr>
+                        </tbody>
+                    </ng-container>
+                    <ng-template #noResultsDoc>
+                        <tr style="height: 100px;">
+                            <td colspan="5" class="text-center">{{"nodatafound"| translate}}</td>
+                        </tr>
+                    </ng-template>
+                </table>
+            </div>
+        </div>
+        <div class="MarginSeparator"></div>
+        <div>
+            <h2 style="padding-left: 3%;">{{"labels.historicaltable" | translate}}</h2>
+        </div>
+        <div class="MALoadingContainer tableWrapper">
+            <div *ngIf="isLoadingHistory" class="TableLoading-overlay d-flex align-items-center justify-content-center" style= "z-index: auto;">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only"></span>
+                </div>
+            </div>
+            <div>
+                <table class="MATable" [ngClass]="{ TableDimmed: isLoadingHistory }">
+                    <thead>
+                        <tr class="MATableHeader">
+                            <th class="thWidth">No.</th>
+                            <th>{{"labels.action" | translate}}</th>
+                            <th>{{"labels.actiontimestamp" | translate}}</th>
+                            <th>{{"labels.performedby" | translate}}</th>
+                            <th>{{"labels.assignedto" | translate}}</th>
+                            <th style="width:30%">{{"labels.remarks" | translate}}</th>
+                        </tr>
+                    </thead>
+                    <ng-container *ngIf="totalHistoryRecords>0; else noResultsHistory">
+                        <tbody>
+                            <tr *ngFor="let item of history; let i = index">
+                                <td>{{ totalHistoryRecords - i - ((this.page -1)*itemsPerPage) }}</td>
+                                <td>{{ getTaskStatusName(item.task_status) }}</td>
+                                <td>{{ item.action_timestamp | date: 'dd MMM yyyy HH:MM:ss'}}</td>
+                                <td>{{ item.performer ? item.performer : 'N/A' }}</td>
+                                <td>{{ assignToHistoryCheck(item) }}</td>
+                                <td style="white-space: pre-line;">{{ item.remark ? item.remark : 'N/A' }}</td>
+                            </tr>
+                        </tbody>
+                    </ng-container>
+                    <ng-template #noResultsHistory>
+                        <tr style="height: 100px;">
+                            <td colspan="6" class="text-center">{{"nodatafound"| translate}}</td>
+                        </tr>
+                    </ng-template>
+                </table>
+            </div>
+        </div>
+        <div class="MAPagination" *ngIf="totalHistoryRecords>20" style= "padding-left: 3%;padding-right: 3%;padding-bottom: 0%;">
+          <div class="fgSpacing" style="text-align: right; padding-bottom: 7px">
+            <div *ngIf="page * itemsPerPage < totalHistoryRecords">
+              {{"showing" | translate}} {{ page * itemsPerPage }} {{"from" | translate }} {{ totalHistoryRecords }}
+              {{"results" | translate }}
+            </div>
+            <div *ngIf="!(page * itemsPerPage < totalHistoryRecords)">
+              {{"showing" | translate }} {{ totalHistoryRecords }} {{"from" | translate }} {{ totalHistoryRecords }}
+              {{"results" | translate }}
+            </div>
+          </div>
+          <div class="pagination-row" style="float: right;">
+            <div class="dropdown">
+              <button class="btn btn-secondary dropdown-toggle PaginControl" type="button" id="dropdownMenuButton"
+                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{ selectedValue }}
+              </button>
+              <div class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton">
+                <button class="dropdown-item" *ngFor="let singleItem of dropdownOptions" (click)="LoadHistory(singleItem)">{{ singleItem }}</button>
+              </div>
+            </div>
+            <ngb-pagination [(page)]="page" [pageSize]="itemsPerPage" [collectionSize]="totalHistoryRecords"
+              (pageChange)="loadHistory()"></ngb-pagination>
+          </div>
+        </div> 
+        <div class="MarginSeparator"></div>
+    </div>
+    <div class="one-third" *ngIf="showTaskAction()">
+        <div class="right-approval-side">
+            <h2 style="text-align:center;">{{"labels.taskaction" | translate}}</h2>
+            <h6 *ngIf="taskStatus == 'PD' || taskStatus == 'CMI' || taskStatus == 'DMI' || taskStatus == 'RQ'" style="text-align:left;">{{"labels.actiontype" | translate}}: {{"labels.casedecision" | translate}}</h6>
+            <h6 *ngIf="taskStatus == 'PFSM' || taskStatus == 'PFH' || taskStatus == 'PSSS' || taskStatus == 'PL' || taskStatus == 'PCO'" style="text-align:left;">{{"labels.actiontype" | translate}}: {{"labels.queryreply" | translate}}</h6>
+
+            <div *ngIf="taskStatus == 'PD' || taskStatus == 'PL' || taskStatus == 'PCO' || taskStatus == 'CMI' || taskStatus == 'DMI' || taskStatus == 'RQ'" class="supportingdocuments">
+                <div class="MarginSeparator"></div>
+                <br><h5>{{"labels.supportingdocument(s)" | translate}}</h5>
+                <div class="file-container">
+                    <ng-container *ngFor="let file of selectedFiles; let last = last">
+                        {{ file.name }}{{ !last ? ', ' : '' }}
+                    </ng-container>
+                </div>
+                <div class="fileSize">
+                    {{ "labels.File Limit" | translate }}: {{ selectedFilesSize / 1000000 | number:'1.2-2' }}/10MB
+                </div>
+                <br>
+                <div style="display: inline-flex; gap: 10px;float:right;">
+                    <label for="supportingFilesInput" class="btn btn-primary"
+                        style="background-color: #007bff; color: white;">
+                        {{ "buttons.Choose File" | translate }}
+                    </label>
+                    <input type="file" id="supportingFilesInput" (change)="onSupportingFilesSelected($event)"
+                        multiple style="display: none;" />
+                    <button type="button" class="btn btnCancel" (click)="clearSupportingFiles()">
+                        {{ "buttons.Clear File" | translate }}
+                    </button>
+                </div>
+            </div>
+            <div *ngIf="taskStatus == 'PD' || taskStatus == 'CMI' || taskStatus == 'DMI' || taskStatus == 'RQ'" class="selectaction">
+                <br><br>
+                <h5>{{"labels.selectaction" | translate}} *</h5>
+                <ng-select class="form-control" name="selectedAction" [(ngModel)]="selectedAction" id="selectedAction" dropdownPosition="bottom" [clearable]="false" [searchable]="false"  placeholder="Decision">
+                    <ng-option [value]="'assign'">{{"labels.assigncase" | translate}}</ng-option>
+                    <ng-option [value]="'debit'">{{"labels.debitmemo" | translate}}</ng-option>
+                    <ng-option [value]="'credit'">{{"labels.creditmemo" | translate}}</ng-option>
+                    <ng-option [value]="'impair'">{{"labels.impair" | translate}}</ng-option>
+                    <ng-option [value]="'writeoff'">{{"labels.writeoff" | translate}}</ng-option>
+                </ng-select>
+            </div>
+            <div *ngIf="selectedAction == 'assign'" class="selectgroup">
+                <br><br>
+                <h5>{{"labels.selectgroup" | translate}} *</h5>
+                <ng-select class="form-control" name="selectedGroup" [(ngModel)]="selectedGroup" id="selectedGroup" dropdownPosition="bottom" [clearable]="false" [searchable]="false"  placeholder="Decision">
+                    <ng-option [value]="'fsm'">{{"labels.financeseniormanager" | translate}}</ng-option>
+                    <ng-option [value]="'fhod'">{{"labels.financehod" | translate}}</ng-option>
+                    <ng-option [value]="'sssme'">{{"labels.sourcesystemsme" | translate}}</ng-option>
+                    <ng-option [value]="'legal'">{{"labels.legal" | translate}}</ng-option>
+                </ng-select>
+            </div>
+            <div *ngIf="selectedAction == 'debit' || selectedAction == 'credit'" class="selectgroup">
+                <br><br>
+                <h5>{{"labels.amounttodebitcredit(rm)" | translate}} *</h5>
+                <input class="form-control" type="text" [(ngModel)]="debitCreditAmount" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');if(this.value.indexOf('.') == 0 || this.value.indexOf('0') == 0){this.value = '';} else if(this.value.indexOf('.') > 0 && this.value.length - this.value.indexOf('.') > 3){var tmp = this.value.split('.');this.value=tmp[0]+'.'+tmp[1].substr(0,2);}" />
+            </div>
+            <div *ngIf="taskStatus == 'PL' || taskStatus == 'PCO'" class="legalCourtActions">
+                <br><br>
+                <h5 *ngIf="taskStatus == 'PL'">{{"labels.requirecourtorder" | translate}} *</h5>
+                <h5 *ngIf="taskStatus == 'PCO'">{{"labels.returntotaskowner" | translate}} *</h5>
+                <ng-select class="form-control" name="selectedAction" [(ngModel)]="selectedAction" id="selectedAction" dropdownPosition="bottom" [clearable]="false" [searchable]="false"  placeholder="Decision">
+                    <ng-option [value]="true">{{"labels.yes" | translate}}</ng-option>
+                    <ng-option [value]="false">{{"labels.no" | translate}}</ng-option>
+                </ng-select>
+            </div>
+            <div class="remarks">
+                <br><br>
+                <h5 style="position: relative;bottom: 8%;left: 1%;">{{"labels.remarks" | translate}} *</h5>
+                <textarea class="form-control" type="text" [(ngModel)]="remarks" placeholder="Please type here..." style="height: 301px;"></textarea>
+                <br>
+            </div>
+            <div class="submissionButtons">
+                <button id="cancel" class="btn btnCancel" (click)="cancelForm()" >{{ "buttons.cancel" | translate }}</button>
+                <button id="submit" class="btn btnSubmit" (click)="submitForm()" [disabled]="submitCheck()" style="float:right;">{{ "buttons.submit" | translate }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>

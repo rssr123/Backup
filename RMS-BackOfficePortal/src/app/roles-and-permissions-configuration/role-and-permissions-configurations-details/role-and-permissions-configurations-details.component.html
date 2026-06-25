@@ -1,0 +1,161 @@
+<ng-container *ngIf="permListAllow === 1">
+
+  <body class="BodyCointaner ml-4">
+    <!-- mainContainer start-->
+    <div [class.right-section-collapsed]="rightSectionCollapsed" class="PAContainer74">
+      <!-- left section -->
+      <div class="left-section73">
+        <div>
+          <!-- alert box -->
+          <div *ngIf="showInsertAlert" [@fadeInOut]>
+            <div class="alert alert-success PA-alert-box" role="alert">
+              {{"labels.changessavedsuccessfully" | translate}}
+            </div>
+          </div>
+
+          <div *ngIf="showUpdateAlert" [@fadeInOut]>
+            <div class="alert alert-info PA-alert-box" role="alert">
+              {{"Updated successfully" | translate}}
+            </div>
+          </div>
+
+          <div *ngIf="showResultAlert" [@fadeInOut]>
+            <div class="alert alert-warning PA-alert-box" role="alert">
+              {{"showResultAlert" | translate}}
+            </div>
+          </div>
+
+          <!--alert box -->
+          <!-- <div class="LeftSectionPosition"> -->
+            <!-- {{"labels.Home / Setup & Maintenance / Role and Permissions Configuration"|translate}} -->
+            <!-- <app-ng-dynamic-breadcrumb></app-ng-dynamic-breadcrumb> -->
+          <!-- </div> -->
+
+          <h2>{{"labels.roleandpermissionsconfigurations" | translate}}</h2>
+
+          <div class="LeftSectionPosition">
+            <button type="button" class="btn btnAdd" (click)="addSelected()"
+              [disabled]="!permAddRoleAllow || isLoading">
+              {{"labels.adduserrole" | translate}}
+            </button>
+
+            <span *ngIf="Role !== null" class="button-spacing"></span>
+            <button *ngIf="Role !== null" type="button"
+              [ngClass]="{'btn btnEdit': true, 'btn-disable': isUserRoleActive(), 'btn-enable': !isUserRoleActive()}"
+              (click)="editRoleStatus(Role)" [disabled]="!permDeactivateAllow || isLoading">
+              <div class="row align-items-center">
+                <div class="col-auto">
+                  <div *ngIf="isUserRoleActive(); else enableUserRole">
+                    {{ 'labels.disableuserrole' | translate }}
+                  </div>
+                  <ng-template #enableUserRole>
+                    {{ 'labels.enableuserrole' | translate }}
+                  </ng-template>
+                </div>
+              </div>
+            </button>
+
+            <span *ngIf="Role !== ''" class="button-spacing"></span>
+
+          </div>
+
+          <div class="LeftSectionPosition mt-2">
+            <div class="row">
+              <div class="col-auto">
+                <strong for="roles">{{"labels.userrole"| translate}}: </strong>
+              </div>
+              <div class="col-auto">
+                <select class="dropdown form-control form-select" id="roles" name="roles" [(ngModel)]="Role"
+                  (change)=" getRolePermission()" [disabled]="isLoading">
+                  <option *ngFor="let item of roleOption" [value]="item.roleNmEn">{{item.roleNmEn}}</option>
+                </select>
+              </div>
+
+              <div class="col-auto">
+                <!-- Button to the right -->
+                <button type="button" class="btn btn-enable" (click)="savePermissions()"
+                  [disabled]="Role === null || !isUserRoleActive() || isLoading">
+                  {{"buttons.save" | translate}}
+                  <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+                    <div class="spinner-border" role="status">
+                      <span class="sr-only"></span>
+                    </div>
+                  </div>
+                </button>
+              </div>
+              <div class="col-auto">
+                <!-- Button to the right -->
+                <button type="button" class="btn btn-disable" (click)="cancelClicked()"
+                  [disabled]="Role === null || !isUserRoleActive() || isLoading">
+                  {{"buttons.cancel" | translate}}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="MATableContainer TablePosition-relative" *ngIf="isDisplay">
+            <div class="MALoadingContainer">
+              <!-- Loading spinner overlay -->
+              <div *ngIf="isLoading|| isDataLoading"
+                class="TableLoading-overlay d-flex align-items-center justify-content-center">
+                <div class="spinner-border" role="status">
+                  <span class="sr-only"></span>
+                </div>
+              </div>
+
+              <!-- Your table structure -->
+              <div class="TableScrollContainer">
+                <table class="MATable" [ngClass]="{ TableDimmed: isLoading }">
+                  <thead>
+                    <tr class="MATableHeader">
+                      <th>{{ "labels.permissions" | translate }}</th>
+                      <th>{{ "labels.select" | translate }}</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <ng-container *ngFor="let module of moduleArray; let i = index">
+                      <!-- Parent row -->
+                      <tr (click)="toggleCollapse(i)" style="cursor: pointer;" class="parent-permission-row">
+                        <td>
+                          <strong>
+                            {{ module }}
+                            <span class="arrow" [ngClass]="collapsedIndexes.includes(i) ? 'arrow-collapsed' : 'arrow-expanded'">
+                              {{ collapsedIndexes.includes(i) ? '▲' : '▼' }}
+                            </span>
+                          </strong>
+                        </td>
+                        <td>
+                          <input type="checkbox" class="custom-checkbox-parent"
+                            [disabled]="Role === null || !isUserRoleActive() || !permEditPermAllow"
+                            id="{{module}}-check" (change)="checkParent(i)" (click)="$event.stopPropagation()">
+                        </td>
+                      </tr>
+                  
+                      <!-- Child rows with alternating background -->
+                      <tr *ngFor="let permission of permissionArray[i]; let j = index"
+                          [hidden]="collapsedIndexes.includes(i)"
+                          [ngClass]="j % 2 === 0 ? 'child-row-grey' : 'child-row-white'">
+                        <td>
+                          <div>↳{{ permission }}</div>
+                        </td>
+                        <td>
+                          <input type="checkbox" class="custom-checkbox" id="{{module}}-{{permission}}"
+                            [disabled]="Role === null || !isUserRoleActive() || !permEditPermAllow"
+                            (change)="checkChild()" (click)="$event.stopPropagation()">
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                  
+                  
+                </table>
+              </div>
+              <br>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</ng-container>

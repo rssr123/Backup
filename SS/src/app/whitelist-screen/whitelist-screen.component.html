@@ -1,0 +1,27 @@
+<div class="card">
+    <h2>WhiteList URL</h2>
+  
+    <div class="form-group">
+      <label>Source System</label>
+      <input type="text" [(ngModel)]="i_ss_cd" />
+    </div>
+  
+    <div class="form-group">
+      <label>IP</label>
+      <input type="text" [(ngModel)]="i_ip" />
+    </div>
+  
+    <div class="form-group">
+      <label>Remark</label>
+      <textarea [(ngModel)]="i_remark"></textarea>
+    </div>
+  
+    <button (click)="onSubmit()" [disabled]="isSubmitting">
+      {{ isSubmitting ? 'Submitting...' : 'Submit' }}
+    </button>
+  
+    <div *ngIf="message" [ngClass]="{ 'success': isSuccess, 'error': !isSuccess }">
+      {{ message }}
+    </div>
+  </div>
+  

@@ -1,0 +1,145 @@
+<!-- <h1>this is home</h1>
+<label>{{ 'label' | translate }}</label>
+<select>
+    <option value="male">{{ 'gender.male' | translate }}</option>
+    <option value="female">{{ 'gender.female' | translate }}</option>
+</select>
+
+<br>
+
+<button (click)="useLanguage('en')">English</button>
+<button (click)="useLanguage('bm')">Bahasa Melayu</button>
+
+<button routerLink="/multi-language">Go to Multi-Language</button> -->
+
+<!-- original code -->
+<!-- <h1>Sample Content</h1>-->
+<div *ngIf="!isLoggedIn && !isAuthenticating" class="homeContainer" id="homeContainer">
+
+  <img id="logo-ssm-homepage" alt="Malaysia" class="img-responsive w-3" src="assets/logo/logo-ssm-new.png" />
+  <div id="middle-container-notloggedin">
+    <label id="revenue">{{"labels.revenuemanagementsystem" | translate}}</label>
+    <label id="backoffice">{{"labels.backofficecaps" | translate}}</label>
+    <label id="top">{{"labels.tobeatoptier" | translate}} <span class="blueHighlight">{{"labels.corporateregistry" | translate}} </span>{{"labels.and" | translate}} <span class="blueHighlight">{{"labels.regulatoryauthority" | translate}} </span>{{"labels.terulung" | translate}}.</label>
+  </div>
+</div>
+<!-- original code -->
+
+<!--<button id="exportButton" disabled hidden>Export</button>
+<button id="firstPage" disabled hidden>
+  <<< /button>
+    <button id="previousPage" disabled hidden>
+      << /button>
+        <input type="number" inputmode="numeric" id="currentPage" value="1" style="width:32px;" hidden />
+        <a id="totalPageNo"></a>
+        <button id="nextPage" disabled hidden>></button>
+        <button id="lastPage" disabled hidden>>></button>
+        <input id="reportFilter" hidden /><button id="executeFilter" hidden>Filter</button>
+        <button id="refreshVJSButton" hidden>Refresh</button>
+        <button id="reportZoomOut" hidden>-</button>
+        <button id="reportZoomIn" hidden>+</button>
+        <button id="printReport" hidden>Print</button> -->
+<!-- <vjs-component class="resource" id="email_adhoc"></vjs-component> -->
+
+
+
+<div *ngIf="isLoggedIn && !isAuthenticating" class="dashboard-container">
+  <!-- <h2>{{"Dashboard" | translate}}</h2> -->
+  <!-- Background Image -->
+  <div class="background-image">
+
+      <div class="charts-grid" @slideIn>
+      
+          <!-- First Column: Logo and Text -->
+          <div id= "middle-container" class="chart-section logo-section">
+              <div class="logo"><img src="assets/logo/logo-ssm-new.png" alt="Logo"></div>
+              <label id="revenue">{{"labels.revenuemanagementsystem" | translate}}</label>
+              <label id="backoffice">{{"labels.backofficecaps" | translate}}</label>
+              <label id="top">{{"labels.tobeatoptier" | translate}} <span class="blueHighlight">{{"labels.corporateregistry" | translate}}</span> {{"labels.and" | translate}} <span
+                  class="blueHighlight">{{"labels.regulatoryauthority" | translate}} </span>{{"labels.terulung" | translate}}.</label>
+          </div>
+          
+          <!-- Remaining Columns: Graphs -->
+          <div class="chart-section bar-chart">
+              <h4>{{"labels.Total Collection by Year/ Month/ Day"| translate}}</h4>
+              <div class="dropdown-section">
+                  <label for="reportType">{{"labels.selectreporttype"| translate}}</label>
+                  <select [(ngModel)]="selectedReportTypeRevenue" (change)="onReportTypeRevenueChange()" id="reportType">
+                      <option value="year">{{"labels.year"| translate}}</option>
+                      <option value="month">{{"labels.month"| translate}}</option>
+                      <option value="day">{{"labels.day"| translate}}</option>
+                  </select>
+  
+                  <!-- Year Selection, visible for month/day view -->
+                  <div *ngIf="selectedReportTypeRevenue !== 'year'">
+                      <label for="year">{{"labels.selectyear"| translate}}</label>
+                      <select [(ngModel)]="selectedYearRevenue" (change)="onYearRevenueChange()" id="year">
+                          <option *ngFor="let year of availableYears" [value]="year">{{ year }}</option>
+                      </select>
+                  </div>
+  
+                  <!-- Month Selection, visible for day view -->
+                  <div *ngIf="selectedReportTypeRevenue === 'day'">
+                      <label for="month">{{"labels.selectmonth"| translate}}</label>
+                      <select [(ngModel)]="selectedMonthRevenue" (change)="onMonthRevenueChange()" id="month">
+                          <option *ngFor="let month of availableMonths" [value]="month">{{ month }}</option>
+                      </select>
+                  </div>
+              </div>
+              <canvas baseChart *ngIf="current_lang==='en'" [data]="barChartDataRevenue" [type]="'bar'" [options]="barChartOptionsRevenue"></canvas>
+              <canvas baseChart *ngIf="current_lang==='bm'" [data]="barChartDataRevenueBM" [type]="'bar'" [options]="barChartOptionsRevenueBM"></canvas>
+          </div>
+  
+          <div class="chart-section pie-chart">
+              <h4>{{"labels.Total Revenue by Source System"| translate}}</h4>
+              <canvas  baseChart [data]="pieChartData" [type]="'pie'" [options]="pieChartOptions"></canvas>
+          </div>
+  
+          <div class="chart-section pie-chart">
+              <h4>{{"labels.Total Revenue by Payment Method"| translate}}</h4>
+              <canvas  baseChart [data]="pieChartDatasets" [type]="'pie'" [options]="pieChartOptions" [labels]="pieChartLabels"></canvas>
+          </div>
+  
+          <div class="chart-section pie-chart">
+              <h4>{{"labels.No. of Refund Application by Status"| translate}}</h4>
+              <canvas  baseChart [data]="refundPieChartData" [type]="'pie'" [options]="pieChartOptions" [labels]="pieChartLabels2" height="1000px"></canvas>
+              
+          </div>
+  
+          <div class="chart-section bar-chart">
+              <h4>{{"labels.Total Receipts Generated by Year/ Month/ Day"| translate}}</h4>
+              <div class="dropdown-section">
+                  <label for="reportType">{{"labels.selectreporttype"| translate}}</label>
+                  <select [(ngModel)]="selectedReportType" (change)="onReportTypeChange()" id="reportType">
+                      <option value="year">{{"labels.year"| translate}}</option>
+                      <option value="month">{{"labels.month"| translate}}</option>
+                      <option value="day">{{"labels.day"| translate}}</option>
+                  </select>
+  
+                  <!-- Year Selection, visible for month/day view -->
+                  <div *ngIf="selectedReportType !== 'year'">
+                      <label for="year">{{"labels.selectyear"| translate}}</label>
+                      <select [(ngModel)]="selectedYear" (change)="onYearChange()" id="year">
+                          <option *ngFor="let year of availableYears" [value]="year">{{ year }}</option>
+                      </select>
+                  </div>
+  
+                  <!-- Month Selection, visible for day view -->
+                  <div *ngIf="selectedReportType === 'day'">
+                      <label for="month">{{"labels.selectmonth"| translate}}</label>
+                      <select [(ngModel)]="selectedMonth" (change)="onMonthChange()" id="month">
+                          <option *ngFor="let month of availableMonths" [value]="month">{{ month }}</option>
+                      </select>
+                  </div>
+              </div>
+              <canvas baseChart *ngIf="current_lang==='en'" [data]="barChartData" [type]="'bar'" [options]="barChartOptions"></canvas>
+              <canvas baseChart *ngIf="current_lang==='bm'" [data]="barChartDataBM" [type]="'bar'" [options]="barChartOptionsBM"></canvas>
+          </div>
+      </div>
+
+  </div>
+  <!-- Chart Grid -->
+</div>
+
+
+

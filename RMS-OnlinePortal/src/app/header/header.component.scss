@@ -1,0 +1,262 @@
+$primary-color: #2E3192;
+$MenuItemHoverColorCode: #f8f9fa;
+$marginLeftRight:3%;
+
+#header {
+  color: white;
+  padding: 10px;
+  font-size: 16px;
+
+  .container {
+       //max-width: 1200px;
+       margin: 0 auto;
+       padding: 0 20px;
+      display: flex;
+
+      
+      justify-content: space-between;
+      align-items: center;
+
+      #logo {
+          h1 {
+              display: flex; // Make the anchor tags flex items
+              justify-content: space-between; // Distribute space equally
+
+              a {
+                  display: inline-block;
+                  width: 50%; // each logo takes half the space
+                  
+                  img {
+                      max-height: 90px;
+                      width: auto; // ensure logos adjust based on the container width
+                  }
+              }
+          }
+      }
+
+      @media (max-width: 768px) {
+          // Hide the normal nav on mobile
+          nav.nav {
+              display: none;
+          }
+
+          // Display the burger menu icon (you will need to add the burger menu HTML and associated JS functionality)
+          .burger-menu {
+              display: block;
+          }
+      }
+  }
+}
+
+//logo
+#logo {
+  a {
+    display: inline-block;
+    margin-right: 15px; // Spacing between logos
+
+    img {
+      max-height: 90px;
+      width: auto;
+    }
+  }
+
+  @media (max-width: 767px) { // For screens smaller than sm breakpoint
+    a img {
+      max-height: 60px; // Adjust this value as needed
+    }
+  }
+
+  @media (min-width: 768px) { // Adjust for the sm breakpoint
+    margin-right: auto; // Pushes the menu to the right on larger screens
+  }
+}
+  
+.nav, .navbar-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: #ffffff;
+  
+  a {
+      color: #000000;
+      text-decoration: none;
+      margin-right: 10px;
+  }
+  
+  a:hover {
+      color: #333333;
+  }
+
+  // ... Rest of your SCSS ...
+
+  @media (max-width: 768px) {
+      flex-direction: column;
+      // styles for the mobile nav when expanded
+  }
+}
+
+@media (min-width: 769px) {
+  .burger-menu {
+    display: none;
+  }
+
+  .nav {
+    display: flex !important;
+  }
+}
+
+.burger-menu {
+  display: none; // Hidden by default; will be displayed on mobile view.
+  background: transparent; // No background for the button.
+  border: none; // Remove default borders.
+  cursor: pointer; // Pointer cursor for better UX.
+  padding: 10px; // Some padding around the bars.
+  outline: none; // Remove default outline.
+
+  @media (max-width: 768px) {
+      display: block; // Display the burger menu on mobile view.
+  }
+
+  .bar {
+      width: 25px; // Width of the bar.
+      height: 3px; // Height of the bar.
+      background-color: #000; // Black color for the bar.
+      margin: 4px 0; // Some margin to separate the bars.
+      transition: 0.4s; // Smooth transition for animations if you plan to add any.
+  }
+
+  // For potential animation or styling when the menu is active. (e.g. 'X' close icon)
+  &.active {
+      .bar:nth-child(1) {
+          // styles for the first bar when active
+      }
+      .bar:nth-child(2) {
+          // styles for the second bar when active
+      }
+      .bar:nth-child(3) {
+          // styles for the third bar when active
+      }
+  }
+}
+
+  #header2{
+    background-color: $primary-color;
+    //padding: 3px;
+    color: white;
+    .container {
+      max-width: 1200px;
+      // margin: 0 auto;
+      // padding: 0 20px;
+      // display: flex;
+
+
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    // For mobile views
+    @media only screen and (max-width: 768px) {
+      border-top: 3px solid $primary-color; // Adjust border thickness as required
+      padding: 0px;
+
+      .container {
+          height: 0;
+          overflow: hidden;
+
+          * {
+              opacity: 0;
+              font-size: 0;
+          }
+      }
+  }
+  }
+
+//nav
+
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: #ffffff;
+  }
+
+  .nav a {
+    color: #000000;
+    text-decoration: none;
+    margin-right: 10px;
+  }
+
+  .nav a:hover {
+    color: #333333;
+  }
+
+
+
+.buy-now-btn {
+  background-color: #FFFFFF;
+  color: #ffffff;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.buy-now-btn:hover {
+  background-color: #FFFFFF;
+}
+
+.navbar span:last-child {
+  float: right;
+}
+
+.btn-white:hover {
+  color: black !important; 
+  background-color: #ffffff !important; 
+}
+
+.btn-white.show {
+  color: black !important; 
+  background-color: #ffffff !important; 
+}
+
+
+/* Style for the dropdown menu */
+.custom-dropdown-menu {
+  background-color: grey;
+}
+
+/* Style for the dropdown items */
+.custom-dropdown-item {
+  color: black;
+}
+
+/* Style for the dropdown items on hover */
+.custom-dropdown-item:hover {
+  background-color: lightgrey;
+}
+
+@media (max-width: 768px) {
+  .navbar-toggler-icon,
+  .navbar-collapse.collapse {
+    background-color: $primary-color;
+  }
+}
+.dropdown-item {  
+  &:active, &.active {
+    background-color: $MenuItemHoverColorCode !important;
+  }
+}
+
+.zeroPaddingRL{
+  padding-left:0px;
+  padding-right:0px;
+}
+
+.marginRL{
+  margin-left:$marginLeftRight;
+  margin-right:$marginLeftRight;
+}
+
+:host ::ng-deep .dropdown-menu {
+  min-width: 100%;
+}

@@ -1,0 +1,261 @@
+<ng-container *ngIf="permListAllow === 1">
+
+  <body class="BodyCointaner">
+    <!-- mainContainer start-->
+    <div class="leftPadding">
+      <!-- <div class="LeftSectionPosition">{{"labels.Home / Setup & Maintenance / Master Fee Table" | translate}}</div> -->
+      <h2>{{"labels.mftitemdetails" | translate}} - {{feeDetailId}}</h2>
+      <ng-container *ngIf="permEditMFTAllow === 1">
+        <div class="button-row">
+          <button type="button" class="btn btnEdit" (click)="editSelected()">
+            {{"labels.requestedit" | translate}}
+          </button>
+        </div>
+      </ng-container>
+    </div>
+    <div class="MALoadingContainer">
+      <!-- Loading spinner overlay -->
+      <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+        <div class="spinner-border" role="status">
+          <span class="sr-only"></span>
+        </div>
+      </div>
+      <div class="formContainer">
+        <div class="leftSide">
+          <table class="leftSectionContainer" [ngClass]="{ TableDimmed: isLoading }">
+            <thead>
+              <tr class="header">
+                <th style="width: 100px;">No.</th>
+                <th style="width: 350px;">{{"labels.parameter" | translate}}</th>
+                <th >{{"labels.currentvalue" | translate}}</th>
+              </tr>
+            </thead>
+            <ng-container *ngIf="totalMFTRecords>0; else noResults">
+              <tbody *ngIf="totalMFTRecords>0">
+                <tr>
+                  <td>1</td>
+                  <td>{{"labels.feedetailid" | translate}}</td>
+                  <td>{{feeDetailId}}</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>{{"labels.feegroupid" | translate}}</td>
+                  <td>{{feeGrpNmEn}}</td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>{{"labels.feedetailnameen" | translate}}</td>
+                  <td>{{feeDetailNmE}}</td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td>{{"labels.feedetailnamebm" | translate}}</td>
+                  <td>{{feeDetailNmB}}</td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td>{{"labels.unitfee(RM)" | translate}}</td>
+                  <td>{{unitFee | number:'1.2-2'}}</td>
+                </tr>
+                <tr>
+                  <td>6</td>
+                  <td>{{"labels.promotionstartdate" | translate}}</td>
+                  <td>{{promoStartDate}}</td>
+                </tr>
+                <tr>
+                  <td>7</td>
+                  <td>{{"labels.promotionenddate" | translate}}</td>
+                  <td>{{promoEndDate}}</td>
+                </tr>
+                <tr>
+                  <td>8</td>
+                  <td>{{"labels.promotionfee(RM)" | translate}}</td>
+                  <td>{{promoFee | number:'1.2-2'}}</td>
+                </tr>
+                <tr>
+                  <td>9</td>
+                  <td>{{"labels.taxcode" | translate}}</td>
+                  <td>{{taxCd}}</td>
+                </tr>
+                <tr>
+                  <td>10</td>
+                  <td>{{"labels.allowOTC" | translate}}</td>
+                  <td>{{ allowOTC === 1 ? 'Yes' : allowOTC === 0 ? 'No' : '' }}</td>
+                </tr>
+                <tr>
+                  <td>11</td>
+                  <td>{{"labels.latelodgementparentID" | translate}}</td>
+                  <td>{{llParentId}}</td>
+                </tr>
+                <tr>
+                  <td>12</td>
+                  <td>{{"labels.latelodgementstartday" | translate}}</td>
+                  <td>{{llStartDay}}</td>
+                </tr>
+                <tr>
+                  <td>13</td>
+                  <td>{{"labels.latelodgementstartmonth" | translate}}</td>
+                  <td>{{llStartMth}}</td>
+                </tr>
+                <tr>
+                  <td>14</td>
+                  <td>{{"labels.latelodgementendday" | translate}}</td>
+                  <td>{{llEndDay}}</td>
+                </tr>
+                <tr>
+                  <td>15</td>
+                  <td>{{"labels.latelodgementendmonth" | translate}}</td>
+                  <td>{{llEndMth}}</td>
+                </tr>
+                <tr>
+                  <td>16</td>
+                  <td>{{"labels.ledgercode" | translate}}</td>
+                  <td>{{ledgerCd}}</td>
+                </tr>
+                <tr>
+                  <td>17</td>
+                  <td>{{"labels.sourcesystemcode" | translate}}</td>
+                  <td>
+                    <!-- <div class="checkboxRow">
+                    <mat-checkbox *ngFor="let option of checkboxOptions" [checked]="true" [disabled]="true">
+                      <div class="checkBoxText">
+                        {{option}}
+                      </div>
+                    </mat-checkbox>
+                  </div>              -->
+                    {{ssCdWithSpace}}
+                  </td>
+                </tr>
+                <tr>
+                  <td>18</td>
+                  <td>{{"labels.datecreated" | translate}}</td>
+                  <td>{{dtCreated}}</td>
+                </tr>
+                <tr>
+                  <td>19</td>
+                  <td>{{"labels.createdby" | translate}}</td>
+                  <td>{{createdByNm}}</td>
+                </tr>
+                <tr>
+                  <td>20</td>
+                  <td>{{"labels.datemodified" | translate}}</td>
+                  <td>{{dtModified}}</td>
+                </tr>
+                <tr>
+                  <td>21</td>
+                  <td>{{"labels.modifiedby" | translate}}</td>
+                  <td>{{modifiedByNm}}</td>
+                </tr>
+                <tr>
+                  <td>22</td>
+                  <td>{{"labels.mftstatus" | translate}}</td>
+                  <td>{{ status === "A" ? "Active" : status === "D" ? "Inactive" : "" }}</td>
+                </tr>
+                <tr>
+                  <td>23</td>
+                       <td>{{"labels.Public" | translate}}</td>
+                  <td >{{ isPublic === 1 ? 'Yes' : isPublic === 0 ? 'No' : '' }}</td>
+              </tr>
+              </tbody>
+            </ng-container>
+            <ng-template #noResults>
+              <tr style="height: 100px;">
+                <td colspan="20" class="text-center">{{"norecordsfound"| translate}}</td>
+              </tr>
+            </ng-template>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="isDisplayTaskLists" class="marginTopAndBottom"></div>
+    <div *ngIf="!isDisplayTaskLists" class="MainContainerFooter"></div>
+
+    <!-- mainContainer start-->
+    <div class="PAContainer73">
+      <div>
+        <h2>{{"labels.tasklistsfor" | translate}} {{feeDetailId}}</h2>
+      </div>
+    </div>
+    <!-- left section -->
+    <!-- <div class="left-section73"> -->
+    <!-- <div class="MALoadingContainer rightPadding" > -->
+    <div class="MALoadingContainer">
+      <!-- Loading spinner overlay -->
+      <div *ngIf="isLoadingTaskLists" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+        <div class="spinner-border" role="status">
+          <span class="sr-only"></span>
+        </div>
+      </div>
+      <div class="tableWrapper">
+        <!-- Your table structure -->
+        <table class="MATable" [ngClass]="{'TableDimmed': isLoadingTaskLists}">
+          <thead>
+            <tr class="MATableHeader">
+              <th>{{"labels.taskid" | translate}}</th>
+              <th>{{"labels.feedetailid" | translate}}</th>
+              <!-- <th class="languageWidth">{{"labels.feedetailnameen" | translate}}</th> -->
+              <th>{{"labels.status" | translate}}</th>
+              <th>{{"labels.effectivedate" | translate}}</th>
+              <th>{{"labels.modifiedby" | translate}}</th>
+              <th>{{"labels.datemodified" | translate}}</th>
+              <th>{{"labels.action" | translate}}</th>
+            </tr>
+          </thead>
+          <ng-container *ngIf="totalRecordsTaskLists>0; else noResultsTaskLists">
+            <tbody *ngIf="totalRecordsTaskLists>0">
+              <tr *ngFor="let item of mftwfs">
+                <td>{{item.task_id}}</td>
+                <td>{{item.fee_detail_id}}</td>
+                <!-- <td>{{item.fee_detail_nm_e}}</td> -->
+                <td>{{item.status_en}}</td>
+                <td>{{item.effective_date}}</td>
+                <td>{{item.modified_by_nm}}</td>
+                <td>{{item.dt_modified | date:'dd MMM yyyy HH:mm:ss'}}</td>
+                <td><button type="button" class="btn btnView" (click)="viewSelected(item)">{{"buttons.view" |
+                    translate}}</button></td>
+              </tr>
+            </tbody>
+          </ng-container>
+          <ng-template #noResultsTaskLists>
+            <tr style="height: 100px;">
+              <td colspan="20" class="text-center">{{"norecordsfound"| translate}}</td>
+            </tr>
+          </ng-template>
+        </table>
+
+        <div class="MAPagination" *ngIf="isDisplayTaskLists">
+          <div class="fgSpacing">
+            <div>
+              <div *ngIf="pageTaskLists * itemsPerPageTaskLists < totalRecordsTaskLists">
+                {{"showing" | translate}} {{ pageTaskLists * itemsPerPageTaskLists }} {{"from" | translate}} {{
+                totalRecordsTaskLists }} {{"results" | translate}}
+              </div>
+              <div *ngIf="!(pageTaskLists * itemsPerPageTaskLists < totalRecordsTaskLists)">
+                {{"showing" | translate}} {{ totalRecordsTaskLists }} {{"from" | translate}} {{ totalRecordsTaskLists }}
+                {{"results" | translate}}
+              </div>
+            </div>
+          </div>
+          <div class="pagination-row">
+
+            <div class="dropdown">
+              <button class="btn btn-secondary dropdown-toggle PaginControl" type="button" id="dropdownMenuButton"
+                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{ selectedValue }}
+              </button>
+              <div class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton">
+                <button class="dropdown-item" *ngFor="let singleItem of dropdownOptions" (click)="LoadData(singleItem)">
+                  {{singleItem }}
+                </button>
+              </div>
+            </div>
+            <ngb-pagination [(page)]="pageTaskLists" [pageSize]="itemsPerPageTaskLists"
+              [collectionSize]="totalRecordsTaskLists" (pageChange)="loadData()"></ngb-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- </div>  -->
+    <div class="marginFromFooter"></div>
+  </body>
+</ng-container>

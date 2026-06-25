@@ -1,0 +1,160 @@
+
+<div class="first-parent SingleContainer">
+    <!-- mainContainer start-->
+        <div class="leftPadding">
+            <h2>RMS Transaction List</h2>
+        </div>
+        <!-- Loading spinner overlay -->
+        <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+            <div class="spinner-border" role="status">
+                <span class="sr-only"></span>
+            </div>
+        </div>
+    
+        <div>
+            <table>
+                <tr class="form-group">
+                    <td><label>Txn Date</label></td>
+                    <td>
+                        <input type="text" placeholder="Date Picker" class="form-control"
+                                    [bsConfig]="{  dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,containerClass:'theme-default',adaptivePosition: true}"
+                                    bsDatepicker  name="txnDate" readonly [(ngModel)]="txnDate" disabled> 
+                    </td>
+                    <td></td><!--Empty cell-->
+                    <td><label>Customer Name</label></td>
+                    <td>
+                        <input type="text" class="form-control" id="custName"  [(ngModel)]="custName"  />
+                    </td>
+                    <td></td> <!-- Empty cell-->
+                    <td><label>Found in PG?</label></td>
+                    <td>
+                        <!--dropdown here-->
+                        <select class="dropdown" name="foundInPG" class="form-control form-select" [(ngModel)]="foundInPG">
+                            <option [value]="null">Both</option>
+                            <option [value]="0">No</option>
+                            <option [value]="1">Yes</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr class="form-group">
+                    <td><label>Txn ID</label></td>
+                    <td>
+                        <input type="text" class="form-control" id="txnID"  [(ngModel)]="txnID"  />
+                    </td>
+                    <td></td> <!-- Empty cell-->
+                    <td><label>ORN No</label></td>
+                    <td>
+                        <input type="text" class="form-control" id="ornNo"  [(ngModel)]="ornNo"  />
+                    </td>
+                    <td></td> <!-- Empty cell-->
+                    <td><label>Sub-Criteria</label></td><!-- tooltips-->
+                    <td>
+                        <select class="dropdown" name="subCriteria" class="form-control form-select"
+                            [(ngModel)]="subCriteria">
+                            <option *ngFor="let item of subCri" [value]="item.param_cd">
+                                {{ item.nm_en }}
+                            </option>
+                        </select>
+                    </td>
+                </tr>
+                <tr class="form-group">
+                    <td><label>Order Status</label></td>
+                    <td>
+                        <select class="dropdown" name="orderStatus" class="form-control form-select"
+                            [(ngModel)]="orderStatus">
+                            <option *ngFor="let item of ordStatus" [value]="item.param_cd">
+                                {{ item.nm_en }}
+                            </option>
+                        </select>
+                    </td>
+                    <td></td> <!-- Empty cell-->
+                    <td></td>
+                    <td></td>
+                    <td></td> <!-- Empty cell-->
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+            <div class="button-group" style="display: flex;justify-content: end;">
+                <button class="btn btnApply" (click)="apply()">Search</button>
+                <button class="btn btnReset" (click)="reset()">Reset</button>
+            </div>
+            <br>
+        </div>
+
+        <table class="MATable" *ngIf="isEmptyResult">
+            <thead>
+                <tr class="MATableHeader">
+                    <th>{{"Payment Date" | translate}}</th>
+                    <th>{{"Txn ID" | translate}}</th>
+                    <th>{{"Customer Name" | translate}}</th>
+                    <th>{{"ORN No" | translate}}</th>
+                    <th>{{"Found in PG?" | translate}}</th>
+                    <th>{{"Sub-Criteria" | translate}}</th>
+                    <th>{{"Txn Amount" | translate}}</th>
+                    <th>{{"Order Status" | translate}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="8" style="text-align: center;">{{"norecordsfound" | translate}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="MATable" *ngIf="!isEmptyResult" [ngClass]="{ TableDimmed: isLoading }">
+            <thead>
+            <tr class="MATableHeader">
+                <th>{{"Payment Date" | translate}}</th>
+                    <th>{{"Txn ID" | translate}}</th>
+                    <th>{{"Customer Name" | translate}}</th>
+                    <th>{{"ORN No" | translate}}</th>
+                    <th>{{"Found in PG?" | translate}}</th>
+                    <th>{{"Sub-Criteria" | translate}}</th>
+                    <th>{{"Txn Amount" | translate}}</th>
+                    <th>{{"Order Status" | translate}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of model">
+                <td>{{ item.dt_txn | date : "dd MMM yyyy HH:mm:ss" }}</td>
+                <td>{{ item.txn_id }}</td>
+                <td>{{ item.cust_nm }}</td>
+                <td>{{ item.orn_no }}</td>
+                <td>{{ item.found_in_pg }}</td>
+                <td>{{ item.sub_criteria }}</td>
+                <td>{{ item.txn_amt | number:'1.2-2' }}</td>
+                <td>{{ item.order_status}}</td>
+            </tr>
+            </tbody>
+        </table>
+    
+        <div class="MAPagination" *ngIf="isDisplay">
+            <div class="fgSpacing">
+                <div>
+            {{
+            page * itemsPerPage < totalRecords ? "Showing " + page * itemsPerPage + " from " + totalRecords
+                + " results" : "Showing " + totalRecords + " from " + totalRecords + " results" }}
+                </div>
+            </div>
+            <div class="pagination-row">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle PaginControl" type="button"
+                        id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                        {{ selectedValue }}
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton">
+                        <button class="dropdown-item" *ngFor="let singleItem of dropdownOptions"
+                            (click)="LoadData(singleItem)">
+                            {{ singleItem }}
+                        </button>
+                    </div>
+                </div>
+                <ngb-pagination [(page)]="page" [pageSize]="itemsPerPage" [collectionSize]="totalRecords"
+                (pageChange)="loadData()"></ngb-pagination>
+            </div>
+        </div>
+    
+    </div>
+    

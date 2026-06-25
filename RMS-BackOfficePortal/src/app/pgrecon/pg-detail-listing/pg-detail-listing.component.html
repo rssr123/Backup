@@ -1,0 +1,147 @@
+
+    <div class="first-parent SingleContainer">
+    <!-- mainContainer start-->
+        <div class="leftPadding">
+            <h2>Payment Gateway Settlement Transaction List</h2>
+        </div>
+        <!-- Loading spinner overlay -->
+        <div *ngIf="isLoading" class="TableLoading-overlay d-flex align-items-center justify-content-center">
+            <div class="spinner-border" role="status">
+                <span class="sr-only"></span>
+            </div>
+        </div>
+    
+        <div>
+            <table>
+                <tr class="form-group">
+                    <td><label>Txn Date</label></td>
+                    <td>
+                        <input type="text" placeholder="Date Picker" class="form-control"
+                                    [bsConfig]="{  dateInputFormat: 'DD MMM YYYY', showWeekNumbers: false ,containerClass:'theme-default',adaptivePosition: true}"
+                                    bsDatepicker  name="txnDate" readonly [(ngModel)]="txnDate" disabled> 
+                    </td>
+                    <td></td><!--Empty cell-->
+                    <td><label>Txn Type</label></td>
+                    <td>
+                        <input type="text" class="form-control" id="txnType"  [(ngModel)]="txnType"  />
+                    </td>
+                    <td></td> <!-- Empty cell-->
+                    <td><label>Found in RMS?</label></td>
+                    <td>
+                        <!--dropdown here-->
+                        <select class="dropdown" name="foundInRMS" class="form-control form-select" [(ngModel)]="foundInRMS">
+                            <option [value]="null">Both</option>
+                            <option [value]="0">No</option>
+                            <option [value]="1">Yes</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr class="form-group">
+                    <td><label>Txn ID</label></td>
+                    <td>
+                        <input type="text" class="form-control" id="txnID"  [(ngModel)]="txnID"  />
+                    </td>
+                    <td></td> <!-- Empty cell-->
+                    <td><label>Txn Code</label></td>
+                    <td>
+                        <input type="text" class="form-control" id="txnCode"  [(ngModel)]="txnCode"  />
+                    </td>
+                    <td></td> <!-- Empty cell-->
+                    <td><label>Sub-Criteria</label></td><!-- tooltips-->
+                    <td>
+                        <select class="dropdown" name="subCriteria" class="form-control form-select"
+                            [(ngModel)]="subCriteria">
+                            <option *ngFor="let item of subCri" [value]="item.param_cd">
+                                {{ item.nm_en }}
+                            </option>
+                        </select>
+                    </td>
+                </tr>
+                
+            </table>
+            <div class="button-group" style="display: flex;justify-content: end;">
+                <button class="btn btnApply" (click)="apply()">Search</button>
+                <button class="btn btnReset" (click)="reset()">Reset</button>
+            </div>
+            <br>
+        </div>
+
+        <table class="MATable" *ngIf="isEmptyResult">
+            <thead>
+                <tr class="MATableHeader">
+                    <th>{{"Txn Date" | translate}}</th>
+                    <th>{{"Txn ID" | translate}}</th>
+                    <th>{{"Txn Type" | translate}}</th>
+                    <th>{{"Txn Code" | translate}}</th>
+                    <th>{{"Found in RMS?" | translate}}</th>
+                    <th>{{"Txn Amount" | translate}}</th>
+                    <th>{{"MDR" | translate}}</th>
+                    <th>{{"SST" | translate}}</th>
+                    <th>{{"Net Amount" | translate}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="9" style="text-align: center;">{{"norecordsfound" | translate}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="MATable" *ngIf="!isEmptyResult" [ngClass]="{ TableDimmed: isLoading }">
+            <thead>
+            <tr class="MATableHeader">
+                <th>{{"Txn Date" | translate}}</th>
+                <th>{{"Txn ID" | translate}}</th>
+                <th>{{"Txn Type" | translate}}</th>
+                <th>{{"Txn Code" | translate}}</th>
+                <th>{{"Found in RMS?" | translate}}</th>
+                <th>{{"Txn Amount" | translate}}</th>
+                <th>{{"MDR" | translate}}</th>
+                <th>{{"SST" | translate}}</th>
+                <th>{{"Net Amount" | translate}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of model">
+                <td>{{ item.dt_txn}}</td>
+                <td>{{ item.txn_id }}</td>
+                <td>{{ item.txn_type }}</td>
+                <td>{{ item.txn_cd }}</td>
+                <td>{{ item.found_in_rms }}</td>
+                <td>{{ item.txn_amt| number:'1.2-2'}}</td>
+                <td>{{ item.mdr_amt| number:'1.2-2'}}</td>
+                <td>{{ item.sst_amt| number:'1.2-2'}}</td>
+                <td>{{ item.net_amt| number:'1.2-2'}}</td>
+            </tr>
+            </tbody>
+        </table>
+    
+        <div class="MAPagination" *ngIf="isDisplay">
+            <div class="fgSpacing">
+                <div>
+            {{
+            page * itemsPerPage < totalRecords ? "Showing " + page * itemsPerPage + " from " + totalRecords
+                + " results" : "Showing " + totalRecords + " from " + totalRecords + " results" }}
+                </div>
+            </div>
+            <div class="pagination-row">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle PaginControl" type="button"
+                        id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                        {{ selectedValue }}
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton">
+                        <button class="dropdown-item" *ngFor="let singleItem of dropdownOptions"
+                            (click)="LoadData(singleItem)">
+                            {{ singleItem }}
+                        </button>
+                    </div>
+                </div>
+                <ngb-pagination [(page)]="page" [pageSize]="itemsPerPage" [collectionSize]="totalRecords"
+                (pageChange)="loadData()"></ngb-pagination>
+            </div>
+        </div>
+    
+    </div>
+    

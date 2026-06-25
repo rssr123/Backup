@@ -1,0 +1,14 @@
+<div class="SingleContainer">
+    <!-- Header for Add Item -->
+    <div class="SingleContainerHeader">
+        <h2 class="text-center">{{ "labels.warning" | translate }}</h2>
+        <p>{{ data.message }}</p>
+    </div>
+
+    <!-- Content -->
+    <div class="button-group">
+        <button class="btn btnDelete mr-2" type="button" (click)="onConfirm()">{{"buttons.delete" | translate}}</button>
+        <button class="btn btn-cancel mr-2" type="button" (click)="onCancel()">{{"buttons.cancel" | translate}}</button>
+    </div>
+    
+</div>
